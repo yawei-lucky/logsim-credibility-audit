@@ -56,13 +56,18 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 
 然后再用 NeuroNCAP / HUGSIM / UniSim / AdvSim 作为对照，判断 OmniDreams 是否真正推进了日志驱动反事实闭环仿真的可信评估问题。
 
-## 最小输出目标
+## 文件结构
 
-当前阶段只维护以下文件：
+核心文件：
 
 - `README.md`
 - `PROJECT_STATE.md`
 - `docs/omnidreams_audit.md`
 - `docs/comparison_notes.md`
+
+辅助文件：
+
+- `docs/literature_matrix.md`
+- `docs/codex_workflow.md`
 
 其中 `docs/omnidreams_audit.md` 是第一优先级。
