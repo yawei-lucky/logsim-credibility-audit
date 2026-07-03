@@ -68,11 +68,10 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 - `README.md`
 - `PROJECT_STATE.md`
 - `SOURCE_AVAILABILITY_GATE.md`
-- `docs/comparison_notes.md`
-
-当前阶段待新增核心文件：
-
 - `docs/hugsim_audit.md`
+- `docs/runnable_target_selection.md`
+- `docs/hugsim_smoke_test_plan.md`
+- `docs/comparison_notes.md`
 
 辅助文件：
 
@@ -80,4 +79,4 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 - `docs/codex_workflow.md`
 - `docs/future/omnidreams_audit.md`
 
-其中 `docs/hugsim_audit.md` 将作为第一阶段优先文件。
+其中 `docs/hugsim_audit.md` 是第一阶段优先文件。
