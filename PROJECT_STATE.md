@@ -23,17 +23,19 @@
 
 ## 2. 当前最高优先级调整
 
-当前第一审计对象调整为：
+当前第一阶段审计对象调整为：
 
-**OmniDreams**
+**HUGSIM 这一类真实日志重建型闭环仿真器**
 
 理由：
 
-OmniDreams 更接近最新一代生成式闭环仿真 / 世界模型仿真方向，可能代表未来自动驾驶仿真从“神经重建仿真”走向“生成式世界模型闭环仿真”的趋势。
+HUGSIM 是 3DGS-based、真实日志/真实数据集驱动、传感器级、闭环、代码公开的自动驾驶仿真工作。相比 OmniDreams / Cosmos，它更适合作为当前阶段的 runnable target，用来先打通 credibility audit workflow。
 
-因此当前不再先从 NeuroNCAP / HUGSIM / UniSim / AdvSim 开始逐个铺开，而是：
+当前不再以 OmniDreams / Cosmos 为第一运行目标。OmniDreams 被移入 future work，作为未来生成式世界模型闭环仿真的对照对象。
 
-> 先审计 OmniDreams 的自证机制，再用 NeuroNCAP / HUGSIM / UniSim / AdvSim 作为历史脉络和横向对照。
+当前主线是：
+
+> 先审计 HUGSIM 的自证机制和最小可运行链路，再用 NeuroNCAP / UniSim / AdvSim / OmniDreams 作为历史脉络和横向对照。
 
 ---
 
@@ -42,9 +44,10 @@ OmniDreams 更接近最新一代生成式闭环仿真 / 世界模型仿真方向
 以下工作作为对照对象和历史脉络：
 
 - NeuroNCAP
-- HUGSIM
 - UniSim
 - AdvSim
+- OmniDreams
+- Cosmos
 
 它们用于回答：
 
@@ -52,7 +55,8 @@ OmniDreams 更接近最新一代生成式闭环仿真 / 世界模型仿真方向
 - 它们使用了哪些自证指标；
 - 这些指标实际证明了什么；
 - 这些指标没有证明什么；
-- OmniDreams 是否解决了旧问题，还是只是换成了生成式世界模型表达。
+- HUGSIM 相比 NeRF / earlier log-driven simulators 是否推进了可信评估；
+- OmniDreams / Cosmos 作为生成式世界模型方向，未来是否能继承或替代 HUGSIM 类审计流程。
 
 ---
 
@@ -62,19 +66,19 @@ OmniDreams 更接近最新一代生成式闭环仿真 / 世界模型仿真方向
 
 ### RQ1
 
-OmniDreams 如何证明自己的仿真结果可信？
+HUGSIM 如何证明自己的仿真结果可信？
 
 ### RQ2
 
-OmniDreams 的指标是在验证仿真器可信性，还是只是在验证自动驾驶模型表现？
+HUGSIM 的指标是在验证仿真器可信性，还是只是在验证自动驾驶模型表现？
 
 ### RQ3
 
-OmniDreams 是否能发现低可信反事实样本、生成 artifact、遮挡错误、深度错误、几何关系不一致、时序关系不一致？
+HUGSIM 是否能发现低可信反事实样本、3DGS 重建 artifact、遮挡错误、深度错误、几何关系不一致、时序关系不一致？
 
 ### RQ4
 
-NeuroNCAP / HUGSIM / UniSim / AdvSim 的自证指标，能否迁移到 OmniDreams 上？
+NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSIM 上？
 
 ### RQ5
 
@@ -92,17 +96,13 @@ NeuroNCAP / HUGSIM / UniSim / AdvSim 的自证指标，能否迁移到 OmniDream
 
 端到端自动驾驶 / sensor-input E2E agent 的趋势使评估问题从 motion-level planning 推进到 sensor-to-action closed-loop evaluation。
 
-传统两段式或模块化系统可以支撑受限自动驾驶能力，但存在结构性信息瓶颈：
-
-- 中间接口会丢失任务相关但难以人工定义的信息；
-- 感知指标和驾驶目标存在错配；
-- open-loop benchmark 可能无法反映 closed-loop 安全表现；
-- sensor-input agent 的真正能力必须在闭环反事实环境中评估。
+3DGS-based reconstruction simulator 比 NeRF-based simulator 更接近当前实时可运行路线，但实时渲染和视觉逼真度不等于可信闭环评估。
 
 因此，本项目的关键判断是：
 
-> E2E 使 sensor-level closed-loop evaluation 变得不可回避；  
-> counterfactual simulation 使 credibility audit 变得不可回避。
+> sensor-level closed-loop evaluation 变得不可回避；  
+> counterfactual simulation 使 credibility audit 变得不可回避；  
+> 3DGS / NeRF / world model 都必须接受 source availability 与 relation-level consistency 审计。
 
 ---
 
@@ -116,45 +116,57 @@ NeuroNCAP / HUGSIM / UniSim / AdvSim 的自证指标，能否迁移到 OmniDream
 - 复现所有系统；
 - 生成大而全综述；
 - 一次性写完所有 simulator cards；
-- 让聊天窗口变成长期记忆。
+- 跑完整 HUGSIM benchmark；
+- 重新训练所有 3DGS 场景；
+- 继续推进 Cosmos / OmniDreams 大模型运行。
 
 当前只做一件事：
 
-> 审计 OmniDreams 的自证机制。
+> 审计 HUGSIM 的自证机制，并设计最小 smoke test 来打通 credibility audit workflow。
 
 ---
 
-## 7. 当前最小文件结构
+## 7. 当前文件结构
 
-当前项目只需要维护以下最小文件：
+核心文件：
 
 - `README.md`
 - `PROJECT_STATE.md`
-- `docs/omnidreams_audit.md`
+- `SOURCE_AVAILABILITY_GATE.md`
+- `docs/hugsim_audit.md`
+- `docs/runnable_target_selection.md`
+- `docs/hugsim_smoke_test_plan.md`
 - `docs/comparison_notes.md`
 
-其中第一优先级是：
+辅助文件：
 
-- `docs/omnidreams_audit.md`
+- `docs/literature_matrix.md`
+- `docs/codex_workflow.md`
+- `docs/future/omnidreams_audit.md`
+
+其中当前第一优先级是：
+
+- `docs/hugsim_audit.md`
 
 ---
 
-## 8. OmniDreams 审计模板
+## 8. HUGSIM 审计模板
 
-`docs/omnidreams_audit.md` 应优先回答：
+`docs/hugsim_audit.md` 应优先回答：
 
-1. OmniDreams 的基本 pipeline 是什么？
-2. 它是否真实日志驱动？
-3. 它如何支持反事实修改？
-4. 它生成哪些传感器级观测？
-5. 它是否支持闭环 rollout？
-6. 它如何更新世界状态？
-7. 它支持什么类型的 sensor-input E2E agent？
-8. 它使用哪些自证指标？
-9. 这些指标证明了什么？
-10. 这些指标没有证明什么？
-11. 它相比 NeuroNCAP / HUGSIM / UniSim / AdvSim 的推进在哪里？
-12. 它仍然缺失哪些 credibility evidence？
+1. HUGSIM 的基本 pipeline 是什么？
+2. 它如何从真实日志 / 真实数据集重建场景？
+3. 它如何使用 3D Gaussian Splatting 表示静态背景、地面和动态 actor？
+4. 它如何支持反事实或 stress-case 场景修改？
+5. 它生成哪些传感器级观测？
+6. 它是否支持闭环 rollout？
+7. 它如何更新 ego / actor 世界状态？
+8. 它支持什么类型的 sensor-input E2E agent？
+9. 它使用哪些自证指标？
+10. 这些指标证明了什么？
+11. 这些指标没有证明什么？
+12. 它相比 NeuroNCAP / UniSim / AdvSim 的推进在哪里？
+13. 它仍然缺失哪些 credibility evidence？
 
 ---
 
@@ -168,6 +180,8 @@ NeuroNCAP / HUGSIM / UniSim / AdvSim 的自证指标，能否迁移到 OmniDream
 - same-lane / adjacent-lane / off-road 是否正确；
 - approaching / receding 是否可信；
 - occluding / occluded-by 是否一致；
+- actor scale / orientation 是否稳定；
+- extrapolated views 是否出现 lane / drivable area artifact；
 - risk-increasing / risk-decreasing 是否由传感器、几何、地图、时序证据支持；
 - collision / near-miss 是模型真实失败，还是仿真 artifact；
 - 高风险关系是否有足够证据支撑。
@@ -202,10 +216,10 @@ ChatGPT Project / Custom GPT
 
 下一步只做：
 
-> 写 `docs/omnidreams_audit.md` 的第一版。
+> 完成 HUGSIM Source Availability Gate 与 pipeline / closed-loop mechanism 的第一轮抽取。
 
-不要同时展开 NeuroNCAP / HUGSIM / UniSim / AdvSim。
+不要同时展开 OmniDreams / Cosmos。
 
-对照对象只用于回答：
+OmniDreams / Cosmos 只用于回答：
 
-> OmniDreams 相比这些历史工作，是否真的推进了日志驱动反事实闭环仿真的可信评估问题？
+> 未来生成式世界模型仿真是否能继承 HUGSIM / NeuroNCAP 类审计流程，还是需要新的 credibility evidence？
