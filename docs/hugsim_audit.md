@@ -1,6 +1,6 @@
 # HUGSIM Credibility Audit
 
-> Status: Phase 1 working draft with completed first-pass source availability gate.  
+> Status: Phase 1 working draft with completed first-pass source availability gate and first-pass pipeline extraction.  
 > Scope: audit HUGSIM as a runnable 3DGS-based log-driven closed-loop simulator, not a general autonomous-driving simulator survey.
 
 ## Source Availability Gate
@@ -32,7 +32,7 @@ This does **not** mean HUGSIM's closed-loop results are automatically credible. 
 | Policy agent / AD client | Available / external dependency | README mentions UniAD_SIM, VAD_SIM, and NAVSIM / LTF-style clients | Closed-loop evaluation depends on external AD clients; simulator credibility should be separated from policy-agent performance. |
 | Orchestrator | Available | `closed_loop.py` | It launches AD clients, creates Gym env, writes observations to pipe, reads planned trajectory, converts trajectory to controls, steps env, stores outputs, and invokes metrics. |
 | Evaluation scripts / metrics | Available | `sim/utils/score_calculator.py` | NC, DAC, TTC, comfort, PDMS, route completion, and hdscore are implementation-inspectable. |
-| Debug path | Available | README notes modifying final code path to call `create_gym_env(cfg, output)` directly | Useful for smoke testing simulator loop without first depending on a heavy AD client. |
+| Debug path | Available | README notes modifying final code path to call `create_gym_env(cfg, output)` directly | Useful for smoke testing simulator loop without first depending on a heavy AD client, but `create_gym_env()` still expects a `plan_pipe` trajectory producer. |
 
 ### Current Blockers
 
@@ -41,6 +41,41 @@ This does **not** mean HUGSIM's closed-loop results are automatically credible. 
 - Some competition scenarios are explicitly private according to README.
 - AD clients are external dependencies; a lightweight or dummy client strategy is still needed for minimal audit workflow testing.
 - Source availability does not yet validate reconstruction fidelity, extrapolated-view stability, or metric credibility.
+
+---
+
+## Pipeline Trace
+
+This is the current implementation-level trace of the HUGSIM closed-loop path.
+
+```text
+scenario YAML
+→ OmegaConf load and merge with base / camera / kinematic config
+→ model config loaded from exported scene folder
+→ optional AD client launched by shell path
+→ Gymnasium env `hugsim_env/HUGSim-v0` created
+→ env.reset()
+→ render multi-camera observation + info
+→ write `(obs, info)` to `obs_pipe`
+→ read planned trajectory from `plan_pipe`
+→ convert planned trajectory to acceleration / steer-rate
+→ env.step(action)
+→ update actor plans and ego kinematic state
+→ render next observation
+→ store frames, infos, video, ground/scene point clouds
+→ compute NC / DAC / TTC / comfort / PDMS / route completion / hdscore
+```
+
+### Implementation Nodes
+
+| Node | File | Role | Audit Concern |
+|---|---|---|---|
+| Simulation orchestrator | `closed_loop.py` | Loads configs, launches AD client, pipes observations/plans, saves outputs, invokes evaluation | Pipe-based loop may require a deterministic plan writer for smoke testing. |
+| Gym environment | `sim/hugsim_env/envs/hug_sim.py` | Defines observation/action space, loads scene/dynamic Gaussians, renders observations, updates ego state | This is the main simulator-state and sensor-generation surface. |
+| Actor planner | `sim/utils/plan.py` | Converts scenario `plan_list` into actor controllers and updates actor states | Actor behavior credibility depends on controller assumptions and map availability. |
+| Agent controllers | `sim/utils/agent_controller.py` | Implements IDM, AttackPlanner, ConstantPlanner, UnicyclePlanner | Safety-critical outcomes may be artifacts of controller choice or parameters. |
+| Trajectory-to-control | `sim/utils/sim_utils.py` | Converts AD planned trajectory into acceleration and steer-rate | Planner output semantics and coordinate transforms must be audited. |
+| Scoring | `sim/utils/score_calculator.py` | Computes NC, DAC, TTC, comfort, PDMS, route completion, hdscore | Metrics score internal state; they do not automatically validate rendered evidence. |
 
 ---
 
@@ -84,6 +119,7 @@ HUGSIM reconstructs dynamic urban scenes using 3DGS and then builds a closed-loo
 - The paper describes HUGSIM as lifting captured 2D RGB images into 3D space via 3D Gaussian Splatting and enabling a full closed simulation loop.
 - The project page states that HUGSIM decomposes the scene into static and dynamic 3D Gaussians and models dynamic vehicle motion with a unicycle model.
 - The official repository exposes reconstruction (`train_ground.py`, `train.py`), scene export (`eval_render/export_scene.py`), conversion (`eval_render/convert_scene.py`, `eval_render/convert_vehicles.py`), GUI configuration (`gui/app.py`), and simulation (`closed_loop.py`) paths.
+- `closed_loop.py` confirms the runtime sequence: merge configs, load scene model config, select AD client path, launch AD client, run `create_gym_env`, and save outputs.
 
 ### Audit Judgment
 
@@ -108,6 +144,7 @@ HUGSIM starts from captured posed images of dynamic urban scenes and reconstruct
 - `data/README.md` documents dataset preparation for KITTI-360, Waymo Open Dataset, nuScenes, and PandaSet.
 - The data preparation path requires external datasets and, for 2D semantic labels, InverseForm checkpoints.
 - Reconstruction scripts include `train_ground.py` and `train.py`.
+- The scene export path minimizes reconstructed scene folders for sharing and simulation.
 
 ### Audit Judgment
 
@@ -132,6 +169,7 @@ HUGSIM extends 3DGS to dynamic urban scenes and represents appearance, semantics
 - Paper Section 3 describes 3DGS representation, decomposed scene representation, ground Gaussians, native dynamic vehicle Gaussians, and unicycle-model regularization.
 - The Gym environment loads `scene.pth` into `GaussianModel` and dynamic actor checkpoints into `ObjModel`.
 - The environment exports `ground.ply` and `scene.ply` from semantic-indexed Gaussian points for later metric computation.
+- `_get_obs()` renders RGB, semantic argmax labels, and depth for each configured camera.
 
 ### Audit Judgment
 
@@ -155,17 +193,22 @@ HUGSIM models dynamic vehicle motion with a unicycle model and uses 360-degree h
 
 - The paper claims a unicycle model regularizes dynamic vehicle trajectories.
 - The environment constructs a planner from scenario `plan_list`, loads dynamic object checkpoints for each planned actor, and derives object boxes from planned actor transforms.
+- `plan.py` interprets `plan_list` entries as initial actor state plus model/controller/controller-args; it loads each actor's `gs.pth` and `wlh.json`.
+- `plan.py` supports controllers including IDM, AttackPlanner, ConstantPlanner, and UnicyclePlanner.
 - The README says released assets include 3DRealCar files.
 
 ### Audit Judgment
 
 Actor modeling is a major credibility risk. Collisions and near-misses can be caused by actor insertion artifacts, incorrect scale, incorrect orientation, bad occlusion, or unrealistic behavior generation.
 
+The code makes actor behavior inspectable, which is good for audit. But it also means each scenario outcome must be attributed to a specific actor controller and parameters, not just to the AD agent.
+
 ### Open Questions
 
 - Are inserted actors physically and semantically aligned with the scene?
 - Is actor scale consistent across viewpoints?
 - Are occluding / occluded-by relations stable as ego moves?
+- Which actor controller is used in the selected smoke-test scenario?
 
 ---
 
@@ -180,16 +223,20 @@ HUGSIM supports edited scenarios and aggressive actor behavior generation for sa
 - The paper claims normal actors can use IDM when HD maps are available and aggressive actors can use an attack planning strategy.
 - The README describes a GUI for configuring scenarios and downloading scenario YAML files.
 - `closed_loop.py` consumes `--scenario_path ./configs/benchmark/${dataset_name}/${scenario_name}.yaml`.
+- Example scenario YAML files contain `mode`, `plan_list`, `load_HD_map`, `start_euler`, `start_ab`, `start_velo`, `start_steer`, `scene_name`, and `iteration`.
+- Easy/medium/hard scenarios can use `ConstantPlanner`; extreme examples can use `AttackPlanner` with `pred_steps`, `ATTACK_FREQ`, and `best_k`.
 
 ### Audit Judgment
 
 This is directly relevant to credibility audit. Any edited or aggressive scenario should carry evidence that the edit remains physically plausible, geometrically consistent, and sensor-observable.
 
+Scenario YAML is a useful audit anchor because it records actor initial state, asset ID, controller type, controller parameters, ego start state, map usage, scene name, and reconstruction iteration. The audit layer should include the scenario YAML in every closed-loop evidence record.
+
 ### Open Questions
 
-- How are scenario yaml files structured?
-- Can an edited actor be traced back to source evidence?
+- Can an edited actor be traced back to source evidence and released 3DRealCar asset metadata?
 - Does the simulator flag edits outside reconstruction support?
+- Do attack-planner scenarios remain physically and contextually plausible when `load_HD_map: false`?
 
 ---
 
@@ -204,10 +251,13 @@ HUGSIM renders RGB images and can also represent semantic labels and optical flo
 - Project page states HUGSIM renders RGB images, semantic labels, and optical flow.
 - The Gym environment's observation space exposes `rgb`, `semantic`, and `depth` dictionaries per camera.
 - `_get_obs()` renders per-camera RGB, semantic argmax labels, and depth from the Gaussian renderer.
+- `closed_loop.py` saves multi-camera RGB observations into `video.mp4` and pickles `infos.pkl`; it does not yet clearly save semantic/depth outputs into the default evaluation artifacts.
 
 ### Audit Judgment
 
 Sensor-level generation should be audited using more than visual quality. The important question is whether the observations preserve task-relevant relations needed by vision-based AD agents.
+
+Semantic/depth are available in the Gym observation, which is valuable for audit. The smoke test should explicitly log or export these modalities if possible, because default AD-video output alone is insufficient for relation-level credibility inspection.
 
 ### Open Questions
 
@@ -228,10 +278,13 @@ HUGSIM closes the loop by querying waypoints from AD algorithms, applying contro
 - README documents `closed_loop.py` with `--scenario_path`, `--base_path`, `--camera_path`, `--kinematic_path`, `--ad`, and `--ad_cuda` arguments.
 - `closed_loop.py` creates a Gymnasium environment, writes `(obs, info)` to `obs_pipe`, reads `plan_traj` from `plan_pipe`, converts trajectory to acceleration/steer-rate control with `traj2control`, calls `env.step(action)`, and saves `data.pkl`, `video.mp4`, `infos.pkl`, and `eval.json`.
 - README provides a debug modification that bypasses launching AD clients and directly calls `create_gym_env(cfg, output)`.
+- `launch_ad.py` shows that the AD client is launched as a separate shell process with arguments `(cuda_id, output)` and logs stdout/stderr to `output.txt`.
 
 ### Audit Judgment
 
 This is the key reason HUGSIM is selected as Phase 1 target. The next step is not to reproduce the full benchmark, but to run or design a minimal smoke test that logs every observation, action, state update, and metric event.
+
+The pipe-based design creates a clean audit boundary: simulator state and observation are emitted before each AD decision, and planned trajectory is consumed before each simulator update. For the first smoke test, a deterministic `plan_pipe` writer is likely more useful than installing a heavy AD model immediately.
 
 ### Open Questions
 
@@ -251,16 +304,21 @@ HUGSIM updates ego vehicle pose and actor trajectories during simulation; normal
 
 - `HUGSimEnv.step()` increments timestamp, updates actor planning through `planner.plan_traj`, applies acceleration and steer-rate to ego velocity and steering, updates ego position/orientation using kinematic parameters, checks background and foreground collision, checks route completion, then renders the next observation.
 - `HUGSimEnv._get_info()` returns ego pose, ego velocity, steering, command, ego box, object boxes, camera parameters, route completion, and collision status.
+- `configs/sim/kinematic.yaml` defines `min_steer`, `max_steer`, `min_acc`, `max_acc`, `fric`, `Lr`, `Lf`, `max_speed`, and `dt`.
+- `plan.py` calls each actor controller to update actor states, then constructs body-to-world transforms for dynamic Gaussians.
 
 ### Audit Judgment
 
 State update credibility is separate from rendering credibility. The audit must determine whether dangerous outcomes are caused by plausible state evolution or simulator/planner artifacts.
 
+The ego update is inspectable and kinematic. Actor update is controller-dependent. This means every collision or near-miss needs a state-update trace that records ego action, actor controller state, and rendered observation evidence.
+
 ### Open Questions
 
-- What kinematic model parameters are defined in `configs/sim/kinematic.yaml`?
+- Are kinematic bounds realistic for all datasets and scenarios?
 - How are actor paths constrained by lanes or HD maps?
 - How are aggressive actors generated in scenes without HD maps?
+- Does route-completion termination hide or truncate some failure modes?
 
 ---
 
@@ -275,6 +333,7 @@ HUGSIM evaluates UniAD, VAD, and Latent-Transfuser / LTF-style agents according 
 - Project page states HUGSIM evaluates UniAD, VAD, and Latent-Transfuser.
 - README says UniAD_SIM, VAD_SIM, and NAVSIM clients should be installed before simulation.
 - `closed_loop.py` supports `--ad uniad`, `--ad vad`, and `--ad ltf`, and selects `cfg.base.uniad_path`, `cfg.base.vad_path`, or `cfg.base.ltf_path`.
+- `launch_ad.py` launches the selected AD client as a separate process.
 
 ### Audit Judgment
 
@@ -299,6 +358,11 @@ HUGSIM proposes HD-Score, based on No Collision, Drivable Area Compliance, Time 
 - `sim/utils/score_calculator.py` implements `ScoreCalculator`.
 - Metric components include `_calculate_no_collision`, `_calculate_drivable_area_compliance`, `_calculate_time_to_collision`, `_calculate_is_comfortable`, route completion from frame data, PDMS, and final `hdscore`.
 - `closed_loop.py` invokes `hugsim_evaluate([save_data], ground_xyz, scene_xyz)` after simulation and writes `eval.json`.
+- NC checks planned ego boxes against foreground object boxes and background scene points.
+- DAC checks trajectory footprint against exported ground points.
+- TTC projects planned trajectory forward and reuses collision checking.
+- Comfort checks kinematic boundaries.
+- `hdscore` is computed from PDMS and route completion.
 
 ### Audit Judgment
 
@@ -372,4 +436,4 @@ The first smoke test should use public sample/released assets and should priorit
 
 HUGSIM is currently the best Phase 1 target for this project because it is public, 3DGS-based, closed-loop, and directly aimed at autonomous-driving evaluation. The first audit should prioritize runnable evidence and relation-level consistency over broad literature coverage.
 
-Issue #4 can be considered complete at the source-availability level. The next step is Issue #5: extract the pipeline and closed-loop mechanism in more detail, especially scenario YAML structure, planner behavior, kinematic config, and metric assumptions.
+Issue #5 can be considered complete at the first-pass pipeline-extraction level. The next step is Issue #6: turn this into a concrete smoke-test path, likely by selecting one public released scenario and creating a deterministic plan-pipe writer or dummy client.
