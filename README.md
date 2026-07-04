@@ -57,9 +57,21 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 
 第一步只做一件事：
 
-**审计 HUGSIM 这一类真实日志重建型闭环仿真器的自证机制。**
+**审计 HUGSIM 这一类真实日志重建型闭环仿真器的自证机制，并设计最小 smoke test。**
 
 然后再用 NeuroNCAP / UniSim / AdvSim / OmniDreams 作为对照，判断 HUGSIM 是否真正推进了日志驱动反事实闭环仿真的可信评估问题。
+
+## 当前状态
+
+已完成：
+
+- HUGSIM source availability gate；
+- HUGSIM pipeline / closed-loop mechanism 第一轮抽取；
+- HUGSIM smoke-test 计划；
+- HUGSIM accepted / down-weighted / rejected 证据规则；
+- 两个本地辅助脚本：预检脚本与 deterministic plan-pipe writer。
+
+下一步需要在本地或云端实际运行 HUGSIM smoke test。
 
 ## 文件结构
 
@@ -71,6 +83,7 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 - `docs/hugsim_audit.md`
 - `docs/runnable_target_selection.md`
 - `docs/hugsim_smoke_test_plan.md`
+- `docs/hugsim_credibility_decision_rules.md`
 - `docs/comparison_notes.md`
 
 辅助文件：
@@ -78,5 +91,7 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 - `docs/literature_matrix.md`
 - `docs/codex_workflow.md`
 - `docs/future/omnidreams_audit.md`
+- `scripts/check_hugsim_smoke_prereqs.py`
+- `scripts/hugsim_plan_pipe_writer.py`
 
 其中 `docs/hugsim_audit.md` 是第一阶段优先文件。
