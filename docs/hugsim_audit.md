@@ -1,23 +1,48 @@
 # HUGSIM Credibility Audit
 
-> Status: Phase 1 working draft.  
+> Status: Phase 1 working draft with completed first-pass source availability gate.  
 > Scope: audit HUGSIM as a runnable 3DGS-based log-driven closed-loop simulator, not a general autonomous-driving simulator survey.
 
 ## Source Availability Gate
 
+### Gate Status
+
+**First-pass status: complete for Phase 1 source discovery.**
+
+HUGSIM has enough public artifacts to be treated as a runnable Phase 1 audit target: paper, project page, code repository, license, sample data link, released scene/vehicle/scenario asset link, closed-loop runtime entry point, Gymnasium environment, AD-client interface, and metric implementation code are all publicly inspectable.
+
+This does **not** mean HUGSIM's closed-loop results are automatically credible. It means the project has enough public artifacts to proceed from paper-only review to implementation-level audit and smoke-test planning.
+
+### Availability Table
+
 | Item | Status | Evidence | Audit Consequence |
 |---|---|---|---|
 | Paper | Available | https://arxiv.org/abs/2412.01718 | Paper claims can be cited and audited as reported evidence. |
-| Project page | Available | https://xdimlab.github.io/HUGSIM/ | Can inspect official claims, demos, architecture overview, and benchmark claims. |
-| Code repo | Available | https://github.com/hyzhou404/HUGSIM | Can inspect implementation structure, installation, reconstruction, scene export, GUI, and closed-loop simulation entry points. |
-| License | Available | https://github.com/hyzhou404/HUGSIM/blob/main/LICENSE | Repository license can be checked before reuse. |
-| Reconstructed scenes / vehicles / scenarios | Available / partly restricted | HUGSIM README links to released 3DRealCar files, scenes, and scenarios, while noting some competition scenarios are private. | Some smoke tests should use released public assets only; private competition scenarios cannot be assumed available. |
-| Sample data | Available | HUGSIM README links to sample data on Hugging Face. | Can start with sample data before attempting full dataset conversion. |
-| Original datasets | Restricted / external | KITTI-360, Waymo, nuScenes, PandaSet | Training/evaluation distribution cannot be fully reproduced without satisfying each dataset's access and license requirements. |
-| Simulator runtime | Available | `closed_loop.py`, `configs/sim/*`, `sim/` in the official repository | Closed-loop runtime is inspectable, but actual execution depends on local paths, CUDA, AD clients, and released scenes/scenarios. |
-| Policy agent / AD client | Available / external dependency | README mentions UniAD_SIM, VAD_SIM, and NAVSIM clients before simulation. | Closed-loop evaluation depends on installing or replacing external AD clients; simulator credibility should be separated from policy-agent performance. |
-| Orchestrator | Available | `closed_loop.py` launches simulation and AD algorithms according to README. | Can inspect state-update and evaluation flow, but must verify runtime behavior through a smoke test. |
-| Evaluation scripts / metrics | TODO_NOT_CONFIRMED | TODO_SOURCE | Need inspect code paths for HD-Score, NC, DAC, TTC, COM, and route completion before treating metrics as reproducible. |
+| Project page | Available | https://xdimlab.github.io/HUGSIM/ | Can inspect official claims, demos, architecture overview, benchmark claims, and links to paper/code. |
+| Code repo | Available | https://github.com/hyzhou404/HUGSIM | Can inspect implementation structure, installation, reconstruction, scene export, GUI, closed-loop runtime, Gym env, and metrics. |
+| License | Available: MIT | `LICENSE` in official repository | Code reuse is governed by MIT license, but datasets and third-party assets retain their own access/licensing constraints. |
+| Sample data | Available | https://huggingface.co/datasets/hyzhou404/HUGSIM/tree/main/sample_data | Good first artifact for smoke-test setup before full dataset conversion. |
+| Released scenes / vehicles / scenarios | Available / partly restricted | https://huggingface.co/datasets/XDimLab/HUGSIM | Public release exists, but README notes some RealADSim competition scenarios are private; smoke tests should use public assets only. |
+| Original datasets | Restricted / external | KITTI-360, Waymo, nuScenes, PandaSet | Full training/evaluation reproduction requires satisfying each dataset's access and license requirements. |
+| Data preparation scripts | Available | `data/README.md`, `data/kitti360`, `data/waymo`, `data/nusc`, `data/pandaset` | Dataset conversion is inspectable; still requires external datasets and model checkpoints such as InverseForm. |
+| Reconstruction runtime | Available | `train_ground.py`, `train.py`, dataset configs | New reconstruction is possible in principle, but Phase 1 should avoid training from scratch. |
+| Scene export runtime | Available | `eval_render/export_scene.py`, `eval_render/convert_scene.py`, `eval_render/convert_vehicles.py` | Export/convert path is inspectable and relevant for public scene-based smoke testing. |
+| Simulator runtime | Available | `closed_loop.py`, `configs/sim/*`, `sim/` | Closed-loop runtime is inspectable; actual execution depends on local paths, CUDA, public assets, and AD-client setup. |
+| Gym environment | Available | `sim/hugsim_env/envs/hug_sim.py` | Observation/action spaces and state update logic can be audited directly. |
+| Policy agent / AD client | Available / external dependency | README mentions UniAD_SIM, VAD_SIM, and NAVSIM / LTF-style clients | Closed-loop evaluation depends on external AD clients; simulator credibility should be separated from policy-agent performance. |
+| Orchestrator | Available | `closed_loop.py` | It launches AD clients, creates Gym env, writes observations to pipe, reads planned trajectory, converts trajectory to controls, steps env, stores outputs, and invokes metrics. |
+| Evaluation scripts / metrics | Available | `sim/utils/score_calculator.py` | NC, DAC, TTC, comfort, PDMS, route completion, and hdscore are implementation-inspectable. |
+| Debug path | Available | README notes modifying final code path to call `create_gym_env(cfg, output)` directly | Useful for smoke testing simulator loop without first depending on a heavy AD client. |
+
+### Current Blockers
+
+- We have not run HUGSIM locally yet.
+- Public release size is non-trivial; sample data is smaller than the full release and should be used first.
+- Some competition scenarios are explicitly private according to README.
+- AD clients are external dependencies; a lightweight or dummy client strategy is still needed for minimal audit workflow testing.
+- Source availability does not yet validate reconstruction fidelity, extrapolated-view stability, or metric credibility.
+
+---
 
 ## 0. Audit Summary
 
@@ -30,18 +55,20 @@ HUGSIM claims to be a real-time, photo-realistic, closed-loop simulator for auto
 - Paper: https://arxiv.org/abs/2412.01718
 - Project page: https://xdimlab.github.io/HUGSIM/
 - Official implementation: https://github.com/hyzhou404/HUGSIM
+- Sample data: https://huggingface.co/datasets/hyzhou404/HUGSIM/tree/main/sample_data
+- Released HUGSIM assets: https://huggingface.co/datasets/XDimLab/HUGSIM
 
 ### Audit Judgment
 
-HUGSIM is a stronger Phase 1 runnable target than OmniDreams/Cosmos because it has a public paper, public project page, public code repository, sample/released asset links, and an explicit closed-loop simulation entry point.
+HUGSIM is a stronger Phase 1 runnable target than OmniDreams/Cosmos because it has a public paper, public project page, public code repository, MIT-licensed code, sample/released asset links, and an explicit closed-loop simulation entry point.
 
 However, the presence of a runnable simulator does not by itself prove that closed-loop evaluation results are credible. The audit must still examine reconstruction fidelity, extrapolated-view stability, actor insertion fidelity, scenario-editing validity, ego/actor state update logic, and whether evaluation metrics detect simulator artifacts or only score AD-agent behavior.
 
 ### Open Questions
 
-- Which released scenes and scenarios are fully public and immediately runnable?
+- Which public released scene/scenario should be selected for the first smoke test?
 - Can HUGSIM run with a lightweight / dummy AD client for audit workflow smoke testing?
-- Which metrics are computed by code, and where are they implemented?
+- Can the debug path enter `create_gym_env(cfg, output)` without launching UniAD/VAD/LTF?
 - Does the simulator provide enough evidence to distinguish real AD-agent failure from reconstruction or interaction artifacts?
 
 ---
@@ -56,6 +83,7 @@ HUGSIM reconstructs dynamic urban scenes using 3DGS and then builds a closed-loo
 
 - The paper describes HUGSIM as lifting captured 2D RGB images into 3D space via 3D Gaussian Splatting and enabling a full closed simulation loop.
 - The project page states that HUGSIM decomposes the scene into static and dynamic 3D Gaussians and models dynamic vehicle motion with a unicycle model.
+- The official repository exposes reconstruction (`train_ground.py`, `train.py`), scene export (`eval_render/export_scene.py`), conversion (`eval_render/convert_scene.py`, `eval_render/convert_vehicles.py`), GUI configuration (`gui/app.py`), and simulation (`closed_loop.py`) paths.
 
 ### Audit Judgment
 
@@ -77,7 +105,9 @@ HUGSIM starts from captured posed images of dynamic urban scenes and reconstruct
 
 ### Evidence Provided
 
-TODO_SOURCE: extract exact section and figure references from the paper.
+- `data/README.md` documents dataset preparation for KITTI-360, Waymo Open Dataset, nuScenes, and PandaSet.
+- The data preparation path requires external datasets and, for 2D semantic labels, InverseForm checkpoints.
+- Reconstruction scripts include `train_ground.py` and `train.py`.
 
 ### Audit Judgment
 
@@ -99,7 +129,9 @@ HUGSIM extends 3DGS to dynamic urban scenes and represents appearance, semantics
 
 ### Evidence Provided
 
-TODO_SOURCE: extract exact representation details from paper Section 3.
+- Paper Section 3 describes 3DGS representation, decomposed scene representation, ground Gaussians, native dynamic vehicle Gaussians, and unicycle-model regularization.
+- The Gym environment loads `scene.pth` into `GaussianModel` and dynamic actor checkpoints into `ObjModel`.
+- The environment exports `ground.ply` and `scene.ply` from semantic-indexed Gaussian points for later metric computation.
 
 ### Audit Judgment
 
@@ -121,7 +153,9 @@ HUGSIM models dynamic vehicle motion with a unicycle model and uses 360-degree h
 
 ### Evidence Provided
 
-TODO_SOURCE
+- The paper claims a unicycle model regularizes dynamic vehicle trajectories.
+- The environment constructs a planner from scenario `plan_list`, loads dynamic object checkpoints for each planned actor, and derives object boxes from planned actor transforms.
+- The README says released assets include 3DRealCar files.
 
 ### Audit Judgment
 
@@ -143,7 +177,9 @@ HUGSIM supports edited scenarios and aggressive actor behavior generation for sa
 
 ### Evidence Provided
 
-TODO_SOURCE
+- The paper claims normal actors can use IDM when HD maps are available and aggressive actors can use an attack planning strategy.
+- The README describes a GUI for configuring scenarios and downloading scenario YAML files.
+- `closed_loop.py` consumes `--scenario_path ./configs/benchmark/${dataset_name}/${scenario_name}.yaml`.
 
 ### Audit Judgment
 
@@ -165,7 +201,9 @@ HUGSIM renders RGB images and can also represent semantic labels and optical flo
 
 ### Evidence Provided
 
-TODO_SOURCE
+- Project page states HUGSIM renders RGB images, semantic labels, and optical flow.
+- The Gym environment's observation space exposes `rgb`, `semantic`, and `depth` dictionaries per camera.
+- `_get_obs()` renders per-camera RGB, semantic argmax labels, and depth from the Gaussian renderer.
 
 ### Audit Judgment
 
@@ -173,9 +211,9 @@ Sensor-level generation should be audited using more than visual quality. The im
 
 ### Open Questions
 
-- Which modalities are exposed to AD clients in closed loop?
-- Are depth / semantics / flow available during evaluation or only for reconstruction/evaluation?
-- Can these modalities be used for independent consistency checks?
+- Are depth / semantics / flow available to AD clients, or only RGB is actually piped to the selected AD client?
+- Can depth / semantics be logged for independent consistency checks?
+- Do per-camera outputs remain relation-consistent under extrapolated ego poses?
 
 ---
 
@@ -187,7 +225,9 @@ HUGSIM closes the loop by querying waypoints from AD algorithms, applying contro
 
 ### Evidence Provided
 
-The README describes `closed_loop.py`, simulation configs, AD client setup, and command-line arguments for running scenarios.
+- README documents `closed_loop.py` with `--scenario_path`, `--base_path`, `--camera_path`, `--kinematic_path`, `--ad`, and `--ad_cuda` arguments.
+- `closed_loop.py` creates a Gymnasium environment, writes `(obs, info)` to `obs_pipe`, reads `plan_traj` from `plan_pipe`, converts trajectory to acceleration/steer-rate control with `traj2control`, calls `env.step(action)`, and saves `data.pkl`, `video.mp4`, `infos.pkl`, and `eval.json`.
+- README provides a debug modification that bypasses launching AD clients and directly calls `create_gym_env(cfg, output)`.
 
 ### Audit Judgment
 
@@ -195,9 +235,9 @@ This is the key reason HUGSIM is selected as Phase 1 target. The next step is no
 
 ### Open Questions
 
-- Can the closed-loop runtime run without UniAD/VAD using debug mode or a lightweight stand-in client?
-- What state variables are logged at each step?
-- Where are collision, TTC, drivable-area, comfort, and route metrics computed?
+- Can the debug path produce useful output without an AD client, or does it still block while waiting on `plan_pipe`?
+- Can a deterministic waypoint client be added with minimal code?
+- What exactly should be logged for audit: RGB, semantic, depth, ego state, actor state, plan trajectory, action, collision, route completion, and metric scores?
 
 ---
 
@@ -209,7 +249,8 @@ HUGSIM updates ego vehicle pose and actor trajectories during simulation; normal
 
 ### Evidence Provided
 
-TODO_SOURCE
+- `HUGSimEnv.step()` increments timestamp, updates actor planning through `planner.plan_traj`, applies acceleration and steer-rate to ego velocity and steering, updates ego position/orientation using kinematic parameters, checks background and foreground collision, checks route completion, then renders the next observation.
+- `HUGSimEnv._get_info()` returns ego pose, ego velocity, steering, command, ego box, object boxes, camera parameters, route completion, and collision status.
 
 ### Audit Judgment
 
@@ -217,7 +258,7 @@ State update credibility is separate from rendering credibility. The audit must 
 
 ### Open Questions
 
-- What kinematic model is used for ego control?
+- What kinematic model parameters are defined in `configs/sim/kinematic.yaml`?
 - How are actor paths constrained by lanes or HD maps?
 - How are aggressive actors generated in scenes without HD maps?
 
@@ -231,7 +272,9 @@ HUGSIM evaluates UniAD, VAD, and Latent-Transfuser / LTF-style agents according 
 
 ### Evidence Provided
 
-TODO_SOURCE
+- Project page states HUGSIM evaluates UniAD, VAD, and Latent-Transfuser.
+- README says UniAD_SIM, VAD_SIM, and NAVSIM clients should be installed before simulation.
+- `closed_loop.py` supports `--ad uniad`, `--ad vad`, and `--ad ltf`, and selects `cfg.base.uniad_path`, `cfg.base.vad_path`, or `cfg.base.ltf_path`.
 
 ### Audit Judgment
 
@@ -239,9 +282,9 @@ Supported AD agents should be treated as evaluation subjects, not credibility va
 
 ### Open Questions
 
-- Which agents can be run from public code today?
+- Which agents can be run from public code today with the least setup burden?
 - Can a dummy agent be used for audit smoke testing?
-- Is there a clean API boundary between simulator and agent?
+- Is the pipe-based AD interface stable enough to wrap with audit logging?
 
 ---
 
@@ -253,15 +296,19 @@ HUGSIM proposes HD-Score, based on No Collision, Drivable Area Compliance, Time 
 
 ### Evidence Provided
 
-TODO_SOURCE
+- `sim/utils/score_calculator.py` implements `ScoreCalculator`.
+- Metric components include `_calculate_no_collision`, `_calculate_drivable_area_compliance`, `_calculate_time_to_collision`, `_calculate_is_comfortable`, route completion from frame data, PDMS, and final `hdscore`.
+- `closed_loop.py` invokes `hugsim_evaluate([save_data], ground_xyz, scene_xyz)` after simulation and writes `eval.json`.
 
 ### Audit Judgment
 
 These are primarily AD performance metrics. They do not automatically validate simulator credibility. The audit must check whether metrics can detect invalid or low-confidence simulator evidence.
 
+Implementation inspection shows that key scores are computed from simulator state, object boxes, ground point cloud, scene point cloud, planned trajectory, and route completion. That makes the metrics reproducible in code, but still does not prove rendered observations are free of artifacts or relation errors.
+
 ### Open Questions
 
-- Are NC/DAC/TTC/COM/route computed from simulator state, rendered observations, maps, or a mix?
+- Are NC/DAC/TTC/COM/route computed consistently across all datasets and scenarios?
 - Can the metrics distinguish real agent failures from rendering or scenario artifacts?
 - Are low-confidence scenarios down-weighted or rejected?
 
@@ -269,15 +316,32 @@ These are primarily AD performance metrics. They do not automatically validate s
 
 ## 11. What the Metrics Prove
 
-TODO_SOURCE
+Current first-pass judgment:
+
+- NC proves whether the ego bounding geometry intersects foreground actors or enough background scene points under HUGSIM's internal geometric representation.
+- DAC proves whether the ego trajectory has enough ground/drivable support according to the exported ground point cloud heuristic.
+- TTC proves whether forward-projected trajectories collide within selected short time windows under the same internal geometry.
+- Comfort proves whether trajectory kinematics stay within predefined comfort boundaries.
+- Route completion proves progress along HUGSIM's route-completion proxy.
+- HDScore aggregates these performance signals for AD-agent evaluation.
+
+These metrics are useful for scoring closed-loop outcomes once the simulator state is accepted as credible.
 
 ---
 
 ## 12. What the Metrics Do Not Prove
 
-Preliminary hypothesis: HUGSIM metrics likely measure AD-agent performance under the simulator, but do not by themselves prove that the simulator's counterfactual evidence is credible.
+The metrics do not by themselves prove:
 
-TODO_SOURCE
+- that 3DGS reconstruction is geometrically correct;
+- that extrapolated views preserve lane/drivable-area geometry;
+- that inserted actors have correct scale, orientation, and occlusion;
+- that RGB observations contain enough task-relevant evidence for the AD agent;
+- that semantic/depth outputs are consistent with rendered RGB;
+- that aggressive actor behavior is physically or contextually plausible;
+- that a collision or near-miss is caused by real AD-agent failure rather than simulator artifact.
+
+Therefore, HDScore should be treated as an AD-performance metric under HUGSIM, not as a standalone simulator-credibility metric.
 
 ---
 
@@ -300,8 +364,12 @@ Priority gaps:
 
 See `docs/hugsim_smoke_test_plan.md`.
 
+The first smoke test should use public sample/released assets and should prioritize a debug or lightweight client path. It should not attempt to reproduce the full HUGSIM benchmark.
+
 ---
 
 ## 15. Preliminary Judgment
 
 HUGSIM is currently the best Phase 1 target for this project because it is public, 3DGS-based, closed-loop, and directly aimed at autonomous-driving evaluation. The first audit should prioritize runnable evidence and relation-level consistency over broad literature coverage.
+
+Issue #4 can be considered complete at the source-availability level. The next step is Issue #5: extract the pipeline and closed-loop mechanism in more detail, especially scenario YAML structure, planner behavior, kinematic config, and metric assumptions.
