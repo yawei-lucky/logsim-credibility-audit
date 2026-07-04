@@ -6,21 +6,29 @@ This plan is not a full reproduction of the HUGSIM benchmark. It is a minimal wo
 
 ## Stage 0 — Source and Artifact Check
 
-Required checks:
+Current status: **partial pass**.
 
-- Confirm repository clone works: https://github.com/hyzhou404/HUGSIM
-- Confirm HUGSIM license.
-- Confirm sample data link from README.
-- Confirm released 3DRealCar / scene / scenario assets from README.
-- Confirm which released scenarios are public and which are competition-private.
-- Confirm whether the smoke test can run without training a new scene.
+Confirmed public sources:
+
+- Official repository: https://github.com/hyzhou404/HUGSIM
+- Official project page: https://xdimlab.github.io/HUGSIM/
+- Paper: https://arxiv.org/abs/2412.01718
+- Sample data: https://huggingface.co/datasets/hyzhou404/HUGSIM/tree/main/sample_data
+- Released vehicles / scenes / scenarios: https://huggingface.co/datasets/XDimLab/HUGSIM
+
+Known constraints:
+
+- Some RealADSim competition scenarios are private.
+- Full dataset conversion requires external dataset access and licenses.
+- AD clients are separate dependencies.
+- Runtime has not been tested locally yet.
 
 Expected output:
 
 ```text
-source_availability_status: pass / partial / fail
-public_assets_selected: <scene/scenario identifiers>
-blocking_artifacts: <list>
+source_availability_status: partial pass
+public_assets_selected: TODO_SOURCE
+blocking_artifacts: private competition scenarios, external dataset licenses, AD-client dependencies
 ```
 
 ## Stage 1 — Environment Inspection
@@ -38,13 +46,20 @@ First inspect:
 - `configs/sim/kinematic.yaml`
 - `configs/benchmark/*`
 
+Confirmed from README:
+
+- HUGSIM uses `pixi`.
+- Some packages are installed from source and rely on PyTorch/CUDA compilation.
+- `apex` is required by InverseForm.
+- Paths in `configs/sim/*_base.yaml` must be updated for the local machine.
+
 Expected output:
 
 ```text
-environment_status: pass / partial / fail
-required_gpu_count: TODO_SOURCE
+environment_status: TODO_RUN
+required_gpu_count: at least simulator GPU; AD client may use separate GPU
 required_cuda_version: TODO_SOURCE
-required_ad_clients: TODO_SOURCE
+required_ad_clients: UniAD_SIM / VAD_SIM / NAVSIM-LTF path depending on test mode
 ```
 
 ## Stage 2 — Minimal Runtime Path
@@ -52,7 +67,7 @@ required_ad_clients: TODO_SOURCE
 Preferred first path:
 
 ```text
-released scene + released scenario + debug simulation path
+public released scene + public released scenario + debug simulation path
 ```
 
 Avoid at first:
@@ -68,13 +83,25 @@ Expected output:
 ```text
 selected_scene: TODO_SOURCE
 selected_scenario: TODO_SOURCE
-selected_ad_client: debug / dummy / uniad / vad / navsim / TODO_SOURCE
+selected_ad_client: debug / dummy / deterministic waypoint client / TODO_SOURCE
 runtime_entrypoint: closed_loop.py
 ```
 
 ## Stage 3 — Debug / Lightweight Agent Strategy
 
 The audit workflow should not depend on a heavy AD model at the beginning.
+
+Confirmed implementation facts:
+
+- `closed_loop.py` writes `(obs, info)` to `obs_pipe`.
+- It reads `plan_traj` from `plan_pipe`.
+- It converts `plan_traj` to acceleration and steer-rate using `traj2control`.
+- It calls `env.step(action)`.
+- README provides a debug note to bypass AD process launch and call `create_gym_env(cfg, output)` directly.
+
+Open risk:
+
+- `create_gym_env()` still waits for `plan_pipe`, so debug mode may require a minimal writer for `plan_pipe` unless the code is further modified.
 
 Check whether one of the following is possible:
 
@@ -83,13 +110,11 @@ Check whether one of the following is possible:
 3. Add a minimal local stand-in client that returns deterministic waypoints.
 4. Use a replayed route or fixed command sequence.
 
-The purpose is to verify the simulator loop and audit logging before measuring any real AD-agent performance.
-
 Expected output:
 
 ```text
-agent_strategy: debug_env_only / lightweight_client / deterministic_waypoint_client / replay
-agent_dependency_status: TODO_SOURCE
+agent_strategy: deterministic_waypoint_client preferred if debug path blocks
+agent_dependency_status: TODO_RUN
 ```
 
 ## Stage 4 — Audit Logging Requirements
@@ -102,9 +127,12 @@ For each step, record:
 - actor poses before update;
 - rendered observation metadata;
 - AD command or waypoint;
+- acceleration and steer-rate action;
 - ego pose after update;
 - actor poses after update;
 - metric events;
+- collision status;
+- route completion;
 - rendering notes;
 - relation-consistency notes;
 - audit decision: accepted / down-weighted / rejected.
@@ -132,6 +160,15 @@ A smoke test is successful if it produces one documented closed-loop sequence wi
 - at least one metric event or normal step transition;
 - credibility notes attached to each relevant step.
 
+Expected generated files from `closed_loop.py` path:
+
+- `data.pkl`
+- `video.mp4`
+- `infos.pkl`
+- `eval.json`
+- `ground.ply`
+- `scene.ply`
+
 ## Stage 7 — Non-Goals
 
 This smoke test does not attempt to:
@@ -151,7 +188,13 @@ repo cloned
 pixi environment available
 sample assets present
 config paths valid
-closed_loop.py can enter debug env creation
+closed_loop.py can enter env creation
 output directory created
 audit log template created
+```
+
+Possible future script:
+
+```text
+scripts/check_hugsim_smoke_prereqs.py
 ```
