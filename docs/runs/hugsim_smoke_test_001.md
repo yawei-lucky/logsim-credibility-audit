@@ -22,6 +22,16 @@ Post-run user shell update:
   - GPU memory: 1399MiB / 24564MiB in use
 - The Codex tool execution environment still reported `nvidia-smi` failure after this update, and the HUGSIM pixi Python still reported `torch.cuda.is_available() == False`. This suggests a runtime visibility difference between the user's interactive shell and the tool execution environment, or that the repaired driver state was not visible inside this process context.
 
+Post-run environment fix:
+
+- Rechecked with non-sandbox execution at 2026-07-09 12:11:17; `nvidia-smi` succeeded and reported NVIDIA GeForce RTX 4090 D, driver 580.95.05, CUDA 13.0.
+- HUGSIM pixi Python in the non-sandbox environment reported `torch.cuda.is_available() == True`, one CUDA device, and compute capability `(8, 9)`.
+- Root cause was refined from "machine GPU unavailable" to "default Codex sandbox cannot see GPU devices, and HUGSIM build used an incompatible CUDA/PyTorch combination."
+- Changed HUGSIM `pixi.toml` locally from PyTorch cu118 wheels to cu121 wheels.
+- Re-ran `pixi install` with `CUDA_HOME=/usr/local/cuda-12.1`, `/usr/local/cuda-12.1/bin` first on `PATH`, and `TORCH_CUDA_ARCH_LIST=8.9`.
+- Result: HUGSIM pixi environment installed successfully; `torch 2.4.1+cu121`, `torch_cuda 12.1`, CUDA tensor allocation succeeded, and imports succeeded for `gsplat`, `tinycudann`, `pytorch3d`, and `hugsim_env`.
+- Reusable troubleshooting notes were added in `docs/hugsim_cuda_pixi_runbook.md`.
+
 Environment command outputs:
 
 ```text
@@ -250,9 +260,8 @@ Reason: no closed-loop segment was produced. The run did not reach `env.reset`, 
 
 Suggested next engineering steps:
 
-1. Fix NVIDIA driver/runtime first, until `nvidia-smi` works and PyTorch reports at least one CUDA device.
-2. Install a CUDA toolkit compatible with the target GPU and PyTorch cu118 build, or use a PyTorch/CUDA combination whose `nvcc` supports the local GPU architecture.
-3. Re-run `pixi install` with source dependencies enabled.
-4. Download only the minimal public HUGSIM sample data or required public `scene-0383` release assets after the environment can run.
-5. Update `configs/sim/nuscenes_base.yaml` paths locally or create a smoke-test-specific local config.
-6. Launch the debug path and run `scripts/hugsim_plan_pipe_writer.py` only after the environment and scene assets are present.
+1. Keep running GPU-dependent HUGSIM commands in a GPU-visible/non-sandbox execution context.
+2. Keep HUGSIM's PyTorch wheels aligned with CUDA 12.1/cu121 on this machine, or otherwise ensure `torch.version.cuda` and selected `nvcc` match.
+3. Download only the minimal public HUGSIM sample data or required public `scene-0383` release assets after the environment can run.
+4. Update `configs/sim/nuscenes_base.yaml` paths locally or create a smoke-test-specific local config.
+5. Launch the debug path and run `scripts/hugsim_plan_pipe_writer.py` only after the environment and scene assets are present.
