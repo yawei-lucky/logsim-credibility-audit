@@ -2,187 +2,160 @@
 
 Date: 2026-07-09
 
+## Status Summary
+
+This run did **not** complete a HUGSIM closed-loop smoke test.
+
+It should be read as an **environment and dependency bring-up report**, not as a closed-loop simulation result.
+
+Current result:
+
+```text
+closed-loop segment produced: no
+env.reset reached: no
+obs_pipe reached: no
+plan_pipe reached: no
+env.step reached: no
+HUGSIM output files generated: no
+preliminary evidence status: not enough evidence
+```
+
+The useful outcome of this run is that the HUGSIM CUDA / pixi environment problem was diagnosed and fixed.
+
+## Purpose of This Run
+
+The purpose was to start Issue #8: running a minimal HUGSIM closed-loop evidence pipeline smoke test.
+
+The intended chain was:
+
+```text
+public scene / scenario
+→ HUGSIM runtime
+→ obs_pipe
+→ deterministic plan-pipe writer
+→ env.step
+→ output files
+→ closed-loop evidence judgment
+```
+
+The run stopped before HUGSIM runtime launch, so no simulator-side evidence was generated.
+
 ## Machine
 
-- OS: Linux stf-precision-3680 6.8.0-124-generic, Ubuntu 22.04 kernel line
-- GPU: NVIDIA PCI device present at `01:00.0` (`10de:2685`), but `nvidia-smi` failed to communicate with the NVIDIA driver
-- CUDA: `/usr/bin/nvcc` reports CUDA compilation tools 11.5, V11.5.119; PyTorch in the HUGSIM pixi env is 2.4.1+cu118 and reports CUDA 11.8
-- Python: system/default `python` is Python 3.13.12 at `/home/yawei/miniforge3/bin/python`; HUGSIM pixi env uses Python 3.11
-- Disk: `/` has 331G available of 1.9T; `/data` has 11G available of 1.9T and is 100% used
-- Memory: 125Gi total, 111Gi available at inspection time
-- pixi: `/home/yawei/.pixi/bin/pixi`
+- OS: Linux `stf-precision-3680`, Ubuntu 22.04 kernel line.
+- GPU: NVIDIA GeForce RTX 4090 D, 24GB class.
+- Working driver after fix: NVIDIA driver `580.95.05`.
+- Working CUDA toolkit for extension builds: `/usr/local/cuda-12.1`.
+- Problematic default CUDA toolkit: `/usr/bin/nvcc`, CUDA `11.5`.
+- HUGSIM pixi Python: Python 3.11.
+- Memory: 125Gi total, 111Gi available at inspection time.
+- Storage note: `/data` was full; `/home/yawei` has enough working space and should be used for follow-up assets and outputs.
 
-Post-run user shell update:
-
-- At 2026-07-09 11:25:59, the user's interactive shell reported a healthy `nvidia-smi` result:
-  - NVIDIA-SMI 580.95.05
-  - Driver Version 580.95.05
-  - CUDA Version 13.0
-  - GPU: NVIDIA GeForce RTX 4090 D
-  - GPU memory: 1399MiB / 24564MiB in use
-- The Codex tool execution environment still reported `nvidia-smi` failure after this update, and the HUGSIM pixi Python still reported `torch.cuda.is_available() == False`. This suggests a runtime visibility difference between the user's interactive shell and the tool execution environment, or that the repaired driver state was not visible inside this process context.
-
-Post-run environment fix:
-
-- Rechecked with non-sandbox execution at 2026-07-09 12:11:17; `nvidia-smi` succeeded and reported NVIDIA GeForce RTX 4090 D, driver 580.95.05, CUDA 13.0.
-- HUGSIM pixi Python in the non-sandbox environment reported `torch.cuda.is_available() == True`, one CUDA device, and compute capability `(8, 9)`.
-- Root cause was refined from "machine GPU unavailable" to "default Codex sandbox cannot see GPU devices, and HUGSIM build used an incompatible CUDA/PyTorch combination."
-- Changed HUGSIM `pixi.toml` locally from PyTorch cu118 wheels to cu121 wheels.
-- Re-ran `pixi install` with `CUDA_HOME=/usr/local/cuda-12.1`, `/usr/local/cuda-12.1/bin` first on `PATH`, and `TORCH_CUDA_ARCH_LIST=8.9`.
-- Result: HUGSIM pixi environment installed successfully; `torch 2.4.1+cu121`, `torch_cuda 12.1`, CUDA tensor allocation succeeded, and imports succeeded for `gsplat`, `tinycudann`, `pytorch3d`, and `hugsim_env`.
-- Reusable troubleshooting notes were added in `docs/hugsim_cuda_pixi_runbook.md`.
-
-Environment command outputs:
-
-```text
-$ uname -a
-Linux stf-precision-3680 6.8.0-124-generic #124~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Tue May 26 21:05:19 UTC  x86_64 x86_64 x86_64 GNU/Linux
-
-$ nvidia-smi
-NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running.
-
-$ nvcc --version || true
-nvcc: NVIDIA (R) Cuda compiler driver
-Cuda compilation tools, release 11.5, V11.5.119
-
-$ python --version
-Python 3.13.12
-
-$ which python
-/home/yawei/miniforge3/bin/python
-
-$ df -h
-/dev/nvme1n1p2  1.9T  1.5T  331G  82% /
-/dev/nvme0n1p2  1.9T  1.8T   11G 100% /data
-
-$ free -h
-Mem: 125Gi total, 12Gi used, 84Gi free, 111Gi available
-Swap: 15Gi total, 0B used
-
-$ which git
-/usr/bin/git
-
-$ which pixi || true
-/home/yawei/.pixi/bin/pixi
-```
-
-Additional GPU diagnostics:
-
-```text
-$ lspci -nn | rg -i 'nvidia|vga|3d|display'
-00:02.0 Display controller [0380]: Intel Corporation Device [8086:a780] (rev 04)
-01:00.0 VGA compatible controller [0300]: NVIDIA Corporation Device [10de:2685] (rev a1)
-01:00.1 Audio device [0403]: NVIDIA Corporation Device [10de:22ba] (rev a1)
-
-$ /home/yawei/HUGSIM/.pixi/envs/default/bin/python -c "import torch; ..."
-torch 2.4.1+cu118
-torch_cuda 11.8
-cuda_available False
-device_count 0
-```
-
-## Repositories
+## Repository State
 
 - HUGSIM path: `/home/yawei/HUGSIM`
 - HUGSIM commit: `62c690d39fd90020e68a196bd8bcc1c4d4191f2e`
-- HUGSIM working tree notes: `pixi.toml`, `pixi.lock`, and `pixi.toml.smoke-backup` were already present as local changes before/while installing; `pixi install` updated `pixi.lock`
-- logsim-credibility-audit path: `/home/yawei/logsim-credibility-audit`
-- logsim-credibility-audit commit: `42f400b18e0435ea3ea0a21d06783ee0437acae0`
-- logsim-credibility-audit working tree notes: `docs/runs/` contains this new run report
+- Audit repo path: `/home/yawei/logsim-credibility-audit`
+- Audit repo commit at first report: `42f400b18e0435ea3ea0a21d06783ee0437acae0`
 
-## Commands Run
+Local HUGSIM changes during setup:
 
-```bash
-uname -a
-nvidia-smi
-nvcc --version || true
-python --version
-which python
-df -h
-free -h
-which git
-which pixi || true
-find /home/yawei -maxdepth 2 -type d -name 'logsim-credibility-audit' -o -name 'HUGSIM'
-sed -n '1,240p' docs/hugsim_audit.md
-sed -n '1,260p' docs/hugsim_smoke_test_plan.md
-sed -n '1,260p' docs/hugsim_credibility_decision_rules.md
-sed -n '1,260p' scripts/check_hugsim_smoke_prereqs.py
-sed -n '1,260p' scripts/hugsim_plan_pipe_writer.py
-sed -n '1,260p' README.md
-sed -n '1,260p' closed_loop.py
-sed -n '1,560p' sim/hugsim_env/envs/hug_sim.py
-sed -n '1,260p' sim/utils/plan.py
-sed -n '1,260p' sim/utils/sim_utils.py
-sed -n '1,260p' sim/utils/score_calculator.py
-sed -n '1,220p' configs/sim/nuscenes_base.yaml
-sed -n '1,220p' configs/sim/nuscenes_camera.yaml
-sed -n '1,220p' configs/sim/kinematic.yaml
-sed -n '1,220p' configs/benchmark/nuscenes/scene-0383-easy-00.yaml
-git rev-parse HEAD
-git status --short
-git diff -- pixi.toml
-find /home/yawei -maxdepth 5 -type f -name 'cfg.yaml' -o -type f -name 'scene.pth' -o -type f -name 'ground_param.pkl'
-python scripts/check_hugsim_smoke_prereqs.py --hugsim-root /home/yawei/HUGSIM --scenario configs/benchmark/nuscenes/scene-0383-easy-00.yaml --base configs/sim/nuscenes_base.yaml --camera configs/sim/nuscenes_camera.yaml --kinematic configs/sim/kinematic.yaml
-pixi install
-pixi install
-env TORCH_CUDA_ARCH_LIST=8.9 pixi install
-/home/yawei/HUGSIM/.pixi/envs/default/bin/python -c "import torch; print(...)"
-lspci -nn | rg -i 'nvidia|vga|3d|display'
-env TORCH_CUDA_ARCH_LIST=8.9 ninja -v -j 1
+- `pixi.toml` was edited from PyTorch `cu118` wheels to `cu121` wheels.
+- `pixi.lock` was updated by `pixi install`.
+- These are local environment changes, not yet treated as upstream HUGSIM changes.
+
+## Environment Problem Found
+
+The first attempt failed because the default execution environment could not use the GPU correctly.
+
+Observed symptoms:
+
+```text
+nvidia-smi failed in default Codex/tool shell
+torch.cuda.is_available() == False
+UserWarning: Can't initialize NVML
+IndexError in torch.utils.cpp_extension._get_cuda_arch_flags
+nvcc fatal: Unsupported gpu architecture 'compute_89'
+```
+
+Root cause was refined to two separate issues:
+
+1. The default Codex/tool execution context could not see the GPU, while the user's normal shell could.
+2. HUGSIM CUDA extension builds used an incompatible CUDA/PyTorch combination:
+   - local default `nvcc`: CUDA 11.5;
+   - original HUGSIM pixi PyTorch wheel: `cu118`;
+   - GPU architecture: RTX 4090 D, compute capability 8.9;
+   - CUDA 11.5 cannot compile `compute_89`.
+
+## Environment Fix Applied
+
+The working fix was:
+
+```text
+PyTorch wheel: cu121
+CUDA_HOME: /usr/local/cuda-12.1
+PATH first CUDA: /usr/local/cuda-12.1/bin
+TORCH_CUDA_ARCH_LIST: 8.9
+```
+
+After this fix:
+
+```text
+torch 2.4.1+cu121
+torch_cuda 12.1
+cuda_available True
+CUDA tensor allocation succeeded
+imports succeeded: gsplat, tinycudann, pytorch3d, hugsim_env
+```
+
+The repeatable fix is documented in:
+
+```text
+docs/hugsim_cuda_pixi_runbook.md
 ```
 
 ## Data / Assets
 
-- downloaded data: none
-- reason sample_data was not downloaded: the HUGSIM environment did not finish installing, CUDA runtime was unavailable, and no matching local exported scene assets were found; downloading sample data would not have enabled closed-loop execution in this machine state
-- selected scene: intended first scenario was `scene-0383`
-- selected scenario: `HUGSIM/configs/benchmark/nuscenes/scene-0383-easy-00.yaml`
-- asset paths: none found locally for `scene-0383` exported scene files
+No HUGSIM data or closed-loop assets were downloaded during this run.
 
-Local asset scan:
+The intended first scenario was:
 
 ```text
-$ find /home/yawei -maxdepth 5 -type f -name 'cfg.yaml' -o -type f -name 'scene.pth' -o -type f -name 'ground_param.pkl'
-<no matches>
+HUGSIM/configs/benchmark/nuscenes/scene-0383-easy-00.yaml
+scene_name: scene-0383
+mode: easy_00
+load_HD_map: false
 ```
 
-## Configuration Changes
+Local scan found no exported HUGSIM scene files for the intended scene:
 
-- `HUGSIM/pixi.toml` was in the README step-1 state with source-code dependencies commented.
-- For README step 2, the source-code dependency block in `HUGSIM/pixi.toml` was uncommented.
-- No HUGSIM base YAML paths were changed because runtime could not proceed to asset-backed execution.
-- No `closed_loop.py` debug-path patch was made because installation/GPU blockers occurred before launch.
+```text
+cfg.yaml: not found
+scene.pth: not found
+ground_param.pkl: not found
+```
+
+This means the next actual closed-loop attempt still needs a public HUGSIM asset path, either from sample data or from the released public HUGSIM assets.
 
 ## Runtime Result
 
-- result: failed before HUGSIM runtime launch
-- reached env.reset? no
-- reached obs_pipe? no
-- reached plan_pipe? no
-- reached env.step? no
-- generated eval.json? no
-
-Preflight result:
+HUGSIM runtime was not launched.
 
 ```text
-ready_for_manual_runtime_attempt: true
-scenario_summary:
-  scene_name: scene-0383
-  mode: easy_00
-  load_HD_map: false
-  contains_plan_list: true
-  contains_attack_planner: false
-  contains_constant_planner: false
-recommended_next_step: inspect config paths and run HUGSIM debug path or deterministic plan-pipe test
+reached env.reset? no
+reached obs_pipe? no
+reached plan_pipe? no
+reached env.step? no
+generated eval.json? no
 ```
 
-Note: preflight only confirms repository/config presence. It does not validate installed CUDA extensions, GPU driver health, or scene asset availability.
+Generated HUGSIM runtime files:
 
-## Output Files
+```text
+none
+```
 
-Generated HUGSIM runtime files: none.
-
-Expected files not generated:
+Expected but not generated:
 
 ```text
 data.pkl
@@ -194,74 +167,38 @@ scene.ply
 output.txt
 ```
 
-Generated audit file:
+## Evidence Status
 
 ```text
-/home/yawei/logsim-credibility-audit/docs/runs/hugsim_smoke_test_001.md
-```
-
-## Errors
-
-Initial second-stage `pixi install` failed on GitHub/network access in sandbox:
-
-```text
-Failed to download and build `tinycudann @ git+https://github.com/NVlabs/tiny-cuda-nn@master#subdirectory=bindings/torch`
-fatal: unable to access 'https://github.com/NVlabs/tiny-cuda-nn/':
-Couldn't connect to server
-```
-
-After running with network escalation, dependency resolution proceeded but `gsplat` failed to build:
-
-```text
-Failed to build `gsplat @ git+https://github.com/hyzhou404/HUGSIM_splat.git?rev=main#88f2a40c4e2f6bafde2beeaba6c43bbb0ccb1f5f`
-UserWarning: The detected CUDA version (11.5) has a minor version mismatch with the version that was used to compile PyTorch (11.8).
-UserWarning: TORCH_CUDA_ARCH_LIST is not set, all archs for visible cards are included for compilation.
-UserWarning: Can't initialize NVML
-IndexError: list index out of range
-```
-
-Interpretation: because the NVIDIA driver/NVML was unavailable, PyTorch could not see any GPU and could not infer a CUDA architecture list.
-
-After the user reported a healthy interactive-shell `nvidia-smi`, the Codex tool environment was checked again and still showed:
-
-```text
-$ nvidia-smi
-NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver.
-
-$ /home/yawei/HUGSIM/.pixi/envs/default/bin/python -c "import torch; ..."
-torch 2.4.1+cu118
-torch_cuda 11.8
-cuda_available False
-device_count 0
-```
-
-With explicit `TORCH_CUDA_ARCH_LIST=8.9`, the empty-architecture error was bypassed, but local CUDA 11.5 `nvcc` does not support Ada architecture 8.9:
-
-```text
-$ env TORCH_CUDA_ARCH_LIST=8.9 ninja -v -j 1
-nvcc fatal   : Unsupported gpu architecture 'compute_89'
-ninja: build stopped: subcommand failed.
-```
-
-## Preliminary Evidence Status
-
 not enough evidence
+```
 
-Reason: no closed-loop segment was produced. The run did not reach `env.reset`, did not create FIFO pipes, did not consume a deterministic plan trajectory, and did not generate simulator outputs. Under `docs/hugsim_credibility_decision_rules.md`, no segment-level evidence can be accepted, down-weighted, or rejected because the necessary simulator-side evidence is absent.
+Reason:
+
+No closed-loop segment was produced. The run did not reach `env.reset`, did not create FIFO pipes, did not consume a deterministic planned trajectory, and did not generate simulator outputs.
+
+Therefore, no segment can yet be judged as:
+
+```text
+accepted
+down-weighted
+rejected
+```
+
+The current result is an environment bring-up result, not simulator evidence.
 
 ## Remaining Blockers
 
-- NVIDIA driver/NVML is functioning in the user's interactive shell as of 2026-07-09 11:25:59, but not inside the Codex tool execution environment used for this run; PyTorch in the HUGSIM pixi env still reports `cuda_available False` and `device_count 0` there.
-- CUDA toolkit mismatch: local `nvcc` is 11.5 while the pixi-installed PyTorch wheel is cu118; CUDA 11.5 cannot compile `compute_89`.
-- HUGSIM source dependency `gsplat` did not build.
-- No local exported `scene-0383` assets were found (`cfg.yaml`, `scene.pth`, `ground_param.pkl` absent).
-- HUGSIM base config paths still point to the original author's `/nas/users/hyzhou/...` paths and need local asset paths after assets are available.
-- Deterministic plan-pipe writer was not exercised because `closed_loop.py` could not be launched.
+1. Use a GPU-visible shell for all GPU-dependent HUGSIM commands.
+2. Keep the HUGSIM pixi environment aligned with CUDA 12.1 / PyTorch cu121 on this machine.
+3. Use `/home/yawei` rather than full `/data` for HUGSIM assets and outputs.
+4. Download or locate a minimal public HUGSIM scene/scenario asset set.
+5. Create or edit a local smoke-test config so paths no longer point to original author paths such as `/nas/users/hyzhou/...`.
+6. Launch the HUGSIM debug / closed-loop path only after scene assets are present.
+7. Exercise `scripts/hugsim_plan_pipe_writer.py` only after `obs_pipe` and `plan_pipe` are created.
 
-Suggested next engineering steps:
+## Interpretation
 
-1. Keep running GPU-dependent HUGSIM commands in a GPU-visible/non-sandbox execution context.
-2. Keep HUGSIM's PyTorch wheels aligned with CUDA 12.1/cu121 on this machine, or otherwise ensure `torch.version.cuda` and selected `nvcc` match.
-3. Download only the minimal public HUGSIM sample data or required public `scene-0383` release assets after the environment can run.
-4. Update `configs/sim/nuscenes_base.yaml` paths locally or create a smoke-test-specific local config.
-5. Launch the debug path and run `scripts/hugsim_plan_pipe_writer.py` only after the environment and scene assets are present.
+This run made real progress, but at the environment layer.
+
+It confirms that HUGSIM can now be installed on the local RTX 4090 D machine with the correct CUDA / PyTorch alignment. It does **not** yet confirm that HUGSIM can load a scene, render observations, execute a closed-loop step, or produce credibility-auditable evidence.
