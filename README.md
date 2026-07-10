@@ -1,77 +1,117 @@
 # Log-Driven Counterfactual Closed-Loop Simulation Credibility Audit
 
-本项目研究真实驾驶日志驱动、可反事实修改、传感器级输入、闭环交互的自动驾驶仿真器，其核心问题是：这类仿真器生成的闭环测试结果是否可信，是否足以支撑端到端自动驾驶模型的评估结论。
+本项目研究 **日志驱动、可反事实修改、传感器级输入、闭环交互** 的自动驾驶仿真器可信性问题。
 
-## 当前研究主线
+总目标不是复现某篇论文的分数，也不是判断生成画面是否足够逼真，而是建立一套用于审计闭环仿真证据的研究方法：
 
-当前第一阶段聚焦：
+> 仿真器生成的闭环测试结果，是否足以作为评估端到端自动驾驶模型的可信证据？
 
-**HUGSIM 这一类真实日志重建型闭环仿真器**
+## 当前阶段目的
 
-原因是 HUGSIM 更接近当前可运行、可审计的 3DGS-based closed-loop simulation 路线，适合作为第一阶段对象，优先分析它如何完成：
+当前阶段使用 **HUGSIM** 作为实验载体，搭建一条最小闭环证据链，用于发展后续的可信验证方法和指标。
 
-- 真实日志场景重建；
-- 3D Gaussian Splatting 表示；
-- 反事实场景修改；
+当前 HUGSIM 实验的目的不是证明 HUGSIM 本身可信，也不是复现完整 benchmark，而是完成：
+
+> HUGSIM closed-loop evidence pipeline smoke test
+
+也就是验证我们能否从一个真实闭环仿真器中稳定收集以下证据：
+
+```text
+scenario / scene source
+→ sensor-level observation
+→ agent or dummy planner output
+→ control action
+→ ego / actor state update
+→ closed-loop rollout
+→ metric event
+→ credibility judgment basis
+```
+
+## 当前实验对象
+
+当前选择 HUGSIM，是因为它具备第一阶段所需的关键条件：
+
+- 真实日志 / 数据集驱动；
+- 3DGS 场景重建；
 - 传感器级观测生成；
-- agent 行为闭环反馈；
-- ego / actor 状态更新；
-- 连续 rollout；
-- 自动驾驶模型评估。
+- 支持闭环 rollout；
+- 有公开代码和运行入口；
+- 适合搭建最小可信审计流程。
 
-OmniDreams / Cosmos 方向暂时后移，作为未来生成式世界模型闭环仿真的对照与扩展方向。
+OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真的对照与扩展方向。
 
-## 对照对象
+## 当前方法路线
 
-以下工作作为历史脉络和横向对照：
+当前采用四步路线：
 
-- NeuroNCAP
-- HUGSIM
-- UniSim
-- AdvSim
-- OmniDreams
+1. **Source Availability Gate**  
+   先判断论文、代码、模型、数据、runtime、评估脚本是否公开可查。
 
-这些工作用于回答：
+2. **Closed-loop Evidence Completeness**  
+   判断一次闭环仿真是否产生了完整证据链，包括 observation、planner output、action、ego / actor state update、metrics 和输出文件。
 
-- 早期真实日志驱动闭环仿真如何自证可信；
-- 它们使用了哪些指标；
-- 这些指标证明了什么；
-- 这些指标没有证明什么；
-- HUGSIM / OmniDreams 相比它们是否解决了旧问题，还是只是换了一种场景表示方式。
+3. **Segment-level Evidence Judgment**  
+   对单个 closed-loop segment 做 evidence qualification：
+   - accepted
+   - down-weighted
+   - rejected
 
-## 核心研究问题
+4. **Future Credibility Metric**  
+   在积累多个 run 和多个 segment 后，再定义量化的 simulator credibility metric。
 
-RQ1. HUGSIM 这一类仿真器如何证明自己的仿真结果可信？
-
-RQ2. 它的指标是在验证仿真器可信性，还是只是在验证模型表现？
-
-RQ3. 它是否能发现低可信反事实样本、重建 artifact、遮挡错误、深度错误和关系不一致？
-
-RQ4. NeuroNCAP / UniSim / AdvSim / OmniDreams 中已有的自证指标，能否用于审计 HUGSIM？
-
-RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试证据应被 accepted、down-weighted，还是 rejected？
-
-## 当前工作原则
-
-本阶段不急于提出新 verifier，也不急于复现所有系统。
-
-第一步只做一件事：
-
-**审计 HUGSIM 这一类真实日志重建型闭环仿真器的自证机制，并设计最小 smoke test。**
-
-然后再用 NeuroNCAP / UniSim / AdvSim / OmniDreams 作为对照，判断 HUGSIM 是否真正推进了日志驱动反事实闭环仿真的可信评估问题。
+这里的 accepted / down-weighted / rejected 是当前阶段的证据处理方式，不是项目总目标，也不是最终数值指标。
 
 ## 当前状态
 
-已完成：
+已经完成：
 
 - HUGSIM source availability gate；
-- HUGSIM pipeline / closed-loop mechanism 第一轮抽取；
-- HUGSIM smoke-test 计划；
-- HUGSIM accepted / down-weighted / rejected 证据规则；
-- 两个本地辅助脚本：预检脚本与 deterministic plan-pipe writer。
+- HUGSIM pipeline / closed-loop mechanism 抽取；
+- HUGSIM smoke-test 设计；
+- deterministic plan-pipe writer 设计；
+- accepted / down-weighted / rejected 判定规则；
+- CUDA / pixi 环境问题排查和 runbook；
+- 第一份 HUGSIM smoke-test run report。
 
-下一步需要在本地或云端实际运行 HUGSIM smoke test。
+当前第一轮运行尚未产生完整闭环证据。环境安装问题已被定位并基本修复，但尚未真正进入：
+
+```text
+env.reset
+→ obs_pipe
+→ plan_pipe
+→ env.step
+→ output files
+→ credibility judgment
+```
+
+因此当前实验结论仍是：
+
+> not enough closed-loop evidence
+
+这不是项目失败，而是说明当前工作已经从论文审计推进到工程可运行性与证据链验证阶段。
+
+## 当前重点
+
+下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是完成第一条真实闭环证据链：
+
+```text
+public scene / scenario
+→ HUGSIM runtime
+→ deterministic plan-pipe writer
+→ closed-loop segment
+→ data.pkl / video.mp4 / infos.pkl / eval.json
+→ accepted / down-weighted / rejected
+```
+
+## 暂缓内容
+
+当前暂缓：
+
+- OmniDreams / Cosmos 大模型世界仿真；
+- 完整 HUGSIM benchmark 复现；
+- UniAD / VAD / LTF 全模型评测；
+- 新 verifier 的完整设计；
+- 大规模量化 credibility metric。
 
 ## 文件结构
 
@@ -81,17 +121,25 @@ RQ5. 是否仍然需要一个 credibility audit layer，用来判断闭环测试
 - `PROJECT_STATE.md`
 - `SOURCE_AVAILABILITY_GATE.md`
 - `docs/hugsim_audit.md`
-- `docs/runnable_target_selection.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
-- `docs/comparison_notes.md`
+- `docs/hugsim_cuda_pixi_runbook.md`
+- `docs/runs/hugsim_smoke_test_001.md`
 
 辅助文件：
 
+- `docs/runnable_target_selection.md`
+- `docs/comparison_notes.md`
 - `docs/literature_matrix.md`
 - `docs/codex_workflow.md`
 - `docs/future/omnidreams_audit.md`
 - `scripts/check_hugsim_smoke_prereqs.py`
 - `scripts/hugsim_plan_pipe_writer.py`
 
-其中 `docs/hugsim_audit.md` 是第一阶段优先文件。
+## 项目判断
+
+HUGSIM 是当前实验载体；真正目标是形成 **closed-loop simulation credibility audit methodology**。
+
+当前阶段的关键问题是：
+
+> 一次闭环仿真结果在什么证据条件下可以被 accepted，什么时候应该 down-weighted，什么时候必须 rejected？
