@@ -71,7 +71,8 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - deterministic plan-pipe writer 设计；
 - accepted / down-weighted / rejected 判定规则；
 - CUDA / pixi 环境问题排查和 runbook；
-- 第一份 HUGSIM smoke-test run report。
+- 第一份 HUGSIM smoke-test run report；
+- 第一份 run report 的 Research Commander review。
 
 当前第一轮运行尚未产生完整闭环证据。环境安装问题已被定位并基本修复，但尚未真正进入：
 
@@ -125,6 +126,7 @@ public scene / scenario
 - `docs/hugsim_credibility_decision_rules.md`
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
+- `docs/runs/hugsim_smoke_test_001_review.md`
 
 辅助文件：
 
