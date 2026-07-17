@@ -1,0 +1,17 @@
+# Machine-local paths for the Phase 1 HUGSIM scene-0383 smoke test.
+#
+# The selected scenario has an empty plan_list, so realcar_path is not accessed
+# during this first deterministic run. Keep it explicit for later actor tests.
+realcar_path: /home/yawei/HUGSIM_assets/3DRealCar
+model_base: /home/yawei/HUGSIM_assets/scenes/nuscenes
+
+# Heavy AD clients are intentionally bypassed by scripts/run_hugsim_debug_smoke.py.
+uniad_path: /dev/null
+vad_path: /dev/null
+ltf_path: /dev/null
+
+output_dir: /home/yawei/logsim-credibility-audit/artifacts/hugsim_smoke
+
+HD_map:
+  path: /home/yawei/HUGSIM_assets/nuscenes
+  version: nusc_trainval

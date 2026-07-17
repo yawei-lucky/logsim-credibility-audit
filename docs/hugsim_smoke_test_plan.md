@@ -94,11 +94,18 @@ python scripts/check_hugsim_smoke_prereqs.py \
 Expected output:
 
 ```text
-environment_status: TODO_RUN
-required_gpu_count: at least simulator GPU; AD client may use separate GPU
-required_cuda_version: TODO_SOURCE
+environment_status: installed and verified in GPU-visible non-sandbox environment
+required_gpu_count: one simulator GPU for deterministic smoke test
+selected_runtime: PyTorch 2.4.1+cu121, CUDA toolkit 12.1, compute capability 8.9
 required_ad_clients: avoid first if using deterministic plan-pipe writer
 ```
+
+Current machine result:
+
+- HUGSIM clone exists at `/home/yawei/HUGSIM`.
+- Pixi installation completed successfully.
+- CUDA tensor allocation and imports for `gsplat`, `tinycudann`, `pytorch3d`, and `hugsim_env` succeeded in a GPU-visible non-sandbox execution context.
+- The default Codex sandbox does not expose the GPU and must not be used to judge CUDA runtime health.
 
 ## Stage 2 — Minimal Runtime Path
 
@@ -140,14 +147,16 @@ Confirmed implementation facts:
 - It calls `env.step(action)`.
 - README provides a debug note to bypass AD process launch and call `create_gym_env(cfg, output)` directly.
 
-Open risk:
+Resolved risk:
 
-- `create_gym_env()` still waits for `plan_pipe`, so debug mode may require a minimal writer for `plan_pipe` unless the code is further modified.
+- Upstream `create_gym_env()` still waits for `plan_pipe` and has no bounded debug-step option.
+- `scripts/run_hugsim_debug_smoke.py` now preserves the FIFO boundary while adding a bounded step count, local released-scene path override, and audit-oriented outputs.
 
 Repository helper:
 
 ```bash
-python scripts/hugsim_plan_pipe_writer.py \
+/home/yawei/HUGSIM/.pixi/envs/default/bin/python \
+  scripts/hugsim_plan_pipe_writer.py \
   --output /path/to/hugsim/output/scene-mode \
   --horizon 6 \
   --step-m 1.0 \
@@ -251,6 +260,20 @@ Expected generated files from `closed_loop.py` path:
 - `ground.ply`
 - `scene.ply`
 
+### First execution result — 2026-07-17
+
+The minimum success criteria have been met for `scene-0383-easy-00`:
+
+- Three deterministic closed-loop steps completed.
+- FIFO observation and plan exchange completed.
+- Ego state advanced continuously from timestamp 0.0 to 0.75 seconds.
+- Six RGB cameras plus semantic and depth observations were saved.
+- `data.pkl`, `video.mp4`, `infos.pkl`, `eval.json`, `ground.ply`, `scene.ply`, `observations.pkl`, and audit-specific records were generated.
+- HUGSIM scoring completed with NC, DAC, TTC, comfort, and PDMS equal to 1.0; route completion and HDScore were approximately 0.02148 for this intentionally short run.
+- The first credibility decision is `down-weighted`, not `accepted`, because the run is short, has no dynamic actor, contains visible lateral-view blur/smearing, and has not yet undergone pixel-level RGB/semantic/depth consistency validation.
+
+See `docs/runs/hugsim_smoke_test_002.md`.
+
 ## Stage 7 — Non-Goals
 
 This smoke test does not attempt to:
@@ -261,21 +284,22 @@ This smoke test does not attempt to:
 - claim HUGSIM is credible or non-credible globally;
 - compare all simulator families.
 
-## Stage 8 — Next Manual Runtime Step
+## Stage 8 — Next Runtime Step
 
-The next step cannot be completed from repository inspection alone. It requires a local or cloud machine with HUGSIM dependencies and downloaded assets.
+The first runtime gate has been completed. The next gate is evidence-quality validation on top of the working loop.
 
-Manual runtime checklist:
+Current asset decision:
+
+- Download only `scenes/nuscenes/scene-0383.zip` first; the published file is about 628 MB.
+- Use `configs/benchmark/nuscenes/scene-0383-easy-00.yaml`.
+- The selected scenario has an empty `plan_list`, so the first smoke test does not require the full 3DRealCar release.
+
+Next evidence-quality checklist:
 
 ```text
-clone HUGSIM
-install pixi environment
-update configs/sim/*_base.yaml paths
-download sample_data first
-download only required released scene/scenario assets if sample_data is insufficient
-run check_hugsim_smoke_prereqs.py
-start HUGSIM debug path or closed_loop.py
-start hugsim_plan_pipe_writer.py in a second shell
-collect data.pkl/video.mp4/infos.pkl/eval.json/ground.ply/scene.ply
-write first audit-log record
+render RGB / semantic / depth comparison sheets
+check cross-modal road, depth-edge, semantic-edge, and occlusion consistency
+run a longer bounded normal segment
+compare state continuity and metric stability
+update the first down-weighted record or create a stronger accepted record
 ```

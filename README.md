@@ -68,13 +68,18 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - HUGSIM source availability gate；
 - HUGSIM pipeline / closed-loop mechanism 抽取；
 - HUGSIM smoke-test 设计；
-- deterministic plan-pipe writer 设计；
+- deterministic plan-pipe writer；
 - accepted / down-weighted / rejected 判定规则；
 - CUDA / pixi 环境问题排查和 runbook；
 - 第一份 HUGSIM smoke-test run report；
-- 第一份 run report 的 Research Commander review。
+- 第一份 run report 的 Research Commander review；
+- HUGSIM 本地 clone 与 PyTorch cu121 / CUDA 12.1 环境验证；
+- 公开 `scene-0383` 资产下载、校验与本地配置；
+- bounded debug runner；
+- 3-step deterministic closed-loop smoke test；
+- 第一条真实 segment-level credibility audit record。
 
-当前第一轮运行尚未产生完整闭环证据。环境安装问题已被定位并基本修复，但尚未真正进入：
+第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
 ```text
 env.reset
@@ -82,26 +87,21 @@ env.reset
 → plan_pipe
 → env.step
 → output files
-→ credibility judgment
+→ credibility judgment: down-weighted
 ```
 
-因此当前实验结论仍是：
-
-> not enough closed-loop evidence
-
-这不是项目失败，而是说明当前工作已经从论文审计推进到工程可运行性与证据链验证阶段。
+第一条闭环证据标为 `down-weighted`：最小闭环链路、状态更新和评分代码均已跑通，但片段仅 0.75 秒、无动态 actor，侧向视角存在可见模糊/拖影，且尚未完成 RGB / semantic / depth 像素级一致性检查。
 
 ## 当前重点
 
-下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是完成第一条真实闭环证据链：
+下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是提高已跑通证据链的质量：
 
 ```text
-public scene / scenario
-→ HUGSIM runtime
-→ deterministic plan-pipe writer
-→ closed-loop segment
-→ data.pkl / video.mp4 / infos.pkl / eval.json
-→ accepted / down-weighted / rejected
+RGB / semantic / depth synchronized evidence
+→ cross-modal consistency checks
+→ longer bounded normal segment
+→ state / rendering / metric stability
+→ stronger accepted or updated down-weighted record
 ```
 
 ## 暂缓内容
@@ -127,6 +127,8 @@ public scene / scenario
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
 - `docs/runs/hugsim_smoke_test_001_review.md`
+- `docs/runs/hugsim_smoke_test_002.md`
+- `docs/runs/hugsim_smoke_test_002_audit.json`
 
 辅助文件：
 
@@ -137,6 +139,8 @@ public scene / scenario
 - `docs/future/omnidreams_audit.md`
 - `scripts/check_hugsim_smoke_prereqs.py`
 - `scripts/hugsim_plan_pipe_writer.py`
+- `scripts/run_hugsim_debug_smoke.py`
+- `configs/hugsim/nuscenes_smoke_base.yaml`
 
 ## 项目判断
 

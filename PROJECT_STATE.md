@@ -133,7 +133,18 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 本地预检脚本 `scripts/check_hugsim_smoke_prereqs.py`；
 - deterministic plan-pipe writer `scripts/hugsim_plan_pipe_writer.py`；
 - 第一份 HUGSIM run report；
-- HUGSIM CUDA / pixi 环境问题定位与 runbook。
+- 第一份 run report 的 Research Commander review；
+- HUGSIM CUDA / pixi 环境问题定位与 runbook；
+- HUGSIM 已 clone 到 `/home/yawei/HUGSIM`；
+- Pixi 环境已使用 PyTorch 2.4.1+cu121 / CUDA 12.1 安装成功；
+- 在 GPU 可见的非沙箱环境中验证了 CUDA tensor，以及 `gsplat`、`tinycudann`、`pytorch3d`、`hugsim_env` 导入；
+- 已确认首选最小场景 `scene-0383.zip` 可单独下载，约 628 MB；
+- 已确认 `scene-0383-easy-00.yaml` 的 `plan_list` 为空，第一轮无需下载完整 3DRealCar 车辆库；
+- 已下载并校验 `scene-0383.zip`，SHA-256 为 `cbd99a927316f7f795904c59350b7fced4b8f32a14506891720962e3e30e7f15`；
+- 已创建本地 smoke-test base config 与 bounded debug runner；
+- 已跑通 3 个 deterministic closed-loop steps，覆盖 observation FIFO、plan FIFO、trajectory-to-control、ego update、连续渲染和评分；
+- 已生成 `data.pkl`、`video.mp4`、`infos.pkl`、`eval.json`、`ground.ply`、`scene.ply`、完整 observation pickle 与 audit summary；
+- 已生成第一条真实 audit record，判定为 `down-weighted`。
 
 第一份 run report 的结论是：
 
@@ -141,7 +152,9 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 not enough closed-loop evidence
 ```
 
-原因是它只完成了环境层面的排障，没有生成 closed-loop segment。当前尚未进入：
+原因是它只完成了环境层面的排障，没有生成 closed-loop segment。
+
+第二份 run report 已完成：
 
 ```text
 env.reset
@@ -149,23 +162,20 @@ env.reset
 → plan_pipe
 → env.step
 → output files
-→ credibility judgment
+→ segment-level credibility judgment: down-weighted
 ```
 
 ---
 
 ## 7. 当前遗留问题
 
-当前还未完成：
+当前仍未完成：
 
-- 下载或确认一个最小 public HUGSIM scene / scenario asset set；
-- 将 HUGSIM base config 改为本地路径；
-- 使用 `/home/yawei` 作为资产和输出目录，避免写入已满的 `/data`；
-- 启动 HUGSIM runtime 并进入 `env.reset`；
-- 创建 `obs_pipe` / `plan_pipe`；
-- 实际运行 deterministic plan-pipe writer；
-- 生成 `data.pkl`、`video.mp4`、`infos.pkl`、`eval.json`、`ground.ply`、`scene.ply`；
-- 生成第一条 closed-loop credibility audit record。
+- 对 RGB / semantic / depth 做像素级跨模态一致性检查；
+- 运行更长的正常片段，验证状态、路线和渲染稳定性；
+- 下载最小必要车辆资产并运行带动态 actor 的公开场景；
+- 验证 collision / near-miss 等风险事件是否能区分 agent failure 与 simulator artifact；
+- 将第一条 `down-weighted` 记录扩展成可复用的自动化 audit pipeline。
 
 ---
 
@@ -181,6 +191,10 @@ env.reset
 - `docs/hugsim_credibility_decision_rules.md`
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
+- `docs/runs/hugsim_smoke_test_001_review.md`
+- `docs/runs/hugsim_smoke_test_002.md`
+- `docs/runs/hugsim_smoke_test_002_audit.json`
+- `CODEX_NEXT_TASK.md`
 
 辅助文件：
 
@@ -191,6 +205,8 @@ env.reset
 - `docs/future/omnidreams_audit.md`
 - `scripts/check_hugsim_smoke_prereqs.py`
 - `scripts/hugsim_plan_pipe_writer.py`
+- `scripts/run_hugsim_debug_smoke.py`
+- `configs/hugsim/nuscenes_smoke_base.yaml`
 
 ---
 
@@ -240,17 +256,14 @@ ChatGPT Project / Custom GPT
 
 下一步只做：
 
-> 从环境排障推进到第一段真实 HUGSIM closed-loop evidence。
+> 在已经跑通的 `scene-0383` deterministic loop 上补齐跨模态证据，并延长正常片段。
 
 当前关键不是扩大文献范围，也不是定义最终数值指标，而是补齐：
 
-```text
-public scene asset
-+ local base config
-+ HUGSIM runtime
-+ deterministic plan-pipe writer
-+ closed-loop output files
-+ first audit record
-```
+1. 从现有 `observations.pkl` 导出 RGB / semantic / depth 对照图；
+2. 检查道路边界、深度边缘、语义边缘和遮挡关系是否一致；
+3. 将 bounded smoke test 从 3 steps 扩展到一个更长但仍可人工检查的片段；
+4. 比较状态连续性、route completion、各相机渲染稳定性和评分变化；
+5. 根据新增证据更新 `down-weighted` 判定，或在满足规则时升级为 `accepted`。
 
 不要同时展开 OmniDreams / Cosmos。

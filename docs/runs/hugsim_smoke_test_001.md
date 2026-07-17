@@ -189,6 +189,8 @@ The current result is an environment bring-up result, not simulator evidence.
 
 ## Remaining Blockers
 
+At the time of this first attempt, the remaining blockers were:
+
 1. Use a GPU-visible shell for all GPU-dependent HUGSIM commands.
 2. Keep the HUGSIM pixi environment aligned with CUDA 12.1 / PyTorch cu121 on this machine.
 3. Use `/home/yawei` rather than full `/data` for HUGSIM assets and outputs.
@@ -202,3 +204,12 @@ The current result is an environment bring-up result, not simulator evidence.
 This run made real progress, but at the environment layer.
 
 It confirms that HUGSIM can now be installed on the local RTX 4090 D machine with the correct CUDA / PyTorch alignment. It does **not** yet confirm that HUGSIM can load a scene, render observations, execute a closed-loop step, or produce credibility-auditable evidence.
+
+## Status Reconciliation — 2026-07-17
+
+This report records the first attempt and preserves its failure diagnostics. Current project state is newer than the failure section:
+
+- HUGSIM is now at upstream commit `adeca402cad4af8635e13d0a105e2fee6a14de85`, whose latest change adopts CUDA 12.1 PyTorch wheels.
+- The environment installation is no longer a blocker.
+- The scene asset, local path configuration, and first deterministic closed loop were subsequently completed.
+- See `docs/runs/hugsim_smoke_test_002.md` for the first successful runtime output and segment-level credibility record.

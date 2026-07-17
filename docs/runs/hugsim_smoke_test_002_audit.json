@@ -1,0 +1,58 @@
+{
+  "scenario_id": "scene-0383-easy_00",
+  "event_type": "normal",
+  "step_range": [0, 2],
+  "time_range_seconds": [0.0, 0.75],
+  "source": {
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "scene_archive": "scenes/nuscenes/scene-0383.zip",
+    "scene_archive_sha256": "cbd99a927316f7f795904c59350b7fced4b8f32a14506891720962e3e30e7f15",
+    "scenario_yaml": "configs/benchmark/nuscenes/scene-0383-easy-00.yaml",
+    "scenario_yaml_sha256": "8bb03b7b41f1d1b6a7c7cf0ba49a5f868729339b4621907fc8f9f149679152f8",
+    "vehicle_assets": []
+  },
+  "evidence": {
+    "runtime_output": "artifacts/hugsim_smoke/scene-0383-easy-00-run001",
+    "observation_modalities": ["rgb", "semantic", "depth"],
+    "camera_count": 6,
+    "observation_count": 4,
+    "completed_steps": 3,
+    "ego_before_after_logged": true,
+    "actors_before_after_logged": true,
+    "actor_count": 0,
+    "planned_trajectory_logged": true,
+    "action_logged": true,
+    "ground_geometry_logged": true,
+    "scene_geometry_logged": true,
+    "metrics": {
+      "nc": 1.0,
+      "dac": 1.0,
+      "ttc": 1.0,
+      "comfort": 1.0,
+      "pdms": 1.0,
+      "route_completion": 0.02147620662371425,
+      "hdscore": 0.02147620662371425
+    },
+    "collision": false,
+    "depth_all_finite_initial_frame": true,
+    "semantic_nonempty_all_cameras_initial_frame": true
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "reason": [
+      "The deterministic sensor-to-state loop and audit logging completed successfully.",
+      "The segment is only 0.75 seconds and contains no dynamic actor.",
+      "Lateral RGB views contain visible reconstruction blur and smearing.",
+      "Semantic and depth outputs have numerical sanity checks but no pixel-level cross-modal validation."
+    ],
+    "claims_supported": [
+      "The public scene can run through a bounded deterministic HUGSIM closed loop on this machine.",
+      "State, observation, plan, action, geometry, and metric evidence can be collected."
+    ],
+    "claims_not_supported": [
+      "HUGSIM is globally credible.",
+      "Dynamic actor insertion and occlusion are credible.",
+      "Collision or near-miss outcomes can be attributed to an AD agent rather than simulator artifacts."
+    ]
+  }
+}

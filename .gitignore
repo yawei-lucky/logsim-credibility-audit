@@ -1,0 +1,5 @@
+# Local HUGSIM runtime products and transient installation logs.
+artifacts/
+docs/runs/logs/
+__pycache__/
+*.pyc

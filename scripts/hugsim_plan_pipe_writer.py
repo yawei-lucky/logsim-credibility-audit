@@ -8,7 +8,9 @@ installing UniAD/VAD/LTF first.
 
 Run in a separate shell after `closed_loop.py` creates the FIFO pipes:
 
-    python scripts/hugsim_plan_pipe_writer.py --output /path/to/hugsim/output/scene-mode
+    /home/yawei/HUGSIM/.pixi/envs/default/bin/python \
+        scripts/hugsim_plan_pipe_writer.py \
+        --output /path/to/hugsim/output/scene-mode
 
 Notes:
 - HUGSIM's `closed_loop.py` creates `obs_pipe` and `plan_pipe` under the output directory.
