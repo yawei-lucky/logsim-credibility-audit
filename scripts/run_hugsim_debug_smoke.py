@@ -50,6 +50,16 @@ def parse_args() -> argparse.Namespace:
         default="/home/yawei/logsim-credibility-audit/artifacts/hugsim_smoke/scene-0383-easy-00",
     )
     parser.add_argument("--max-steps", type=int, default=3)
+    parser.add_argument(
+        "--control-convention",
+        choices=("corrected", "upstream"),
+        default="corrected",
+        help=(
+            "Coordinate conversion used before iLQR. 'corrected' calculates "
+            "heading after converting [right, forward] to [forward, lateral]; "
+            "'upstream' reproduces the released HUGSIM traj2control behavior."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -86,6 +96,39 @@ def git_commit(root: Path) -> str:
         ["git", "-C", str(root), "rev-parse", "HEAD"],
         text=True,
     ).strip()
+
+
+def vehicle_asset_evidence(
+    plan_list: list[list[Any]],
+    realcar_root: Path,
+) -> list[dict[str, Any]]:
+    assets = []
+    for actor in plan_list:
+        model_id = str(actor[5])
+        model_root = realcar_root / model_id
+        files = {}
+        for filename in ("gs.pth", "wlh.json"):
+            path = model_root / filename
+            files[filename] = {
+                "path": str(path),
+                "sha256": sha256(path) if path.is_file() else None,
+            }
+        assets.append(
+            {
+                "model_id": model_id,
+                "initial_state": {
+                    "right_m": actor[0],
+                    "forward_m": actor[1],
+                    "height_m": actor[2],
+                    "yaw_deg": actor[3],
+                    "velocity_mps": actor[4],
+                },
+                "controller": actor[6],
+                "controller_args": actor[7],
+                "files": files,
+            }
+        )
+    return assets
 
 
 def make_video(observations: list[dict[str, Any]], output_path: Path) -> None:
@@ -130,8 +173,14 @@ def main() -> int:
     import open3d as o3d
     from omegaconf import OmegaConf
 
+    from sim.ilqr.lqr import plan2control
     from sim.utils.score_calculator import hugsim_evaluate
-    from sim.utils.sim_utils import traj2control, traj_transform_to_global
+    from sim.utils.sim_utils import (
+        traj2control as upstream_traj2control,
+        traj_transform_to_global,
+    )
+
+    from hugsim_control_adapter import corrected_traj2control
 
     scenario_config = OmegaConf.load(scenario_path)
     base_config = OmegaConf.load(base_path)
@@ -142,6 +191,14 @@ def main() -> int:
         {"base": base_config},
         {"camera": camera_config},
         {"kinematic": kinematic_config},
+    )
+    scenario_plan_list = OmegaConf.to_container(
+        scenario_config.plan_list,
+        resolve=True,
+    )
+    actor_assets = vehicle_asset_evidence(
+        scenario_plan_list,
+        Path(base_config.realcar_path).expanduser().resolve(),
     )
 
     local_model_path = Path(cfg.base.model_base) / cfg.scenario.scene_name
@@ -180,7 +237,10 @@ def main() -> int:
             print("[debug-smoke] planner returned None", flush=True)
             break
 
-        acc, steer_rate = traj2control(plan_traj, info_before)
+        if args.control_convention == "corrected":
+            acc, steer_rate = corrected_traj2control(plan_traj, info_before, plan2control)
+        else:
+            acc, steer_rate = upstream_traj2control(plan_traj, info_before)
         action = {"acc": acc, "steer_rate": steer_rate}
         obs, reward, terminated, truncated, info = env.step(action)
 
@@ -257,9 +317,11 @@ def main() -> int:
             "scenario_yaml_sha256": sha256(scenario_path),
             "scene_cfg": str(model_config_path),
             "scene_cfg_sha256": sha256(model_config_path),
+            "vehicle_assets": actor_assets,
         },
         "requested_steps": args.max_steps,
         "completed_steps": len(audit_steps),
+        "control_convention": args.control_convention,
         "terminated": terminated,
         "truncated": truncated,
         "observation_modalities": sorted(observations[0].keys()),

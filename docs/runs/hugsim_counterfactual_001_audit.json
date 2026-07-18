@@ -1,0 +1,95 @@
+{
+  "experiment_id": "hugsim_counterfactual_001",
+  "scenario_id": "scene-0383-stationary-actor-relation",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "control_convention": "corrected",
+  "runs": {
+    "no_actor": "artifacts/hugsim_contrast/scene-0383-easy-00-run003-corrected",
+    "same_lane_actor": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected",
+    "adjacent_lane_actor": "artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run001-corrected",
+    "analysis": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002"
+  },
+  "source_assets": {
+    "scene": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+    "scene_cfg_sha256": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+    "scenario_sha256": {
+      "no_actor": "8bb03b7b41f1d1b6a7c7cf0ba49a5f868729339b4621907fc8f9f149679152f8",
+      "same_lane_actor": "f03679e829d017da636e34db3bad80ab9d672f1413708d6ce295ff71b896627e",
+      "adjacent_lane_actor": "7ce2f53255fa127bb45ea6fb94cc220172f7883a8d8e9b2c1206555e40571668"
+    },
+    "vehicle_model_id": "2024_07_05_15_57_10",
+    "vehicle_gs_sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
+    "vehicle_wlh_sha256": "edc468f1d24229a56ccfeaf89324e8b6bf46237d90df21980933562d07a8538f"
+  },
+  "pairing": {
+    "completed_steps_per_run": 20,
+    "duration_s": 5.0,
+    "maximum_ego_box_absolute_difference": 0.0,
+    "maximum_action_absolute_difference": 0.0
+  },
+  "evidence_refs": {
+    "rgb_semantic_depth_raw": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/observations.pkl",
+    "ego_actor_states": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/infos.pkl",
+    "planned_trajectory_and_actions": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/audit_steps.pkl",
+    "metrics": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/eval.json",
+    "contact_sheet": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/front_counterfactual_contact_sheet.png",
+    "risk_timeline": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/risk_timeline.png",
+    "relation_negative_control": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/relation_negative_control.png",
+    "front_video": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/front_counterfactual.mp4",
+    "full_analysis": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/contrast_summary.json"
+  },
+  "metrics": {
+    "no_actor": {
+      "nc": 1.0,
+      "dac": 1.0,
+      "ttc": 1.0,
+      "c": 1.0,
+      "pdms": 1.0,
+      "rc": 0.15033344636599977,
+      "hdscore": 0.15033344636599977
+    },
+    "same_lane_actor": {
+      "nc": 0.75,
+      "dac": 1.0,
+      "ttc": 0.55,
+      "c": 1.0,
+      "pdms": 0.6071428571428573,
+      "rc": 0.15033344636599977,
+      "hdscore": 0.0912738781507856
+    },
+    "adjacent_lane_actor": {
+      "nc": 1.0,
+      "dac": 1.0,
+      "ttc": 1.0,
+      "c": 1.0,
+      "pdms": 1.0,
+      "rc": 0.15033344636599977,
+      "hdscore": 0.15033344636599977
+    }
+  },
+  "event": {
+    "type": "planned_path_risk",
+    "first_same_lane_ttc_failure_s": 3.0,
+    "first_same_lane_nc_failure_s": 4.0,
+    "actual_collision_observed": false,
+    "final_actual_longitudinal_box_clearance_m": 2.201844399629932
+  },
+  "cross_modal_evidence": {
+    "front_actor_visible_from_s": 0.0,
+    "front_actor_visible_through_s": 5.0,
+    "front_actor_semantic_pixels_initial": 4264,
+    "front_actor_semantic_pixels_final": 41023,
+    "final_actor_mask_supported_by_rgb_fraction": 0.9740145771884064,
+    "final_actor_mask_supported_by_depth_fraction": 1.0,
+    "non_front_rgb_changed_pixels_across_all_frames": 0
+  },
+  "credibility": {
+    "decision": "accepted",
+    "reason": "RGB, semantic, depth, actor geometry, temporal approach, and TTC/NC changes agree; the same actor at 3.5 m lateral offset is a successful negative control. The accepted claim is limited to this relation-specific planned-path risk event."
+  },
+  "limitations": [
+    "The rollout contains no actual collision.",
+    "The deterministic writer is not an AD agent.",
+    "One scene, one vehicle asset, and two actor placements do not establish global simulator credibility."
+  ]
+}

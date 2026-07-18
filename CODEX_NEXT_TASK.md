@@ -1,260 +1,146 @@
-# Codex Next Task — Strengthen HUGSIM Evidence Quality
+# Codex Next Task — Map the HUGSIM Relation Boundary
 
 > Read this file first when resuming HUGSIM work.
 
-## Current Context
+## Current Result
 
-The first HUGSIM closed-loop evidence pipeline is now operational.
+The project has moved beyond a smoke test.
 
-Completed on 2026-07-17:
-
-```text
-public scene-0383 asset
-→ local smoke config
-→ HUGSIM env.reset
-→ obs_pipe / plan_pipe
-→ deterministic trajectory
-→ env.step
-→ RGB / semantic / depth observations
-→ state and metric outputs
-→ segment-level credibility judgment
-```
-
-The successful run is documented in:
+Completed on 2026-07-18:
 
 ```text
-docs/runs/hugsim_smoke_test_002.md
-docs/runs/hugsim_smoke_test_002_audit.json
+released HUGSIM control conversion
+→ confounded background collision identified
+→ corrected and unit-tested coordinate adapter
+→ 5-second synchronized no-actor baseline
+→ 5-second same-lane stationary-actor treatment
+→ 5-second adjacent-lane actor negative control
+→ RGB / semantic / depth counterfactual analysis
+→ relation-specific credibility judgment
 ```
 
-The first segment is labeled:
+Primary record:
 
 ```text
-down-weighted
+docs/runs/hugsim_counterfactual_001.md
+docs/runs/hugsim_counterfactual_001_audit.json
 ```
 
-This label means the run is useful evidence that the closed-loop evidence
-pipeline works, but it is not yet strong enough to support broader simulator
-credibility claims.
-
-## Project Purpose
-
-HUGSIM is the current experimental carrier, not the final research goal.
-
-The project-level question remains:
+Narrow judgment:
 
 ```text
-Can a closed-loop simulator result be trusted as evidence for evaluating an
-end-to-end autonomous-driving model?
+accepted
 ```
 
-The current method route remains:
+Accepted claim:
 
-1. Source Availability Gate.
-2. Closed-loop Evidence Completeness.
-3. Segment-level Evidence Judgment.
-4. Future quantitative credibility metric after multiple real segments exist.
+> In this scene and segment, the same-lane stationary actor is consistently
+> supported by RGB, semantic, depth, internal geometry, and temporal evidence,
+> and HUGSIM's planned-path TTC/NC metrics respond to that relation. The same
+> actor at 3.5 m lateral offset does not trigger those failures.
 
-## Current Machine and Assets
+Not accepted:
 
-```text
-HUGSIM repo: /home/yawei/HUGSIM
-Audit repo: /home/yawei/logsim-credibility-audit
-Scene asset: /home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383
-Local config: configs/hugsim/nuscenes_smoke_base.yaml
-First output: artifacts/hugsim_smoke/scene-0383-easy-00-run001
-```
+- an actual collision occurred;
+- an AD agent responded credibly;
+- HUGSIM is globally credible.
 
-Runtime:
+## Important Control Finding
 
-```text
-GPU: NVIDIA GeForce RTX 4090 D
-compute capability: 8.9
-PyTorch: 2.4.1+cu121
-CUDA toolkit: /usr/local/cuda-12.1
-TORCH_CUDA_ARCH_LIST: 8.9
-```
+HUGSIM commit `adeca402cad4af8635e13d0a105e2fee6a14de85` swaps
+`[right, forward]` planner positions to `[forward, lateral]` for iLQR but
+calculates heading using the pre-swap axes.
 
-The default Codex sandbox cannot see the GPU. GPU-dependent commands must run
-in an approved GPU-visible context.
-
-Do not use `/data`; it was full during the first run.
-
-## Evidence Already Produced
-
-The first successful run completed three deterministic steps from timestamp
-0.0 to 0.75 seconds and generated:
-
-```text
-audit_steps.pkl
-audit_summary.json
-data.pkl
-eval.json
-ground.ply
-infos.pkl
-observations.pkl
-scene.ply
-video.mp4
-```
-
-HUGSIM metrics for the intentionally short run:
-
-```text
-NC: 1.0
-DAC: 1.0
-TTC: 1.0
-Comfort: 1.0
-PDMS: 1.0
-Route completion: 0.02147620662371425
-HDScore: 0.02147620662371425
-```
-
-These are smoke-run outputs, not benchmark results.
-
-## Why the First Segment Is Down-Weighted
-
-- The segment is only 0.75 seconds long.
-- The scenario has no dynamic actor.
-- Lateral RGB views contain visible reconstruction blur and smearing.
-- Semantic and depth outputs passed numerical sanity checks but not pixel-level
-  cross-modal validation.
-- The normal no-collision segment cannot validate collision, near-miss,
-  occlusion, or risk attribution.
-
-## Immediate Goal
-
-Strengthen the evidence quality on the already working `scene-0383`
-deterministic loop before adding dynamic actors.
-
-Target:
-
-```text
-synchronized RGB / semantic / depth evidence
-→ cross-modal consistency checks
-→ longer bounded normal rollout
-→ state / rendering / metric stability review
-→ updated credibility judgment
-```
-
-## Step-by-Step Task
-
-### Step 1 — Export Cross-Modal Comparison Sheets
-
-Use the existing:
-
-```text
-artifacts/hugsim_smoke/scene-0383-easy-00-run001/observations.pkl
-```
-
-Produce synchronized per-camera views for:
-
-- RGB;
-- semantic labels;
-- depth;
-- useful edge overlays if they can be generated deterministically.
-
-Keep large generated images under `artifacts/`, which is ignored by Git.
-
-### Step 2 — Check Cross-Modal Consistency
-
-For each camera, inspect:
-
-- road and sidewalk semantic boundaries;
-- depth discontinuities at buildings, vegetation, poles, and road edges;
-- whether RGB edges align with semantic/depth edges;
-- whether the same relation remains stable across the four timestamps;
-- obvious holes, floating regions, smearing, or view-boundary artifacts.
-
-Record concrete observations. Do not reduce this to aesthetic quality.
-
-### Step 3 — Run a Longer Bounded Normal Segment
+For the deterministic straight plan this creates an approximately 90° heading
+target, saturated steering, and a background collision. No-actor and actor
+runs fail identically, so that earlier pair is `rejected` as actor-event
+evidence.
 
 Use:
 
 ```text
-scripts/run_hugsim_debug_smoke.py
-scripts/hugsim_plan_pipe_writer.py
+scripts/hugsim_control_adapter.py
+--control-convention corrected
 ```
 
-Choose a bounded length that remains practical for manual inspection. Use a new
-output directory; the runner refuses to overwrite an existing run.
+Keep `--control-convention upstream` only for reproduction and regression
+comparison.
 
-Keep the deterministic planner interpretation clear:
+## Current Assets and Outputs
 
 ```text
-It enables the simulator loop. It is not an AD agent.
+HUGSIM repo: /home/yawei/HUGSIM
+HUGSIM commit: adeca402cad4af8635e13d0a105e2fee6a14de85
+scene: /home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383
+vehicle: /home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10
 ```
 
-### Step 4 — Compare Stability
-
-Check:
-
-- ego state continuity;
-- route-completion monotonicity;
-- collision flags;
-- camera-view temporal stability;
-- semantic/depth temporal stability;
-- metric stability;
-- whether extrapolated-view artifacts increase as the ego moves.
-
-### Step 5 — Update the Evidence Record
-
-Create a new run report and compact JSON audit record.
-
-Use exactly one of:
+Successful paired outputs:
 
 ```text
-accepted
-down-weighted
-rejected
+artifacts/hugsim_contrast/scene-0383-easy-00-run003-corrected
+artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected
+artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run001-corrected
+artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002
 ```
 
-Do not upgrade to `accepted` unless the evidence satisfies
-`docs/hugsim_credibility_decision_rules.md`.
+## Next Material Experiment
 
-## Files to Read
+Map a small, bounded **relation boundary**.
+
+Keep fixed:
+
+- scene and vehicle asset;
+- ego initial state;
+- corrected deterministic ego plan;
+- 20-step duration;
+- actor controller and orientation.
+
+Vary only a small set of actor placements:
 
 ```text
-README.md
-PROJECT_STATE.md
-docs/hugsim_smoke_test_plan.md
-docs/hugsim_credibility_decision_rules.md
-docs/hugsim_cuda_pixi_runbook.md
-docs/runs/hugsim_smoke_test_001.md
-docs/runs/hugsim_smoke_test_001_review.md
-docs/runs/hugsim_smoke_test_002.md
-docs/runs/hugsim_smoke_test_002_audit.json
-configs/hugsim/nuscenes_smoke_base.yaml
-scripts/hugsim_plan_pipe_writer.py
-scripts/run_hugsim_debug_smoke.py
+lateral offset: selected values between same-lane 0.0 m and safe 3.5 m
+longitudinal distance: one nearer and one farther value around 15.0 m
 ```
 
-## Do Not Do
+Questions:
+
+1. At what geometry does TTC first change?
+2. At what geometry does NC first change?
+3. Are transition times monotonic with longitudinal distance?
+4. Does the lateral boundary agree with actual box/path intersection?
+5. Do RGB, semantic, depth, and geometry stay consistent near the boundary?
+6. Is any metric transition caused by reconstruction support or control
+   artifacts rather than the intended relation?
+
+This is not a full benchmark sweep. Select only enough placements to test the
+boundary and monotonicity.
+
+## Required Outputs
+
+- one table of placement, actual clearance, first TTC failure, first NC
+  failure, PDMS, and HDScore;
+- one geometry-versus-metric transition plot;
+- synchronized event-region RGB / semantic / depth evidence for at least one
+  safe and one unsafe near-boundary placement;
+- one compact audit JSON;
+- per-segment `accepted`, `down-weighted`, or `rejected` labels.
+
+## Guardrails
 
 Do not:
 
-- repeat broad CUDA/Pixi installation unless verification fails;
-- overwrite the first successful run;
-- use `/data`;
-- train a new 3DGS scene;
+- return to an unpaired “just run longer” experiment;
+- use the released control convention as the primary result;
+- report planned-path NC/TTC failure as an actual collision;
+- install UniAD / VAD / LTF without explicit direction;
 - run the full HUGSIM benchmark;
-- install UniAD / VAD / LTF for this task;
-- treat the deterministic writer as an AD model;
-- add dynamic actors before the normal-scene evidence is reviewed;
-- claim HUGSIM is globally credible or non-credible;
 - expand to OmniDreams / Cosmos;
-- define the final quantitative credibility metric from one run.
+- define a final credibility score from this one scene;
+- overwrite any successful output.
 
-## Success Criteria
+## Success Criterion
 
-Minimum:
-
-- synchronized RGB / semantic / depth evidence is inspectable;
-- cross-modal findings are recorded;
-- a longer bounded rollout completes or fails with a documented cause.
-
-Research success:
-
-- the new evidence supports a defensible segment-level qualification;
-- the project can explain exactly which simulator evidence is strong, weak, or
-  contradictory.
+The next experiment is successful if it can explain whether HUGSIM's risk
+transition follows the intended spatial relation and where that statement
+stops being credible. A larger number of unevaluated runs is not success.

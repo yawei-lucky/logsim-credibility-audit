@@ -29,13 +29,13 @@
 
 HUGSIM 是当前实验载体，不是本项目的最终目标。
 
-当前阶段目标是用 HUGSIM 搭建并验证一条最小闭环证据链，用来发展后续的闭环仿真可信验证方法和指标。
+当前阶段已经用 HUGSIM 搭建并验证了最小闭环证据链，正在用严格配对的反事实实验发展闭环仿真可信验证方法。
 
 当前 HUGSIM 实验的定位是：
 
-> HUGSIM closed-loop evidence pipeline smoke test
+> HUGSIM relation-level counterfactual credibility audit
 
-也就是说，当前实验不是为了证明 HUGSIM 本身可信，也不是为了复现完整 benchmark，而是为了验证我们能否从一个真实闭环仿真器中稳定收集以下证据：
+也就是说，当前实验不是为了证明 HUGSIM 本身可信，也不是为了复现完整 benchmark，而是检验风险事件是否能被传感器、状态、几何、时间和负对照共同归因：
 
 ```text
 scenario / scene source
@@ -45,6 +45,7 @@ scenario / scene source
 → ego / actor state update
 → closed-loop rollout
 → metric event
+→ paired counterfactual / negative control
 → credibility judgment basis
 ```
 
@@ -145,6 +146,15 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已跑通 3 个 deterministic closed-loop steps，覆盖 observation FIFO、plan FIFO、trajectory-to-control、ego update、连续渲染和评分；
 - 已生成 `data.pkl`、`video.mp4`、`infos.pkl`、`eval.json`、`ground.ply`、`scene.ply`、完整 observation pickle 与 audit summary；
 - 已生成第一条真实 audit record，判定为 `down-weighted`。
+- 已发现 released `traj2control` 的坐标/航向不一致会把直行计划解释成约 90° 航向目标；
+- 已实现不修改 HUGSIM 源码的 corrected control adapter，并增加 4 个回归测试；
+- 已完成无车、同车道静止车辆、相邻车道静止车辆三组严格配对的 5 秒/20 步实验；
+- 三组 ego state 与 control action 最大差异均为 0；
+- 无车和相邻车道组 NC/TTC/PDMS 均为 1.0；
+- 同车道组 TTC 从 3.0 秒失败、NC 从 4.0 秒失败，PDMS 为 0.607；
+- 已完成 RGB / semantic / depth 像素级反事实比较和时序风险可视化；
+- 同车道车辆最终语义掩码有 97.4% 被 RGB 差异支持、100% 被深度差异支持；
+- 已生成第一条窄范围 `accepted` relation-level audit record。
 
 第一份 run report 的结论是：
 
@@ -165,17 +175,34 @@ env.reset
 → segment-level credibility judgment: down-weighted
 ```
 
+第三份 counterfactual report 已完成：
+
+```text
+corrected no-actor baseline
+→ same-lane actor treatment
+→ adjacent-lane negative control
+→ synchronized RGB / semantic / depth attribution
+→ relation-level credibility judgment: accepted
+```
+
+这里的 `accepted` 只支持：
+
+> 在该场景和片段中，同车道车辆被跨模态一致地表示，并且规划轨迹风险指标对同车道关系而非任意 actor presence 作出响应。
+
+它不支持真实碰撞、AD agent 表现或 HUGSIM 全局可信结论。
+
 ---
 
 ## 7. 当前遗留问题
 
 当前仍未完成：
 
-- 对 RGB / semantic / depth 做像素级跨模态一致性检查；
-- 运行更长的正常片段，验证状态、路线和渲染稳定性；
-- 下载最小必要车辆资产并运行带动态 actor 的公开场景；
-- 验证 collision / near-miss 等风险事件是否能区分 agent failure 与 simulator artifact；
-- 将第一条 `down-weighted` 记录扩展成可复用的自动化 audit pipeline。
+- 在多个横向/纵向位置上验证 relation boundary 与指标单调性；
+- 检查接近 TTC/NC 转换边界时，RGB / semantic / depth / geometry 是否仍一致；
+- 验证移动 actor、遮挡变化和 risk-decreasing counterfactual；
+- 接入真实 AD agent 后区分 agent response 与 simulator artifact；
+- 跨场景验证当前 relation-level 结果；
+- 在多场景、多关系证据成熟前，仍不定义最终 credibility metric。
 
 ---
 
@@ -194,6 +221,8 @@ env.reset
 - `docs/runs/hugsim_smoke_test_001_review.md`
 - `docs/runs/hugsim_smoke_test_002.md`
 - `docs/runs/hugsim_smoke_test_002_audit.json`
+- `docs/runs/hugsim_counterfactual_001.md`
+- `docs/runs/hugsim_counterfactual_001_audit.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -206,6 +235,9 @@ env.reset
 - `scripts/check_hugsim_smoke_prereqs.py`
 - `scripts/hugsim_plan_pipe_writer.py`
 - `scripts/run_hugsim_debug_smoke.py`
+- `scripts/hugsim_control_adapter.py`
+- `scripts/analyze_hugsim_counterfactual.py`
+- `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 
 ---
@@ -256,14 +288,14 @@ ChatGPT Project / Custom GPT
 
 下一步只做：
 
-> 在已经跑通的 `scene-0383` deterministic loop 上补齐跨模态证据，并延长正常片段。
+> 在 `scene-0383` 上用少量、严格配对的车辆位置实验，定位同车道风险到相邻车道安全之间的 relation boundary。
 
-当前关键不是扩大文献范围，也不是定义最终数值指标，而是补齐：
+当前关键不是增加无目的运行长度，而是回答：
 
-1. 从现有 `observations.pkl` 导出 RGB / semantic / depth 对照图；
-2. 检查道路边界、深度边缘、语义边缘和遮挡关系是否一致；
-3. 将 bounded smoke test 从 3 steps 扩展到一个更长但仍可人工检查的片段；
-4. 比较状态连续性、route completion、各相机渲染稳定性和评分变化；
-5. 根据新增证据更新 `down-weighted` 判定，或在满足规则时升级为 `accepted`。
+1. TTC 和 NC 在什么几何位置开始变化；
+2. 转换时间是否随纵向距离单调变化；
+3. 横向边界是否与真实 box / planned-path intersection 一致；
+4. 边界附近的 RGB / semantic / depth / geometry 是否仍互相支持；
+5. 哪些片段应当 `accepted`、`down-weighted` 或 `rejected`。
 
 不要同时展开 OmniDreams / Cosmos。

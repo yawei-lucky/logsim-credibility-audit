@@ -8,13 +8,13 @@
 
 ## 当前阶段目的
 
-当前阶段使用 **HUGSIM** 作为实验载体，搭建一条最小闭环证据链，用于发展后续的可信验证方法和指标。
+当前阶段使用 **HUGSIM** 作为实验载体。最小闭环证据链已经跑通，当前工作已进入严格配对的 relation-level counterfactual audit。
 
 当前 HUGSIM 实验的目的不是证明 HUGSIM 本身可信，也不是复现完整 benchmark，而是完成：
 
-> HUGSIM closed-loop evidence pipeline smoke test
+> HUGSIM relation-level counterfactual credibility audit
 
-也就是验证我们能否从一个真实闭环仿真器中稳定收集以下证据：
+也就是检验风险事件是否能被传感器、状态、几何、时序和负对照共同归因：
 
 ```text
 scenario / scene source
@@ -24,6 +24,7 @@ scenario / scene source
 → ego / actor state update
 → closed-loop rollout
 → metric event
+→ paired counterfactual / negative control
 → credibility judgment basis
 ```
 
@@ -77,7 +78,12 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - 公开 `scene-0383` 资产下载、校验与本地配置；
 - bounded debug runner；
 - 3-step deterministic closed-loop smoke test；
-- 第一条真实 segment-level credibility audit record。
+- 第一条真实 segment-level credibility audit record；
+- released `traj2control` 坐标/航向不一致的控制混杂定位；
+- corrected control adapter 与 4 个回归测试；
+- 无车、同车道静止车辆、相邻车道静止车辆三组严格配对的 5 秒实验；
+- RGB / semantic / depth 像素级反事实证据和可视化；
+- 第一条 relation-level `accepted` audit record。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -92,16 +98,26 @@ env.reset
 
 第一条闭环证据标为 `down-weighted`：最小闭环链路、状态更新和评分代码均已跑通，但片段仅 0.75 秒、无动态 actor，侧向视角存在可见模糊/拖影，且尚未完成 RGB / semantic / depth 像素级一致性检查。
 
+最新的三组 counterfactual 实验保持 ego state 和 action 完全相同：
+
+| 条件 | NC | TTC | PDMS | HDScore |
+|---|---:|---:|---:|---:|
+| 无车辆 | 1.000 | 1.000 | 1.000 | 0.150 |
+| 同车道车辆 | 0.750 | 0.550 | 0.607 | 0.091 |
+| 相邻车道车辆 | 1.000 | 1.000 | 1.000 | 0.150 |
+
+同车道车辆在 RGB、semantic、depth 与内部几何中保持一致；相邻车道负对照不触发 TTC/NC 失败。因此该关系事件被窄范围标记为 `accepted`。它不代表实际碰撞、AD agent 表现或 HUGSIM 全局可信。
+
 ## 当前重点
 
-下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是提高已跑通证据链的质量：
+下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是定位同车道风险到相邻车道安全之间的 relation boundary：
 
 ```text
-RGB / semantic / depth synchronized evidence
-→ cross-modal consistency checks
-→ longer bounded normal segment
-→ state / rendering / metric stability
-→ stronger accepted or updated down-weighted record
+small paired lateral / longitudinal placement set
+→ exact geometry and planned-path relation
+→ TTC / NC transition time
+→ RGB / semantic / depth boundary evidence
+→ accepted / down-weighted / rejected per placement
 ```
 
 ## 暂缓内容
@@ -129,6 +145,9 @@ RGB / semantic / depth synchronized evidence
 - `docs/runs/hugsim_smoke_test_001_review.md`
 - `docs/runs/hugsim_smoke_test_002.md`
 - `docs/runs/hugsim_smoke_test_002_audit.json`
+- `docs/runs/hugsim_counterfactual_001.md`
+- `docs/runs/hugsim_counterfactual_001_audit.json`
+- `CODEX_NEXT_TASK.md`
 
 辅助文件：
 
@@ -140,7 +159,10 @@ RGB / semantic / depth synchronized evidence
 - `scripts/check_hugsim_smoke_prereqs.py`
 - `scripts/hugsim_plan_pipe_writer.py`
 - `scripts/run_hugsim_debug_smoke.py`
+- `scripts/hugsim_control_adapter.py`
+- `scripts/analyze_hugsim_counterfactual.py`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
+- `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
 
 ## 项目判断
 

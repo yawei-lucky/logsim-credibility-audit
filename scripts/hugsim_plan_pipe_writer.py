@@ -42,9 +42,10 @@ def wait_for_fifo(path: Path, timeout_s: float) -> None:
 def build_forward_plan(horizon: int, step_m: float, lateral_m: float = 0.0) -> np.ndarray:
     """Build a simple forward plan in local coordinates.
 
-    HUGSIM's `traj2control` comment states the planned trajectory is under lidar
-    coordinates: x to right, y to forward, z upward. We therefore keep x nearly
-    constant and increase y.
+    HUGSIM documents the planned trajectory in lidar coordinates: x to right,
+    y to forward, z upward. We therefore keep x nearly constant and increase y.
+    The audit runner's corrected control adapter converts this convention to the
+    iLQR controller frame before calculating both positions and heading.
     """
     ys = np.arange(1, horizon + 1, dtype=np.float32) * float(step_m)
     xs = np.full_like(ys, float(lateral_m), dtype=np.float32)

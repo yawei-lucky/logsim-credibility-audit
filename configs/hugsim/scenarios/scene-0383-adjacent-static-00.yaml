@@ -1,0 +1,25 @@
+# Negative control for the scene-0383 stationary-actor counterfactual.
+# It uses the same vehicle and longitudinal placement as medium_00, but moves
+# the actor 3.5 m to the right so it is outside the ego's straight path.
+mode: adjacent_static_00
+plan_list:
+- - 3.5
+  - 15.0
+  - -0.3
+  - 0
+  - 0
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000
