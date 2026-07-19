@@ -49,26 +49,23 @@ scenario / scene source
 
 OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真的对照与扩展方向。
 
-## 当前方法路线
+## 四层可信证据链
 
-当前采用四级可信验证路线：
+本项目建立以下四层可信证据链：
 
-1. **Source Availability Gate**  
-   先判断论文、代码、模型、数据、runtime、评估脚本是否公开可查。
+1. **日志复现**
+   验证仿真场景能否追溯并复现真实采集日志中的场景、位姿、观测和动态事实。
 
-2. **Closed-loop Evidence Completeness**  
-   判断一次闭环仿真是否产生了完整证据链，包括 observation、planner output、action、ego / actor state update、metrics 和输出文件。
+2. **传感器一致性**
+   验证生成的 RGB、语义、深度、多相机和时序观测是否与真实传感器证据及彼此一致。
 
-3. **Segment-level Evidence Judgment**  
-   对单个 closed-loop segment 做 evidence qualification：
-   - accepted
-   - down-weighted
-   - rejected
+3. **任务级一致性**
+   验证车道、可行驶区域、相对位置、遮挡、接近、碰撞和 TTC 等驾驶任务关系在受控反事实下是否一致。
 
-4. **Future Credibility Metric**  
-   在积累多个 run 和多个 segment 后，再定义量化的 simulator credibility metric。
+4. **闭环结果可信性**
+   验证 observation → decision → action → state update → outcome 的闭环结果能否作为评价自动驾驶系统的可信证据。
 
-这里的 accepted / down-weighted / rejected 是当前阶段的证据处理方式，不是项目总目标，也不是最终数值指标。
+四层是逐层支撑的证据结构，不是四个项目阶段。Source Availability Gate 是外部审计的前置门槛，Closed-loop Evidence Completeness 是记录完整性检查；`accepted`、`down-weighted`、`rejected` 是针对具体证据主张的判定标签，它们都不是证据层。
 
 ## 当前状态
 
@@ -118,7 +115,7 @@ env.reset
 
 ## 当前重点
 
-下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是围绕第三级积累具有独立现实锚点的证据：
+下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是先建立第一层日志复现的真实锚点，并据此加强第二层传感器一致性：
 
 ```text
 source-log observation at matched pose
@@ -148,8 +145,8 @@ source-log observation at matched pose
 - `docs/hugsim_audit.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
-- `docs/log_driven_simulator_credibility_framework.md`
-- `docs/hugsim_four_level_status.json`
+- `docs/log_driven_simulator_four_layer_evidence_chain.md`
+- `docs/hugsim_four_layer_evidence_status.json`
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
 - `docs/runs/hugsim_smoke_test_001_review.md`

@@ -1,0 +1,58 @@
+{
+  "simulator": "HUGSIM",
+  "classification": "real-driving-sequence reconstruction-based counterfactual closed-loop neural simulator",
+  "log_driven_definition": "A simulator that constructs an interactive environment from real road-driving capture sequences and generates counterfactual closed-loop evolution; exact log replay is not required.",
+  "evidence_chain": [
+    {
+      "layer": 1,
+      "name": "log_reproduction",
+      "decision": "down-weighted",
+      "evidence": [
+        "the released scene is associated with a real-driving dataset",
+        "the released scene and scenario assets run reproducibly",
+        "scene asset identity and local checksum are recorded"
+      ],
+      "main_gap": "Exact source frames, timestamps, camera poses, and matched real-versus-reconstructed observations have not been audited."
+    },
+    {
+      "layer": 2,
+      "name": "sensor_consistency",
+      "decision": "down-weighted",
+      "evidence": [
+        "synchronized RGB, semantic, and depth outputs",
+        "multi-camera observations over a bounded rollout",
+        "internal cross-modal support for the inserted actor"
+      ],
+      "main_gap": "Visible synthetic and domain artifacts remain, and no comparison with real sensor observations is available."
+    },
+    {
+      "layer": 3,
+      "name": "task_level_consistency",
+      "decision": "down-weighted",
+      "accepted_subclaims": [
+        "ego states and actions are strictly paired across the three conditions",
+        "the internal geometry and metric stack responds differently to actor placements at lateral 0.0 m and 3.5 m"
+      ],
+      "main_gap": "The test covers only two exact actor placements, no actor motion sweep, and limited causal coverage."
+    },
+    {
+      "layer": 4,
+      "name": "closed_loop_outcome_credibility",
+      "decision": "rejected",
+      "evidence": [
+        "the simulator-side observation, plan, action, state-update, rollout, and scoring path executes reproducibly"
+      ],
+      "main_gap": "The deterministic planner is a simulator-loop enabler rather than a sensor-input AD agent, so no AD-performance conclusion is supported."
+    }
+  ],
+  "supporting_mechanisms": {
+    "source_availability_gate": "phase_1_complete",
+    "closed_loop_evidence_completeness": "simulator_side_complete",
+    "decision_labels": [
+      "accepted",
+      "down-weighted",
+      "rejected"
+    ]
+  },
+  "current_claim": "HUGSIM is a suitable first carrier for developing the four-layer credibility evidence chain. Current evidence supports a narrow internal task-level response but does not establish credible AD-system closed-loop outcomes."
+}

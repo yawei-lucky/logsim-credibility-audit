@@ -247,5 +247,7 @@ The next material experiment should add a **real source-log anchor**:
 - preserve claim-specific `accepted`, `down-weighted`, and `rejected`
   decisions.
 
-This moves the project from internal simulator consistency toward Level 3
-credibility evidence without prematurely defining a Level 4 aggregate metric.
+This begins with a Layer 1 real-log reproduction anchor, uses it to strengthen
+Layer 2 sensor consistency, and then grounds the existing Layer 3 task-level
+counterfactual evidence. Layer 4 closed-loop outcome credibility should not be
+claimed before the lower layers are sufficient and a real AD agent is tested.

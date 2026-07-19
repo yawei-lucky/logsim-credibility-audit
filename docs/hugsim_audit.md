@@ -1,12 +1,14 @@
 # HUGSIM Credibility Audit
 
-> Status update (2026-07-19): Level 1 source discovery is complete, the
-> simulator-side Level 2 closed-loop chain has run locally, and the first
-> Level 3 counterfactual segment is `down-weighted` after third-party review.
-> Narrow state/action pairing and internal-geometry response subclaims are
-> `accepted`; sensor-level E2E credibility is not established. Read
-> `docs/log_driven_simulator_credibility_framework.md` and
-> `docs/hugsim_four_level_status.json` for the current framework.
+> Status update (2026-07-19): the Source Availability Gate is complete, but
+> Layer 1 log reproduction and Layer 2 sensor consistency remain
+> `down-weighted` without a matched real-log comparison. The first Layer 3
+> task-level counterfactual segment is also `down-weighted` after third-party
+> review, while narrow state/action pairing and internal-geometry response
+> subclaims are `accepted`. Layer 4 closed-loop outcome credibility is
+> `rejected` for AD-evaluation claims because the deterministic planner is not
+> an AD agent. Read `docs/log_driven_simulator_four_layer_evidence_chain.md`
+> and `docs/hugsim_four_layer_evidence_status.json` for the current method.
 >
 > The detailed sections below preserve the first-pass extraction and should be
 > read as historical pipeline analysis where their old status wording differs.

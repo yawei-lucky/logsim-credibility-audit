@@ -33,14 +33,15 @@ their own scope.
 ## Project Direction
 
 - HUGSIM is the current experimental carrier, not the final research goal.
-- The research goal is a four-level credibility-validation method for
-  log-driven simulators: source/provenance, closed-loop evidence completeness,
-  segment-level judgment, and future cross-segment credibility.
+- The research goal is a four-layer credibility evidence chain for log-driven
+  simulators: log reproduction, sensor consistency, task-level consistency,
+  and closed-loop outcome credibility.
 - "Log-driven" means that the simulator constructs its environment from real
   road-driving capture sequences and generates counterfactual closed-loop
   evolution; exact log replay is not required.
-- The current HUGSIM goal is to strengthen Level 3 with a real source-log
-  anchor, controlled counterfactual evidence, and explicit causal attribution.
+- The current HUGSIM goal is to establish the Layer 1 real-log reproduction
+  anchor, use it to strengthen Layer 2 sensor consistency, and then continue
+  the controlled Layer 3 task-level counterfactual audit.
 - Do not expand to OmniDreams / Cosmos, a full HUGSIM benchmark, installation of
   full AD agents, or a final quantitative credibility metric unless the user
   explicitly changes the project direction.
@@ -74,8 +75,8 @@ Read the following before substantive HUGSIM work:
 1. `CODEX_NEXT_TASK.md`
 2. `PROJECT_STATE.md`
 3. `README.md`
-4. `docs/log_driven_simulator_credibility_framework.md`
-5. `docs/hugsim_four_level_status.json`
+4. `docs/log_driven_simulator_four_layer_evidence_chain.md`
+5. `docs/hugsim_four_layer_evidence_status.json`
 6. `docs/hugsim_credibility_decision_rules.md`
 7. `docs/hugsim_smoke_test_plan.md`
 8. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
