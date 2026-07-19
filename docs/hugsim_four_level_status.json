@@ -1,0 +1,53 @@
+{
+  "simulator": "HUGSIM",
+  "classification": "real-driving-sequence reconstruction-based counterfactual closed-loop neural simulator",
+  "log_driven_definition": "A simulator that constructs an interactive environment from real road-driving capture sequences and generates counterfactual closed-loop evolution; exact log replay is not required.",
+  "levels": [
+    {
+      "level": 1,
+      "name": "source_availability_and_provenance",
+      "status": "phase_1_complete",
+      "evidence": [
+        "official paper and project page",
+        "public implementation and evaluation code",
+        "identified real-driving datasets",
+        "released scene, vehicle, and scenario assets"
+      ],
+      "main_gap": "The complete reconstruction provenance is not yet packaged as an independently downloadable evidence bundle."
+    },
+    {
+      "level": 2,
+      "name": "closed_loop_evidence_completeness",
+      "status": "simulator_side_complete",
+      "evidence": [
+        "synchronized RGB, semantic, and depth observations",
+        "planner output and control action",
+        "ego and actor state transitions",
+        "bounded rollout and metric events"
+      ],
+      "main_gap": "The current deterministic planner is a loop enabler rather than a sensor-input AD agent."
+    },
+    {
+      "level": 3,
+      "name": "segment_level_credibility_judgment",
+      "status": "down-weighted",
+      "evidence": [
+        "paired no-actor and actor-placement runs",
+        "identical ego states and actions across conditions",
+        "internal geometry and metric response to actor placement",
+        "cross-modal actor co-occurrence"
+      ],
+      "main_gap": "Visible rendering domain gap, no matched real-log reference comparison, and insufficient intervention coverage."
+    },
+    {
+      "level": 4,
+      "name": "cross_segment_simulator_credibility",
+      "status": "not_started",
+      "evidence": [
+        "decision rules and a compact audit record format exist"
+      ],
+      "main_gap": "Too few independently grounded segments across scenes and event types to define an aggregate credibility metric."
+    }
+  ],
+  "current_claim": "HUGSIM is a suitable first case study for developing the four-level method, but current experiments do not establish sensor-level E2E evaluation credibility or global simulator credibility."
+}

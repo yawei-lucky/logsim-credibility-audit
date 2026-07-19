@@ -6,6 +6,14 @@
 
 > 仿真器生成的闭环测试结果，是否足以作为评估端到端自动驾驶模型的可信证据？
 
+## 日志驱动定义
+
+本项目采用广义定义：
+
+> 日志驱动仿真器以真实道路采集序列为基础，重建或构造可交互环境，并在其上生成反事实闭环过程；不要求简单回放原始日志。
+
+因此 HUGSIM 属于研究范围，更准确地说是**基于真实驾驶数据序列重建、支持反事实编辑的闭环神经仿真器**。真实数据来源不意味着新视角、插入车辆和未来交互天然可信，这正是本项目要验证的问题。
+
 ## 当前阶段目的
 
 当前阶段使用 **HUGSIM** 作为实验载体。最小闭环证据链已经跑通，当前工作已进入严格配对的 relation-level counterfactual audit。
@@ -43,7 +51,7 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 
 ## 当前方法路线
 
-当前采用四步路线：
+当前采用四级可信验证路线：
 
 1. **Source Availability Gate**  
    先判断论文、代码、模型、数据、runtime、评估脚本是否公开可查。
@@ -83,7 +91,7 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - corrected control adapter 与 4 个回归测试；
 - 无车、同车道静止车辆、相邻车道静止车辆三组严格配对的 5 秒实验；
 - RGB / semantic / depth 像素级反事实证据和可视化；
-- 第一条 relation-level `accepted` audit record。
+- 第一条经过第三方复核的 relation-level `down-weighted` audit record，并保留内部几何子结论为 `accepted`。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -103,21 +111,21 @@ env.reset
 | 条件 | NC | TTC | PDMS | HDScore |
 |---|---:|---:|---:|---:|
 | 无车辆 | 1.000 | 1.000 | 1.000 | 0.150 |
-| 同车道车辆 | 0.750 | 0.550 | 0.607 | 0.091 |
-| 相邻车道车辆 | 1.000 | 1.000 | 1.000 | 0.150 |
+| 横向0.0米车辆 | 0.700 | 0.500 | 0.557 | 0.084 |
+| 横向3.5米车辆 | 1.000 | 1.000 | 1.000 | 0.150 |
 
-同车道车辆在 RGB、semantic、depth 与内部几何中保持一致；相邻车道负对照不触发 TTC/NC 失败。因此该关系事件被窄范围标记为 `accepted`。它不代表实际碰撞、AD agent 表现或 HUGSIM 全局可信。
+三组内部状态和控制严格配对；横向0.0米和3.5米位置产生不同内部 TTC/NC 响应。该子结论为 `accepted`。但车辆与背景存在可见视觉域差异，跨模态输出来自同一渲染器，也没有真实日志参考帧或 sensor-input AD agent，因此完整片段为 `down-weighted`。
 
 ## 当前重点
 
-下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是定位同车道风险到相邻车道安全之间的 relation boundary：
+下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是围绕第三级积累具有独立现实锚点的证据：
 
 ```text
-small paired lateral / longitudinal placement set
-→ exact geometry and planned-path relation
-→ TTC / NC transition time
-→ RGB / semantic / depth boundary evidence
-→ accepted / down-weighted / rejected per placement
+source-log observation at matched pose
+→ reconstructed observation
+→ controlled counterfactual intervention
+→ closed-loop state and metric event
+→ accepted / down-weighted / rejected segment
 ```
 
 ## 暂缓内容
@@ -140,6 +148,8 @@ small paired lateral / longitudinal placement set
 - `docs/hugsim_audit.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
+- `docs/log_driven_simulator_credibility_framework.md`
+- `docs/hugsim_four_level_status.json`
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
 - `docs/runs/hugsim_smoke_test_001_review.md`

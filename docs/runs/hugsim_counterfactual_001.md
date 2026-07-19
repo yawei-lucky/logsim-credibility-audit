@@ -14,19 +14,23 @@ the loop executes:
 > planned-path TTC and NC checks to fail. Moving the same car 3.5 m laterally
 > removes those metric failures.
 
-The narrow evidence judgment is:
+The segment-level evidence judgment after third-party review is:
 
 ```text
-accepted
+down-weighted
 ```
 
-This does **not** establish global HUGSIM credibility, AD-agent performance, or
-an actual physical collision during the five-second rollout.
+The paired state/control invariance and the internal metric response remain
+`accepted` as narrow subclaims. The rendered sensor evidence is
+`down-weighted` because visible actor/background domain mismatch and
+common-renderer cross-modal agreement do not establish real-sensor fidelity.
+The experiment does **not** establish global HUGSIM credibility, AD-agent
+performance, or an actual physical collision during the five-second rollout.
 
 ## Why the Previous Longer Run Was Invalid
 
 The first 20-step attempt used HUGSIM's released `traj2control` conversion.
-Both the no-actor and same-lane-actor runs followed the same curved trajectory,
+Both the no-actor and lateral-0.0-m actor runs followed the same curved trajectory,
 hit reconstructed background at 3.25 seconds, terminated after 13 steps, and
 produced bit-for-bit identical aggregate metrics.
 
@@ -49,6 +53,12 @@ state-forwarding, and invalid-input cases.
 
 The HUGSIM source checkout itself was not modified.
 
+Third-party review also found that the first corrected report anchored the
+metric trajectory at the pre-step ego pose while recording the metric frame at
+the post-step timestamp. The runner now anchors the plan and ego/actor state at
+the same post-step timestamp, has a regression test for this invariant, and the
+three runs below are the aligned reruns.
+
 ## Controlled Design
 
 All three runs used:
@@ -66,8 +76,8 @@ Only actor placement changed:
 | Condition | Actor placement | Purpose |
 |---|---|---|
 | no actor | none | baseline |
-| same-lane actor | forward 15.0 m, lateral 0.0 m | risk-increasing treatment |
-| adjacent-lane actor | forward 15.0 m, right 3.5 m | relation negative control |
+| lateral-0.0-m actor | forward 15.0 m, lateral 0.0 m | risk-increasing treatment |
+| lateral-3.5-m actor | forward 15.0 m, right 3.5 m | position negative control |
 
 The actor was the public `3DRealCar/2024_07_05_15_57_10` asset under a
 stationary `ConstantPlanner`.
@@ -75,10 +85,10 @@ stationary `ConstantPlanner`.
 ## Run Outputs
 
 ```text
-artifacts/hugsim_contrast/scene-0383-easy-00-run003-corrected
-artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected
-artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run001-corrected
-artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002
+artifacts/hugsim_contrast/scene-0383-easy-00-run004-aligned
+artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned
+artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run002-aligned
+artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned
 ```
 
 The report directory contains:
@@ -93,15 +103,15 @@ risk_timeline.png
 
 ## Quantitative Result
 
-| Metric | No actor | Same-lane actor | Adjacent-lane actor |
+| Metric | No actor | Lateral 0.0 m | Lateral 3.5 m |
 |---|---:|---:|---:|
-| NC | 1.000 | 0.750 | 1.000 |
+| NC | 1.000 | 0.700 | 1.000 |
 | DAC | 1.000 | 1.000 | 1.000 |
-| TTC | 1.000 | 0.550 | 1.000 |
+| TTC | 1.000 | 0.500 | 1.000 |
 | Comfort | 1.000 | 1.000 | 1.000 |
-| PDMS | 1.000 | 0.607 | 1.000 |
+| PDMS | 1.000 | 0.557 | 1.000 |
 | Route completion | 0.150333 | 0.150333 | 0.150333 |
-| HDScore | 0.150333 | 0.091274 | 0.150333 |
+| HDScore | 0.150333 | 0.083757 | 0.150333 |
 
 Pairing checks:
 
@@ -111,10 +121,10 @@ maximum action difference across runs: 0.0
 actual collision flag in all three runs: false
 ```
 
-In the same-lane treatment:
+In the lateral-0.0-m treatment:
 
-- the first TTC failure occurs at 3.00 seconds;
-- the first NC failure occurs at 4.00 seconds;
+- the first TTC failure occurs at 2.75 seconds;
+- the first NC failure occurs at 3.75 seconds;
 - final actual longitudinal box clearance is still 2.20 m.
 
 Therefore NC/TTC here describe HUGSIM's collision checks over the supplied
@@ -123,7 +133,7 @@ already observed in the rollout.
 
 ## Cross-Modal Attribution
 
-The same-lane actor is present in the front camera for every observation from
+The lateral-0.0-m actor is present in the front camera for every observation from
 0.00 through 5.00 seconds.
 
 ```text
@@ -142,18 +152,32 @@ Manual review of the generated contact sheet found:
 - spatial agreement between the RGB vehicle, car semantic mask, and depth
   discontinuity;
 - stable temporal approach without actor jumps;
-- no relevant malformed, floating, duplicated, or contradictory actor evidence.
+- no floating, duplicated, or geometry-contradictory actor evidence;
+- visible vehicle/background mismatch in material, sharpness, contact shadow,
+  and reconstruction appearance, which weakens sensor-level credibility.
 
 ## Evidence Judgment
 
-### Accepted
+### Accepted subclaims
 
-The same-lane risk event is `accepted` as narrow evidence that:
+The experiment provides `accepted` narrow evidence that:
 
-- the public actor asset is injected into the intended front relation;
-- RGB, semantic, depth, and actor geometry support the same object;
-- TTC and NC change only when that object intersects the planned path;
-- an adjacent-lane placement acts as a successful negative control.
+- all three runs completed with identical ego state and control action;
+- the internal HUGSIM geometry/metric path responds differently to the exact
+  tested actor positions at lateral 0.0 m and 3.5 m.
+
+### Down-weighted segment
+
+The complete segment is `down-weighted` because:
+
+- the vehicle and reconstructed background have a visible appearance-domain
+  mismatch in the relevant decision region;
+- RGB, semantic, and depth are produced by the same renderer and therefore
+  demonstrate internal co-occurrence rather than independent real-world
+  agreement;
+- no matched source-log frame or real sensor-input AD agent is present;
+- two actor placements are insufficient to establish a general same-lane /
+  adjacent-lane boundary.
 
 ### Rejected
 
@@ -206,23 +230,22 @@ Generate the synchronized analysis:
 MPLCONFIGDIR=/tmp/matplotlib-hugsim-contrast \
   /home/yawei/HUGSIM/.pixi/envs/default/bin/python \
   scripts/analyze_hugsim_counterfactual.py \
-  --baseline artifacts/hugsim_contrast/scene-0383-easy-00-run003-corrected \
-  --treatment artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected \
-  --adjacent-control artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run001-corrected \
+  --baseline artifacts/hugsim_contrast/scene-0383-easy-00-run004-aligned \
+  --treatment artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned \
+  --adjacent-control artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run002-aligned \
   --output NEW_REPORT_DIRECTORY
 ```
 
 ## Next Research Step
 
-The next material experiment should map the **relation boundary**, not merely
-run longer:
+The next material experiment should add a **real source-log anchor**:
 
-- hold the car model and deterministic ego plan fixed;
-- sweep a small set of lateral and longitudinal actor offsets;
-- compare the exact geometry boundary with TTC/NC transition times;
-- look for non-monotonic or cross-modal contradictions;
-- retain paired no-actor controls.
+- trace the released reconstruction to exact source frames and poses;
+- compare real observations with matched-pose reconstruction;
+- identify where ego deviation leaves well-supported reconstruction regions;
+- then use bounded actor-placement tests inside and outside that support;
+- preserve claim-specific `accepted`, `down-weighted`, and `rejected`
+  decisions.
 
-That would test whether the relation-sensitive result generalizes beyond one
-same-lane and one adjacent-lane placement without yet installing a full AD
-agent or claiming a final credibility metric.
+This moves the project from internal simulator consistency toward Level 3
+credibility evidence without prematurely defining a Level 4 aggregate metric.

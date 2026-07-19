@@ -4,18 +4,18 @@
   "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
   "control_convention": "corrected",
   "runs": {
-    "no_actor": "artifacts/hugsim_contrast/scene-0383-easy-00-run003-corrected",
-    "same_lane_actor": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected",
-    "adjacent_lane_actor": "artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run001-corrected",
-    "analysis": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002"
+    "no_actor": "artifacts/hugsim_contrast/scene-0383-easy-00-run004-aligned",
+    "lateral_0_actor": "artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned",
+    "lateral_3_5_actor": "artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run002-aligned",
+    "analysis": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned"
   },
   "source_assets": {
     "scene": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
     "scene_cfg_sha256": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
     "scenario_sha256": {
       "no_actor": "8bb03b7b41f1d1b6a7c7cf0ba49a5f868729339b4621907fc8f9f149679152f8",
-      "same_lane_actor": "f03679e829d017da636e34db3bad80ab9d672f1413708d6ce295ff71b896627e",
-      "adjacent_lane_actor": "7ce2f53255fa127bb45ea6fb94cc220172f7883a8d8e9b2c1206555e40571668"
+      "lateral_0_actor": "f03679e829d017da636e34db3bad80ab9d672f1413708d6ce295ff71b896627e",
+      "lateral_3_5_actor": "7ce2f53255fa127bb45ea6fb94cc220172f7883a8d8e9b2c1206555e40571668"
     },
     "vehicle_model_id": "2024_07_05_15_57_10",
     "vehicle_gs_sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
@@ -28,15 +28,15 @@
     "maximum_action_absolute_difference": 0.0
   },
   "evidence_refs": {
-    "rgb_semantic_depth_raw": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/observations.pkl",
-    "ego_actor_states": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/infos.pkl",
-    "planned_trajectory_and_actions": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/audit_steps.pkl",
-    "metrics": "artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected/eval.json",
-    "contact_sheet": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/front_counterfactual_contact_sheet.png",
-    "risk_timeline": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/risk_timeline.png",
-    "relation_negative_control": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/relation_negative_control.png",
-    "front_video": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/front_counterfactual.mp4",
-    "full_analysis": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002/contrast_summary.json"
+    "rgb_semantic_depth_raw": "artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned/observations.pkl",
+    "ego_actor_states": "artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned/infos.pkl",
+    "planned_trajectory_and_actions": "artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned/audit_steps.pkl",
+    "metrics": "artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned/eval.json",
+    "contact_sheet": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned/front_counterfactual_contact_sheet.png",
+    "risk_timeline": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned/risk_timeline.png",
+    "relation_negative_control": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned/relation_negative_control.png",
+    "front_video": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned/front_counterfactual.mp4",
+    "full_analysis": "artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned/contrast_summary.json"
   },
   "metrics": {
     "no_actor": {
@@ -48,16 +48,16 @@
       "rc": 0.15033344636599977,
       "hdscore": 0.15033344636599977
     },
-    "same_lane_actor": {
-      "nc": 0.75,
+    "lateral_0_actor": {
+      "nc": 0.7,
       "dac": 1.0,
-      "ttc": 0.55,
+      "ttc": 0.5,
       "c": 1.0,
-      "pdms": 0.6071428571428573,
+      "pdms": 0.5571428571428573,
       "rc": 0.15033344636599977,
-      "hdscore": 0.0912738781507856
+      "hdscore": 0.08375720583248561
     },
-    "adjacent_lane_actor": {
+    "lateral_3_5_actor": {
       "nc": 1.0,
       "dac": 1.0,
       "ttc": 1.0,
@@ -69,8 +69,8 @@
   },
   "event": {
     "type": "planned_path_risk",
-    "first_same_lane_ttc_failure_s": 3.0,
-    "first_same_lane_nc_failure_s": 4.0,
+    "first_lateral_0_ttc_failure_s": 2.75,
+    "first_lateral_0_nc_failure_s": 3.75,
     "actual_collision_observed": false,
     "final_actual_longitudinal_box_clearance_m": 2.201844399629932
   },
@@ -84,12 +84,21 @@
     "non_front_rgb_changed_pixels_across_all_frames": 0
   },
   "credibility": {
-    "decision": "accepted",
-    "reason": "RGB, semantic, depth, actor geometry, temporal approach, and TTC/NC changes agree; the same actor at 3.5 m lateral offset is a successful negative control. The accepted claim is limited to this relation-specific planned-path risk event."
+    "decision": "down-weighted",
+    "reason": "The paired runs support a narrow internal-geometry and metric-response claim, but visible rendering domain gap, common-renderer cross-modal dependence, absence of a real-log reference comparison, and limited actor placements prevent accepting the segment as sensor-level E2E evaluation evidence.",
+    "claim_decisions": {
+      "paired_ego_and_action_invariance": "accepted",
+      "internal_metric_response_at_lateral_0_vs_3_5_m": "accepted",
+      "rendered_sensor_evidence_for_e2e_evaluation": "down-weighted",
+      "actual_collision_or_ad_agent_response": "rejected",
+      "global_hugsim_credibility": "rejected"
+    }
   },
   "limitations": [
     "The rollout contains no actual collision.",
     "The deterministic writer is not an AD agent.",
+    "RGB, semantic, and depth are outputs of the same renderer and are not independent real-world references.",
+    "Visible actor/background domain mismatch weakens sensor-level credibility.",
     "One scene, one vehicle asset, and two actor placements do not establish global simulator credibility."
   ]
 }

@@ -19,6 +19,12 @@
 
 > 这些仿真器生成的闭环测试结果是否可信，是否足以支撑端到端自动驾驶模型的评估结论？
 
+本项目中的“日志驱动”采用广义定义：
+
+> 以真实道路采集序列为基础，重建或构造可交互环境，并在其上生成反事实闭环过程；不要求简单回放原始日志。
+
+据此，HUGSIM 是基于真实驾驶数据序列重建、支持反事实编辑的闭环神经仿真器，属于当前研究范围。
+
 ---
 
 ## 2. 当前阶段定位
@@ -55,7 +61,7 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 
 ## 3. 当前方法路线
 
-当前采用四步路线：
+当前采用四级可信验证路线：
 
 ### Step 1 — Source Availability Gate
 
@@ -148,13 +154,15 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已生成第一条真实 audit record，判定为 `down-weighted`。
 - 已发现 released `traj2control` 的坐标/航向不一致会把直行计划解释成约 90° 航向目标；
 - 已实现不修改 HUGSIM 源码的 corrected control adapter，并增加 4 个回归测试；
-- 已完成无车、同车道静止车辆、相邻车道静止车辆三组严格配对的 5 秒/20 步实验；
+- 已完成无车、横向0.0米静止车辆、横向3.5米静止车辆三组严格配对的5秒/20步实验；
 - 三组 ego state 与 control action 最大差异均为 0；
-- 无车和相邻车道组 NC/TTC/PDMS 均为 1.0；
-- 同车道组 TTC 从 3.0 秒失败、NC 从 4.0 秒失败，PDMS 为 0.607；
+- 无车和横向3.5米组 NC/TTC/PDMS 均为1.0；
+- 已修复评分轨迹与评分帧前后时刻错位，并增加回归测试；
+- 对齐重跑后，横向0.0米组 TTC 从2.75秒失败、NC 从3.75秒失败，PDMS 为0.557；
 - 已完成 RGB / semantic / depth 像素级反事实比较和时序风险可视化；
-- 同车道车辆最终语义掩码有 97.4% 被 RGB 差异支持、100% 被深度差异支持；
-- 已生成第一条窄范围 `accepted` relation-level audit record。
+- 横向0.0米车辆最终语义掩码有97.4%被 RGB 差异支持、100%被深度差异支持；
+- 第三方复核后完整片段调整为 `down-weighted`，内部几何和严格配对子结论保留为 `accepted`；
+- 已形成面向日志驱动仿真器的四级可信验证框架和 HUGSIM 当前分级状态。
 
 第一份 run report 的结论是：
 
@@ -179,17 +187,17 @@ env.reset
 
 ```text
 corrected no-actor baseline
-→ same-lane actor treatment
-→ adjacent-lane negative control
+→ lateral-0.0-m actor treatment
+→ lateral-3.5-m position control
 → synchronized RGB / semantic / depth attribution
-→ relation-level credibility judgment: accepted
+→ relation-level credibility judgment: down-weighted
 ```
 
-这里的 `accepted` 只支持：
+其中 `accepted` 子结论只支持：
 
-> 在该场景和片段中，同车道车辆被跨模态一致地表示，并且规划轨迹风险指标对同车道关系而非任意 actor presence 作出响应。
+> 三组 ego state 和 action 严格一致，并且 HUGSIM 内部几何评分器对横向0.0米和3.5米两个精确位置产生不同响应。
 
-它不支持真实碰撞、AD agent 表现或 HUGSIM 全局可信结论。
+完整片段因视觉域差异、缺少真实日志参考帧和真实 AD agent 而为 `down-weighted`。它不支持真实碰撞、AD agent 表现或 HUGSIM 全局可信结论。
 
 ---
 
@@ -216,6 +224,8 @@ corrected no-actor baseline
 - `docs/hugsim_audit.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
+- `docs/log_driven_simulator_credibility_framework.md`
+- `docs/hugsim_four_level_status.json`
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
 - `docs/runs/hugsim_smoke_test_001_review.md`
@@ -288,14 +298,14 @@ ChatGPT Project / Custom GPT
 
 下一步只做：
 
-> 在 `scene-0383` 上用少量、严格配对的车辆位置实验，定位同车道风险到相邻车道安全之间的 relation boundary。
+> 为第三级片段可信判断建立真实日志锚点，并继续使用严格配对反事实实验验证因果归因。
 
-当前关键不是增加无目的运行长度，而是回答：
+当前关键不是增加无目的运行数量，而是回答：
 
-1. TTC 和 NC 在什么几何位置开始变化；
-2. 转换时间是否随纵向距离单调变化；
-3. 横向边界是否与真实 box / planned-path intersection 一致；
-4. 边界附近的 RGB / semantic / depth / geometry 是否仍互相支持；
-5. 哪些片段应当 `accepted`、`down-weighted` 或 `rejected`。
+1. 重建画面在原始采集位姿上与真实日志相差多少；
+2. 偏离原始轨迹后，哪些区域仍有重建支持，哪些必须降权或拒绝；
+3. 反事实 actor 修改是否保持几何、语义、遮挡和时序关系；
+4. 闭环风险来自 agent、重建、场景编辑、控制接口还是评分实现；
+5. 如何把多个第三级片段积累成未来第四级可信度，而不是过早定义最终指标。
 
 不要同时展开 OmniDreams / Cosmos。

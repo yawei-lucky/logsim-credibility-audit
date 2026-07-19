@@ -1,6 +1,16 @@
 # HUGSIM Credibility Audit
 
-> Status: Phase 1 working draft with completed first-pass source availability gate and first-pass pipeline extraction.  
+> Status update (2026-07-19): Level 1 source discovery is complete, the
+> simulator-side Level 2 closed-loop chain has run locally, and the first
+> Level 3 counterfactual segment is `down-weighted` after third-party review.
+> Narrow state/action pairing and internal-geometry response subclaims are
+> `accepted`; sensor-level E2E credibility is not established. Read
+> `docs/log_driven_simulator_credibility_framework.md` and
+> `docs/hugsim_four_level_status.json` for the current framework.
+>
+> The detailed sections below preserve the first-pass extraction and should be
+> read as historical pipeline analysis where their old status wording differs.
+>
 > Scope: audit HUGSIM as a runnable 3DGS-based log-driven closed-loop simulator, not a general autonomous-driving simulator survey.
 
 ## Source Availability Gate

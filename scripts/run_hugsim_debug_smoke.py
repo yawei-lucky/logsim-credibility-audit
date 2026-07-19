@@ -152,6 +152,30 @@ def make_video(observations: list[dict[str, Any]], output_path: Path) -> None:
     )
 
 
+def build_scoring_frame(
+    plan_traj: np.ndarray,
+    info_after: dict[str, Any],
+    traj_transform_to_global: Any,
+) -> dict[str, Any]:
+    """Build a metric frame with all state anchored at the same timestamp."""
+    imu_plan_traj = plan_traj[:, [1, 0]].copy()
+    imu_plan_traj[:, 1] *= -1
+    global_traj = traj_transform_to_global(
+        imu_plan_traj,
+        info_after["ego_box"],
+    )
+    return {
+        "time_stamp": info_after["timestamp"],
+        "is_key_frame": True,
+        "ego_box": info_after["ego_box"],
+        "obj_boxes": info_after["obj_boxes"],
+        "obj_names": ["car" for _ in info_after["obj_boxes"]],
+        "planned_traj": {"traj": global_traj, "timestep": 0.5},
+        "collision": info_after["collision"],
+        "rc": info_after["rc"],
+    }
+
+
 def main() -> int:
     args = parse_args()
     if args.max_steps < 1:
@@ -244,19 +268,7 @@ def main() -> int:
         action = {"acc": acc, "steer_rate": steer_rate}
         obs, reward, terminated, truncated, info = env.step(action)
 
-        imu_plan_traj = plan_traj[:, [1, 0]].copy()
-        imu_plan_traj[:, 1] *= -1
-        global_traj = traj_transform_to_global(imu_plan_traj, info_before["ego_box"])
-        frame = {
-            "time_stamp": info["timestamp"],
-            "is_key_frame": True,
-            "ego_box": info["ego_box"],
-            "obj_boxes": info["obj_boxes"],
-            "obj_names": ["car" for _ in info["obj_boxes"]],
-            "planned_traj": {"traj": global_traj, "timestep": 0.5},
-            "collision": info["collision"],
-            "rc": info["rc"],
-        }
+        frame = build_scoring_frame(plan_traj, info, traj_transform_to_global)
         save_data["frames"].append(frame)
         observations.append(obs)
         infos.append(info)

@@ -1,146 +1,129 @@
-# Codex Next Task — Map the HUGSIM Relation Boundary
+# Codex Next Task — Build Level 3 Evidence with a Real-Log Anchor
 
 > Read this file first when resuming HUGSIM work.
 
-## Current Result
+## Project Objective
 
-The project has moved beyond a smoke test.
+Develop a credibility-validation method for log-driven simulators.
 
-Completed on 2026-07-18:
+This project uses the broad definition:
 
-```text
-released HUGSIM control conversion
-→ confounded background collision identified
-→ corrected and unit-tested coordinate adapter
-→ 5-second synchronized no-actor baseline
-→ 5-second same-lane stationary-actor treatment
-→ 5-second adjacent-lane actor negative control
-→ RGB / semantic / depth counterfactual analysis
-→ relation-specific credibility judgment
-```
+> A log-driven simulator constructs an interactive environment from real
+> road-driving capture sequences and generates counterfactual closed-loop
+> evolution. Exact log replay is not required.
 
-Primary record:
+HUGSIM is the first case study, not the final research target. It is classified
+as a real-driving-sequence reconstruction-based, counterfactual closed-loop
+neural simulator.
+
+## Four-Level Method
 
 ```text
-docs/runs/hugsim_counterfactual_001.md
-docs/runs/hugsim_counterfactual_001_audit.json
+Level 1 — Source Availability and Provenance
+Level 2 — Closed-Loop Evidence Completeness
+Level 3 — Segment-Level Credibility Judgment
+Level 4 — Cross-Segment Simulator Credibility
 ```
 
-Narrow judgment:
+Current HUGSIM status:
+
+| Level | Status |
+|---|---|
+| Level 1 | Phase 1 complete |
+| Level 2 | Simulator-side chain complete |
+| Level 3 | `down-weighted` overall; narrow internal-geometry subclaims `accepted` |
+| Level 4 | Not started |
+
+Read:
 
 ```text
-accepted
+docs/log_driven_simulator_credibility_framework.md
+docs/hugsim_four_level_status.json
+docs/hugsim_credibility_decision_rules.md
 ```
 
-Accepted claim:
+## Corrected Baseline
 
-> In this scene and segment, the same-lane stationary actor is consistently
-> supported by RGB, semantic, depth, internal geometry, and temporal evidence,
-> and HUGSIM's planned-path TTC/NC metrics respond to that relation. The same
-> actor at 3.5 m lateral offset does not trigger those failures.
+Third-party review found a one-step mismatch between the metric frame and its
+planned-trajectory anchor. The runner now anchors timestamp, ego/actor state,
+and global plan at the same post-step state and includes a regression test.
 
-Not accepted:
-
-- an actual collision occurred;
-- an AD agent responded credibly;
-- HUGSIM is globally credible.
-
-## Important Control Finding
-
-HUGSIM commit `adeca402cad4af8635e13d0a105e2fee6a14de85` swaps
-`[right, forward]` planner positions to `[forward, lateral]` for iLQR but
-calculates heading using the pre-swap axes.
-
-For the deterministic straight plan this creates an approximately 90° heading
-target, saturated steering, and a background collision. No-actor and actor
-runs fail identically, so that earlier pair is `rejected` as actor-event
-evidence.
-
-Use:
+Aligned outputs:
 
 ```text
-scripts/hugsim_control_adapter.py
---control-convention corrected
+artifacts/hugsim_contrast/scene-0383-easy-00-run004-aligned
+artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned
+artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run002-aligned
+artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned
 ```
 
-Keep `--control-convention upstream` only for reproduction and regression
-comparison.
+Aligned internal metrics:
 
-## Current Assets and Outputs
+| Actor placement | NC | TTC | PDMS | HDScore |
+|---|---:|---:|---:|---:|
+| none | 1.000 | 1.000 | 1.000 | 0.150333 |
+| lateral 0.0 m, forward 15.0 m | 0.700 | 0.500 | 0.557 | 0.083757 |
+| lateral 3.5 m, forward 15.0 m | 1.000 | 1.000 | 1.000 | 0.150333 |
+
+These results establish a narrow internal-geometry response, not sensor-level
+E2E evaluation credibility.
+
+## Immediate Goal
+
+Strengthen Level 3 with evidence grounded in the real source sequence.
+
+First determine whether the exact real camera observations and capture
+metadata behind released `scene-0383` are locally available or can be obtained
+from the identified public dataset sequence.
+
+Target evidence chain:
 
 ```text
-HUGSIM repo: /home/yawei/HUGSIM
-HUGSIM commit: adeca402cad4af8635e13d0a105e2fee6a14de85
-scene: /home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383
-vehicle: /home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10
+real source-log observation at a captured pose
+→ HUGSIM reconstruction rendered at the matched pose
+→ measurable and inspectable fidelity gap
+→ controlled deviation / counterfactual intervention
+→ segment-level accepted / down-weighted / rejected judgment
 ```
 
-Successful paired outputs:
+## Required Questions
 
-```text
-artifacts/hugsim_contrast/scene-0383-easy-00-run003-corrected
-artifacts/hugsim_contrast/scene-0383-medium-00-run002-corrected
-artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run001-corrected
-artifacts/hugsim_contrast/scene-0383-counterfactual-report-run002
-```
+1. Can the released scene be traced to exact source frames and camera poses?
+2. At captured poses, does reconstruction preserve task-relevant road,
+   vehicle, boundary, depth, and semantic evidence?
+3. As ego deviates from the captured trajectory, where does evidence quality
+   become unsupported?
+4. Can the simulator expose that support boundary so downstream evidence is
+   down-weighted or rejected?
+5. Does a counterfactual event remain credible after separating source
+   fidelity, rendering consistency, internal geometry, and metric response?
 
-## Next Material Experiment
+## Near-Term Outputs
 
-Map a small, bounded **relation boundary**.
-
-Keep fixed:
-
-- scene and vehicle asset;
-- ego initial state;
-- corrected deterministic ego plan;
-- 20-step duration;
-- actor controller and orientation.
-
-Vary only a small set of actor placements:
-
-```text
-lateral offset: selected values between same-lane 0.0 m and safe 3.5 m
-longitudinal distance: one nearer and one farther value around 15.0 m
-```
-
-Questions:
-
-1. At what geometry does TTC first change?
-2. At what geometry does NC first change?
-3. Are transition times monotonic with longitudinal distance?
-4. Does the lateral boundary agree with actual box/path intersection?
-5. Do RGB, semantic, depth, and geometry stay consistent near the boundary?
-6. Is any metric transition caused by reconstruction support or control
-   artifacts rather than the intended relation?
-
-This is not a full benchmark sweep. Select only enough placements to test the
-boundary and monotonicity.
-
-## Required Outputs
-
-- one table of placement, actual clearance, first TTC failure, first NC
-  failure, PDMS, and HDScore;
-- one geometry-versus-metric transition plot;
-- synchronized event-region RGB / semantic / depth evidence for at least one
-  safe and one unsafe near-boundary placement;
-- one compact audit JSON;
-- per-segment `accepted`, `down-weighted`, or `rejected` labels.
+- a source-frame / reconstruction provenance record;
+- matched-pose real-versus-rendered comparison when source frames are
+  available;
+- an explicit record of unavailable source evidence when they are not;
+- a support-region interpretation for the existing rollout;
+- Level 3 evidence records with claim-specific decisions;
+- no Level 4 aggregate metric yet.
 
 ## Guardrails
 
 Do not:
 
-- return to an unpaired “just run longer” experiment;
-- use the released control convention as the primary result;
-- report planned-path NC/TTC failure as an actual collision;
-- install UniAD / VAD / LTF without explicit direction;
-- run the full HUGSIM benchmark;
-- expand to OmniDreams / Cosmos;
-- define a final credibility score from this one scene;
-- overwrite any successful output.
+- treat real-log origin as proof of counterfactual credibility;
+- equate RGB/semantic/depth agreement from one renderer with real-world
+  agreement;
+- report internal NC/TTC response as sensor-input AD-agent validity;
+- expand a two-position test into a general lane-relation claim;
+- install full AD agents before source and simulator evidence are understood;
+- run a full benchmark or define the final credibility metric;
+- expand to OmniDreams / Cosmos during this task;
+- overwrite successful outputs.
 
 ## Success Criterion
 
-The next experiment is successful if it can explain whether HUGSIM's risk
-transition follows the intended spatial relation and where that statement
-stops being credible. A larger number of unevaluated runs is not success.
+The next step succeeds when it makes the gap between **real source evidence**
+and **simulated counterfactual evidence** explicit and auditable. More HUGSIM
+runs without that distinction are not progress toward the final objective.
