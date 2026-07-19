@@ -7,6 +7,13 @@
 > credibility is not established. The four-layer evidence chain belongs to
 > future credibility-metric research and is not used to grade this run.
 >
+> A later 6-second multi-actor stress test adds a slower lead vehicle and a
+> scripted right-side cut-in. TTC first fails at 4.75 seconds and NC at 5.75
+> seconds near the cut-in's ego-path crossing, while paired ego states and
+> actions remain identical and no runtime collision occurs. The full segment
+> remains `down-weighted`; see
+> `docs/runs/hugsim_multicar_cut_in_001.md`.
+>
 > The detailed sections below preserve the first-pass extraction and should be
 > read as historical pipeline analysis where their old status wording differs.
 >

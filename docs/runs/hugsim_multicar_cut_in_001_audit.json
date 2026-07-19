@@ -1,0 +1,124 @@
+{
+  "experiment_id": "hugsim_multicar_cut_in_001",
+  "scenario_id": "scene-0383-lead-plus-right-cut-in",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "control_convention": "corrected",
+  "runs": {
+    "no_actor": "artifacts/hugsim_contrast/scene-0383-easy-00-run006-6s",
+    "multi_actor": "artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run001",
+    "analysis": "artifacts/hugsim_contrast/scene-0383-multicar-report-run003",
+    "incomplete_attempt_excluded": "artifacts/hugsim_contrast/scene-0383-easy-00-run005-6s"
+  },
+  "source_assets": {
+    "scene": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+    "scenario": "configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml",
+    "scenario_sha256": "cf71e89aa97359004332af7342309a953a73f5cd9a83b6ae948a2ac72906cd05",
+    "vehicle_model_id": "2024_07_05_15_57_10",
+    "vehicle_gs_sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
+    "vehicle_wlh_sha256": "edc468f1d24229a56ccfeaf89324e8b6bf46237d90df21980933562d07a8538f",
+    "vehicle_identity_reused_for_both_actors": true
+  },
+  "actors": [
+    {
+      "role": "right_side_cut_in",
+      "configured_state": {
+        "right_m": 4.5,
+        "forward_m": 8.0,
+        "height_m": -0.3,
+        "yaw_rad": 0.45,
+        "velocity_mps": 2.0
+      },
+      "controller": "ConstantPlanner",
+      "recorded_start_xy_m": [
+        8.450223922729492,
+        -4.282517433166504
+      ],
+      "recorded_end_xy_m": [
+        19.255598068237305,
+        0.9370691776275635
+      ]
+    },
+    {
+      "role": "lead_vehicle",
+      "configured_state": {
+        "right_m": 0.0,
+        "forward_m": 24.0,
+        "height_m": -0.3,
+        "yaw_rad": 0.0,
+        "velocity_mps": 0.5
+      },
+      "controller": "ConstantPlanner",
+      "recorded_start_xy_m": [
+        24.125,
+        -0.0
+      ],
+      "recorded_end_xy_m": [
+        27.125,
+        -0.0
+      ]
+    }
+  ],
+  "pairing": {
+    "completed_steps_per_run": 24,
+    "duration_s": 6.0,
+    "maximum_ego_box_absolute_difference": 0.0,
+    "maximum_action_absolute_difference": 0.0
+  },
+  "metrics": {
+    "no_actor": {
+      "nc": 1.0,
+      "dac": 1.0,
+      "ttc": 1.0,
+      "c": 1.0,
+      "pdms": 1.0,
+      "rc": 0.1853735729625862,
+      "hdscore": 0.1853735729625862
+    },
+    "multi_actor": {
+      "nc": 0.9166666666666666,
+      "dac": 1.0,
+      "ttc": 0.75,
+      "c": 1.0,
+      "pdms": 0.7976190476190474,
+      "rc": 0.1853735729625862,
+      "hdscore": 0.147857492720158
+    }
+  },
+  "event": {
+    "type": "scripted_multi_actor_cut_in",
+    "approximate_ego_centerline_crossing_s": 5.0,
+    "first_ttc_failure_s": 4.75,
+    "first_nc_failure_s": 5.75,
+    "actual_collision_observed": false
+  },
+  "cross_modal_evidence": {
+    "selected_frame_rgb_support_fraction_range": [
+      0.9695758605185593,
+      0.9847651475467085
+    ],
+    "selected_frame_depth_support_fraction": 1.0
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "reason": "The paired stress test supports multi-instance rendering, actor-state evolution, and an internal risk response near the scripted cut-in crossing, but duplicate vehicle identity, visible foreground/background mismatch, a non-map-aware ConstantPlanner trajectory, reset-time actor advancement, common-renderer modality dependence, and absence of a real AD agent prevent accepting the full segment as credible E2E evaluation evidence.",
+    "claim_decisions": {
+      "paired_ego_and_action_invariance": "accepted",
+      "multi_instance_rendering_and_state_evolution": "accepted",
+      "internal_risk_response_near_cut_in_crossing": "accepted",
+      "realistic_merge_behavior": "down-weighted",
+      "rendered_sensor_evidence_for_e2e_evaluation": "down-weighted",
+      "actual_runtime_collision": "rejected",
+      "ad_agent_response": "rejected",
+      "global_hugsim_credibility": "rejected"
+    }
+  },
+  "limitations": [
+    "Both actors reuse the same locally available vehicle asset.",
+    "The cut-in follows a scripted ConstantPlanner diagonal rather than a map-aware merge.",
+    "The controller advances actors once during env.reset before the timestamp-zero observation is recorded.",
+    "RGB, semantic, and depth are outputs of the same renderer.",
+    "The deterministic writer is not an AD agent.",
+    "The rollout contains no actual runtime collision.",
+    "One scene and one scripted intervention do not establish global simulator credibility."
+  ]
+}

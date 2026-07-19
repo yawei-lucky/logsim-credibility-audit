@@ -1,4 +1,4 @@
-# Codex Next Task — Ground HUGSIM Tests in the Real Source Log
+# Codex Next Task — Review and Strengthen the Multi-Actor Stress Test
 
 > Read this file first when resuming HUGSIM work.
 
@@ -34,6 +34,10 @@ Current HUGSIM status:
 - the first paired counterfactual segment is `down-weighted` overall;
 - narrow state/action pairing and internal-geometry response subclaims are
   `accepted`;
+- a 6-second lead-vehicle plus right-side cut-in stress test has completed;
+- the multi-actor run is `down-weighted` overall, while strict pairing,
+  multi-instance rendering/state evolution, and internal risk timing are
+  `accepted` narrow subclaims;
 - sensor-input AD-agent performance and global HUGSIM credibility are not
   established.
 
@@ -50,6 +54,8 @@ docs/hugsim_credibility_decision_rules.md
 docs/hugsim_smoke_test_plan.md
 docs/runs/hugsim_counterfactual_001.md
 docs/runs/hugsim_counterfactual_001_audit.json
+docs/runs/hugsim_multicar_cut_in_001.md
+docs/runs/hugsim_multicar_cut_in_001_audit.json
 ```
 
 ## Corrected Baseline
@@ -78,45 +84,65 @@ Aligned internal metrics:
 These results establish a narrow internal-geometry response, not sensor-level
 E2E evaluation credibility.
 
+## Strong Multi-Actor Result
+
+Paired outputs:
+
+```text
+artifacts/hugsim_contrast/scene-0383-easy-00-run006-6s
+artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run001
+artifacts/hugsim_contrast/scene-0383-multicar-report-run003
+```
+
+The treatment contains a slower lead vehicle and a right-side vehicle moving
+diagonally across the ego path. Both actors reuse the same locally available
+3DRealCar asset.
+
+| Condition | NC | TTC | PDMS | HDScore |
+|---|---:|---:|---:|---:|
+| no actors | 1.000 | 1.000 | 1.000 | 0.185374 |
+| lead + cut-in | 0.9167 | 0.750 | 0.7976 | 0.147857 |
+
+The paired ego states and actions are identical. The cut-in crosses the ego
+centerline at approximately 5.0 seconds; TTC first fails at 4.75 seconds and NC
+at 5.75 seconds. No actual runtime collision occurs.
+
 ## Immediate Goal
 
-Strengthen the current tests with evidence grounded in the real source
-sequence.
-
-First determine whether the exact real camera observations and capture
-metadata behind released `scene-0383` are locally available or can be obtained
-from the identified public dataset sequence.
+Review whether the large intervention produces mutually consistent visual,
+actor-state, and internal-risk evidence.
 
 Target test chain:
 
 ```text
-real source-log observation at a captured pose
-→ HUGSIM reconstruction rendered at the matched pose
-→ measurable and inspectable fidelity gap
-→ controlled deviation / counterfactual intervention
+no-actor baseline
+→ lead vehicle + right-side diagonal cut-in
+→ synchronized RGB / semantic / depth and actor trajectories
+→ TTC / NC event timing
 → segment-level accepted / down-weighted / rejected judgment
 ```
 
 ## Required Questions
 
-1. Can the released scene be traced to exact source frames and camera poses?
-2. At captured poses, does reconstruction preserve task-relevant road,
-   vehicle, boundary, depth, and semantic evidence?
-3. As ego deviates from the captured trajectory, where does evidence quality
-   become unsupported?
-4. Can the simulator expose that support boundary so downstream evidence is
-   down-weighted or rejected?
-5. Does a counterfactual event remain credible after separating source
-   fidelity, rendering consistency, internal geometry, and metric response?
+1. Does the right-side vehicle move continuously from the image edge through
+   the ego-path region in RGB, semantic, depth, and recorded actor state?
+2. Does the TTC/NC timing align with the actor's centerline crossing rather
+   than merely with actor presence?
+3. How much do duplicated vehicle identity, foreground/background appearance
+   mismatch, and reset-time actor advancement weaken the evidence?
+4. Is the scripted `ConstantPlanner` diagonal adequate for renderer/metric
+   stress testing while remaining insufficient as realistic merge behavior?
+5. If another run is justified, should it use distinct vehicle assets and a
+   map-aware or explicitly staged merge instead of another placement tweak?
 
 ## Near-Term Outputs
 
-- a source-frame / reconstruction provenance record;
-- matched-pose real-versus-rendered comparison when source frames are
-  available;
-- an explicit record of unavailable source evidence when they are not;
-- a support-region interpretation for the existing rollout;
-- claim-specific segment decisions;
+- an inspectable front comparison video;
+- a five-timepoint RGB / semantic / depth contact sheet;
+- a top-down actor-trajectory and risk timeline;
+- a reproducible multi-actor run report and compact audit record;
+- claim-specific decisions that separate internal response from traffic
+  realism and AD-agent claims;
 - no final credibility metric or per-layer simulator score.
 
 ## Guardrails
@@ -126,8 +152,9 @@ Do not:
 - treat real-log origin as proof of counterfactual credibility;
 - equate RGB/semantic/depth agreement from one renderer with real-world
   agreement;
+- call the scripted diagonal a validated real-world merge;
+- treat two instances of one vehicle asset as appearance diversity;
 - report internal NC/TTC response as sensor-input AD-agent validity;
-- expand a two-position test into a general lane-relation claim;
 - install full AD agents before source and simulator evidence are understood;
 - run a full benchmark or design the final credibility metric;
 - grade HUGSIM using the future four-layer evidence-chain concept;
@@ -136,6 +163,8 @@ Do not:
 
 ## Success Criterion
 
-The next step succeeds when the gap between **real source evidence** and
-**simulated counterfactual evidence** is explicit and auditable. More HUGSIM
-runs without that distinction are not progress toward the final objective.
+This task succeeds when the visually obvious cut-in can be traced through
+rendered observations, actor states, and metric timing, while the limitations
+of duplicated appearance, scripted behavior, and the dummy ego planner remain
+explicit. More runs are justified only if they materially improve actor
+diversity or behavior realism.

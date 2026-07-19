@@ -120,7 +120,7 @@ def vehicle_asset_evidence(
                     "right_m": actor[0],
                     "forward_m": actor[1],
                     "height_m": actor[2],
-                    "yaw_deg": actor[3],
+                    "yaw_rad": actor[3],
                     "velocity_mps": actor[4],
                 },
                 "controller": actor[6],

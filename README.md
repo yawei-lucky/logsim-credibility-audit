@@ -94,6 +94,9 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - 无车、同车道静止车辆、相邻车道静止车辆三组严格配对的 5 秒实验；
 - RGB / semantic / depth 像素级反事实证据和可视化；
 - 第一条经过第三方复核的 relation-level `down-weighted` audit record，并保留内部几何子结论为 `accepted`。
+- 6 秒/24 步的多车强干预实验：一辆前方慢车和一辆右侧斜向切入车；
+- 多车前视对比视频、五时刻跨模态图、俯视轨迹和风险时间线；
+- 第一条 multi-actor `down-weighted` audit record，并保留严格配对、多实例渲染和内部风险时序子结论为 `accepted`。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -118,17 +121,21 @@ env.reset
 
 三组内部状态和控制严格配对；横向0.0米和3.5米位置产生不同内部 TTC/NC 响应。该子结论为 `accepted`。但车辆与背景存在可见视觉域差异，跨模态输出来自同一渲染器，也没有真实日志参考帧或 sensor-input AD agent，因此完整片段为 `down-weighted`。
 
+最新多车强干预实验同样保持 ego state 和 action 完全一致。右侧切入车约在 5.0 秒穿过 ego 中心线附近，TTC 从 4.75 秒失败，NC 从 5.75 秒失败；多车组 PDMS 为 0.798，而配对无车组为 1.0。实际 runtime collision 仍为 false。该结果支持多实例渲染、actor state evolution 和内部规划路径风险响应，不支持真实碰撞或 AD agent 响应。
+
 ## 当前重点
 
-下一步不扩大文献范围，也不运行完整 HUGSIM benchmark，而是为片段级判断积累具有独立现实锚点的证据：
+当前优先审阅明显强干预的多车汇入结果，而不是继续做微小位置变化：
 
 ```text
-source-log observation at matched pose
-→ reconstructed observation
-→ controlled counterfactual intervention
-→ closed-loop state and metric event
-→ accepted / down-weighted / rejected segment
+no-actor baseline
+→ lead vehicle + right-side cut-in
+→ synchronized RGB / semantic / depth and actor trajectories
+→ TTC / NC event timing
+→ claim-specific credibility judgment
 ```
+
+如果继续多车测试，下一次应使用不同车辆资产和更可信的地图约束汇入轨迹。真实源日志锚点仍是后续验证传感器真实性的重要任务，但不是本轮强干预实验的即时动作。
 
 ## 暂缓内容
 
@@ -157,6 +164,8 @@ source-log observation at matched pose
 - `docs/runs/hugsim_smoke_test_002_audit.json`
 - `docs/runs/hugsim_counterfactual_001.md`
 - `docs/runs/hugsim_counterfactual_001_audit.json`
+- `docs/runs/hugsim_multicar_cut_in_001.md`
+- `docs/runs/hugsim_multicar_cut_in_001_audit.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -171,8 +180,10 @@ source-log observation at matched pose
 - `scripts/run_hugsim_debug_smoke.py`
 - `scripts/hugsim_control_adapter.py`
 - `scripts/analyze_hugsim_counterfactual.py`
+- `scripts/analyze_hugsim_multicar.py`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 - `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`
 
 ## 项目判断
 

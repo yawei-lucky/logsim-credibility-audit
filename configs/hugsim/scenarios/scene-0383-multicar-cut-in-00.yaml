@@ -1,0 +1,36 @@
+# Strong-intervention stress test for scene-0383.
+#
+# agent_0 starts at the front-right and moves diagonally across the ego path.
+# agent_1 is a slower lead vehicle farther ahead. Both instances reuse the
+# locally available 3DRealCar asset; the test targets multi-actor geometry and
+# temporal behavior, not vehicle-identity diversity.
+mode: multicar_cut_in_00
+plan_list:
+- - 4.5
+  - 8.0
+  - -0.3
+  - 0.45
+  - 2.0
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+- - 0.0
+  - 24.0
+  - -0.3
+  - 0.0
+  - 0.5
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000

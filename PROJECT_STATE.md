@@ -174,6 +174,12 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 横向0.0米车辆最终语义掩码有97.4%被 RGB 差异支持、100%被深度差异支持；
 - 第三方复核后完整片段调整为 `down-weighted`，内部几何和严格配对子结论保留为 `accepted`；
 - 已明确未来可信评价指标计划采用四层证据链，但当前尚未进入指标设计或逐层评分阶段。
+- 已按用户明确调整完成 6 秒/24 步多车强干预实验：一辆前方慢车和一辆右侧斜向切入车；
+- 多车组与无车组 ego state、action 最大差异均为 0；
+- 切入车约在 5.0 秒穿越 ego 中心线附近，TTC 从 4.75 秒失败，NC 从 5.75 秒失败；
+- 多车组 PDMS 为 0.798、HDScore 为 0.148，无车组分别为 1.0 和 0.185；
+- 已生成多车前视三联视频、五时刻跨模态图、俯视轨迹和风险时间线；
+- 多车片段整体判定为 `down-weighted`，严格配对、多实例渲染/state evolution 和内部风险时序子结论为 `accepted`。
 
 第一份 run report 的结论是：
 
@@ -210,6 +216,19 @@ corrected no-actor baseline
 
 完整片段因视觉域差异、缺少真实日志参考帧和真实 AD agent 而为 `down-weighted`。它不支持真实碰撞、AD agent 表现或 HUGSIM 全局可信结论。
 
+第四份 multi-actor report 已完成：
+
+```text
+6-second no-actor baseline
+→ lead vehicle + scripted right-side cut-in
+→ synchronized RGB / semantic / depth and actor-state evidence
+→ TTC failure at 4.75 s and NC failure at 5.75 s
+→ actual runtime collision: false
+→ multi-actor credibility judgment: down-weighted
+```
+
+两辆 actor 复用同一个本地 3DRealCar 资产；切入使用无地图约束的 `ConstantPlanner` 直线轨迹；deterministic writer 不响应车辆。因此本次结果是明显的多车渲染与内部风险压力测试，不是交通行为真实性或 AD agent 能力测试。
+
 ---
 
 ## 7. 当前遗留问题
@@ -218,7 +237,7 @@ corrected no-actor baseline
 
 - 在多个横向/纵向位置上验证 relation boundary 与指标单调性；
 - 检查接近 TTC/NC 转换边界时，RGB / semantic / depth / geometry 是否仍一致；
-- 验证移动 actor、遮挡变化和 risk-decreasing counterfactual；
+- 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
 - 接入真实 AD agent 后区分 agent response 与 simulator artifact；
 - 跨场景验证当前 relation-level 结果；
 - 在多场景、多关系证据成熟前，仍不定义最终 credibility metric。
@@ -242,6 +261,8 @@ corrected no-actor baseline
 - `docs/runs/hugsim_smoke_test_002_audit.json`
 - `docs/runs/hugsim_counterfactual_001.md`
 - `docs/runs/hugsim_counterfactual_001_audit.json`
+- `docs/runs/hugsim_multicar_cut_in_001.md`
+- `docs/runs/hugsim_multicar_cut_in_001_audit.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -256,7 +277,9 @@ corrected no-actor baseline
 - `scripts/run_hugsim_debug_smoke.py`
 - `scripts/hugsim_control_adapter.py`
 - `scripts/analyze_hugsim_counterfactual.py`
+- `scripts/analyze_hugsim_multicar.py`
 - `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 
 ---
@@ -307,14 +330,14 @@ ChatGPT Project / Custom GPT
 
 下一步只做：
 
-> 为片段级可信判断建立真实日志锚点，并继续使用严格配对反事实实验验证因果归因。
+> 先审阅新完成的多车强干预证据；如果继续运行，使用不同车辆资产和更可信的地图约束汇入方式，而不是回到微小位置变化。
 
-当前关键不是增加无目的运行数量，而是回答：
+当前关键是回答：
 
-1. 重建画面在原始采集位姿上与真实日志相差多少；
-2. 偏离原始轨迹后，哪些区域仍有重建支持，哪些必须降权或拒绝；
-3. 反事实 actor 修改是否保持几何、语义、遮挡和时序关系；
+1. 右侧切入的视觉运动、actor state 和 TTC/NC 时序是否相互匹配；
+2. 两辆相同外观车辆和脚本化直线切入对结论造成多大限制；
+3. 下一次是否值得下载不同 3DRealCar 资产并启用地图约束控制器；
 4. 闭环风险来自 agent、重建、场景编辑、控制接口还是评分实现；
-5. 如何积累足够的测试证据，为未来四层可信评价指标研究提供基础，而不是现在过早设计指标。
+5. 如何积累足够测试证据，为未来四层可信评价指标研究提供基础，而不是现在过早设计指标。
 
 不要同时展开 OmniDreams / Cosmos。

@@ -42,9 +42,10 @@ their own scope.
 - "Log-driven" means that the simulator constructs its environment from real
   road-driving capture sequences and generates counterfactual closed-loop
   evolution; exact log replay is not required.
-- The current HUGSIM goal is to strengthen the testing and evidence process
-  with a real source-log anchor, controlled counterfactual evidence, and
-  explicit causal attribution.
+- The current HUGSIM goal is to review and strengthen bounded, visually
+  obvious multi-actor stress tests with controlled counterfactual evidence and
+  explicit causal attribution. The real source-log anchor remains a later
+  sensor-fidelity task.
 - Do not expand to OmniDreams / Cosmos, a full HUGSIM benchmark, installation of
   full AD agents, or a final quantitative credibility metric unless the user
   explicitly changes the project direction.
