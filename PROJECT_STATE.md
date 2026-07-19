@@ -59,27 +59,44 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 
 ---
 
-## 3. 四层可信证据链
+## 3. 当前工作流程
 
-本项目的方法主线是四层逐层支撑的可信证据链：
+当前采用四步测试与证据处理路线：
 
-### 第一层 — 日志复现
+### Step 1 — Source Availability Gate
 
-验证仿真场景能否追溯并复现真实采集日志中的场景、位姿、观测和动态事实。
+先判断论文、代码、模型、数据、runtime、评估脚本是否公开可查。
 
-### 第二层 — 传感器一致性
+### Step 2 — Closed-loop Evidence Completeness
 
-验证生成的 RGB、语义、深度、多相机和时序观测是否与真实传感器证据及彼此一致。
+判断一次闭环仿真是否产生了完整证据链，包括 observation、planner output、action、ego / actor state update、metrics 和输出文件。
 
-### 第三层 — 任务级一致性
+### Step 3 — Segment-level Evidence Judgment
 
-验证车道、可行驶区域、相对位置、遮挡、接近、碰撞和 TTC 等任务关系在受控反事实下是否一致。
+对单个 closed-loop segment 做 evidence qualification：
 
-### 第四层 — 闭环结果可信性
+- accepted；
+- down-weighted；
+- rejected。
 
-验证 observation、decision、action、state update 和 outcome 构成的闭环结果能否作为评价自动驾驶系统的可信证据。
+这里的 accepted / down-weighted / rejected 是当前阶段的证据处理方式，可用于场景筛选和证据质量管理；它不是项目总目标，也不是最终数值指标。
 
-Source Availability Gate 是外部审计的前置门槛；Closed-loop Evidence Completeness 是证据记录完整性检查；`accepted`、`down-weighted`、`rejected` 是针对具体证据主张的判定标签。它们都不是四层本身。
+### Step 4 — Future Credibility Metric
+
+在积累多个 run 和多个 segment 后，再定义量化的 simulator credibility metric。
+
+当前不急于提出最终数值指标。先保证证据链和判定规则成立。
+
+长期的可信评价指标计划沿四层证据链研究：
+
+```text
+日志复现
+→ 传感器一致性
+→ 任务级一致性
+→ 闭环结果可信性
+```
+
+这四层是未来指标的证据组织思路，不是当前项目阶段，也不用于现在给 HUGSIM 逐层打分。当前工作仍是测试、对照、证据积累和因果归因，尚未进入指标设计。
 
 ---
 
@@ -156,7 +173,7 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已完成 RGB / semantic / depth 像素级反事实比较和时序风险可视化；
 - 横向0.0米车辆最终语义掩码有97.4%被 RGB 差异支持、100%被深度差异支持；
 - 第三方复核后完整片段调整为 `down-weighted`，内部几何和严格配对子结论保留为 `accepted`；
-- 已正式建立“日志复现、传感器一致性、任务级一致性、闭环结果可信性”四层可信证据链，并记录 HUGSIM 当前逐层状态。
+- 已明确未来可信评价指标计划采用四层证据链，但当前尚未进入指标设计或逐层评分阶段。
 
 第一份 run report 的结论是：
 
@@ -218,8 +235,6 @@ corrected no-actor baseline
 - `docs/hugsim_audit.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
-- `docs/log_driven_simulator_four_layer_evidence_chain.md`
-- `docs/hugsim_four_layer_evidence_status.json`
 - `docs/hugsim_cuda_pixi_runbook.md`
 - `docs/runs/hugsim_smoke_test_001.md`
 - `docs/runs/hugsim_smoke_test_001_review.md`
@@ -292,7 +307,7 @@ ChatGPT Project / Custom GPT
 
 下一步只做：
 
-> 为第一层日志复现建立真实日志锚点，据此加强第二层传感器一致性，并继续使用严格配对实验验证第三层任务级一致性。
+> 为片段级可信判断建立真实日志锚点，并继续使用严格配对反事实实验验证因果归因。
 
 当前关键不是增加无目的运行数量，而是回答：
 
@@ -300,6 +315,6 @@ ChatGPT Project / Custom GPT
 2. 偏离原始轨迹后，哪些区域仍有重建支持，哪些必须降权或拒绝；
 3. 反事实 actor 修改是否保持几何、语义、遮挡和时序关系；
 4. 闭环风险来自 agent、重建、场景编辑、控制接口还是评分实现；
-5. 在前三层证据充分后，什么条件下才能把闭环结果用于自动驾驶系统评价。
+5. 如何积累足够的测试证据，为未来四层可信评价指标研究提供基础，而不是现在过早设计指标。
 
 不要同时展开 OmniDreams / Cosmos。
