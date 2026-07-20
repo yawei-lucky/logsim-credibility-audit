@@ -176,10 +176,21 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已明确未来可信评价指标计划采用四层证据链，但当前尚未进入指标设计或逐层评分阶段。
 - 已按用户明确调整完成 6 秒/24 步多车强干预实验：一辆前方慢车和一辆右侧斜向切入车；
 - 多车组与无车组 ego state、action 最大差异均为 0；
-- 切入车约在 5.0 秒穿越 ego 中心线附近，TTC 从 4.75 秒失败，NC 从 5.75 秒失败；
+- 该 6 秒 run 的 raw 输出显示 TTC 从 4.75 秒、NC 从 5.75 秒失败；
 - 多车组 PDMS 为 0.798、HDScore 为 0.148，无车组分别为 1.0 和 0.185；
 - 已生成多车前视三联视频、五时刻跨模态图、俯视轨迹和风险时间线；
-- 多车片段整体判定为 `down-weighted`，严格配对、多实例渲染/state evolution 和内部风险时序子结论为 `accepted`。
+- 独立证据审查发现 6 秒多车 run 的 TTC/NC 失败全部位于缺少 2.5 秒
+  未来 actor 历史的尾窗，评分器用末帧 actor box 填充未来；
+- 将完全相同的 state/action/plan 前缀延长到 9 秒后，旧 TTC/NC 失败全部
+  消失，旧内部风险时序结论已改为 `rejected`；
+- 已完成无车、仅前车、仅远距切入、前车+远距切入四组 9 秒
+  actor-removal 实验，完整时域窗口内四组 NC/TTC/PDMS 均为 1；
+- 已完成一次执行前固定参数、无事后调参的近距汇入：3.917 秒过中心线，
+  5.5 秒二维有向 footprint 净距 0.730 米，无实际碰撞；
+- 近距组在完整未来窗口内 NC=1、TTC=0.115、PDMS=0.368，23 个 TTC
+  失败全部命中 actor0 且无尾部填充；
+- 已增加 fail-closed 配对/时域分析、writer 同值 `Done` 握手、严格
+  runner 成功状态与 11 个回归测试。
 
 第一份 run report 的结论是：
 
@@ -227,7 +238,34 @@ corrected no-actor baseline
 → multi-actor credibility judgment: down-weighted
 ```
 
-两辆 actor 复用同一个本地 3DRealCar 资产；切入使用无地图约束的 `ConstantPlanner` 直线轨迹；deterministic writer 不响应车辆。因此本次结果是明显的多车渲染与内部风险压力测试，不是交通行为真实性或 AD agent 能力测试。
+第四份报告的 raw 输出保留，但动态风险解释已纠正。旧失败全部发生在
+3.5 秒后的 horizon-invalid 尾窗；相同前缀延长后均不失败。因此只保留
+严格配对、多实例渲染和状态连续性，旧 NC/TTC 风险主张为 `rejected`。
+
+第五份 rollout-horizon / factorial report 已完成：
+
+```text
+6-second run with incomplete future actor history
+→ exact-prefix 9-second extension
+→ 2×2 actor-removal controls
+→ all valid-window metrics equal 1
+→ finite-rollout tail artifact: accepted
+```
+
+第六份 near-distance cut-in report 已完成：
+
+```text
+pre-specified single-shot treatment
+→ centerline crossing at 3.917 s
+→ 0.730 m positive 2D footprint clearance
+→ horizon-valid TTC=0.115, NC=1
+→ 23 actor0-specific failures, no padding
+→ overall down-weighted; narrow internal TTC response accepted
+```
+
+两辆 actor 仍复用同一个本地 3DRealCar 资产；切入仍是无地图约束的
+`ConstantPlanner` 直线轨迹；deterministic writer 不响应车辆。因此新结果
+证明的是内部渲染/几何/评分响应，不是交通行为真实性或 AD agent 能力。
 
 ---
 
@@ -235,11 +273,11 @@ corrected no-actor baseline
 
 当前仍未完成：
 
-- 在多个横向/纵向位置上验证 relation boundary 与指标单调性；
-- 检查接近 TTC/NC 转换边界时，RGB / semantic / depth / geometry 是否仍一致；
 - 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
 - 接入真实 AD agent 后区分 agent response 与 simulator artifact；
 - 跨场景验证当前 relation-level 结果；
+- 把 horizon-valid gate 推广到其它 HUGSIM 运行和评分事件；
+- 发布可从 fresh clone 下载的紧凑证据包；
 - 在多场景、多关系证据成熟前，仍不定义最终 credibility metric。
 
 ---
@@ -263,6 +301,10 @@ corrected no-actor baseline
 - `docs/runs/hugsim_counterfactual_001_audit.json`
 - `docs/runs/hugsim_multicar_cut_in_001.md`
 - `docs/runs/hugsim_multicar_cut_in_001_audit.json`
+- `docs/runs/hugsim_horizon_factorial_001.md`
+- `docs/runs/hugsim_horizon_factorial_001_audit.json`
+- `docs/runs/hugsim_near_cut_in_001.md`
+- `docs/runs/hugsim_near_cut_in_001_audit.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -278,8 +320,13 @@ corrected no-actor baseline
 - `scripts/hugsim_control_adapter.py`
 - `scripts/analyze_hugsim_counterfactual.py`
 - `scripts/analyze_hugsim_multicar.py`
+- `scripts/analyze_hugsim_horizon_factorial.py`
+- `scripts/analyze_hugsim_near_cutin.py`
 - `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
 - `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-lead-only-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-cut-in-only-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-near-cut-in-00.yaml`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 
 ---
@@ -328,16 +375,15 @@ ChatGPT Project / Custom GPT
 
 ## 11. 当前下一步最小行动
 
-下一步只做：
+本轮切入参数实验已经满足执行前停止标准，下一步不再调整同一场景参数。
 
-> 先审阅新完成的多车强干预证据；如果继续运行，使用不同车辆资产和更可信的地图约束汇入方式，而不是回到微小位置变化。
+下一步只在以下方向中选择一个有材料提升的动作：
 
-当前关键是回答：
+1. 下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
+2. 跨场景复核 horizon-valid metric gate；
+3. 转向真实源日志锚点，开始验证 matched-pose 重建与真实观测的一致性。
 
-1. 右侧切入的视觉运动、actor state 和 TTC/NC 时序是否相互匹配；
-2. 两辆相同外观车辆和脚本化直线切入对结论造成多大限制；
-3. 下一次是否值得下载不同 3DRealCar 资产并启用地图约束控制器；
-4. 闭环风险来自 agent、重建、场景编辑、控制接口还是评分实现；
-5. 如何积累足够测试证据，为未来四层可信评价指标研究提供基础，而不是现在过早设计指标。
+在用户选择前，优先维护当前证据、工具和判定规则，不自行扩展到完整 benchmark、
+真实 AD agent 或最终可信指标。
 
 不要同时展开 OmniDreams / Cosmos。

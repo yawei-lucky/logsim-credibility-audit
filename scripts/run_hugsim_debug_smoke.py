@@ -98,6 +98,14 @@ def git_commit(root: Path) -> str:
     ).strip()
 
 
+def git_status(root: Path) -> list[str]:
+    status = subprocess.check_output(
+        ["git", "-C", str(root), "status", "--short"],
+        text=True,
+    )
+    return status.splitlines()
+
+
 def vehicle_asset_evidence(
     plan_list: list[list[Any]],
     realcar_root: Path,
@@ -321,14 +329,36 @@ def main() -> int:
             stream.write(eval_error + "\n")
 
     summary = {
+        "run_status": (
+            "complete"
+            if len(audit_steps) == args.max_steps and eval_error is None
+            else "incomplete"
+        ),
         "scenario_id": f"{cfg.scenario.scene_name}-{cfg.scenario.mode}",
         "hugsim_commit": git_commit(hugsim_root),
+        "hugsim_worktree_status": git_status(hugsim_root),
+        "audit_repo": {
+            "commit": git_commit(Path(__file__).resolve().parents[1]),
+            "worktree_status": git_status(Path(__file__).resolve().parents[1]),
+            "runner_script_sha256": sha256(Path(__file__).resolve()),
+            "control_adapter_sha256": sha256(
+                Path(__file__).resolve().with_name(
+                    "hugsim_control_adapter.py"
+                )
+            ),
+        },
         "source_assets": {
             "model_path": str(local_model_path),
             "scenario_yaml": str(scenario_path),
             "scenario_yaml_sha256": sha256(scenario_path),
             "scene_cfg": str(model_config_path),
             "scene_cfg_sha256": sha256(model_config_path),
+            "base_yaml": str(base_path),
+            "base_yaml_sha256": sha256(base_path),
+            "camera_yaml": str(camera_path),
+            "camera_yaml_sha256": sha256(camera_path),
+            "kinematic_yaml": str(kinematic_path),
+            "kinematic_yaml_sha256": sha256(kinematic_path),
             "vehicle_assets": actor_assets,
         },
         "requested_steps": args.max_steps,
@@ -351,7 +381,11 @@ def main() -> int:
         f"eval_status={'ok' if eval_error is None else 'error'}",
         flush=True,
     )
-    return 0 if audit_steps else 1
+    return (
+        0
+        if len(audit_steps) == args.max_steps and eval_error is None
+        else 1
+    )
 
 
 if __name__ == "__main__":

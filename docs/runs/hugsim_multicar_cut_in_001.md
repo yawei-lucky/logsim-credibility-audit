@@ -2,6 +2,23 @@
 
 Date: 2026-07-19
 
+## Correction — 2026-07-20
+
+The original internal-risk interpretation has been withdrawn.
+
+An independent evidence review found that HUGSIM's scorer needs 2.5 seconds of
+future actor history for each frame. This 6-second run has complete history
+only through 3.5 seconds, while its TTC and NC failures begin at 4.75 and 5.75
+seconds. When the exact same state/action/plan prefix was extended to 9
+seconds, all corresponding failures disappeared.
+
+The old TTC/NC decrease is therefore a finite-rollout tail-padding artifact,
+not accepted dynamic-risk evidence. See:
+
+```text
+docs/runs/hugsim_horizon_factorial_001.md
+```
+
 ## Purpose
 
 Replace the previous small lateral-placement contrast with a visibly large,
@@ -95,6 +112,9 @@ first NC failure: 5.75 s
 actual runtime collision observed: false
 ```
 
+These are retained as the raw 6-second outputs. The TTC/NC event times fall
+inside the horizon-invalid tail and must not be interpreted as credible risk.
+
 The cut-in actor moves from approximately:
 
 ```text
@@ -154,8 +174,7 @@ Accepted narrow subclaims:
   and action;
 - HUGSIM renders two actor instances with synchronized RGB, semantic, depth,
   and state evolution;
-- HUGSIM's internal planned-path risk response changes near the scripted
-  cut-in's ego-path crossing.
+- the old and extended runs have an exact common state/action/plan prefix.
 
 Down-weighted claims:
 
@@ -165,13 +184,14 @@ Down-weighted claims:
 
 Rejected claims:
 
+- the 6-second NC/TTC decrease is credible dynamic-risk evidence;
 - an actual runtime collision occurred;
 - an AD agent responded to the cut-in;
 - this single stress test establishes global HUGSIM credibility.
 
 ## Next Material Improvement
 
-If multi-actor stress testing continues, the next meaningful improvement is
-not another small placement change. Use distinct released vehicle assets and a
-map-aware or explicitly staged merge trajectory, then check whether appearance,
-occlusion, actor state, and risk timing remain aligned.
+Before adding more appearance or behavior diversity, require complete future
+actor history for every scored planned waypoint. A later pre-specified
+near-distance cut-in satisfies that gate and is documented in
+`docs/runs/hugsim_near_cut_in_001.md`.

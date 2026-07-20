@@ -1,0 +1,36 @@
+# Single-shot near-miss stress test selected before execution.
+#
+# The front-right actor crosses the ego centerline earlier and with less
+# longitudinal separation than scene-0383-multicar-cut-in-00.yaml. The far
+# lead actor is retained as a within-scene negative control. This remains a
+# scripted ConstantPlanner stress case, not a realistic lane-change policy.
+mode: near_cut_in_00
+plan_list:
+- - 4.0
+  - 6.5
+  - -0.3
+  - 0.60
+  - 1.7
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+- - 0.0
+  - 24.0
+  - -0.3
+  - 0.0
+  - 0.5
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000

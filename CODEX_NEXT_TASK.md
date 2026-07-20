@@ -1,4 +1,4 @@
-# Codex Next Task — Review and Strengthen the Multi-Actor Stress Test
+# Codex Next Task — Preserve the Corrected Multi-Actor Evidence
 
 > Read this file first when resuming HUGSIM work.
 
@@ -12,159 +12,155 @@ This project uses the broad definition:
 > road-driving capture sequences and generates counterfactual closed-loop
 > evolution. Exact log replay is not required.
 
-HUGSIM is the first case study, not the final research target. It is classified
-as a real-driving-sequence reconstruction-based, counterfactual closed-loop
-neural simulator.
+HUGSIM is the first case study, not the final research target. It is a
+real-driving-sequence reconstruction-based, counterfactual closed-loop neural
+simulator.
 
-## Current Work Process
+The long-term credibility metric is planned around a four-layer evidence
+chain: log reproduction, sensor consistency, task-level consistency, and
+closed-loop outcome credibility. That is a future metric-research structure,
+not the current grading scheme.
 
-The current work follows four practical steps:
-
-```text
-Source Availability Gate
-→ Closed-Loop Evidence Completeness
-→ Segment-Level Evidence Judgment
-→ Future Credibility Metric
-```
-
-Current HUGSIM status:
-
-- source availability discovery is complete for the present phase;
-- the simulator-side closed-loop evidence chain runs reproducibly;
-- the first paired counterfactual segment is `down-weighted` overall;
-- narrow state/action pairing and internal-geometry response subclaims are
-  `accepted`;
-- a 6-second lead-vehicle plus right-side cut-in stress test has completed;
-- the multi-actor run is `down-weighted` overall, while strict pairing,
-  multi-instance rendering/state evolution, and internal risk timing are
-  `accepted` narrow subclaims;
-- sensor-input AD-agent performance and global HUGSIM credibility are not
-  established.
-
-The long-term credibility metric is planned around a four-layer evidence chain:
-log reproduction, sensor consistency, task-level consistency, and closed-loop
-outcome credibility. That is a future metric-research direction, not the
-current experimental grading scheme. Do not assign HUGSIM per-layer scores or
-design the metric during this task.
-
-Read:
+## Read First
 
 ```text
 docs/hugsim_credibility_decision_rules.md
 docs/hugsim_smoke_test_plan.md
 docs/runs/hugsim_counterfactual_001.md
-docs/runs/hugsim_counterfactual_001_audit.json
-docs/runs/hugsim_multicar_cut_in_001.md
-docs/runs/hugsim_multicar_cut_in_001_audit.json
+docs/runs/hugsim_horizon_factorial_001.md
+docs/runs/hugsim_horizon_factorial_001_audit.json
+docs/runs/hugsim_near_cut_in_001.md
+docs/runs/hugsim_near_cut_in_001_audit.json
 ```
 
-## Corrected Baseline
+## Corrected State
 
-Third-party review found a one-step mismatch between the metric frame and its
-planned-trajectory anchor. The runner now anchors timestamp, ego/actor state,
-and global plan at the same post-step state and includes a regression test.
-
-Aligned outputs:
+The old 6-second lead-plus-cut-in run reported:
 
 ```text
-artifacts/hugsim_contrast/scene-0383-easy-00-run004-aligned
-artifacts/hugsim_contrast/scene-0383-medium-00-run003-aligned
-artifacts/hugsim_contrast/scene-0383-adjacent-static-00-run002-aligned
-artifacts/hugsim_contrast/scene-0383-counterfactual-report-run003-aligned
+TTC first failure: 4.75 s
+NC first failure: 5.75 s
 ```
 
-Aligned internal metrics:
+Those risk events are now `rejected`.
 
-| Actor placement | NC | TTC | PDMS | HDScore |
-|---|---:|---:|---:|---:|
-| none | 1.000 | 1.000 | 1.000 | 0.150333 |
-| lateral 0.0 m, forward 15.0 m | 0.700 | 0.500 | 0.557 | 0.083757 |
-| lateral 3.5 m, forward 15.0 m | 1.000 | 1.000 | 1.000 | 0.150333 |
+HUGSIM's saved scoring trajectory contains five future waypoints at 0.5-second
+spacing, so each metric frame needs 2.5 seconds of future actor history. The
+6-second run is valid only through 3.5 seconds. Its failures occur after that
+point, where the scorer repeats the last actor box.
 
-These results establish a narrow internal-geometry response, not sensor-level
-E2E evaluation credibility.
+The 6-second run and a 9-second extension have an exact common
+state/action/plan prefix, yet all old failures disappear in the extension.
+This finite-rollout artifact identification is `accepted`.
 
-## Strong Multi-Actor Result
+## Corrected 2×2 Actor-Removal Result
 
-Paired outputs:
+Nine-second runs:
 
 ```text
-artifacts/hugsim_contrast/scene-0383-easy-00-run006-6s
-artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run001
-artifacts/hugsim_contrast/scene-0383-multicar-report-run003
+artifacts/hugsim_contrast/scene-0383-easy-00-run007-9s
+artifacts/hugsim_contrast/scene-0383-lead-only-00-run002-9s
+artifacts/hugsim_contrast/scene-0383-cut-in-only-00-run002-9s
+artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run002-9s
+artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002
 ```
 
-The treatment contains a slower lead vehicle and a right-side vehicle moving
-diagonally across the ego path. Both actors reuse the same locally available
-3DRealCar asset.
+Horizon-valid window, 0.25–6.5 seconds:
 
-| Condition | NC | TTC | PDMS | HDScore |
-|---|---:|---:|---:|---:|
-| no actors | 1.000 | 1.000 | 1.000 | 0.185374 |
-| lead + cut-in | 0.9167 | 0.750 | 0.7976 | 0.147857 |
+| Condition | NC | TTC | PDMS |
+|---|---:|---:|---:|
+| no actors | 1.000 | 1.000 | 1.000 |
+| lead only | 1.000 | 1.000 | 1.000 |
+| far cut-in only | 1.000 | 1.000 | 1.000 |
+| lead + far cut-in | 1.000 | 1.000 | 1.000 |
 
-The paired ego states and actions are identical. The cut-in crosses the ego
-centerline at approximately 5.0 seconds; TTC first fails at 4.75 seconds and NC
-at 5.75 seconds. No actual runtime collision occurs.
+The far cut-in crosses the centerline but retains about 4.195 meters of
+minimum 2D oriented-footprint clearance. It is a negative control, not a
+credible risk event.
+
+## Near-Distance Single-Shot Result
+
+Parameters were fixed before execution, but the scenario was not formally
+committed or externally preregistered before the run. Describe it as
+**pre-specified single-shot**, not formal preregistration.
+
+```text
+artifacts/hugsim_contrast/scene-0383-near-cut-in-00-run001-9s
+artifacts/hugsim_contrast/scene-0383-near-cut-in-report-run001
+artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002
+```
+
+Horizon-valid result:
+
+| Condition | NC | TTC | PDMS |
+|---|---:|---:|---:|
+| no actors | 1.000 | 1.000 | 1.000 |
+| far cut-in control | 1.000 | 1.000 | 1.000 |
+| near cut-in | 1.000 | 0.1154 | 0.3681 |
+
+Event evidence:
+
+```text
+centerline crossing: 3.917 s
+minimum 2D oriented-footprint clearance: 0.730 m at 5.5 s
+horizon-valid TTC failures: 23 frames, first at 1.0 s
+failed-event actor IDs: [0]
+tail padding used: false
+runtime collision: false
+```
+
+Accepted narrow subclaims:
+
+- strict input/state/action/plan pairing;
+- continuous actor0 motion and centerline crossing;
+- positive-clearance 2D close pass;
+- actor0-specific HUGSIM internal TTC surrogate response inside the
+  complete-future-history window;
+- internal RGB/semantic/depth co-movement.
+
+The overall segment remains `down-weighted`. Actual collision, physical TTC
+value, AD-agent response, real traffic validity, sensor truth, and global
+HUGSIM credibility remain `rejected` or unsupported.
+
+## Runtime and Analysis Improvements
+
+- The plan writer can use the same `--max-steps` value as the runner and still
+  receive the final `Done` handshake.
+- The runner returns success only when every requested step completes and
+  scoring succeeds.
+- Audit summaries record configuration and runtime script hashes.
+- Pair analyzers fail closed on commit, config, step count, timestamps, plans,
+  and selected report provenance.
+- NC/TTC conclusions fail closed when the event uses incomplete future actor
+  history.
+- Eleven unit tests pass.
 
 ## Immediate Goal
 
-Review whether the large intervention produces mutually consistent visual,
-actor-state, and internal-risk evidence.
+Do not run another same-scene cut-in parameter adjustment. Independent design,
+evidence, and reproducibility reviews agreed that the pre-specified stop
+criterion was met and another treatment would be post-hoc result chasing.
 
-Target test chain:
+The next material HUGSIM action, if explicitly selected, should be one of:
 
-```text
-no-actor baseline
-→ lead vehicle + right-side diagonal cut-in
-→ synchronized RGB / semantic / depth and actor trajectories
-→ TTC / NC event timing
-→ segment-level accepted / down-weighted / rejected judgment
-```
+1. use distinct vehicle assets and more credible map-constrained or staged
+   behavior;
+2. verify the complete-future-history gate on another scene;
+3. add a real source-log matched-pose observation anchor.
 
-## Required Questions
-
-1. Does the right-side vehicle move continuously from the image edge through
-   the ego-path region in RGB, semantic, depth, and recorded actor state?
-2. Does the TTC/NC timing align with the actor's centerline crossing rather
-   than merely with actor presence?
-3. How much do duplicated vehicle identity, foreground/background appearance
-   mismatch, and reset-time actor advancement weaken the evidence?
-4. Is the scripted `ConstantPlanner` diagonal adequate for renderer/metric
-   stress testing while remaining insufficient as realistic merge behavior?
-5. If another run is justified, should it use distinct vehicle assets and a
-   map-aware or explicitly staged merge instead of another placement tweak?
-
-## Near-Term Outputs
-
-- an inspectable front comparison video;
-- a five-timepoint RGB / semantic / depth contact sheet;
-- a top-down actor-trajectory and risk timeline;
-- a reproducible multi-actor run report and compact audit record;
-- claim-specific decisions that separate internal response from traffic
-  realism and AD-agent claims;
-- no final credibility metric or per-layer simulator score.
+Do not independently install a full AD agent, run the full benchmark, expand
+to OmniDreams/Cosmos, or design the final four-layer credibility metric.
 
 ## Guardrails
 
-Do not:
-
-- treat real-log origin as proof of counterfactual credibility;
-- equate RGB/semantic/depth agreement from one renderer with real-world
-  agreement;
-- call the scripted diagonal a validated real-world merge;
-- treat two instances of one vehicle asset as appearance diversity;
-- report internal NC/TTC response as sensor-input AD-agent validity;
-- install full AD agents before source and simulator evidence are understood;
-- run a full benchmark or design the final credibility metric;
-- grade HUGSIM using the future four-layer evidence-chain concept;
-- expand to OmniDreams / Cosmos during this task;
-- overwrite successful outputs.
-
-## Success Criterion
-
-This task succeeds when the visually obvious cut-in can be traced through
-rendered observations, actor states, and metric timing, while the limitations
-of duplicated appearance, scripted behavior, and the dummy ego planner remain
-explicit. More runs are justified only if they materially improve actor
-diversity or behavior realism.
+- Never accept NC/TTC from a rollout tail without a future actor state for
+  every scored planned waypoint.
+- Preserve old raw outputs but mark superseded interpretations explicitly.
+- Treat HUGSIM TTC as a binary internal surrogate, not physical
+  time-to-collision.
+- Do not call a scripted ConstantPlanner diagonal a validated real merge.
+- Do not treat one duplicated vehicle identity as actor diversity.
+- Do not treat common-renderer RGB/semantic/depth agreement as real-sensor
+  correctness.
+- The deterministic plan writer is a loop enabler, not an AD agent.
+- Use exactly `accepted`, `down-weighted`, and `rejected`.

@@ -67,6 +67,10 @@ their own scope.
   `docs/hugsim_credibility_decision_rules.md`.
 - Treat HUGSIM metrics as AD-performance metrics under the simulator. Metric
   values alone do not establish simulator credibility.
+- Do not accept NC/TTC events from a rollout tail unless every planned
+  waypoint has its corresponding future actor state. If the scorer repeats a
+  final actor box to fill missing history, treat resulting events as
+  `rejected`.
 - Prioritize task-relevant geometric, semantic, temporal, and relational
   consistency over visual attractiveness.
 - Keep the deterministic plan-pipe writer clearly described as a simulator-loop

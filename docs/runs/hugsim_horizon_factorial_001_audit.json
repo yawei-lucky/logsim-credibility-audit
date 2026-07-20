@@ -1,0 +1,100 @@
+{
+  "experiment_id": "hugsim_horizon_factorial_001",
+  "date": "2026-07-20",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "control_convention": "corrected",
+  "runs": {
+    "short_combined": "artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run001",
+    "no_actor_9s": "artifacts/hugsim_contrast/scene-0383-easy-00-run007-9s",
+    "lead_only_9s": "artifacts/hugsim_contrast/scene-0383-lead-only-00-run002-9s",
+    "cut_in_only_9s": "artifacts/hugsim_contrast/scene-0383-cut-in-only-00-run002-9s",
+    "combined_9s": "artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run002-9s",
+    "analysis": "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002"
+  },
+  "pairing": {
+    "completed_steps_per_9s_run": 36,
+    "maximum_timestamp_absolute_difference": 0.0,
+    "maximum_plan_absolute_difference": 0.0,
+    "maximum_ego_box_absolute_difference": 0.0,
+    "maximum_action_absolute_difference": 0.0,
+    "cut_in_actor_box_difference_with_vs_without_lead": 0.0,
+    "lead_actor_box_difference_with_vs_without_cut_in": 0.0
+  },
+  "finite_rollout_audit": {
+    "planned_waypoints": 5,
+    "planned_timestep_s": 0.5,
+    "required_future_actor_history_s": 2.5,
+    "short_run_final_timestamp_s": 6.0,
+    "short_run_horizon_valid_end_s": 3.5,
+    "extended_run_final_timestamp_s": 9.0,
+    "extended_run_horizon_valid_end_s": 6.5,
+    "short_vs_extended_prefix_maximum_difference": 0.0,
+    "short_run_first_ttc_failure_s": 4.75,
+    "short_run_first_nc_failure_s": 5.75,
+    "extended_same_prefix_first_ttc_failure_s": null,
+    "extended_same_prefix_first_nc_failure_s": null,
+    "all_short_failures_use_tail_padding": true,
+    "all_short_failed_actor_hits": [
+      0
+    ]
+  },
+  "horizon_valid_metrics": {
+    "no_actor": {
+      "nc": 1.0,
+      "ttc": 1.0,
+      "pdms": 1.0
+    },
+    "lead_only": {
+      "nc": 1.0,
+      "ttc": 1.0,
+      "pdms": 1.0
+    },
+    "cut_in_only": {
+      "nc": 1.0,
+      "ttc": 1.0,
+      "pdms": 1.0
+    },
+    "lead_and_cut_in": {
+      "nc": 1.0,
+      "ttc": 1.0,
+      "pdms": 1.0
+    }
+  },
+  "credibility": {
+    "audit_finding_decision": "accepted",
+    "segment_decision": "down-weighted",
+    "claim_decisions": {
+      "exact_short_extended_prefix": "accepted",
+      "finite_rollout_tail_artifact_identification": "accepted",
+      "strict_factorial_pairing": "accepted",
+      "old_6s_nc_ttc_as_dynamic_risk": "rejected",
+      "actual_collision_or_effective_near_miss": "rejected",
+      "ad_agent_response": "rejected",
+      "global_hugsim_credibility": "rejected"
+    }
+  },
+  "artifacts": {
+    "summary": {
+      "path": "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_factorial_summary.json",
+      "sha256": "a1a6d8679734a6f37490fb7d323a05f1023bc59119af7de0a714684de4d6bdb4"
+    },
+    "horizon_plot": {
+      "path": "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_sensitivity_and_clearance.png",
+      "sha256": "16e47af79d268de665fdd5c798af55ce818d568cf4de708d9edfd2158fb02312"
+    },
+    "factorial_video": {
+      "path": "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/factorial_front_comparison.mp4",
+      "sha256": "a3b6bd4a72d61e501404dc9f71500e064145e6bf798547df5098fef6dab6ec15"
+    },
+    "factorial_contact_sheet": {
+      "path": "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/factorial_contact_sheet.png",
+      "sha256": "5a01a7cd9b12a2d372293353eed6e959516d09254c8c6bffc0d88eb2f75d50fb"
+    }
+  },
+  "limitations": [
+    "The full 9-second aggregate still contains an incomplete-future-history tail after 6.5 seconds.",
+    "All actors use scripted ConstantPlanner motion.",
+    "Both actor instances reuse one vehicle asset.",
+    "The deterministic writer is not an AD agent."
+  ]
+}

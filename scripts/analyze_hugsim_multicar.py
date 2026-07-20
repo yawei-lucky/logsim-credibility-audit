@@ -121,6 +121,149 @@ def paired_differences(
     }
 
 
+def validate_run_pairing(
+    reference_audit: dict[str, Any],
+    candidate_audit: dict[str, Any],
+    reference_infos: list[dict[str, Any]],
+    candidate_infos: list[dict[str, Any]],
+    reference_steps: list[dict[str, Any]],
+    candidate_steps: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Fail closed when two runs do not share the same experimental inputs."""
+    failures = []
+    scalar_checks = {
+        "hugsim_commit": (
+            reference_audit.get("hugsim_commit"),
+            candidate_audit.get("hugsim_commit"),
+        ),
+        "control_convention": (
+            reference_audit.get("control_convention"),
+            candidate_audit.get("control_convention"),
+        ),
+        "requested_steps": (
+            reference_audit.get("requested_steps"),
+            candidate_audit.get("requested_steps"),
+        ),
+        "completed_steps": (
+            reference_audit.get("completed_steps"),
+            candidate_audit.get("completed_steps"),
+        ),
+        "scene_cfg_sha256": (
+            reference_audit.get("source_assets", {}).get("scene_cfg_sha256"),
+            candidate_audit.get("source_assets", {}).get("scene_cfg_sha256"),
+        ),
+        "base_yaml_sha256": (
+            reference_audit.get("source_assets", {}).get("base_yaml_sha256"),
+            candidate_audit.get("source_assets", {}).get("base_yaml_sha256"),
+        ),
+        "camera_yaml_sha256": (
+            reference_audit.get("source_assets", {}).get("camera_yaml_sha256"),
+            candidate_audit.get("source_assets", {}).get("camera_yaml_sha256"),
+        ),
+        "kinematic_yaml_sha256": (
+            reference_audit.get("source_assets", {}).get(
+                "kinematic_yaml_sha256"
+            ),
+            candidate_audit.get("source_assets", {}).get(
+                "kinematic_yaml_sha256"
+            ),
+        ),
+    }
+    for name, (reference, candidate) in scalar_checks.items():
+        if reference != candidate:
+            failures.append(
+                f"{name} differs: reference={reference!r}, candidate={candidate!r}"
+            )
+
+    for label, audit in (
+        ("reference", reference_audit),
+        ("candidate", candidate_audit),
+    ):
+        if audit.get("completed_steps") != audit.get("requested_steps"):
+            failures.append(f"{label} run did not complete all requested steps")
+        if audit.get("eval_error") is not None:
+            failures.append(f"{label} run scoring failed: {audit['eval_error']}")
+
+    expected_reference_steps = reference_audit.get("completed_steps")
+    expected_candidate_steps = candidate_audit.get("completed_steps")
+    if len(reference_steps) != expected_reference_steps:
+        failures.append(
+            "reference raw step count does not match completed_steps"
+        )
+    if len(candidate_steps) != expected_candidate_steps:
+        failures.append(
+            "candidate raw step count does not match completed_steps"
+        )
+    if len(reference_infos) != expected_reference_steps + 1:
+        failures.append(
+            "reference state count is not completed_steps + 1"
+        )
+    if len(candidate_infos) != expected_candidate_steps + 1:
+        failures.append(
+            "candidate state count is not completed_steps + 1"
+        )
+
+    if len(reference_infos) != len(candidate_infos):
+        failures.append("observation-state counts differ")
+    if len(reference_steps) != len(candidate_steps):
+        failures.append("completed-step counts differ")
+
+    timestamp_difference = None
+    if len(reference_infos) == len(candidate_infos):
+        reference_times = np.asarray(
+            [info["timestamp"] for info in reference_infos],
+            dtype=np.float64,
+        )
+        candidate_times = np.asarray(
+            [info["timestamp"] for info in candidate_infos],
+            dtype=np.float64,
+        )
+        timestamp_difference = float(
+            np.max(np.abs(reference_times - candidate_times))
+        )
+        if timestamp_difference != 0.0:
+            failures.append(
+                f"timestamps differ by up to {timestamp_difference}"
+            )
+
+    maximum_plan_difference = None
+    if len(reference_steps) == len(candidate_steps):
+        plan_differences = []
+        for reference, candidate in zip(
+            reference_steps,
+            candidate_steps,
+            strict=True,
+        ):
+            reference_plan = np.asarray(reference["plan_traj"], dtype=np.float64)
+            candidate_plan = np.asarray(candidate["plan_traj"], dtype=np.float64)
+            if reference_plan.shape != candidate_plan.shape:
+                failures.append("planned trajectory shapes differ")
+                break
+            plan_differences.append(
+                float(np.max(np.abs(reference_plan - candidate_plan)))
+            )
+        if plan_differences:
+            maximum_plan_difference = max(plan_differences)
+            if maximum_plan_difference != 0.0:
+                failures.append(
+                    "planned trajectories differ by up to "
+                    f"{maximum_plan_difference}"
+                )
+
+    if failures:
+        raise ValueError("Run pairing validation failed: " + "; ".join(failures))
+
+    return {
+        "status": "passed",
+        "hugsim_commit": reference_audit["hugsim_commit"],
+        "control_convention": reference_audit["control_convention"],
+        "requested_and_completed_steps": reference_audit["completed_steps"],
+        "scene_cfg_sha256": reference_audit["source_assets"]["scene_cfg_sha256"],
+        "maximum_timestamp_absolute_difference": timestamp_difference,
+        "maximum_plan_absolute_difference": maximum_plan_difference,
+    }
+
+
 def front_difference(
     baseline_observation: dict[str, Any],
     treatment_observation: dict[str, Any],
@@ -418,7 +561,6 @@ def main() -> int:
     baseline = args.baseline.expanduser().resolve()
     treatment = args.treatment.expanduser().resolve()
     output = args.output.expanduser().resolve()
-    output.mkdir(parents=True, exist_ok=False)
 
     baseline_observations = load_pickle(baseline / "observations.pkl")
     treatment_observations = load_pickle(treatment / "observations.pkl")
@@ -428,6 +570,7 @@ def main() -> int:
     treatment_steps = load_pickle(treatment / "audit_steps.pkl")
     baseline_eval = load_json(baseline / "eval.json")
     treatment_eval = load_json(treatment / "eval.json")
+    baseline_audit = load_json(baseline / "audit_summary.json")
     treatment_audit = load_json(treatment / "audit_summary.json")
 
     if len(baseline_observations) != len(treatment_observations):
@@ -441,6 +584,16 @@ def main() -> int:
     )
     if not frame_indices:
         raise ValueError("No requested contact-sheet frame is available.")
+
+    pairing_validation = validate_run_pairing(
+        baseline_audit,
+        treatment_audit,
+        baseline_infos,
+        treatment_infos,
+        baseline_steps,
+        treatment_steps,
+    )
+    output.mkdir(parents=True, exist_ok=False)
 
     contact_sheet = output / "front_multicar_contact_sheet.png"
     trajectory_plot = output / "multicar_trajectory_and_risk.png"
@@ -497,6 +650,7 @@ def main() -> int:
         "control": {
             "requested_steps": treatment_audit["requested_steps"],
             "completed_steps": treatment_audit["completed_steps"],
+            "pairing_validation": pairing_validation,
             "paired_run_differences": paired_differences(
                 baseline_infos,
                 treatment_infos,

@@ -21,7 +21,10 @@ Notes:
 from __future__ import annotations
 
 import argparse
+import hashlib
+import json
 import pickle
+import subprocess
 import time
 from pathlib import Path
 from typing import Any
@@ -37,6 +40,21 @@ def wait_for_fifo(path: Path, timeout_s: float) -> None:
         if time.time() - start > timeout_s:
             raise TimeoutError(f"Timed out waiting for FIFO: {path}")
         time.sleep(0.25)
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def git_commit(root: Path) -> str:
+    return subprocess.check_output(
+        ["git", "-C", str(root), "rev-parse", "HEAD"],
+        text=True,
+    ).strip()
 
 
 def build_forward_plan(horizon: int, step_m: float, lateral_m: float = 0.0) -> np.ndarray:
@@ -67,7 +85,15 @@ def main() -> int:
     parser.add_argument("--step-m", type=float, default=1.0, help="Forward distance between waypoints in meters.")
     parser.add_argument("--lateral-m", type=float, default=0.0, help="Constant lateral offset in meters.")
     parser.add_argument("--timeout-s", type=float, default=120.0, help="Seconds to wait for FIFO creation.")
-    parser.add_argument("--max-steps", type=int, default=50, help="Maximum planner responses to send.")
+    parser.add_argument(
+        "--max-steps",
+        type=int,
+        default=50,
+        help=(
+            "Maximum planner responses to send. The writer keeps listening "
+            "after the limit so it can receive the simulator's Done signal."
+        ),
+    )
     args = parser.parse_args()
 
     output = Path(args.output).expanduser().resolve()
@@ -82,22 +108,60 @@ def main() -> int:
 
     plan = build_forward_plan(args.horizon, args.step_m, args.lateral_m)
 
-    for step_idx in range(args.max_steps):
+    responses_sent = 0
+    done_received = False
+    while True:
         with open(obs_pipe, "rb") as pipe:
             payload = pickle.loads(pipe.read())
 
         if payload == "Done":
             print("[plan-pipe-writer] simulator signaled Done")
+            done_received = True
             break
 
         obs, info = payload
-        print(f"[plan-pipe-writer] step={step_idx} received {describe_info(info)}")
+        print(
+            f"[plan-pipe-writer] step={responses_sent} "
+            f"received {describe_info(info)}"
+        )
 
         with open(plan_pipe, "wb") as pipe:
-            pipe.write(pickle.dumps(plan.copy()))
+            if responses_sent < args.max_steps:
+                pipe.write(pickle.dumps(plan.copy()))
+                responses_sent += 1
+            else:
+                # Unblock a runner that requested more steps than this writer
+                # was configured to serve. The runner treats None as an early
+                # planner stop and then sends the final Done handshake.
+                pipe.write(pickle.dumps(None))
+                print(
+                    "[plan-pipe-writer] response limit reached; "
+                    "sent planner stop and awaiting Done"
+                )
 
-    print("[plan-pipe-writer] finished")
-    return 0
+    summary = {
+        "status": "complete" if done_received else "incomplete",
+        "output": str(output),
+        "horizon": args.horizon,
+        "step_m": args.step_m,
+        "lateral_m": args.lateral_m,
+        "max_steps": args.max_steps,
+        "responses_sent": responses_sent,
+        "done_received": done_received,
+        "writer_script_sha256": sha256(Path(__file__).resolve()),
+        "audit_repo_commit": git_commit(Path(__file__).resolve().parents[1]),
+    }
+    with (output / "plan_writer_summary.json").open(
+        "w",
+        encoding="utf-8",
+    ) as stream:
+        json.dump(summary, stream, indent=2)
+
+    print(
+        f"[plan-pipe-writer] finished responses_sent={responses_sent} "
+        f"done_received={done_received}"
+    )
+    return 0 if done_received else 1
 
 
 if __name__ == "__main__":

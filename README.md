@@ -96,7 +96,13 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - 第一条经过第三方复核的 relation-level `down-weighted` audit record，并保留内部几何子结论为 `accepted`。
 - 6 秒/24 步的多车强干预实验：一辆前方慢车和一辆右侧斜向切入车；
 - 多车前视对比视频、五时刻跨模态图、俯视轨迹和风险时间线；
-- 第一条 multi-actor `down-weighted` audit record，并保留严格配对、多实例渲染和内部风险时序子结论为 `accepted`。
+- 通过独立复核发现并复现 HUGSIM 末帧 actor 状态填充造成的
+  NC/TTC 尾窗伪影，撤回旧的内部风险时序结论；
+- 无车、仅前车、仅远距切入、前车+远距切入四组严格配对的 9 秒
+  actor-removal 实验；
+- 一次执行前固定参数的近距汇入强干预：0.730 米二维 footprint 正净距、
+  无碰撞、完整未来时域内 TTC 明显响应；
+- fail-closed 配对/时域检查、同值 FIFO 结束握手和 11 个回归测试。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -121,21 +127,36 @@ env.reset
 
 三组内部状态和控制严格配对；横向0.0米和3.5米位置产生不同内部 TTC/NC 响应。该子结论为 `accepted`。但车辆与背景存在可见视觉域差异，跨模态输出来自同一渲染器，也没有真实日志参考帧或 sensor-input AD agent，因此完整片段为 `down-weighted`。
 
-最新多车强干预实验同样保持 ego state 和 action 完全一致。右侧切入车约在 5.0 秒穿过 ego 中心线附近，TTC 从 4.75 秒失败，NC 从 5.75 秒失败；多车组 PDMS 为 0.798，而配对无车组为 1.0。实际 runtime collision 仍为 false。该结果支持多实例渲染、actor state evolution 和内部规划路径风险响应，不支持真实碰撞或 AD agent 响应。
+旧 6 秒多车实验的 TTC/NC 失败已经撤回：评分器每帧需要 2.5 秒未来
+actor 状态，而旧失败全部位于时域不完整的尾窗。相同 state/action/plan
+前缀延长到 9 秒后，失败全部消失。该伪影识别为 `accepted`，旧动态风险
+主张为 `rejected`。
+
+修正后的 9 秒四条件实验在完整未来窗口 0.25–6.5 秒内 NC/TTC/PDMS
+全部为 1.0，证明原远距切入只是穿越中心线，并未形成有效近距事件。
+
+随后只运行了一次执行前固定参数的近距汇入。它在 3.917 秒穿越中心线，
+5.5 秒达到 0.730 米二维有向 footprint 正净距；runtime collision 和 NC
+均不失败，但完整未来窗口内 TTC 为 0.115、PDMS 为 0.368，23 个 TTC
+失败全部命中切入 actor0 且未使用尾部填充。这个内部 TTC surrogate
+响应子结论为 `accepted`，完整片段仍为 `down-weighted`。
 
 ## 当前重点
 
-当前优先审阅明显强干预的多车汇入结果，而不是继续做微小位置变化：
+当前这轮多车参数实验已按事前停止标准结束，不再继续调位置追结果。已建立的
+有效链路是：
 
 ```text
-no-actor baseline
-→ lead vehicle + right-side cut-in
-→ synchronized RGB / semantic / depth and actor trajectories
-→ TTC / NC event timing
-→ claim-specific credibility judgment
+exact pairing
+→ complete future actor history gate
+→ far cut-in negative control
+→ positive-clearance near cut-in
+→ actor-specific TTC attribution
+→ claim-specific accepted / down-weighted / rejected judgment
 ```
 
-如果继续多车测试，下一次应使用不同车辆资产和更可信的地图约束汇入轨迹。真实源日志锚点仍是后续验证传感器真实性的重要任务，但不是本轮强干预实验的即时动作。
+下一次如继续 HUGSIM，应换不同车辆资产、地图约束行为或不同场景，而不是
+继续修改本场景切入参数。真实源日志锚点仍是后续验证传感器真实性的重要任务。
 
 ## 暂缓内容
 
@@ -166,6 +187,10 @@ no-actor baseline
 - `docs/runs/hugsim_counterfactual_001_audit.json`
 - `docs/runs/hugsim_multicar_cut_in_001.md`
 - `docs/runs/hugsim_multicar_cut_in_001_audit.json`
+- `docs/runs/hugsim_horizon_factorial_001.md`
+- `docs/runs/hugsim_horizon_factorial_001_audit.json`
+- `docs/runs/hugsim_near_cut_in_001.md`
+- `docs/runs/hugsim_near_cut_in_001_audit.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -181,9 +206,14 @@ no-actor baseline
 - `scripts/hugsim_control_adapter.py`
 - `scripts/analyze_hugsim_counterfactual.py`
 - `scripts/analyze_hugsim_multicar.py`
+- `scripts/analyze_hugsim_horizon_factorial.py`
+- `scripts/analyze_hugsim_near_cutin.py`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 - `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
 - `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-lead-only-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-cut-in-only-00.yaml`
+- `configs/hugsim/scenarios/scene-0383-near-cut-in-00.yaml`
 
 ## 项目判断
 

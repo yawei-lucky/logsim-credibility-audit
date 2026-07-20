@@ -89,7 +89,10 @@
     "approximate_ego_centerline_crossing_s": 5.0,
     "first_ttc_failure_s": 4.75,
     "first_nc_failure_s": 5.75,
-    "actual_collision_observed": false
+    "actual_collision_observed": false,
+    "required_future_actor_history_s": 2.5,
+    "horizon_valid_end_s": 3.5,
+    "failures_occur_in_horizon_invalid_tail": true
   },
   "cross_modal_evidence": {
     "selected_frame_rgb_support_fraction_range": [
@@ -100,11 +103,12 @@
   },
   "credibility": {
     "decision": "down-weighted",
-    "reason": "The paired stress test supports multi-instance rendering, actor-state evolution, and an internal risk response near the scripted cut-in crossing, but duplicate vehicle identity, visible foreground/background mismatch, a non-map-aware ConstantPlanner trajectory, reset-time actor advancement, common-renderer modality dependence, and absence of a real AD agent prevent accepting the full segment as credible E2E evaluation evidence.",
+    "reason": "The paired stress test supports multi-instance rendering and actor-state evolution, but its NC/TTC decrease is rejected because the failures disappear when the exact state/action/plan prefix is extended with complete future actor history. Duplicate vehicle identity, visible foreground/background mismatch, a non-map-aware ConstantPlanner trajectory, reset-time actor advancement, common-renderer modality dependence, and absence of a real AD agent further prevent accepting the full segment as credible E2E evaluation evidence.",
     "claim_decisions": {
       "paired_ego_and_action_invariance": "accepted",
       "multi_instance_rendering_and_state_evolution": "accepted",
-      "internal_risk_response_near_cut_in_crossing": "accepted",
+      "internal_risk_response_near_cut_in_crossing": "rejected",
+      "finite_rollout_tail_artifact_identification": "accepted",
       "realistic_merge_behavior": "down-weighted",
       "rendered_sensor_evidence_for_e2e_evaluation": "down-weighted",
       "actual_runtime_collision": "rejected",
@@ -119,6 +123,7 @@
     "RGB, semantic, and depth are outputs of the same renderer.",
     "The deterministic writer is not an AD agent.",
     "The rollout contains no actual runtime collision.",
+    "The scorer repeats the last available actor box when future actor history is missing; all reported TTC/NC failures occur in that horizon-invalid tail.",
     "One scene and one scripted intervention do not establish global simulator credibility."
   ]
 }

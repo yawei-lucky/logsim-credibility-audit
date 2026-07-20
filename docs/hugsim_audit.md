@@ -7,12 +7,15 @@
 > credibility is not established. The four-layer evidence chain belongs to
 > future credibility-metric research and is not used to grade this run.
 >
-> A later 6-second multi-actor stress test adds a slower lead vehicle and a
-> scripted right-side cut-in. TTC first fails at 4.75 seconds and NC at 5.75
-> seconds near the cut-in's ego-path crossing, while paired ego states and
-> actions remain identical and no runtime collision occurs. The full segment
-> remains `down-weighted`; see
-> `docs/runs/hugsim_multicar_cut_in_001.md`.
+> A later independent review rejected the 6-second multi-actor TTC/NC decrease:
+> every failure occurs after the run stops providing the 2.5 seconds of future
+> actor history required by the scorer. The same state/action/plan prefix
+> passes when extended to 9 seconds. A separate pre-specified near-distance
+> cut-in then produces an actor0-specific TTC response inside the valid
+> history window while retaining 0.730 meters of positive 2D footprint
+> clearance and no runtime collision. See
+> `docs/runs/hugsim_horizon_factorial_001.md` and
+> `docs/runs/hugsim_near_cut_in_001.md`.
 >
 > The detailed sections below preserve the first-pass extraction and should be
 > read as historical pipeline analysis where their old status wording differs.

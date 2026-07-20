@@ -1,0 +1,156 @@
+{
+  "experiment_id": "hugsim_near_cut_in_001",
+  "date": "2026-07-20",
+  "design_status": "pre-specified single-shot; not formal immutable preregistration",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "control_convention": "corrected",
+  "scenario": {
+    "path": "configs/hugsim/scenarios/scene-0383-near-cut-in-00.yaml",
+    "sha256": "9bdd4564bb3d12be4cf6df126bc36126e91bbb5562da5c8388ba3e3dc598d360",
+    "actors": [
+      {
+        "role": "near_cut_in",
+        "right_m": 4.0,
+        "forward_m": 6.5,
+        "height_m": -0.3,
+        "yaw_rad": 0.6,
+        "velocity_mps": 1.7,
+        "controller": "ConstantPlanner",
+        "vehicle_model_id": "2024_07_05_15_57_10"
+      },
+      {
+        "role": "far_lead_negative_control",
+        "right_m": 0.0,
+        "forward_m": 24.0,
+        "height_m": -0.3,
+        "yaw_rad": 0.0,
+        "velocity_mps": 0.5,
+        "controller": "ConstantPlanner",
+        "vehicle_model_id": "2024_07_05_15_57_10"
+      }
+    ]
+  },
+  "runs": {
+    "baseline": "artifacts/hugsim_contrast/scene-0383-easy-00-run007-9s",
+    "far_cut_in_control": "artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run002-9s",
+    "near_cut_in": "artifacts/hugsim_contrast/scene-0383-near-cut-in-00-run001-9s",
+    "cross_modal_analysis": "artifacts/hugsim_contrast/scene-0383-near-cut-in-report-run001",
+    "horizon_valid_analysis": "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002"
+  },
+  "run_completion": {
+    "requested_steps": 36,
+    "completed_steps": 36,
+    "writer_responses_sent": 36,
+    "writer_done_received": true,
+    "terminated": false,
+    "truncated": false,
+    "eval_error": null
+  },
+  "pairing": {
+    "maximum_timestamp_absolute_difference": 0.0,
+    "maximum_plan_absolute_difference": 0.0,
+    "maximum_ego_box_absolute_difference": 0.0,
+    "maximum_action_absolute_difference": 0.0
+  },
+  "horizon": {
+    "required_future_actor_history_s": 2.5,
+    "valid_metric_window_s": [
+      0.25,
+      6.5
+    ],
+    "invalid_tail_start_s": 6.75
+  },
+  "horizon_valid_metrics": {
+    "baseline": {
+      "nc": 1.0,
+      "ttc": 1.0,
+      "pdms": 1.0
+    },
+    "far_cut_in_control": {
+      "nc": 1.0,
+      "ttc": 1.0,
+      "pdms": 1.0
+    },
+    "near_cut_in": {
+      "nc": 1.0,
+      "ttc": 0.11538461538461539,
+      "pdms": 0.3681318681318682
+    }
+  },
+  "event": {
+    "cut_in_centerline_crossing_s": 3.9171342844652863,
+    "minimum_cut_in_2d_oriented_footprint_clearance_m": 0.7300231738311423,
+    "minimum_clearance_timestamp_s": 5.5,
+    "first_ttc_failure_s": 1.0,
+    "valid_ttc_failure_frame_count": 23,
+    "valid_ttc_failed_event_actor_ids": [
+      0
+    ],
+    "valid_ttc_events_used_padding": false,
+    "nc_failure_s": null,
+    "actual_collision_observed": false
+  },
+  "cross_modal_internal_support": {
+    "car_mask_supported_by_rgb_fraction_range": [
+      0.8975360513480988,
+      0.9842241636284423
+    ],
+    "car_mask_supported_by_depth_fraction_range": [
+      1.0,
+      1.0
+    ],
+    "modalities_share_one_renderer": true
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "strict_pairing": "accepted",
+      "continuous_actor_state_and_centerline_crossing": "accepted",
+      "positive_clearance_2d_close_pass": "accepted",
+      "horizon_valid_actor0_specific_internal_ttc_response": "accepted",
+      "internal_rgb_semantic_depth_co_movement": "accepted",
+      "full_9s_unfiltered_aggregate": "down-weighted",
+      "real_world_near_miss_classification": "down-weighted",
+      "scripted_merge_realism": "down-weighted",
+      "rendered_sensor_evidence_for_e2e_evaluation": "down-weighted",
+      "actual_collision": "rejected",
+      "physical_time_to_collision_value": "rejected",
+      "ad_agent_response": "rejected",
+      "global_hugsim_credibility": "rejected"
+    }
+  },
+  "raw_evidence_hashes": {
+    "eval_json": "50f961545bdc2d5c92739126315a2e196b5b4a210c5a06e139650619c7d613f7",
+    "data_pkl": "a586481012dfaf150cc9c3e7dcc4f859833008a7fe14ae7cd0b4220c0c3a0040",
+    "infos_pkl": "6a73fdd057d27a2a8e61ceefefbdde739628477e7855b7641076f21665048780",
+    "audit_steps_pkl": "63d7ba9326b247c0ecf2a055cbc7ab40b6b3947fcb626b4a05431421531e0655",
+    "audit_summary_json": "6701272e80a4184b5c2740438dd7e3200dbf1a1b6107264b70e2914cb4b3c7f5",
+    "plan_writer_summary_json": "ecb07c51403e3ddb508835c3785d24a700cf74607eefa951198421ee001e11c2"
+  },
+  "visual_artifacts": {
+    "front_video": {
+      "path": "artifacts/hugsim_contrast/scene-0383-near-cut-in-report-run001/front_multicar_comparison.mp4",
+      "sha256": "a5ebdded2aabf4e07e0270c6a5f01855724d600d7a0c1fdb92651d133e2ac264"
+    },
+    "cross_modal_contact_sheet": {
+      "path": "artifacts/hugsim_contrast/scene-0383-near-cut-in-report-run001/front_multicar_contact_sheet.png",
+      "sha256": "59db013c397117fe1bd86c76645c86f7570edc9accbf9948612c63bd50b3cce6"
+    },
+    "risk_and_clearance_plot": {
+      "path": "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_risk_and_clearance.png",
+      "sha256": "b24b77f3d828c4c96bd0b30d196dd5ccebf5f749b6c0fc77f603d4a82b7006e9"
+    },
+    "analysis_summary": {
+      "path": "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_summary.json",
+      "sha256": "0be66401353141cf842562e87cdc4b1371f3cee73f760cffc5b2f0973534910f"
+    }
+  },
+  "limitations": [
+    "The event is a scripted ConstantPlanner diagonal, not a validated traffic policy.",
+    "Both actors reuse one vehicle asset.",
+    "RGB, semantic, and depth share one renderer.",
+    "The full 9-second aggregate includes an incomplete-history tail after 6.5 seconds.",
+    "The deterministic writer is not an AD agent.",
+    "The scenario was not committed or externally registered before execution."
+  ]
+}

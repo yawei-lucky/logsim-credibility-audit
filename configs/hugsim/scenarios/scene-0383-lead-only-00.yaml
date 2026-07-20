@@ -1,0 +1,27 @@
+# Actor-removal control for the multi-actor cut-in stress test.
+#
+# This condition retains only the slower lead vehicle from
+# scene-0383-multicar-cut-in-00.yaml. It is paired with the no-actor,
+# cut-in-only, and combined conditions to isolate actor-specific effects.
+mode: lead_only_00
+plan_list:
+- - 0.0
+  - 24.0
+  - -0.3
+  - 0.0
+  - 0.5
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000
