@@ -70,6 +70,15 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 
 这里的 accepted / down-weighted / rejected 是当前阶段的证据处理方式，不是项目总目标，也不是最终数值指标。
 
+判定对象是具体主张，不是给整次实验贴“成功/失败”标签。若设定预期与
+仿真结果不一致，可以同时得到：
+
+- 原主张 `rejected`；
+- 关于仿真器、指标或实验构造缺陷的诊断结论 `accepted`。
+
+每条 rejected 主张都必须注明是否实际测试、拒绝依据和证据引用；
+`not_tested` 与 `scope_exceeds_evidence` 不允许被解释为 HUGSIM 能力失败。
+
 长期的可信评价指标计划沿四层证据链研究：**日志复现、传感器一致性、任务级一致性、闭环结果可信性**。这四层是未来指标的证据组织思路，不是当前实验阶段，也不用于现在给 HUGSIM 逐层打分。当前仍先完成测试、对照、证据积累和因果归因。
 
 ## 当前状态
@@ -102,7 +111,8 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
   actor-removal 实验；
 - 一次执行前固定参数的近距汇入强干预：0.730 米二维 footprint 正净距、
   无碰撞、完整未来时域内 TTC 明显响应；
-- fail-closed 配对/时域检查、同值 FIFO 结束握手和 11 个回归测试。
+- fail-closed 配对/时域检查、同值 FIFO 结束握手、claim/diagnostic
+  语义校验和 20 个回归测试。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -131,6 +141,9 @@ env.reset
 actor 状态，而旧失败全部位于时域不完整的尾窗。相同 state/action/plan
 前缀延长到 9 秒后，失败全部消失。该伪影识别为 `accepted`，旧动态风险
 主张为 `rejected`。
+
+这里的两个判定并不矛盾：`rejected` 的是“旧数值代表真实动态风险”这一
+主张；`accepted` 的是“HUGSIM 评分尾窗存在末状态填充效应”这一诊断发现。
 
 修正后的 9 秒四条件实验在完整未来窗口 0.25–6.5 秒内 NC/TTC/PDMS
 全部为 1.0，证明原远距切入只是穿越中心线，并未形成有效近距事件。
@@ -208,6 +221,7 @@ exact pairing
 - `scripts/analyze_hugsim_multicar.py`
 - `scripts/analyze_hugsim_horizon_factorial.py`
 - `scripts/analyze_hugsim_near_cutin.py`
+- `scripts/validate_hugsim_audit_semantics.py`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 - `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
 - `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`

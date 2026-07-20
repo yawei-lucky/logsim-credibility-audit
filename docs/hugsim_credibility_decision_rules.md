@@ -14,6 +14,100 @@ down-weighted
 rejected
 ```
 
+## Claim Decision and Diagnostic Finding Are Separate
+
+Every audit should distinguish two questions:
+
+1. **Claim decision:** Does the evidence support a particular driving,
+   simulator, metric, or AD-agent claim?
+2. **Diagnostic finding:** What did the experiment reveal about the renderer,
+   actor dynamics, metric implementation, control interface, or agent?
+
+A `rejected` claim does not mean the experiment failed or has no value. If a
+configured expectation and HUGSIM's observed output disagree, the original
+claim can be `rejected`. A simulator or metric defect is separately
+`accepted` only when the nonconformance, implementation artifact, or construct
+mismatch is isolated and supported; an unmet scenario expectation alone is
+not evidence of a system defect.
+
+Example:
+
+```text
+claim:
+  "the 6-second TTC decrease represents dynamic risk"
+  → rejected
+
+diagnostic finding:
+  "the scorer freezes the final actor box when future history is missing"
+  → accepted
+```
+
+For every rejected claim, record:
+
+| Field | Meaning |
+|---|---|
+| `tested` | Whether the experiment actually exercised the claimed capability or event. |
+| `rejection_basis` | One of the reason categories below. |
+| `reason` | The concrete evidence for rejection. |
+| `diagnostic_finding` | ID of a separately judged diagnostic finding for every tested rejection; null is allowed only when untested. |
+
+Use these rejection-basis categories:
+
+| Category | Meaning | Capability inference |
+|---|---|---|
+| `contradicted_by_evidence` | Direct observations conflict with the claim. | Describes this tested run; not automatically a global capability failure. |
+| `invalidated_by_diagnostic` | A separately supported artifact, system nonconformance, or construct mismatch invalidates the claim. | Link the accepted/down-weighted diagnostic finding, whose `expectation_met` is false. |
+| `not_tested` | The required component or condition was absent. | No capability conclusion is allowed. |
+| `scope_exceeds_evidence` | The claim is broader than the available evidence (`tested: false` at that claim scope). | No global conclusion is allowed. |
+
+Diagnostic findings also use only `accepted`, `down-weighted`, or `rejected`
+as their evidence decision. They additionally record:
+
+```text
+component
+expected
+observed
+expectation_met
+implication
+```
+
+An `invalidated_by_diagnostic` claim must link a finding whose evidence
+decision is `accepted` or `down-weighted` and whose `expectation_met` is
+`false`. Repository-relative evidence references must exist and stay inside
+the repository; external HUGSIM source references use
+`HUGSIM@<commit>:<path>:<symbol>`.
+
+Every tested rejected claim must link a separately judged diagnostic finding.
+That finding may record either:
+
+- a supported nonconformance (`expectation_met: false`); or
+- a supported conforming negative result (`expectation_met: true`), such as
+  collision remaining false when positive clearance is measured.
+
+### Diagnostic Acceptance Gate
+
+Use `accepted` for a defect or construct-boundary finding only when:
+
+- the expected behavior or construct is stated independently of the observed
+  outcome;
+- the relevant component is actually exercised or its implementation is
+  directly inspected;
+- a controlled comparison, repeat observation, or source-level trace isolates
+  the mechanism from scenario misconfiguration and unrelated confounds;
+- the observed behavior and evidence references are recorded;
+- the implication is limited to the tested component and scope.
+
+Use `down-weighted` when the mechanism remains informative but incompletely
+isolated. Use `rejected` when the finding itself is contradicted or
+unsupported. If a configured event simply fails to occur, reject that event
+claim but do not infer a simulator capability defect without the isolation
+above.
+
+The validator checks repository evidence existence and external HUGSIM
+reference syntax/commit alignment. It does not by itself prove that an
+external source symbol exists; source reachability remains a separate
+reproducibility check.
+
 ## Accepted Evidence
 
 Use `accepted` only when the closed-loop segment has enough simulator-side evidence to support the driving outcome.
@@ -150,7 +244,30 @@ Recommended minimal JSON record:
   },
   "credibility": {
     "decision": "accepted | down-weighted | rejected",
-    "reason": "TODO"
+    "reason": "TODO",
+    "claim_decisions": {
+      "example_claim": "accepted | down-weighted | rejected"
+    },
+    "rejected_claim_contexts": {
+      "rejected_example_claim": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence | invalidated_by_diagnostic | not_tested | scope_exceeds_evidence",
+        "reason": "TODO",
+        "evidence_refs": ["TODO"],
+        "diagnostic_finding": "finding_id_or_null"
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "finding_id": {
+      "component": "renderer | actor_dynamics | metric_implementation | control_interface | agent | experiment_scope",
+      "expected": "TODO",
+      "observed": "TODO",
+      "expectation_met": false,
+      "evidence_decision": "accepted | down-weighted | rejected",
+      "implication": "TODO",
+      "evidence_refs": ["TODO"]
+    }
   }
 }
 ```

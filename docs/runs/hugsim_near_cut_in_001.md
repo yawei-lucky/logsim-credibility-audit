@@ -131,6 +131,7 @@ down-weighted
 - calling the event a real-world near miss without an independently defined
   real-world threshold;
 - scripted merge realism;
+- real traffic validity, which is not established by a scripted controller;
 - rendered observations as E2E sensor evidence.
 
 `rejected`:
@@ -138,11 +139,28 @@ down-weighted
 - an actual collision;
 - interpreting HUGSIM's binary TTC surrogate as physical time-to-collision;
 - an AD-agent response;
-- real traffic validity or global HUGSIM credibility.
+- global HUGSIM credibility.
 
-Three independent reviews agreed that the pre-specified stop criteria were met
-and that another parameter adjustment would become post-hoc result chasing.
-This experiment therefore stops here.
+### How to Read `rejected`
+
+| Rejected claim | Tested? | Basis | What the experiment establishes instead |
+|---|---:|---|---|
+| Actual collision | yes | `contradicted_by_evidence` | `accepted`: this is a positive-clearance close pass, not a collision. |
+| Physical time-to-collision value | yes | `invalidated_by_diagnostic` | `accepted`: HUGSIM reports a binary planned-path intersection surrogate, not physical TTC. |
+| AD-agent response | no | `not_tested` | No AD-agent capability conclusion. |
+| Global HUGSIM credibility | no | `scope_exceeds_evidence` | No global capability conclusion. |
+
+The first two rejections are useful outcomes: one correctly classifies the
+configured event, and the other exposes a metric-construct boundary. They do
+not mean that the experiment failed. Three independent reviewer roles
+(experimental design, evidence, and reproducibility) checked the distinction.
+
+Author-reported design provenance says the parameters were fixed before
+execution and no repeat treatment was run. Three task-local independent Codex
+reviewer roles agreed that the stop criteria were met and that another
+parameter adjustment would become post-hoc result chasing. This is not an
+immutable external preregistration or human third-party review record. The
+experiment therefore stops here.
 
 ## Reproduction
 
@@ -195,6 +213,14 @@ MPLCONFIGDIR=/tmp/matplotlib-hugsim-near-audit \
   --near-cut-in artifacts/hugsim_contrast/scene-0383-near-cut-in-00-run001-9s \
   --cross-modal-report artifacts/hugsim_contrast/scene-0383-near-cut-in-report-run001 \
   --output artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002
+```
+
+Validate the claim/finding semantics:
+
+```bash
+/home/yawei/HUGSIM/.pixi/envs/default/bin/python \
+  scripts/validate_hugsim_audit_semantics.py \
+  docs/runs/hugsim_near_cut_in_001_audit.json
 ```
 
 ## Inspectable Artifacts

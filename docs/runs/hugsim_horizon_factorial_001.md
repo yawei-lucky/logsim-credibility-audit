@@ -90,8 +90,9 @@ same trajectory with or without the lead vehicle, and the lead follows the
 same trajectory with or without actor0.
 
 The far cut-in's minimum actual 2D oriented-footprint clearance is about
-4.195 meters. It crosses the centerline visually but does not create a
-credible near-risk event.
+4.195 meters. It crosses the centerline visually but does not satisfy the
+pre-specified near-distance treatment; no real-world near-miss threshold is
+evaluated here.
 
 ## Credibility Judgment
 
@@ -108,13 +109,34 @@ credible near-risk event.
 - full 9-second aggregate metrics, because frames after 6.5 seconds still lack
   complete future actor history;
 - traffic realism of the scripted diagonal;
+- real-world near-miss classification, because no independent threshold is
+  defined;
 - RGB/semantic/depth as real-sensor evidence.
 
 `rejected`:
 
 - the old 6-second TTC/NC decrease as dynamic-risk evidence;
-- an actual collision or effective near miss in the far-cut-in scenario;
+- an actual collision in the far-cut-in scenario;
 - AD-agent response or global HUGSIM credibility.
+
+### How to Read `rejected`
+
+`rejected` applies to the named claim, not to the value of the experiment.
+
+| Rejected claim | Tested? | Basis | What the experiment establishes instead |
+|---|---:|---|---|
+| Timestamp zero equals the YAML actor initial state | yes | `invalidated_by_diagnostic` | `accepted`: reset advances the actor once before the first recorded state. |
+| Old 6-second decrease is dynamic risk | yes | `invalidated_by_diagnostic` | `accepted`: missing future history and last-box padding create the apparent failure. |
+| Far cut-in is an actual collision | yes | `contradicted_by_evidence` | `accepted`: collision remains false with about 4.195 m clearance. |
+| AD-agent response | no | `not_tested` | No AD-agent capability conclusion. |
+| Global HUGSIM credibility | no | `scope_exceeds_evidence` | No global capability conclusion. |
+
+Thus this run rejects incorrect risk/collision interpretations and accepts two
+HUGSIM implementation/measurement findings. Three task-local independent
+Codex reviewer roles (experimental design, evidence, and reproducibility)
+checked this separation; this is not an immutable external human-review
+record. The machine-readable audit is also checked by the fail-closed
+semantics validator.
 
 ## Reproduction
 
@@ -156,6 +178,14 @@ MPLCONFIGDIR=/tmp/matplotlib-hugsim-horizon \
   --lead-and-cut-in artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run002-9s \
   --short-lead-and-cut-in artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run001 \
   --output artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002
+```
+
+Validate the claim/finding semantics:
+
+```bash
+/home/yawei/HUGSIM/.pixi/envs/default/bin/python \
+  scripts/validate_hugsim_audit_semantics.py \
+  docs/runs/hugsim_horizon_factorial_001_audit.json
 ```
 
 ## Inspectable Artifacts

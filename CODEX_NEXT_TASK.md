@@ -119,8 +119,21 @@ Accepted narrow subclaims:
 - internal RGB/semantic/depth co-movement.
 
 The overall segment remains `down-weighted`. Actual collision, physical TTC
-value, AD-agent response, real traffic validity, sensor truth, and global
-HUGSIM credibility remain `rejected` or unsupported.
+value, AD-agent response, and global HUGSIM credibility remain `rejected` or
+unsupported. Real traffic validity and sensor truth remain down-weighted or
+not established.
+
+Read `rejected` at claim level. A rejected behavior/metric claim may coexist
+with an accepted diagnostic finding. In the current audits:
+
+- the old 6-second risk claim is rejected, while the tail-padding defect is
+  accepted;
+- timestamp-zero/YAML equality is rejected, while the reset phase-offset
+  finding is accepted;
+- physical TTC interpretation is rejected, while the binary-surrogate
+  construct finding is accepted;
+- AD-agent and global claims are rejected because they were not tested or
+  exceed scope, so they imply no HUGSIM capability failure.
 
 ## Runtime and Analysis Improvements
 
@@ -133,7 +146,10 @@ HUGSIM credibility remain `rejected` or unsupported.
   and selected report provenance.
 - NC/TTC conclusions fail closed when the event uses incomplete future actor
   history.
-- Eleven unit tests pass.
+- A fail-closed claim/finding semantics validator checks every rejected claim,
+  diagnostic link, decision label, repository evidence file, and external
+  reference syntax/commit alignment.
+- Twenty unit tests pass.
 
 ## Immediate Goal
 
@@ -164,3 +180,4 @@ to OmniDreams/Cosmos, or design the final four-layer credibility metric.
   correctness.
 - The deterministic plan writer is a loop enabler, not an AD agent.
 - Use exactly `accepted`, `down-weighted`, and `rejected`.
+- Never interpret `rejected` without its tested flag and rejection basis.

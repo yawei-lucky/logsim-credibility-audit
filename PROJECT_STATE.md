@@ -81,6 +81,10 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 
 这里的 accepted / down-weighted / rejected 是当前阶段的证据处理方式，可用于场景筛选和证据质量管理；它不是项目总目标，也不是最终数值指标。
 
+判定以具体主张为单位。`rejected` 不等于实验无效：原行为主张可以被拒绝，
+同时由同一实验支持一个 `accepted` 的仿真器或指标诊断发现。每条拒绝主张
+必须记录是否实际测试、拒绝依据和证据引用；未测试与超范围不构成能力失败。
+
 ### Step 4 — Future Credibility Metric
 
 在积累多个 run 和多个 segment 后，再定义量化的 simulator credibility metric。
@@ -190,7 +194,12 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 近距组在完整未来窗口内 NC=1、TTC=0.115、PDMS=0.368，23 个 TTC
   失败全部命中 actor0 且无尾部填充；
 - 已增加 fail-closed 配对/时域分析、writer 同值 `Done` 握手、严格
-  runner 成功状态与 11 个回归测试。
+  runner 成功状态、claim/diagnostic 双层语义校验与 20 个回归测试；
+- 已由实验设计、证据和可复现性三个 task-local 独立 Codex reviewer
+  角色复核 rejected 语义，明确区分被拒绝的主张与被接受的系统/指标
+  诊断发现；这不是外部人类第三方评审记录；
+- 已接受三个窄诊断：有限 rollout 尾部填充、reset 前移一个 actor
+  update、HUGSIM TTC 是二值内部 surrogate 而非物理 TTC。
 
 第一份 run report 的结论是：
 
@@ -318,6 +327,7 @@ pre-specified single-shot treatment
 - `scripts/hugsim_plan_pipe_writer.py`
 - `scripts/run_hugsim_debug_smoke.py`
 - `scripts/hugsim_control_adapter.py`
+- `scripts/validate_hugsim_audit_semantics.py`
 - `scripts/analyze_hugsim_counterfactual.py`
 - `scripts/analyze_hugsim_multicar.py`
 - `scripts/analyze_hugsim_horizon_factorial.py`

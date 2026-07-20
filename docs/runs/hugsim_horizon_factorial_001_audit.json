@@ -1,6 +1,16 @@
 {
   "experiment_id": "hugsim_horizon_factorial_001",
   "date": "2026-07-20",
+  "independent_review": {
+    "roles": [
+      "experimental_design",
+      "evidence",
+      "reproducibility"
+    ],
+    "scope": "claim-level rejection versus diagnostic-finding separation",
+    "result": "approved after fail-closed validator hardening",
+    "provenance": "task-local independent Codex sub-agent reviews; not an immutable external third-party review"
+  },
   "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
   "control_convention": "corrected",
   "runs": {
@@ -67,10 +77,92 @@
       "exact_short_extended_prefix": "accepted",
       "finite_rollout_tail_artifact_identification": "accepted",
       "strict_factorial_pairing": "accepted",
+      "timestamp_zero_equals_yaml_actor_initial_state": "rejected",
       "old_6s_nc_ttc_as_dynamic_risk": "rejected",
-      "actual_collision_or_effective_near_miss": "rejected",
+      "actual_collision": "rejected",
+      "real_world_near_miss_classification": "down-weighted",
       "ad_agent_response": "rejected",
       "global_hugsim_credibility": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "timestamp_zero_equals_yaml_actor_initial_state": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "The recorded timestamp-zero actor state is already one ConstantPlanner update beyond the YAML initial state.",
+        "evidence_refs": [
+          "artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run002-9s/audit_summary.json",
+          "docs/runs/hugsim_multicar_cut_in_001.md"
+        ],
+        "diagnostic_finding": "reset_advances_actor_before_first_record"
+      },
+      "old_6s_nc_ttc_as_dynamic_risk": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "The exact state/action/plan prefix loses all TTC/NC failures when complete future actor history is added.",
+        "evidence_refs": [
+          "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_factorial_summary.json",
+          "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_sensitivity_and_clearance.png"
+        ],
+        "diagnostic_finding": "finite_rollout_tail_padding"
+      },
+      "actual_collision": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Runtime collision is false and the far cut-in retains about 4.195 m of minimum 2D oriented-footprint clearance.",
+        "evidence_refs": [
+          "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_factorial_summary.json"
+        ],
+        "diagnostic_finding": "far_cut_in_is_nonrisk_control"
+      },
+      "ad_agent_response": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "The deterministic plan writer does not consume sensor observations as an AD agent.",
+        "diagnostic_finding": null
+      },
+      "global_hugsim_credibility": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "One scene and scripted actor controls cannot establish global simulator credibility.",
+        "diagnostic_finding": null
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "finite_rollout_tail_padding": {
+      "component": "metric_implementation",
+      "expected": "A metric frame without all required future actor states should be marked invalid rather than scored with fabricated future states.",
+      "observed": "The short-run scorer silently repeats its final actor box and emits TTC/NC failures; those failures disappear when the exact prefix is evaluated with complete future actor history.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "NC/TTC events require a complete-future-history gate; tail-padded events cannot support driving-risk conclusions.",
+      "evidence_refs": [
+        "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_factorial_summary.json",
+        "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_sensitivity_and_clearance.png"
+      ]
+    },
+    "far_cut_in_is_nonrisk_control": {
+      "component": "scenario_geometry",
+      "expected": "The extended far cut-in should remain non-colliding when evaluated with complete actor history.",
+      "observed": "NC/TTC/PDMS remain 1.0 in the valid window and minimum 2D footprint clearance is about 4.195 m.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Centerline crossing alone is insufficient to define a risk event; the far cut-in is a negative control.",
+      "evidence_refs": [
+        "artifacts/hugsim_contrast/scene-0383-horizon-factorial-report-run002/horizon_factorial_summary.json"
+      ]
+    },
+    "reset_advances_actor_before_first_record": {
+      "component": "actor_timing",
+      "expected": "The timestamp-zero actor state should equal the configured YAML initial state.",
+      "observed": "The environment advances ConstantPlanner once during reset before recording the timestamp-zero state.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Exact actor-time provenance has a one-update phase offset and must use recorded states rather than assuming YAML state at t=0.",
+      "evidence_refs": [
+        "artifacts/hugsim_contrast/scene-0383-multicar-cut-in-00-run002-9s/audit_summary.json",
+        "docs/runs/hugsim_multicar_cut_in_001.md"
+      ]
     }
   },
   "artifacts": {

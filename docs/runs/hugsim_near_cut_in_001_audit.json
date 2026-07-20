@@ -1,7 +1,17 @@
 {
   "experiment_id": "hugsim_near_cut_in_001",
   "date": "2026-07-20",
-  "design_status": "pre-specified single-shot; not formal immutable preregistration",
+  "independent_review": {
+    "roles": [
+      "experimental_design",
+      "evidence",
+      "reproducibility"
+    ],
+    "scope": "claim-level rejection versus diagnostic-finding separation",
+    "result": "approved after fail-closed validator hardening",
+    "provenance": "task-local independent Codex sub-agent reviews; not an immutable external third-party review"
+  },
+  "design_status": "author-reported pre-specified single-shot; not formal immutable preregistration",
   "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
   "control_convention": "corrected",
   "scenario": {
@@ -117,6 +127,77 @@
       "physical_time_to_collision_value": "rejected",
       "ad_agent_response": "rejected",
       "global_hugsim_credibility": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "actual_collision": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All runtime collision flags are false and the minimum 2D oriented-footprint clearance remains positive at 0.730 m.",
+        "evidence_refs": [
+          "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_summary.json",
+          "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_risk_and_clearance.png"
+        ],
+        "diagnostic_finding": "positive_clearance_close_pass"
+      },
+      "physical_time_to_collision_value": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "HUGSIM TTC is a binary shifted-planned-path collision surrogate rather than a continuous physical time-to-collision value.",
+        "evidence_refs": [
+          "artifacts/hugsim_contrast/scene-0383-near-cut-in-00-run001-9s/eval.json",
+          "HUGSIM@adeca402:sim/utils/score_calculator.py:_calculate_time_to_collision"
+        ],
+        "diagnostic_finding": "ttc_is_binary_internal_surrogate"
+      },
+      "ad_agent_response": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "The deterministic plan writer is a loop enabler, not a sensor-input AD agent.",
+        "diagnostic_finding": null
+      },
+      "global_hugsim_credibility": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "A single reconstructed scene, duplicated actor asset, and scripted controller cannot establish global credibility.",
+        "diagnostic_finding": null
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "positive_clearance_close_pass": {
+      "component": "scenario_geometry",
+      "expected": "The pre-specified treatment should create a close pass with positive clearance and no actual collision.",
+      "observed": "Actor0 crosses the centerline at 3.917 s and reaches 0.730 m minimum 2D footprint clearance at 5.5 s; collision and NC remain false/passing.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The treatment exercises near-distance geometry without conflating the event with an actual collision.",
+      "evidence_refs": [
+        "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_summary.json",
+        "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_risk_and_clearance.png"
+      ]
+    },
+    "horizon_valid_actor0_ttc_response": {
+      "component": "metric_response",
+      "expected": "The near cut-in should change TTC inside the complete-history window while the far control remains passing.",
+      "observed": "Near-cut-in TTC is 0.115 over the valid window; all 23 failures hit actor0 without padding, while baseline and far control remain 1.0.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "HUGSIM's internal TTC surrogate distinguishes the pre-specified near treatment from the far control.",
+      "evidence_refs": [
+        "artifacts/hugsim_contrast/scene-0383-near-cut-in-audit-run002/near_cutin_summary.json"
+      ]
+    },
+    "ttc_is_binary_internal_surrogate": {
+      "component": "metric_semantics",
+      "expected": "A physical TTC claim would require a continuous time-to-contact quantity with physical units.",
+      "observed": "The implementation returns a binary pass/fail after shifting planned ego positions by 0.5 and 1.0 seconds and checking polygon intersection.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Report the quantity as HUGSIM's internal TTC surrogate, not as physical time-to-collision.",
+      "evidence_refs": [
+        "artifacts/hugsim_contrast/scene-0383-near-cut-in-00-run001-9s/eval.json",
+        "HUGSIM@adeca402:sim/utils/score_calculator.py:_calculate_time_to_collision"
+      ]
     }
   },
   "raw_evidence_hashes": {
