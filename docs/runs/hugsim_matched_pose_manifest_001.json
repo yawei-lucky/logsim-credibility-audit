@@ -1,0 +1,432 @@
+{
+  "audit_id": "hugsim_matched_pose_manifest",
+  "camera_order": [
+    "CAM_BACK",
+    "CAM_BACK_LEFT",
+    "CAM_BACK_RIGHT",
+    "CAM_FRONT",
+    "CAM_FRONT_LEFT",
+    "CAM_FRONT_RIGHT"
+  ],
+  "cameras": [
+    {
+      "camera": "CAM_BACK",
+      "camtoworld_4x4": [
+        [
+          -0.9999790964043788,
+          0.003909374316616451,
+          -0.005150101623658508,
+          0.02960487720242878
+        ],
+        [
+          0.003962626410113442,
+          0.9999383711236379,
+          -0.010370706173636248,
+          -0.07523121588637743
+        ],
+        [
+          0.0051092412563219025,
+          -0.010390897317296767,
+          -0.9999329602061956,
+          0.41801128414508315
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "height": 410,
+      "intrinsics_3x3": [
+        [
+          404.61049528385314,
+          0.0,
+          414.6098001629919
+        ],
+        [
+          0.0,
+          404.61049528385314,
+          240.88921192256242
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "metadata_rgb_path": "./images/CAM_BACK/00004.jpg",
+      "native_dynamic_ids": [
+        "d793362732e547249b1a05af84d09967"
+      ],
+      "real_rgb_exists": false,
+      "real_rgb_path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/images/CAM_BACK/00004.jpg",
+      "real_rgb_sha256": null,
+      "sample_data_token": null,
+      "sample_token": null,
+      "sim_render_exists": false,
+      "sim_render_path": null,
+      "sim_render_sha256": null,
+      "timestamp_s": 0.33359527587890625,
+      "width": 800
+    },
+    {
+      "camera": "CAM_BACK_LEFT",
+      "camtoworld_4x4": [
+        [
+          -0.3164368464045139,
+          0.013994202890435082,
+          -0.9485103502455977,
+          -0.4490552060075546
+        ],
+        [
+          -0.009803403673505911,
+          0.9997895403661232,
+          0.01802132766781827,
+          -0.09352899466981762
+        ],
+        [
+          0.948562921220295,
+          0.015001241947182904,
+          -0.31623305840165045,
+          1.4265579828691557
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "height": 450,
+      "intrinsics_3x3": [
+        [
+          628.3707406047703,
+          0.0,
+          396.0562870379814
+        ],
+        [
+          0.0,
+          628.3707406047703,
+          246.3878732575678
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "metadata_rgb_path": "./images/CAM_BACK_LEFT/00004.jpg",
+      "native_dynamic_ids": [
+        "d793362732e547249b1a05af84d09967"
+      ],
+      "real_rgb_exists": false,
+      "real_rgb_path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/images/CAM_BACK_LEFT/00004.jpg",
+      "real_rgb_sha256": null,
+      "sample_data_token": null,
+      "sample_token": null,
+      "sim_render_exists": false,
+      "sim_render_path": null,
+      "sim_render_sha256": null,
+      "timestamp_s": 0.33359527587890625,
+      "width": 800
+    },
+    {
+      "camera": "CAM_BACK_RIGHT",
+      "camtoworld_4x4": [
+        [
+          -0.3575619235261917,
+          -0.011333307340918765,
+          0.9338206610420257,
+          0.516249070942637
+        ],
+        [
+          0.016755004340580398,
+          0.9996875677368022,
+          0.018548227463115477,
+          -0.06480090044689601
+        ],
+        [
+          -0.9337391181019439,
+          0.022278309118795702,
+          -0.3572603200315009,
+          1.4033577908908201
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "height": 450,
+      "intrinsics_3x3": [
+        [
+          629.7568702923367,
+          0.0,
+          403.62645269193126
+        ],
+        [
+          0.0,
+          629.7568702923367,
+          250.59789942458264
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "metadata_rgb_path": "./images/CAM_BACK_RIGHT/00004.jpg",
+      "native_dynamic_ids": [
+        "d793362732e547249b1a05af84d09967"
+      ],
+      "real_rgb_exists": false,
+      "real_rgb_path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/images/CAM_BACK_RIGHT/00004.jpg",
+      "real_rgb_sha256": null,
+      "sample_data_token": null,
+      "sample_token": null,
+      "sim_render_exists": false,
+      "sim_render_path": null,
+      "sim_render_sha256": null,
+      "timestamp_s": 0.33359527587890625,
+      "width": 800
+    },
+    {
+      "camera": "CAM_FRONT",
+      "camtoworld_4x4": [
+        [
+          0.9999951119879068,
+          0.0008169883394457852,
+          -0.0030180341858131194,
+          0.021562758580839027
+        ],
+        [
+          -0.000819202444521575,
+          0.9999993962035095,
+          -0.0007324615835755903,
+          -0.017746944335369386
+        ],
+        [
+          0.003017433950961797,
+          0.0007349303842771798,
+          0.9999951774732125,
+          2.090904152606331
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "height": 450,
+      "intrinsics_3x3": [
+        [
+          633.208601523277,
+          0.0,
+          408.1335098723992
+        ],
+        [
+          0.0,
+          633.208601523277,
+          245.75353289647379
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "metadata_rgb_path": "./images/CAM_FRONT/00004.jpg",
+      "native_dynamic_ids": [
+        "d793362732e547249b1a05af84d09967"
+      ],
+      "real_rgb_exists": false,
+      "real_rgb_path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/images/CAM_FRONT/00004.jpg",
+      "real_rgb_sha256": null,
+      "sample_data_token": null,
+      "sample_token": null,
+      "sim_render_exists": false,
+      "sim_render_path": null,
+      "sim_render_sha256": null,
+      "timestamp_s": 0.33359527587890625,
+      "width": 800
+    },
+    {
+      "camera": "CAM_FRONT_LEFT",
+      "camtoworld_4x4": [
+        [
+          0.5734545952130837,
+          -0.0032255174571459333,
+          -0.8192309950594715,
+          -0.4575922373947206
+        ],
+        [
+          -0.003099283943243465,
+          0.9999765514805838,
+          -0.006106629842901797,
+          -0.015000529918622496
+        ],
+        [
+          0.81923148234674,
+          0.006040904413472571,
+          0.5734311517574099,
+          1.9152798700658078
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "height": 450,
+      "intrinsics_3x3": [
+        [
+          636.2989735299244,
+          0.0,
+          413.3077463676904
+        ],
+        [
+          0.0,
+          636.2989735299244,
+          239.87582693180963
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "metadata_rgb_path": "./images/CAM_FRONT_LEFT/00004.jpg",
+      "native_dynamic_ids": [
+        "d793362732e547249b1a05af84d09967"
+      ],
+      "real_rgb_exists": false,
+      "real_rgb_path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/images/CAM_FRONT_LEFT/00004.jpg",
+      "real_rgb_sha256": null,
+      "sample_data_token": null,
+      "sample_token": null,
+      "sim_render_exists": false,
+      "sim_render_path": null,
+      "sim_render_sha256": null,
+      "timestamp_s": 0.33359527587890625,
+      "width": 800
+    },
+    {
+      "camera": "CAM_FRONT_RIGHT",
+      "camtoworld_4x4": [
+        [
+          0.551085488205285,
+          -0.01638390160573934,
+          0.8342879313868298,
+          0.5305121239253928
+        ],
+        [
+          0.014376339020731382,
+          0.9998452496661233,
+          0.010138914954205621,
+          -0.0015706672882692119
+        ],
+        [
+          -0.834324940035897,
+          0.00640659724511148,
+          0.5512357480659571,
+          1.9397052847689982
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "height": 450,
+      "intrinsics_3x3": [
+        [
+          630.4237223002349,
+          0.0,
+          403.984122262777
+        ],
+        [
+          0.0,
+          630.4237223002349,
+          247.6672134371044
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "metadata_rgb_path": "./images/CAM_FRONT_RIGHT/00004.jpg",
+      "native_dynamic_ids": [
+        "d793362732e547249b1a05af84d09967"
+      ],
+      "real_rgb_exists": false,
+      "real_rgb_path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/images/CAM_FRONT_RIGHT/00004.jpg",
+      "real_rgb_sha256": null,
+      "sample_data_token": null,
+      "sample_token": null,
+      "sim_render_exists": false,
+      "sim_render_path": null,
+      "sim_render_sha256": null,
+      "timestamp_s": 0.33359527587890625,
+      "width": 800
+    }
+  ],
+  "date": "2026-07-21",
+  "native_dynamic_policy": "preserve timestamp-specific native dynamic objects from metadata; do not remove native actors when comparing to real source images",
+  "next_action": "Recover the selected frame's six real RGB files and immutable source identity, render each camera using the listed exact metadata intrinsics and camtoworld pose, then run the frozen camera-only AD receiver on the matched real/sim observations.",
+  "pairing_integrity_gate": {
+    "exact_sim_render_provenance_verified": false,
+    "exact_sim_render_ready": false,
+    "pairing_integrity_passed": false,
+    "permitted_claim": "selected metadata pose can be listed, but no real-sim image pair or AD receiver comparison is established",
+    "real_observation_ready": false,
+    "receiver_equivalence_tested": false,
+    "source_identity_ready_for_selected_frame": false,
+    "status": "blocked_source_anchor"
+  },
+  "receiver_input_contract": {
+    "camera_order": [
+      "CAM_BACK",
+      "CAM_BACK_LEFT",
+      "CAM_BACK_RIGHT",
+      "CAM_FRONT",
+      "CAM_FRONT_LEFT",
+      "CAM_FRONT_RIGHT"
+    ],
+    "contract_id": "camera_only_rgb_single_frame_v0",
+    "frame_history": 1,
+    "modalities": [
+      "rgb"
+    ],
+    "permitted_initial_endpoints": [
+      "per-frame perception",
+      "critical-object discovery",
+      "lane/drivable relation",
+      "single-frame risk ordering"
+    ],
+    "planning_or_control_claims_allowed": false,
+    "preprocessing_must_be_frozen_before_receiver_run": true,
+    "receiver_scope": "bounded camera-only AD receiver",
+    "required_calibration": [
+      "intrinsics_3x3",
+      "camtoworld_4x4"
+    ],
+    "temporal_claims_allowed": false
+  },
+  "scene": "scene-0383",
+  "scene_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "selected_frame_index": 4,
+  "selected_from_reader_test_candidate": true,
+  "selected_timestamp_s": 0.33359527587890625,
+  "source_anchor_reasons": [
+    "referenced real RGB files are incomplete",
+    "per-frame source sample/sample_data identity is incomplete or non-unique"
+  ],
+  "source_anchor_status": "blocked",
+  "source_root": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383"
+}

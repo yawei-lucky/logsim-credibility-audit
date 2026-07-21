@@ -203,7 +203,8 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 近距组在完整未来窗口内 NC=1、TTC=0.115、PDMS=0.368，23 个 TTC
   失败全部命中 actor0 且无尾部填充；
 - 已增加 fail-closed 配对/时域分析、writer 同值 `Done` 握手、严格
-  runner 成功状态、claim/diagnostic 双层语义校验与 28 个回归测试；
+  runner 成功状态、claim/diagnostic 双层语义校验、AD readiness 与
+  matched-pose manifest，并累计 36 个回归测试；
 - 已由实验设计、证据和可复现性三个 task-local 独立 Codex reviewer
   角色复核 rejected 语义，明确区分被拒绝的主张与被接受的系统/指标
   诊断发现；这不是外部人类第三方评审记录；
@@ -220,6 +221,11 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已新增 AD receiver readiness inventory，清点本机全部 HUGSIM scene 资产：
   当前只有 `scene-0383`，真实 RGB 为 0/1080，source identity 不完整，
   因此尚不能建立同一 AD receiver 的 real-vs-sim 输入对比。
+- 已新增 matched-pose manifest：为 `scene-0383` 第一 reader-derived test
+  candidate `frame00004` / `t=0.333595s` 固定六相机 exact metadata K、
+  `camtoworld`、resolution、native dynamic ID 和 camera-only receiver
+  contract；由于真实 RGB 与 source identity 缺失，gate 仍为
+  `blocked_source_anchor`。
 
 第一份 run report 的结论是：
 
@@ -311,6 +317,22 @@ local HUGSIM scene inventory
 因此下一步研究推进应先补齐真实源图像、不可变 source identity 和 ASAP
 映射，再做 exact metadata pose render 与冻结 AD receiver 对比。
 
+第八份 matched-pose manifest report 已完成：
+
+```text
+scene-0383 frame00004 selected
+→ first reader-derived test candidate at t=0.333595s
+→ six exact metadata intrinsics and camtoworld matrices recorded
+→ native dynamic actor must be preserved
+→ receiver contract: camera_only_rgb_single_frame_v0
+→ pairing gate: blocked_source_anchor
+```
+
+这一轮没有生成新的 HUGSIM 场景、rollout 或渲染图。它新验证的是：即使暂时
+没有真实 RGB，也已经能把后续 exact-pose render 和 AD receiver 输入对比的
+第一组配对清单固定下来；但它不支持 pairing integrity pass、receiver
+equivalence 或 AD 行为结论。
+
 ---
 
 ## 7. 当前遗留问题
@@ -358,6 +380,8 @@ local HUGSIM scene inventory
 - `docs/runs/hugsim_source_anchor_gate_001.json`
 - `docs/runs/hugsim_ad_receiver_readiness_001.md`
 - `docs/runs/hugsim_ad_receiver_readiness_001.json`
+- `docs/runs/hugsim_matched_pose_manifest_001.md`
+- `docs/runs/hugsim_matched_pose_manifest_001.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：

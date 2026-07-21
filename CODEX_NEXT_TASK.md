@@ -48,6 +48,8 @@ docs/runs/hugsim_near_cut_in_001.md
 docs/runs/hugsim_near_cut_in_001_audit.json
 docs/runs/hugsim_ad_receiver_readiness_001.md
 docs/runs/hugsim_ad_receiver_readiness_001.json
+docs/runs/hugsim_matched_pose_manifest_001.md
+docs/runs/hugsim_matched_pose_manifest_001.json
 ```
 
 ## Corrected State
@@ -169,7 +171,11 @@ with an accepted diagnostic finding. In the current audits:
   reference syntax/commit alignment.
 - The AD receiver readiness inventory scans all local HUGSIM scene metadata
   and fails closed before any real-vs-sim receiver claim.
-- Thirty-two unit tests pass.
+- The matched-pose manifest builder selects the first reader-derived test
+  candidate and records the exact metadata intrinsics, camera-to-world poses,
+  native dynamic policy, and bounded camera-only receiver contract. It fails
+  closed while source RGB or exact simulation renders are absent.
+- Thirty-six unit tests pass.
 
 ## Immediate Goal
 
@@ -189,6 +195,14 @@ referenced records, incomplete source sample identity, and no source-anchor-
 ready scene. It did not generate a new HUGSIM scenario or rollout; it is an
 availability and pairing result. Therefore no AD real-versus-sim input
 comparison is established locally yet.
+
+The first matched-pose manifest is now prepared for `scene-0383` frame
+`00004` at `t=0.333595s`, which is the first reader-derived test candidate
+under the inspected local split rule. It records six exact metadata
+intrinsics, `camtoworld` matrices, resolutions, native dynamic IDs, and a
+`camera_only_rgb_single_frame_v0` receiver contract. The gate remains
+`blocked_source_anchor`: no real RGB, exact render, pairing-integrity pass, or
+receiver-equivalence result exists yet.
 
 The next material HUGSIM action should still prioritize a matched
 real-versus-sim receiver comparison, but the first unblock is data and exact
