@@ -175,7 +175,7 @@ with an accepted diagnostic finding. In the current audits:
   candidate and records the exact metadata intrinsics, camera-to-world poses,
   native dynamic policy, and bounded camera-only receiver contract. It fails
   closed while source RGB or exact simulation renders are absent.
-- Thirty-six unit tests pass.
+- Fifty-three unit tests pass.
 
 ## Immediate Goal
 
@@ -305,12 +305,39 @@ rejected cross-scene robustness of the existing center-path risk proxy: the
 image, and `scene-0138` produced two roadside false car detections. See
 `docs/runs/hugsim_normal_scene_sensor_audit_001.md`.
 
-The immediate next action is to establish a nuisance-audited normal-scene
-receiver baseline that distinguishes visible vehicles from ego-hood,
-vegetation, sign, and reconstruction-artifact false positives. Do not use raw
-maximum bbox or center-path risk as a cross-scene safety variable before that
-baseline is fixed. Use the weak `scene-0138` lateral views as the first internal
-projection/occlusion diagnostic target; do not add controlled actors yet.
+The first driving-domain 3D receiver baseline is now complete:
+
+```text
+docs/runs/hugsim_sparse4d_receiver_baseline_001.md
+docs/runs/hugsim_sparse4d_receiver_baseline_001_audit.json
+artifacts/sparse4d_receiver_baseline/baseline-and-response-run001
+```
+
+A frozen official Sparse4Dv3 R50 consumed only HUGSIM six-camera RGB and
+calibration. It was not fine-tuned on HUGSIM and did not receive HUGSIM
+semantic/depth. Controlled vehicle sensitivity, near/far ordering, and
+same-lane/adjacent-lane ordering are `accepted`. Absolute actor XY agreement is
+`down-weighted`: median center errors are 2.56 m (far), 4.24 m (near), and
+3.80 m (adjacent). The result supports bounded task-response and relation-
+direction evidence, not real-sim equivalence or global simulator validity.
+
+The immediate next action is no longer to add another receiver. First audit
+the material absolute-position bias:
+
+1. verify the HUGSIM vehicle/camera/Sparse4D coordinate and calibration
+   transform with synthetic projected points and per-camera overlays;
+2. keep HUGSIM actor-state Z outside the reference until its camera-projectable
+   convention is established;
+3. manually label a small, fixed set of native visible vehicles and nuisance
+   regions in `scene-0041` and `scene-0138`, so normal-scene Sparse4Dv3 outputs
+   can become precision/error evidence instead of unlabelled response counts;
+4. only after those checks decide whether the remaining bias is more consistent
+   with receiver domain shift or simulator/adapter geometry;
+5. retain the source-anchor gate for eventual matched real-sim Sparse4Dv3
+   comparison.
+
+Do not use the 2 m or 4 m diagnostic lines as final credibility thresholds, and
+do not add more controlled vehicles merely to produce another response curve.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
