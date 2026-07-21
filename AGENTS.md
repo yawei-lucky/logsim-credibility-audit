@@ -46,10 +46,12 @@ their own scope.
   evidence, capability boundaries, and unresolved areas for a general
   credibility-validation framework. Prioritize task-relevant real-versus-sim
   receiver consistency over visual attractiveness alone.
-- The next planned evidence direction is a real source-log matched anchor and
-  matched receiver comparison. A receiver may be an AD model/stack or a human
-  driver in a bounded human-in-the-loop study; use the receiver class that
-  matches the intended test domain.
+- The current immediate route is metric audit and evidence mapping before new
+  proxy metrics or receiver-response curves are added. Bounded normal scenes
+  may be collected to cover materially different geometry, rendering, and
+  perception conditions. A real source-log matched anchor remains a necessary
+  later evidence upgrade before real-sim consistency claims, but its current
+  absence is not a reason to stop the metric audit.
 - Do not expand to OmniDreams / Cosmos, a full HUGSIM benchmark, installation of
   full AD agents, or a final quantitative credibility metric unless the user
   explicitly changes the project direction.
@@ -85,13 +87,14 @@ their own scope.
 Read the following before substantive HUGSIM work:
 
 1. `docs/research_guiding_principles.md`
-2. `docs/hugsim_matched_receiver_validation_plan.md`
+2. `docs/hugsim_metric_evidence_map.md`
 3. `CODEX_NEXT_TASK.md`
 4. `PROJECT_STATE.md`
-5. `README.md`
-6. `docs/hugsim_credibility_decision_rules.md`
-7. `docs/hugsim_smoke_test_plan.md`
-8. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
+5. `docs/hugsim_matched_receiver_validation_plan.md`
+6. `README.md`
+7. `docs/hugsim_credibility_decision_rules.md`
+8. `docs/hugsim_smoke_test_plan.md`
+9. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
 
 If an older workflow note conflicts with the current state, prefer the newer
 project-state documents and report the conflict instead of silently combining

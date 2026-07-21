@@ -99,6 +99,12 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 
 ## 当前状态
 
+当前直接路线是 **Route B：指标审计与证据地图**。此前的配对反事实实验、
+proxy 曲线和接收方一致性结果都保留为审计材料，但不再自动推动新增 proxy，
+也不替代真实—仿真一致性证据。执行依据以
+`docs/hugsim_metric_evidence_map.md`、`CODEX_NEXT_TASK.md` 和
+`PROJECT_STATE.md` 的最新表述为准。
+
 已经完成：
 
 - HUGSIM source availability gate；
@@ -132,9 +138,10 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - scene-0383 真实日志 Source Anchor Gate 与 matched receiver 对照计划；
 - 已确认发布场景只有1080条六相机标定/位姿索引，没有对应真实RGB和源
   token，因此当前还没有严格 real-sim pair。
-- AD receiver readiness inventory；当前本机只有 `scene-0383` 一个 HUGSIM
-  scene，真实 RGB 为 0/1080，source identity 不完整，因此尚不能做
-  同一 AD receiver 的 real-vs-sim 输入对比。
+- AD receiver readiness inventory；该次清点时本机只有 `scene-0383` 一个
+  HUGSIM scene，真实 RGB 为 0/1080，source identity 不完整，因此尚不能做
+  同一 AD receiver 的 real-vs-sim 输入对比；后续新增重建包没有改变真实
+  source 缺失的判断。
 - `scene-0383` frame00004 matched-pose manifest；已固定第一候选帧的六相机
   exact metadata K / camtoworld、native dynamic policy 和 camera-only
   receiver contract，但 source anchor 仍 blocked。
@@ -153,6 +160,9 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
   RGB detector 的中心路径任务信号。两个接收方在近距/远距、同车道/相邻车道、
   多车合流三个方向上全部一致，run-level Spearman=1.0；整体仍为
   down-weighted，因为这是 HUGSIM 内部接收方一致性，不是 real-sim 证据。
+- 两个补充正常场景已完成官方资产校验和 36 步六相机 RGB/semantic/depth
+  bounded run：`scene-0041` 覆盖信号十字路口，`scene-0138` 覆盖弯道、
+  学校区域、路侧目标和遮挡。它们用于扩展指标审计条件，不代表可信性结论。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 

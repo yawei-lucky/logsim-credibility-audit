@@ -219,8 +219,9 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已形成 matched receiver 计划；当前用户明确先聚焦 AD，因此 human-in-the-
   loop 作为后续补充证据暂缓；
 - 已新增 AD receiver readiness inventory，清点本机全部 HUGSIM scene 资产：
-  当前只有 `scene-0383`，真实 RGB 为 0/1080，source identity 不完整，
-  因此尚不能建立同一 AD receiver 的 real-vs-sim 输入对比。
+  该次清点时只有 `scene-0383`，真实 RGB 为 0/1080，source identity 不完整，
+  因此尚不能建立同一 AD receiver 的 real-vs-sim 输入对比。后续增加的两个
+  重建场景包同样没有补齐真实 RGB / source identity。
 - 已新增 matched-pose manifest：为 `scene-0383` 第一 reader-derived test
   candidate `frame00004` / `t=0.333595s` 固定六相机 exact metadata K、
   `camtoworld`、resolution、native dynamic ID 和 camera-only receiver
@@ -332,7 +333,7 @@ pre-specified single-shot treatment
 
 ```text
 local HUGSIM scene inventory
-→ scene-0383 only
+→ scene-0383 only at that audit time
 → 0/1080 real RGB files available
 → source sample/sample_data identity incomplete
 → AD real-sim input comparison gate: blocked
@@ -425,6 +426,12 @@ artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receive
 artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement_summary.json
 artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement_by_run.csv
 ```
+
+本轮又完成了补充场景收集 run001：从官方公开 nuScenes 场景资产中选择并校验
+`scene-0041` 和 `scene-0138`，分别完成 36 步正常六相机
+RGB/semantic/depth rollout。视觉复核将前者归为信号十字路口载体，后者归为
+弯道学校区域、路侧目标与遮挡载体；后者当前不能称为多车交互场景。详见
+`docs/runs/hugsim_scene_collection_001.md`。
 
 ---
 
@@ -556,17 +563,21 @@ identity 仍缺失，核心 matched real-sim AD 对比仍 blocked。该结果现
 作为默认下一步。semantic/depth 是待验证的 HUGSIM 输出，不是独立真值。
 
 源数据处理采用轻量规则：已知相关目录为 `/home/yawei/HUGSIM`、
-`/home/yawei/HUGSIM_assets` 和本仓库 `artifacts/`。目前发布资产目录只有
-`scene-0383.zip`、重建场景、动态物体模型、地面参数、配置和 metadata，没有
-原始六相机 RGB 图像；因此不再把 source recovery 当成本阶段主阻塞点。若后续
-出现新目录，只做一次普通清点；没有真实 RGB / source identity 就切回可推进
-的 AD 接收方一致性与反事实因果方向实验。
+`/home/yawei/HUGSIM_assets` 和本仓库 `artifacts/`。本地现有
+`scene-0383`、`scene-0041` 和 `scene-0138` 三个重建场景包，包含模型、动态
+物体、地面参数、配置和 metadata，但仍没有对应原始六相机 RGB 或完整 source
+identity；因此不再把 source recovery 当成本阶段主阻塞点。若后续出现新目录，
+只做一次普通清点；没有真实 RGB / source identity 就继续指标审计和有边界的
+场景证据收集。
 
 下一步先按路线 B 审计指标：明确每个量的 construct、provenance、reference
 independence、receiver contract、因果敏感性和 claim boundary；优先审计
 RGB/semantic/depth、内部 3D geometry、HUGSIM 评分器以及已有 perception/task
-proxy。完成指标收敛后，再选择少量指标进入同一冻结 AD 接收方的 matched
-real-sim 比较；短期缺少真实源数据时保留 source gate，不用新增 proxy 曲线替代。
+proxy。新增 `scene-0041` 用于十字路口几何、信号和跨相机一致性审计；新增
+`scene-0138` 用于遮挡边界、路侧小目标、道路语义和植被渲染 artifact 对接收方
+影响的审计。先审计正常场景，不立即注入 actor。完成指标收敛后，再选择少量
+指标进入同一冻结 AD 接收方的 matched real-sim 比较；短期缺少真实源数据时
+保留 source gate，不用新增 proxy 曲线替代。
 
 不自行扩展到完整 benchmark 或最终可信指标；AD 侧先做 bounded camera-only
 receiver 对比，不直接安装或运行完整 AD stack。

@@ -1,4 +1,4 @@
-# Codex Next Task — Establish a Matched Real–Simulation Source Anchor
+# Codex Next Task — Audit Metrics and Expand Bounded Scene Coverage
 
 > Read this file first when resuming HUGSIM work.
 
@@ -285,6 +285,17 @@ independent ground truth. Practical steps are:
    real/sim observations to the same AD receiver;
 6. only after the matched factual comparison, use controlled distance, lane,
    occlusion, or motion interventions and then progress to planning/control.
+
+Two additional normal-scene carriers have now been collected and executed:
+
+- `scene-0041`: signalized intersection / cross-street geometry;
+- `scene-0138`: curved school-zone road with roadside objects, pedestrians,
+  vegetation, and strong occlusion conditions.
+
+Their first/middle/last six-camera previews and bounded run records are in
+`docs/runs/hugsim_scene_collection_001.md`. They extend the conditions available
+to the metric audit; they do not constitute real-sim evidence, and the current
+rollouts do not test injected multi-actor interaction.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
