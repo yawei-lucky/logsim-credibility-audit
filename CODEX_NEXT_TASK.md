@@ -1,4 +1,4 @@
-# Codex Next Task — Preserve the Corrected Multi-Actor Evidence
+# Codex Next Task — Establish a Matched Real–Simulation Source Anchor
 
 > Read this file first when resuming HUGSIM work.
 
@@ -36,8 +36,11 @@ not the current grading scheme.
 
 ```text
 docs/research_guiding_principles.md
+docs/hugsim_matched_receiver_validation_plan.md
 docs/hugsim_credibility_decision_rules.md
 docs/hugsim_smoke_test_plan.md
+docs/runs/hugsim_source_anchor_gate_001.md
+docs/runs/hugsim_source_anchor_gate_001.json
 docs/runs/hugsim_counterfactual_001.md
 docs/runs/hugsim_horizon_factorial_001.md
 docs/runs/hugsim_horizon_factorial_001_audit.json
@@ -162,7 +165,7 @@ with an accepted diagnostic finding. In the current audits:
 - A fail-closed claim/finding semantics validator checks every rejected claim,
   diagnostic link, decision label, repository evidence file, and external
   reference syntax/commit alignment.
-- Twenty unit tests pass.
+- Twenty-eight unit tests pass.
 
 ## Immediate Goal
 
@@ -170,13 +173,23 @@ Do not run another same-scene cut-in parameter adjustment. Independent design,
 evidence, and reproducibility reviews agreed that the pre-specified stop
 criterion was met and another treatment would be post-hoc result chasing.
 
-The next material HUGSIM action, if explicitly selected, should prioritize a
-matched real-versus-sim receiver comparison. Practical options are:
+The source-anchor availability gate is now implemented. For `scene-0383`, it
+is blocked because the released minimized scene has 1080 calibration/pose
+records but none of the referenced real RGB files or original nuScenes source
+tokens. Existing closed-loop observations also use a non-identical camera
+template and must not be called matched-pose renders.
 
-1. add a real source-log matched-pose observation anchor;
-2. feed matched real/sim observations to the same AD receiver, or design a
+The next material HUGSIM action should prioritize a matched real-versus-sim
+receiver comparison. Practical steps are:
+
+1. obtain the licensed nuScenes source images and the ASAP
+   `interp_12Hz_trainval` mapping for `scene-0383`;
+2. render split-derived test candidate poses using their exact metadata
+   intrinsics and `camtoworld`, and verify checkpoint training provenance
+   before calling them genuinely held out;
+3. feed matched real/sim observations to the same AD receiver, or design a
    bounded human-in-the-loop comparison;
-3. use distinct vehicle assets and more credible map-constrained or staged
+4. use distinct vehicle assets and more credible map-constrained or staged
    behavior for subsequent counterfactual interventions.
 
 Do not independently install a full AD agent, run the full benchmark, expand

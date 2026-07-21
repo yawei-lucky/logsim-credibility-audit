@@ -1,0 +1,78 @@
+{
+  "experiment_id": "hugsim_source_anchor_gate_001",
+  "date": "2026-07-21",
+  "scene": "scene-0383",
+  "gate": {
+    "status": "blocked",
+    "permitted_claim": "metadata-only frame-index candidates exist; no real-sim image pair exists locally",
+    "blocking_reasons": [
+      "0 of 1080 referenced real RGB images are present",
+      "original nuScenes sample and sample_data identity is absent",
+      "ASAP interp_12Hz_trainval source metadata is absent"
+    ]
+  },
+  "released_metadata": {
+    "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json",
+    "sha256": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+    "frame_record_count": 1080,
+    "timestamp_count": 180,
+    "camera_count": 6,
+    "timestamp_range_s": [
+      0.0,
+      14.915800333023071
+    ],
+    "median_timestep_s": 0.08331489562988281,
+    "reader_test_candidate_timestamp_count": 36,
+    "reader_split_rule": "dataset_readers.py at the recorded commit: idx % 30 >= 24",
+    "checkpoint_training_exclusion_confirmed": false,
+    "first_reader_test_candidate_frame_index": 4,
+    "first_reader_test_candidate_timestamp_s": 0.33359527587890625,
+    "native_dynamic_id": "d793362732e547249b1a05af84d09967",
+    "native_dynamic_model_sha256": "462a1d4579b94447e2a2951d6ffc80f0b6cf26a6968ff78025d41cb92ad924a6"
+  },
+  "source_observation_availability": {
+    "rgb_files": 0,
+    "valid_rgb": 0,
+    "semantic": 0,
+    "depth": 0,
+    "mask": 0,
+    "flow": 0,
+    "expected_rgb": 1080,
+    "configured_source_path": "/data3/hyzhou/data/HUGSIM/nuscenes/scene-0383_0_180"
+  },
+  "audit_environment": {
+    "script_sha256": "5fd5f7b44e08386866c648b910681bc14739ebec5a6074bb0d3c215d5048c7c7",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "dataset_reader_sha256": "72653af4082f8e20568513a688dac7c3afa9e6429be26efaba96d8d379fbe89c"
+  },
+  "standard_closed_loop_camera_comparison": {
+    "camera_yaml_sha256": "f059629db1b1831e81e0a7b8f43bf9775b70684319859e8c1e4bc00bf2cb8e9a",
+    "cam_rect_translation_m": [
+      0.0,
+      0.3,
+      0.0
+    ],
+    "maximum_combined_translation_difference_m": 0.3101880281790787,
+    "maximum_rotation_difference_deg": 3.411755601559664,
+    "maximum_focal_difference_px": 7.367706423668096,
+    "maximum_principal_point_difference_px": 21.690124432348057,
+    "all_resolutions_match": false,
+    "decision": "not an exact matched-pose observation"
+  },
+  "existing_simulation_output": {
+    "run": "artifacts/hugsim_contrast/scene-0383-easy-00-run007-9s",
+    "run_status": "complete",
+    "camera_count": 6,
+    "modalities": [
+      "rgb",
+      "semantic",
+      "depth"
+    ],
+    "matched_real_sim_status": "not_paired"
+  },
+  "raw_gate_artifact": {
+    "path": "artifacts/hugsim_source_anchor/scene-0383-source-anchor-gate-run003/source_anchor_gate.json",
+    "sha256": "989b729fa46c02e1e9c26721dba6324181a198dc67e6fa565ef0cfc47a82015c"
+  },
+  "next_required_action": "obtain licensed nuScenes camera blobs and ASAP interp_12Hz_trainval metadata, recover immutable source identity and checkpoint split provenance, then render reader-derived test candidates with metadata K and camtoworld"
+}

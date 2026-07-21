@@ -48,6 +48,36 @@ intended as an AD testing domain should therefore be validated with the target
 receiver class, while human-in-the-loop evidence provides an additional
 behavioral and experiential anchor.
 
+### Receiver Convergence Principle
+
+> 不要求人类驾驶员与 AD 模型依赖完全相同的内部视觉线索；通过共享任务情境和共同任务变量，分别验证各接收方内部的真实—仿真一致性；跨接收方只检查各自的真实—仿真差值及干预效应方向是否收敛，不要求人与 AD 的原始输出一致。
+
+A six-camera surround view can make scene coverage, ego reference, and event
+timing more comparable, but it does not make human and machine perception
+equivalent. For an initial controlled human study, compose a fixed human
+display from the same synchronized per-camera source frames supplied to the AD
+receiver, preserving field of view, resolution, timing, and latency. The AD
+still consumes its native tensor/interface rather than a human-facing video
+mosaic. Treat a natural cockpit, mirrors, head motion, and motion feedback as
+a different receiver domain.
+
+Validation is performed within each receiver first:
+
+```text
+same AD version: real vs simulated observations
+same human where possible, or a matched participant population: real vs simulated condition
+```
+
+Across receiver types, compare real-to-simulation gaps and intervention-effect
+directions on shared external task variables such as critical-object
+detection, risk ordering, lane relation, visibility, intervention timing,
+response direction, and safety outcome. Do not require human scores, AD
+scores, internal features, or exact trajectories to be numerically identical.
+
+A within-participant human comparison is preferred. If matched groups are
+used, record the weaker pairing and account for participant and presentation-
+order effects.
+
 ## What Kind of Realism Matters
 
 Visible animation, texture, or lighting differences are not automatically

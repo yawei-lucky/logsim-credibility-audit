@@ -203,12 +203,20 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 近距组在完整未来窗口内 NC=1、TTC=0.115、PDMS=0.368，23 个 TTC
   失败全部命中 actor0 且无尾部填充；
 - 已增加 fail-closed 配对/时域分析、writer 同值 `Done` 握手、严格
-  runner 成功状态、claim/diagnostic 双层语义校验与 20 个回归测试；
+  runner 成功状态、claim/diagnostic 双层语义校验与 28 个回归测试；
 - 已由实验设计、证据和可复现性三个 task-local 独立 Codex reviewer
   角色复核 rejected 语义，明确区分被拒绝的主张与被接受的系统/指标
   诊断发现；这不是外部人类第三方评审记录；
 - 运行级技术问题继续保留用于复现和结果有效性检查，但不作为理论框架的
   核心研究发现；HUGSIM TTC 的构念边界仍需在后续指标解释中明确。
+- 已建立真实日志 Source Anchor Gate：`scene-0383` 的发布元数据包含180个
+  时刻、六相机1080条标定/位姿记录和36个按当前 reader 规则推导的
+  测试候选，但本地缺少全部真实 RGB、原始 nuScenes token 与 ASAP
+  `interp_12Hz_trainval` 映射；
+- 已确认现有闭环相机模板与重建源相机并非严格匹配，不能将当前 rollout
+  当作 matched-pose real-sim 对照；
+- 已形成 matched receiver 计划，分别进行 AD 内和 human-in-the-loop 内的
+  real-vs-sim 配对，再比较共同任务变量和干预效应方向。
 
 第一份 run report 的结论是：
 
@@ -291,6 +299,8 @@ pre-specified single-shot treatment
 
 当前仍未完成：
 
+- 获取 `scene-0383` 对应的授权 nuScenes 原始相机数据和 ASAP 12Hz映射，
+  建立第一组严格 matched-pose factual anchor；
 - 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
 - 接入真实 AD agent 后区分 agent response 与 simulator artifact；
 - 跨场景验证当前 relation-level 结果；
@@ -309,6 +319,7 @@ pre-specified single-shot treatment
 - `SOURCE_AVAILABILITY_GATE.md`
 - `docs/hugsim_audit.md`
 - `docs/research_guiding_principles.md`
+- `docs/hugsim_matched_receiver_validation_plan.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
 - `docs/hugsim_cuda_pixi_runbook.md`
@@ -324,6 +335,8 @@ pre-specified single-shot treatment
 - `docs/runs/hugsim_horizon_factorial_001_audit.json`
 - `docs/runs/hugsim_near_cut_in_001.md`
 - `docs/runs/hugsim_near_cut_in_001_audit.json`
+- `docs/runs/hugsim_source_anchor_gate_001.md`
+- `docs/runs/hugsim_source_anchor_gate_001.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -338,6 +351,7 @@ pre-specified single-shot treatment
 - `scripts/run_hugsim_debug_smoke.py`
 - `scripts/hugsim_control_adapter.py`
 - `scripts/validate_hugsim_audit_semantics.py`
+- `scripts/audit_hugsim_source_anchor.py`
 - `scripts/analyze_hugsim_counterfactual.py`
 - `scripts/analyze_hugsim_multicar.py`
 - `scripts/analyze_hugsim_horizon_factorial.py`

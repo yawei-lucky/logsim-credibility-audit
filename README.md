@@ -122,7 +122,10 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - 一次执行前固定参数的近距汇入强干预：0.730 米二维 footprint 正净距、
   无碰撞、完整未来时域内 TTC 明显响应；
 - fail-closed 配对/时域检查、同值 FIFO 结束握手、claim/diagnostic
-  语义校验和 20 个回归测试。
+  语义校验和 28 个回归测试。
+- scene-0383 真实日志 Source Anchor Gate 与 matched receiver 对照计划；
+- 已确认发布场景只有1080条六相机标定/位姿索引，没有对应真实RGB和源
+  token，因此当前还没有严格 real-sim pair。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -195,6 +198,7 @@ exact pairing
 - `SOURCE_AVAILABILITY_GATE.md`
 - `docs/hugsim_audit.md`
 - `docs/research_guiding_principles.md`
+- `docs/hugsim_matched_receiver_validation_plan.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
 - `docs/hugsim_cuda_pixi_runbook.md`
@@ -210,6 +214,8 @@ exact pairing
 - `docs/runs/hugsim_horizon_factorial_001_audit.json`
 - `docs/runs/hugsim_near_cut_in_001.md`
 - `docs/runs/hugsim_near_cut_in_001_audit.json`
+- `docs/runs/hugsim_source_anchor_gate_001.md`
+- `docs/runs/hugsim_source_anchor_gate_001.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -228,6 +234,7 @@ exact pairing
 - `scripts/analyze_hugsim_horizon_factorial.py`
 - `scripts/analyze_hugsim_near_cutin.py`
 - `scripts/validate_hugsim_audit_semantics.py`
+- `scripts/audit_hugsim_source_anchor.py`
 - `configs/hugsim/nuscenes_smoke_base.yaml`
 - `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
 - `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`

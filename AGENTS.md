@@ -85,12 +85,13 @@ their own scope.
 Read the following before substantive HUGSIM work:
 
 1. `docs/research_guiding_principles.md`
-2. `CODEX_NEXT_TASK.md`
-3. `PROJECT_STATE.md`
-4. `README.md`
-5. `docs/hugsim_credibility_decision_rules.md`
-6. `docs/hugsim_smoke_test_plan.md`
-7. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
+2. `docs/hugsim_matched_receiver_validation_plan.md`
+3. `CODEX_NEXT_TASK.md`
+4. `PROJECT_STATE.md`
+5. `README.md`
+6. `docs/hugsim_credibility_decision_rules.md`
+7. `docs/hugsim_smoke_test_plan.md`
+8. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
 
 If an older workflow note conflicts with the current state, prefer the newer
 project-state documents and report the conflict instead of silently combining
