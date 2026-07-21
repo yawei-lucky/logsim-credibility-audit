@@ -16,6 +16,17 @@ HUGSIM is the first case study, not the final research target. It is a
 real-driving-sequence reconstruction-based, counterfactual closed-loop neural
 simulator.
 
+Durable guiding questions:
+
+> HUGSIM 提供给智驾系统的任务相关信息，是否与现实一致到足以产生可信的感知、决策和闭环结果？
+
+> 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
+
+The receiver may be an AD model/stack or a human driver in a
+human-in-the-loop study. Use the receiver class that matches the intended test
+domain; human and machine evidence are complementary rather than
+interchangeable.
+
 The long-term credibility metric is planned around a four-layer evidence
 chain: log reproduction, sensor consistency, task-level consistency, and
 closed-loop outcome credibility. That is a future metric-research structure,
@@ -24,6 +35,7 @@ not the current grading scheme.
 ## Read First
 
 ```text
+docs/research_guiding_principles.md
 docs/hugsim_credibility_decision_rules.md
 docs/hugsim_smoke_test_plan.md
 docs/runs/hugsim_counterfactual_001.md
@@ -51,7 +63,8 @@ point, where the scorer repeats the last actor box.
 
 The 6-second run and a 9-second extension have an exact common
 state/action/plan prefix, yet all old failures disappear in the extension.
-This finite-rollout artifact identification is `accepted`.
+This correction prevents an invalid metric interpretation. Keep it as a
+run-level engineering validity note, not as a central theoretical finding.
 
 ## Corrected 2×2 Actor-Removal Result
 
@@ -127,7 +140,7 @@ Read `rejected` at claim level. A rejected behavior/metric claim may coexist
 with an accepted diagnostic finding. In the current audits:
 
 - the old 6-second risk claim is rejected, while the tail-padding defect is
-  accepted;
+  retained as its technical invalidation reason;
 - timestamp-zero/YAML equality is rejected, while the reset phase-offset
   finding is accepted;
 - physical TTC interpretation is rejected, while the binary-surrogate
@@ -157,12 +170,14 @@ Do not run another same-scene cut-in parameter adjustment. Independent design,
 evidence, and reproducibility reviews agreed that the pre-specified stop
 criterion was met and another treatment would be post-hoc result chasing.
 
-The next material HUGSIM action, if explicitly selected, should be one of:
+The next material HUGSIM action, if explicitly selected, should prioritize a
+matched real-versus-sim receiver comparison. Practical options are:
 
-1. use distinct vehicle assets and more credible map-constrained or staged
-   behavior;
-2. verify the complete-future-history gate on another scene;
-3. add a real source-log matched-pose observation anchor.
+1. add a real source-log matched-pose observation anchor;
+2. feed matched real/sim observations to the same AD receiver, or design a
+   bounded human-in-the-loop comparison;
+3. use distinct vehicle assets and more credible map-constrained or staged
+   behavior for subsequent counterfactual interventions.
 
 Do not independently install a full AD agent, run the full benchmark, expand
 to OmniDreams/Cosmos, or design the final four-layer credibility metric.

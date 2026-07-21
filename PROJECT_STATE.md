@@ -19,6 +19,15 @@
 
 > 这些仿真器生成的闭环测试结果是否可信，是否足以支撑端到端自动驾驶模型的评估结论？
 
+长期指导方针：
+
+> HUGSIM 提供给智驾系统的任务相关信息，是否与现实一致到足以产生可信的感知、决策和闭环结果？
+
+> 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
+
+接收方可以是 AD 模型/系统，也可以是 human-in-the-loop 驾驶员。两类证据
+互补，但不能无条件互相替代；验证应匹配仿真器预期服务的接收方和测试用途。
+
 本项目中的“日志驱动”采用广义定义：
 
 > 以真实道路采集序列为基础，重建或构造可交互环境，并在其上生成反事实闭环过程；不要求简单回放原始日志。
@@ -198,8 +207,8 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 已由实验设计、证据和可复现性三个 task-local 独立 Codex reviewer
   角色复核 rejected 语义，明确区分被拒绝的主张与被接受的系统/指标
   诊断发现；这不是外部人类第三方评审记录；
-- 已接受三个窄诊断：有限 rollout 尾部填充、reset 前移一个 actor
-  update、HUGSIM TTC 是二值内部 surrogate 而非物理 TTC。
+- 运行级技术问题继续保留用于复现和结果有效性检查，但不作为理论框架的
+  核心研究发现；HUGSIM TTC 的构念边界仍需在后续指标解释中明确。
 
 第一份 run report 的结论是：
 
@@ -299,6 +308,7 @@ pre-specified single-shot treatment
 - `PROJECT_STATE.md`
 - `SOURCE_AVAILABILITY_GATE.md`
 - `docs/hugsim_audit.md`
+- `docs/research_guiding_principles.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
 - `docs/hugsim_cuda_pixi_runbook.md`

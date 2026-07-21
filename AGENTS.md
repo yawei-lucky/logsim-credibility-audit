@@ -42,10 +42,14 @@ their own scope.
 - "Log-driven" means that the simulator constructs its environment from real
   road-driving capture sequences and generates counterfactual closed-loop
   evolution; exact log replay is not required.
-- The current HUGSIM goal is to review and strengthen bounded, visually
-  obvious multi-actor stress tests with controlled counterfactual evidence and
-  explicit causal attribution. The real source-log anchor remains a later
-  sensor-fidelity task.
+- The current HUGSIM goal is to collect bounded positive evidence, negative
+  evidence, capability boundaries, and unresolved areas for a general
+  credibility-validation framework. Prioritize task-relevant real-versus-sim
+  receiver consistency over visual attractiveness alone.
+- The next planned evidence direction is a real source-log matched anchor and
+  matched receiver comparison. A receiver may be an AD model/stack or a human
+  driver in a bounded human-in-the-loop study; use the receiver class that
+  matches the intended test domain.
 - Do not expand to OmniDreams / Cosmos, a full HUGSIM benchmark, installation of
   full AD agents, or a final quantitative credibility metric unless the user
   explicitly changes the project direction.
@@ -80,12 +84,13 @@ their own scope.
 
 Read the following before substantive HUGSIM work:
 
-1. `CODEX_NEXT_TASK.md`
-2. `PROJECT_STATE.md`
-3. `README.md`
-4. `docs/hugsim_credibility_decision_rules.md`
-5. `docs/hugsim_smoke_test_plan.md`
-6. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
+1. `docs/research_guiding_principles.md`
+2. `CODEX_NEXT_TASK.md`
+3. `PROJECT_STATE.md`
+4. `README.md`
+5. `docs/hugsim_credibility_decision_rules.md`
+6. `docs/hugsim_smoke_test_plan.md`
+7. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
 
 If an older workflow note conflicts with the current state, prefer the newer
 project-state documents and report the conflict instead of silently combining

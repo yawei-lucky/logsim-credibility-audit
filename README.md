@@ -6,6 +6,16 @@
 
 > 仿真器生成的闭环测试结果，是否足以作为评估端到端自动驾驶模型的可信证据？
 
+项目的两条长期指导方针是：
+
+> HUGSIM 提供给智驾系统的任务相关信息，是否与现实一致到足以产生可信的感知、决策和闭环结果？
+
+> 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
+
+接收方既可以是自动驾驶模型/系统，也可以是 human-in-the-loop 驾驶员。
+人类行为证据与机器接收方证据互为补充；面向哪类接收方建立测试域，就应当
+用对应接收方验证。详见 `docs/research_guiding_principles.md`。
+
 ## 日志驱动定义
 
 本项目采用广义定义：
@@ -137,13 +147,8 @@ env.reset
 
 三组内部状态和控制严格配对；横向0.0米和3.5米位置产生不同内部 TTC/NC 响应。该子结论为 `accepted`。但车辆与背景存在可见视觉域差异，跨模态输出来自同一渲染器，也没有真实日志参考帧或 sensor-input AD agent，因此完整片段为 `down-weighted`。
 
-旧 6 秒多车实验的 TTC/NC 失败已经撤回：评分器每帧需要 2.5 秒未来
-actor 状态，而旧失败全部位于时域不完整的尾窗。相同 state/action/plan
-前缀延长到 9 秒后，失败全部消失。该伪影识别为 `accepted`，旧动态风险
-主张为 `rejected`。
-
-这里的两个判定并不矛盾：`rejected` 的是“旧数值代表真实动态风险”这一
-主张；`accepted` 的是“HUGSIM 评分尾窗存在末状态填充效应”这一诊断发现。
+旧 6 秒多车结果因评分时域不完整而不再用于风险结论。具体原因保留在运行
+报告中，作为复现和结果有效性检查，不作为当前理论研究的核心发现。
 
 修正后的 9 秒四条件实验在完整未来窗口 0.25–6.5 秒内 NC/TTC/PDMS
 全部为 1.0，证明原远距切入只是穿越中心线，并未形成有效近距事件。
@@ -189,6 +194,7 @@ exact pairing
 - `PROJECT_STATE.md`
 - `SOURCE_AVAILABILITY_GATE.md`
 - `docs/hugsim_audit.md`
+- `docs/research_guiding_principles.md`
 - `docs/hugsim_smoke_test_plan.md`
 - `docs/hugsim_credibility_decision_rules.md`
 - `docs/hugsim_cuda_pixi_runbook.md`
