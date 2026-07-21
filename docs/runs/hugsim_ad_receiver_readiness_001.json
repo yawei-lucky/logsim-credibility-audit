@@ -1,0 +1,80 @@
+{
+  "ad_receiver_real_sim_comparison_gate": {
+    "blocking_reason_counts": {
+      "per-frame source sample/sample_data identity is incomplete or non-unique": 1,
+      "referenced real RGB files are incomplete": 1
+    },
+    "permitted_claim": "local assets support availability-gap diagnosis only; no real-vs-sim AD input comparison is established",
+    "ready_scene_names": [],
+    "reasons": [
+      "per-frame source sample/sample_data identity is incomplete or non-unique",
+      "referenced real RGB files are incomplete"
+    ],
+    "status": "blocked"
+  },
+  "audit_id": "hugsim_ad_receiver_readiness",
+  "date": "2026-07-21",
+  "next_action": "Recover licensed real camera observations, immutable source identity, and ASAP mapping for a listed scene; then render exact metadata K and camtoworld poses before running a frozen camera-only AD receiver.",
+  "scenes": [
+    {
+      "blocking_reasons": [
+        "referenced real RGB files are incomplete",
+        "per-frame source sample/sample_data identity is incomplete or non-unique"
+      ],
+      "camera_counts": {
+        "CAM_BACK": 180,
+        "CAM_BACK_LEFT": 180,
+        "CAM_BACK_RIGHT": 180,
+        "CAM_FRONT": 180,
+        "CAM_FRONT_LEFT": 180,
+        "CAM_FRONT_RIGHT": 180
+      },
+      "existing_real_rgb_count": 0,
+      "expected_real_rgb_count": 1080,
+      "first_reader_test_candidate": {
+        "all_real_rgb_present": false,
+        "camera_count": 6,
+        "frame_index": 4,
+        "rgb_paths": [
+          "./images/CAM_FRONT/00004.jpg",
+          "./images/CAM_FRONT_LEFT/00004.jpg",
+          "./images/CAM_FRONT_RIGHT/00004.jpg",
+          "./images/CAM_BACK/00004.jpg",
+          "./images/CAM_BACK_LEFT/00004.jpg",
+          "./images/CAM_BACK_RIGHT/00004.jpg"
+        ],
+        "timestamp_s": 0.33359527587890625
+      },
+      "metadata_complete": true,
+      "reader_test_candidate_timestamp_count": 36,
+      "scene": "scene-0383",
+      "scene_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+      "source_anchor_status": "blocked",
+      "source_identity_complete": false,
+      "source_root": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+      "standard_sim_camera_matched_pose_decision": "not_exact",
+      "timestamp_count": 180,
+      "valid_real_rgb_count": 0
+    }
+  ],
+  "scope": {
+    "assets_root": "/home/yawei/HUGSIM_assets/scenes/nuscenes",
+    "camera_yaml": "/home/yawei/HUGSIM/configs/sim/nuscenes_camera.yaml",
+    "dataset_reader": "/home/yawei/HUGSIM/scene/dataset_readers.py",
+    "hugsim_repo": "/home/yawei/HUGSIM",
+    "sim_run": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_contrast/scene-0383-easy-00-run007-9s",
+    "source_roots": []
+  },
+  "summary": {
+    "local_scene_count": 1,
+    "new_empirical_result_type": "local_asset_and_pairing_readiness_audit",
+    "new_hugsim_rollout_run": false,
+    "new_hugsim_scenario_generated": false,
+    "reader_test_candidate_timestamp_count": 36,
+    "source_anchor_blocked_scene_count": 1,
+    "source_anchor_ready_scene_count": 0,
+    "total_existing_real_rgb_count": 0,
+    "total_expected_real_rgb_count": 1080,
+    "total_valid_real_rgb_count": 0
+  }
+}

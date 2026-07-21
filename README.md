@@ -126,6 +126,9 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - scene-0383 真实日志 Source Anchor Gate 与 matched receiver 对照计划；
 - 已确认发布场景只有1080条六相机标定/位姿索引，没有对应真实RGB和源
   token，因此当前还没有严格 real-sim pair。
+- AD receiver readiness inventory；当前本机只有 `scene-0383` 一个 HUGSIM
+  scene，真实 RGB 为 0/1080，source identity 不完整，因此尚不能做
+  同一 AD receiver 的 real-vs-sim 输入对比。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -162,6 +165,11 @@ env.reset
 失败全部命中切入 actor0 且未使用尾部填充。这个内部 TTC surrogate
 响应子结论为 `accepted`，完整片段仍为 `down-weighted`。
 
+最新的 AD receiver readiness 清点没有生成新场景或新 rollout。它验证的是
+当前本机资产是否能进入“同一个 AD 模型面对真实数据和对应仿真数据”的核心
+对比试验。结果为 blocked：本地仅有 `scene-0383`，真实 RGB 为 0/1080，
+source identity 不完整，现有闭环相机也不是 exact matched-pose render。
+
 ## 当前重点
 
 当前这轮多车参数实验已按事前停止标准结束，不再继续调位置追结果。已建立的
@@ -176,8 +184,10 @@ exact pairing
 → claim-specific accepted / down-weighted / rejected judgment
 ```
 
-下一次如继续 HUGSIM，应换不同车辆资产、地图约束行为或不同场景，而不是
-继续修改本场景切入参数。真实源日志锚点仍是后续验证传感器真实性的重要任务。
+下一次如继续 HUGSIM，优先补齐真实源日志锚点并做冻结 camera-only AD
+receiver 的 matched real-vs-sim 输入对比；如果短期拿不到源数据，再换不同
+车辆资产、地图约束行为或不同场景做 simulator-internal counterfactual
+边界测试。不要继续修改本场景切入参数追结果。
 
 ## 暂缓内容
 
@@ -216,6 +226,8 @@ exact pairing
 - `docs/runs/hugsim_near_cut_in_001_audit.json`
 - `docs/runs/hugsim_source_anchor_gate_001.md`
 - `docs/runs/hugsim_source_anchor_gate_001.json`
+- `docs/runs/hugsim_ad_receiver_readiness_001.md`
+- `docs/runs/hugsim_ad_receiver_readiness_001.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：

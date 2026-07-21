@@ -46,6 +46,8 @@ docs/runs/hugsim_horizon_factorial_001.md
 docs/runs/hugsim_horizon_factorial_001_audit.json
 docs/runs/hugsim_near_cut_in_001.md
 docs/runs/hugsim_near_cut_in_001_audit.json
+docs/runs/hugsim_ad_receiver_readiness_001.md
+docs/runs/hugsim_ad_receiver_readiness_001.json
 ```
 
 ## Corrected State
@@ -165,7 +167,9 @@ with an accepted diagnostic finding. In the current audits:
 - A fail-closed claim/finding semantics validator checks every rejected claim,
   diagnostic link, decision label, repository evidence file, and external
   reference syntax/commit alignment.
-- Twenty-eight unit tests pass.
+- The AD receiver readiness inventory scans all local HUGSIM scene metadata
+  and fails closed before any real-vs-sim receiver claim.
+- Thirty-two unit tests pass.
 
 ## Immediate Goal
 
@@ -179,16 +183,24 @@ records but none of the referenced real RGB files or original nuScenes source
 tokens. Existing closed-loop observations also use a non-identical camera
 template and must not be called matched-pose renders.
 
-The next material HUGSIM action should prioritize a matched real-versus-sim
-receiver comparison. Practical steps are:
+The AD receiver readiness inventory confirms the local machine currently has
+one HUGSIM scene (`scene-0383`), zero valid real RGB files out of 1080
+referenced records, incomplete source sample identity, and no source-anchor-
+ready scene. It did not generate a new HUGSIM scenario or rollout; it is an
+availability and pairing result. Therefore no AD real-versus-sim input
+comparison is established locally yet.
+
+The next material HUGSIM action should still prioritize a matched
+real-versus-sim receiver comparison, but the first unblock is data and exact
+pairing rather than more same-scene counterfactual tuning. Practical steps are:
 
 1. obtain the licensed nuScenes source images and the ASAP
    `interp_12Hz_trainval` mapping for `scene-0383`;
 2. render split-derived test candidate poses using their exact metadata
    intrinsics and `camtoworld`, and verify checkpoint training provenance
    before calling them genuinely held out;
-3. feed matched real/sim observations to the same AD receiver, or design a
-   bounded human-in-the-loop comparison;
+3. freeze a bounded camera-only AD receiver input contract and feed matched
+   real/sim observations to the same AD receiver;
 4. use distinct vehicle assets and more credible map-constrained or staged
    behavior for subsequent counterfactual interventions.
 

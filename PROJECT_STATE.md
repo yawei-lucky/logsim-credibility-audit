@@ -215,8 +215,11 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
   `interp_12Hz_trainval` 映射；
 - 已确认现有闭环相机模板与重建源相机并非严格匹配，不能将当前 rollout
   当作 matched-pose real-sim 对照；
-- 已形成 matched receiver 计划，分别进行 AD 内和 human-in-the-loop 内的
-  real-vs-sim 配对，再比较共同任务变量和干预效应方向。
+- 已形成 matched receiver 计划；当前用户明确先聚焦 AD，因此 human-in-the-
+  loop 作为后续补充证据暂缓；
+- 已新增 AD receiver readiness inventory，清点本机全部 HUGSIM scene 资产：
+  当前只有 `scene-0383`，真实 RGB 为 0/1080，source identity 不完整，
+  因此尚不能建立同一 AD receiver 的 real-vs-sim 输入对比。
 
 第一份 run report 的结论是：
 
@@ -293,6 +296,21 @@ pre-specified single-shot treatment
 `ConstantPlanner` 直线轨迹；deterministic writer 不响应车辆。因此新结果
 证明的是内部渲染/几何/评分响应，不是交通行为真实性或 AD agent 能力。
 
+第七份 AD receiver readiness report 已完成：
+
+```text
+local HUGSIM scene inventory
+→ scene-0383 only
+→ 0/1080 real RGB files available
+→ source sample/sample_data identity incomplete
+→ AD real-sim input comparison gate: blocked
+```
+
+这一轮没有生成新的 HUGSIM 场景或 rollout。它新验证的是：当前本机资产
+还不能支撑“同一个 AD 模型面对真实数据和对应仿真数据”的核心对比试验。
+因此下一步研究推进应先补齐真实源图像、不可变 source identity 和 ASAP
+映射，再做 exact metadata pose render 与冻结 AD receiver 对比。
+
 ---
 
 ## 7. 当前遗留问题
@@ -301,8 +319,9 @@ pre-specified single-shot treatment
 
 - 获取 `scene-0383` 对应的授权 nuScenes 原始相机数据和 ASAP 12Hz映射，
   建立第一组严格 matched-pose factual anchor；
+- 在 source-anchor-ready 后，渲染 exact metadata pose，并接入同一个冻结
+  camera-only AD receiver 做 real-vs-sim 感知、风险排序、规划/控制方向对比；
 - 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
-- 接入真实 AD agent 后区分 agent response 与 simulator artifact；
 - 跨场景验证当前 relation-level 结果；
 - 把 horizon-valid gate 推广到其它 HUGSIM 运行和评分事件；
 - 发布可从 fresh clone 下载的紧凑证据包；
@@ -337,6 +356,8 @@ pre-specified single-shot treatment
 - `docs/runs/hugsim_near_cut_in_001_audit.json`
 - `docs/runs/hugsim_source_anchor_gate_001.md`
 - `docs/runs/hugsim_source_anchor_gate_001.json`
+- `docs/runs/hugsim_ad_receiver_readiness_001.md`
+- `docs/runs/hugsim_ad_receiver_readiness_001.json`
 - `CODEX_NEXT_TASK.md`
 
 辅助文件：
@@ -411,13 +432,17 @@ ChatGPT Project / Custom GPT
 
 本轮切入参数实验已经满足执行前停止标准，下一步不再调整同一场景参数。
 
+AD receiver readiness inventory 已确认当前本机没有可用的真实源 RGB / source
+identity 锚点，因此核心 AD 对比实验仍 blocked。
+
 下一步只在以下方向中选择一个有材料提升的动作：
 
-1. 下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
-2. 跨场景复核 horizon-valid metric gate；
-3. 转向真实源日志锚点，开始验证 matched-pose 重建与真实观测的一致性。
+1. 补齐 `scene-0383` 的授权 nuScenes RGB、ASAP 12Hz 映射和 source identity；
+2. 如果短期拿不到源数据，则下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
+3. 跨场景复核 horizon-valid metric gate。
 
-在用户选择前，优先维护当前证据、工具和判定规则，不自行扩展到完整 benchmark、
-真实 AD agent 或最终可信指标。
+在用户选择前，优先维护当前证据、工具和判定规则，不自行扩展到完整 benchmark
+或最终可信指标；AD 侧只做 bounded camera-only receiver 对比，不直接安装或
+运行完整 AD stack。
 
 不要同时展开 OmniDreams / Cosmos。
