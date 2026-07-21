@@ -222,14 +222,32 @@ far-front control. Overall evidence remains `down-weighted` because this is
 not a real AD-agent response, not a matched real-sim comparison, and not global
 HUGSIM credibility evidence.
 
-The next material HUGSIM action should prioritize plugging in a real frozen
-camera-only receiver while preserving the matched real-sim gate for later.
-Practical steps are:
+The latest material receiver result is now:
 
-1. connect a locally available or explicitly approved frozen camera-only
-   detector/AD receiver and reuse the current five-run scenario set;
+```text
+docs/runs/hugsim_camera_detector_001.md
+artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001
+```
+
+A frozen torchvision Faster R-CNN MobileNetV3 COCO detector consumed only
+CAM_FRONT RGB from the same five runs. It reproduced the distance,
+lane-relation, and multicar causal directions through boxes, confidence,
+image-plane tracking, and risk-ranking proxies. Overall evidence remains
+`down-weighted` because this is a generic single-camera detector, not a full
+AD stack, planning/control result, matched real-sim comparison, or global
+HUGSIM credibility evidence. A useful boundary finding was also accepted:
+the no-actor baseline still has background/native detections in 4/37 frames,
+so a real receiver input is not cleanly zero even when no actor is injected.
+
+The next material HUGSIM action should prioritize a driving-domain camera-only
+receiver while preserving the matched real-sim gate for later. Practical steps
+are:
+
+1. connect a locally available or explicitly approved driving-domain
+   camera-only detector/AD perception receiver and reuse the current five-run
+   scenario set;
 2. compare boxes, confidence, tracking stability, and risk ranking against
-   the proxy baseline and causal checks;
+   both the semantic/depth proxy and the COCO detector baseline;
 3. obtain the licensed nuScenes source images and the ASAP
    `interp_12Hz_trainval` mapping for `scene-0383`;
 4. render split-derived test candidate poses using their exact metadata

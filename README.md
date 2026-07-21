@@ -137,6 +137,12 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
   验证距离、车道关系和多车合流的任务信号方向。三个方向检查为 accepted，
   但整体仍为 down-weighted，因为这不是实际 AD agent response，也不是
   matched real-sim comparison。
+- Frozen camera detector stress test；已用 torchvision Faster R-CNN
+  MobileNetV3 COCO 权重，只输入 CAM_FRONT RGB，对同五组 rollout 输出
+  boxes、confidence、简单跟踪连续性和 image-plane risk ranking。三个方向
+  检查同样 accepted，同时保留 no-actor 中 4/37 帧背景/边缘道路对象检测的
+  边界发现；整体仍为 down-weighted，因为这不是完整 AD stack 或 real-sim
+  matched comparison。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -193,6 +199,14 @@ docs/runs/hugsim_ad_receiver_proxy_001.md
 artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001
 ```
 
+最新的 frozen camera detector stress test 进一步只用 RGB 接收方进行验证，
+路径为：
+
+```text
+docs/runs/hugsim_camera_detector_001.md
+artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001
+```
+
 ## 当前重点
 
 当前这轮多车参数实验已按事前停止标准结束，不再继续调位置追结果。随后新增
@@ -207,11 +221,14 @@ exact pairing
 → claim-specific accepted / down-weighted / rejected judgment
 → frozen task receiver proxy
 → distance / lane / multicar causal direction checks
+→ frozen RGB camera detector
+→ boxes / confidence / tracking / risk-ranking checks
 ```
 
-下一次如继续 HUGSIM，优先接入一个真实冻结 camera-only AD 感知模型，复用
-当前五组输入和输出 schema；真实源日志锚点仍是后续 matched real-sim 对比的
-关键 gate。不要继续修改同一切入参数追结果。
+下一次如继续 HUGSIM，优先接入一个驾驶域冻结 camera-only AD 感知模型，复用
+当前五组输入和输出 schema，与语义/深度代理和 COCO 检测器做对照；真实源
+日志锚点仍是后续 matched real-sim 对比的关键 gate。不要继续修改同一切入
+参数追结果。
 
 ## 暂缓内容
 

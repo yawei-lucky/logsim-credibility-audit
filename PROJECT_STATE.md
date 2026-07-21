@@ -236,6 +236,16 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
   matched comparison，也不证明全局 HUGSIM 可信性；
 - 一个过近同车道边界样本在 2.5 秒 runtime collision 后终止，保留为
   负面/边界证据，不纳入等长代理接收方主对比。
+- 已新增 frozen camera detector stress test：使用 torchvision
+  Faster R-CNN MobileNetV3 COCO 权重，只输入 CAM_FRONT RGB，对同五组 HUGSIM
+  rollout 输出 boxes、confidence、简单跟踪连续性和 image-plane risk ranking；
+- 检测器同样支持三个方向检查：近距同车道强于远距同车道、同车道近车强于
+  相邻车道近车、多车合流强于远距控制；
+- 同时发现 no-actor baseline 在 4/37 帧仍有背景/边缘道路对象检测，因此
+  真实接收方看到的“无注入 actor”并不是干净的零风险输入；
+- 该结果整体仍为 `down-weighted`，因为它是通用 COCO 单前视检测器，不是
+  完整 AD stack、规划/控制、real-sim matched comparison 或全局 HUGSIM
+  可信性证据。
 
 第一份 run report 的结论是：
 
@@ -365,6 +375,29 @@ artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiv
 artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_summary.json
 ```
 
+第十份 frozen camera detector stress test report 已完成：
+
+```text
+same five HUGSIM rollouts
+→ frozen torchvision Faster R-CNN MobileNetV3 COCO detector
+→ CAM_FRONT RGB only
+→ boxes / confidence / image-plane tracking / risk ranking
+→ distance, lane-relation, multicar causal direction checks accepted
+→ no-actor background/native detections accepted as boundary finding
+→ overall down-weighted; not a full AD stack or real-sim comparison
+```
+
+这一轮新验证的是：不用 HUGSIM 语义/深度，只用 RGB 和一个冻结通用检测器，
+仍能得到与任务变量方向一致的感知响应。结果见：
+
+```text
+docs/runs/hugsim_camera_detector_001.md
+artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_response.png
+artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_front_contact_sheet.png
+artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_front_grid.mp4
+artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_summary.json
+```
+
 ---
 
 ## 7. 当前遗留问题
@@ -375,8 +408,8 @@ artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiv
   建立第一组严格 matched-pose factual anchor；
 - 在 source-anchor-ready 后，渲染 exact metadata pose，并接入同一个冻结
   camera-only AD receiver 做 real-vs-sim 感知、风险排序、规划/控制方向对比；
-- 接入真实冻结 camera-only AD 感知模型，把当前 receiver proxy 的
-  boxes/confidence/tracking/risk-ranking 替换为真实模型输出；
+- 接入驾驶域冻结 camera-only AD 感知模型，把当前通用 COCO detector 的
+  boxes/confidence/tracking/risk-ranking 替换为更接近目标 AD receiver 的输出；
 - 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
 - 跨场景验证当前 relation-level 结果；
 - 把 horizon-valid gate 推广到其它 HUGSIM 运行和评分事件；
@@ -488,14 +521,15 @@ ChatGPT Project / Custom GPT
 
 ## 11. 当前下一步最小行动
 
-本轮 AD receiver proxy stress test 已生成新的 HUGSIM rollout 和可视化。由于
-真实源 RGB / source identity 仍缺失，核心 matched real-sim AD 对比仍 blocked；
-但主线已经可以继续推进 simulator-internal 的接收方因果响应测试。
+本轮 frozen camera detector stress test 已在同五组 HUGSIM rollout 上接入
+CAM_FRONT RGB 检测器并生成可视化。由于真实源 RGB / source identity 仍缺失，
+核心 matched real-sim AD 对比仍 blocked；但主线已经从语义/深度代理推进到
+真实 RGB 模型接收方。
 
 下一步只在以下方向中选择一个有材料提升的动作：
 
-1. 接入一个真实冻结 camera-only AD 感知模型，复用当前五组输入和输出 schema，
-   比较 boxes、confidence、tracking 稳定性和风险排序；
+1. 接入驾驶域冻结 camera-only AD 感知模型，复用当前五组输入和输出 schema，
+   与语义/深度代理和 COCO 检测器比较 boxes、confidence、tracking 稳定性和风险排序；
 2. 补齐 `scene-0383` 的授权 nuScenes RGB、ASAP 12Hz 映射和 source identity；
 3. 如果短期拿不到源数据，则下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
 4. 跨场景复核 horizon-valid metric gate。
