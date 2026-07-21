@@ -1,0 +1,28 @@
+# AD receiver causal-response lane-relation control.
+#
+# This actor has similar longitudinal range to the near-front treatment but
+# starts in the adjacent right lane and drives approximately straight. A sane
+# receiver proxy should not rank it as more dangerous than the same-lane near
+# actor at the same longitudinal band.
+mode: ad_receiver_adjacent_near_00
+plan_list:
+- - 4.0
+  - 7.0
+  - -0.3
+  - 0.0
+  - 0.2
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000

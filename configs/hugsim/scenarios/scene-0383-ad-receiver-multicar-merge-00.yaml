@@ -1,0 +1,44 @@
+# AD receiver causal-response multi-actor treatment.
+#
+# Actor 0 cuts in from the right at close range, while actor 1 is a same-lane
+# slower lead vehicle and actor 2 remains a farther adjacent-lane distractor.
+# This stress case asks whether a frozen receiver proxy ranks the actually
+# path-crossing actor above less critical vehicles.
+mode: ad_receiver_multicar_merge_00
+plan_list:
+- - 4.0
+  - 6.5
+  - -0.3
+  - 0.60
+  - 1.7
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+- - 0.0
+  - 18.0
+  - -0.3
+  - 0.0
+  - 0.4
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+- - 4.5
+  - 16.0
+  - -0.3
+  - 0.0
+  - 0.4
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000

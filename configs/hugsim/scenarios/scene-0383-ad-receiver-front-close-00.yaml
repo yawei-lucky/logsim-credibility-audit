@@ -1,0 +1,27 @@
+# AD receiver causal-response close-front treatment.
+#
+# This same-lane vehicle is much closer than the far-front control but moves
+# with the ego direction, so the receiver proxy should see a strong front-path
+# signal without forcing an immediate runtime collision.
+mode: ad_receiver_front_close_00
+plan_list:
+- - 0.0
+  - 12.0
+  - -0.3
+  - 0.0
+  - 1.2
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000

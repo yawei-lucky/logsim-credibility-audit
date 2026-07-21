@@ -226,6 +226,16 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
   `camtoworld`、resolution、native dynamic ID 和 camera-only receiver
   contract；由于真实 RGB 与 source identity 缺失，gate 仍为
   `blocked_source_anchor`。
+- 已新增 AD receiver proxy stress test：生成远距同车道、近距同车道、相邻车道
+  和多车合流四组新的 HUGSIM rollout，并用冻结的
+  `simulator_internal_task_receiver_proxy_v0` 分析 CAM_FRONT 语义/深度中的
+  车辆面积、中心路径占用、深度和 hazard proxy；
+- 三个代理接收方因果方向检查为 `accepted`：近距同车道强于远距同车道、
+  同车道强于相邻车道、多车合流强于远距控制；
+- 该结果整体为 `down-weighted`，因为它不是真实 AD agent、不是 real-sim
+  matched comparison，也不证明全局 HUGSIM 可信性；
+- 一个过近同车道边界样本在 2.5 秒 runtime collision 后终止，保留为
+  负面/边界证据，不纳入等长代理接收方主对比。
 
 第一份 run report 的结论是：
 
@@ -333,6 +343,28 @@ scene-0383 frame00004 selected
 第一组配对清单固定下来；但它不支持 pairing integrity pass、receiver
 equivalence 或 AD 行为结论。
 
+第九份 AD receiver proxy stress test report 已完成：
+
+```text
+far-front / close-front / adjacent-lane / multicar-merge new rollouts
+→ frozen simulator_internal_task_receiver_proxy_v0
+→ CAM_FRONT semantic/depth task features
+→ distance, lane-relation, multicar causal direction checks accepted
+→ overall down-weighted; not a real AD-agent response
+```
+
+这一轮生成了新的 HUGSIM 场景、rollout、视频和可视化。它新验证的是：在真实
+源 RGB 和真实 AD 权重缺失时，仍可先把 HUGSIM 的反事实输出转成固定接收方
+任务信号，并检查干预方向是否合理。结果见：
+
+```text
+docs/runs/hugsim_ad_receiver_proxy_001.md
+artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_response.png
+artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_front_contact_sheet.png
+artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_front_grid.mp4
+artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_summary.json
+```
+
 ---
 
 ## 7. 当前遗留问题
@@ -343,6 +375,8 @@ equivalence 或 AD 行为结论。
   建立第一组严格 matched-pose factual anchor；
 - 在 source-anchor-ready 后，渲染 exact metadata pose，并接入同一个冻结
   camera-only AD receiver 做 real-vs-sim 感知、风险排序、规划/控制方向对比；
+- 接入真实冻结 camera-only AD 感知模型，把当前 receiver proxy 的
+  boxes/confidence/tracking/risk-ranking 替换为真实模型输出；
 - 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
 - 跨场景验证当前 relation-level 结果；
 - 把 horizon-valid gate 推广到其它 HUGSIM 运行和评分事件；
@@ -454,19 +488,19 @@ ChatGPT Project / Custom GPT
 
 ## 11. 当前下一步最小行动
 
-本轮切入参数实验已经满足执行前停止标准，下一步不再调整同一场景参数。
-
-AD receiver readiness inventory 已确认当前本机没有可用的真实源 RGB / source
-identity 锚点，因此核心 AD 对比实验仍 blocked。
+本轮 AD receiver proxy stress test 已生成新的 HUGSIM rollout 和可视化。由于
+真实源 RGB / source identity 仍缺失，核心 matched real-sim AD 对比仍 blocked；
+但主线已经可以继续推进 simulator-internal 的接收方因果响应测试。
 
 下一步只在以下方向中选择一个有材料提升的动作：
 
-1. 补齐 `scene-0383` 的授权 nuScenes RGB、ASAP 12Hz 映射和 source identity；
-2. 如果短期拿不到源数据，则下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
-3. 跨场景复核 horizon-valid metric gate。
+1. 接入一个真实冻结 camera-only AD 感知模型，复用当前五组输入和输出 schema，
+   比较 boxes、confidence、tracking 稳定性和风险排序；
+2. 补齐 `scene-0383` 的授权 nuScenes RGB、ASAP 12Hz 映射和 source identity；
+3. 如果短期拿不到源数据，则下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
+4. 跨场景复核 horizon-valid metric gate。
 
-在用户选择前，优先维护当前证据、工具和判定规则，不自行扩展到完整 benchmark
-或最终可信指标；AD 侧只做 bounded camera-only receiver 对比，不直接安装或
-运行完整 AD stack。
+不自行扩展到完整 benchmark 或最终可信指标；AD 侧先做 bounded camera-only
+receiver 对比，不直接安装或运行完整 AD stack。
 
 不要同时展开 OmniDreams / Cosmos。

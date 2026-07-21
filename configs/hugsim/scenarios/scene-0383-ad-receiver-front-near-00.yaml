@@ -1,0 +1,27 @@
+# AD receiver causal-response distance treatment.
+#
+# A same-lane vehicle is placed close enough to dominate the front-camera task
+# receiver's vehicle/clearance signal. This intentionally creates a large,
+# easy-to-audit intervention before moving to real AD model endpoints.
+mode: ad_receiver_front_near_00
+plan_list:
+- - 0.0
+  - 7.0
+  - -0.3
+  - 0.0
+  - 0.2
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000

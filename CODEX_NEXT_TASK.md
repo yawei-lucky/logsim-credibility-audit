@@ -204,22 +204,44 @@ intrinsics, `camtoworld` matrices, resolutions, native dynamic IDs, and a
 `blocked_source_anchor`: no real RGB, exact render, pairing-integrity pass, or
 receiver-equivalence result exists yet.
 
-The next material HUGSIM action should still prioritize a matched
-real-versus-sim receiver comparison, but the first unblock is data and exact
-pairing rather than more same-scene counterfactual tuning. Practical steps are:
+Because the local HUGSIM-related directories still lack source RGB and source
+identity, do not keep blocking the active work on scene-0383 source recovery.
+The latest material HUGSIM result is now:
 
-1. obtain the licensed nuScenes source images and the ASAP
+```text
+docs/runs/hugsim_ad_receiver_proxy_001.md
+artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001
+```
+
+It generated new far-front, close-front, adjacent-lane, and multicar-merge
+rollouts, then fed CAM_FRONT semantic/depth to a fixed
+`simulator_internal_task_receiver_proxy_v0`. Three causal direction checks
+were `accepted` under that narrow proxy: closer same-lane vehicle > far
+same-lane vehicle, same-lane near > adjacent-lane near, and multicar merge >
+far-front control. Overall evidence remains `down-weighted` because this is
+not a real AD-agent response, not a matched real-sim comparison, and not global
+HUGSIM credibility evidence.
+
+The next material HUGSIM action should prioritize plugging in a real frozen
+camera-only receiver while preserving the matched real-sim gate for later.
+Practical steps are:
+
+1. connect a locally available or explicitly approved frozen camera-only
+   detector/AD receiver and reuse the current five-run scenario set;
+2. compare boxes, confidence, tracking stability, and risk ranking against
+   the proxy baseline and causal checks;
+3. obtain the licensed nuScenes source images and the ASAP
    `interp_12Hz_trainval` mapping for `scene-0383`;
-2. render split-derived test candidate poses using their exact metadata
+4. render split-derived test candidate poses using their exact metadata
    intrinsics and `camtoworld`, and verify checkpoint training provenance
    before calling them genuinely held out;
-3. freeze a bounded camera-only AD receiver input contract and feed matched
+5. freeze a bounded camera-only AD receiver input contract and feed matched
    real/sim observations to the same AD receiver;
-4. use distinct vehicle assets and more credible map-constrained or staged
+6. use distinct vehicle assets and more credible map-constrained or staged
    behavior for subsequent counterfactual interventions.
 
-Do not independently install a full AD agent, run the full benchmark, expand
-to OmniDreams/Cosmos, or design the final four-layer credibility metric.
+Do not independently install a full AD stack, run the full benchmark, expand to
+OmniDreams/Cosmos, or design the final four-layer credibility metric.
 
 ## Guardrails
 

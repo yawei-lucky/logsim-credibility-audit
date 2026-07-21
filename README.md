@@ -132,6 +132,11 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
 - `scene-0383` frame00004 matched-pose manifest；已固定第一候选帧的六相机
   exact metadata K / camtoworld、native dynamic policy 和 camera-only
   receiver contract，但 source anchor 仍 blocked。
+- AD receiver proxy stress test；已生成远距同车道、近距同车道、相邻车道和
+  多车合流四组新的 HUGSIM rollout，并用固定 CAM_FRONT 语义/深度接收方代理
+  验证距离、车道关系和多车合流的任务信号方向。三个方向检查为 accepted，
+  但整体仍为 down-weighted，因为这不是实际 AD agent response，也不是
+  matched real-sim comparison。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -179,10 +184,19 @@ source identity 不完整，现有闭环相机也不是 exact matched-pose rende
 ID，并附带 `camera_only_rgb_single_frame_v0` receiver contract。由于真实 RGB
 和 source identity 仍缺失，pairing gate 仍为 `blocked_source_anchor`。
 
+最新的 AD receiver proxy stress test 已经生成新场景、新 rollout 和可视化。
+它不是为了证明 HUGSIM 可信，而是把当前工作推进到“同一冻结接收方面对不同
+仿真反事实输入时，任务相关输出是否沿正确方向变化”的结构。结果和路径见：
+
+```text
+docs/runs/hugsim_ad_receiver_proxy_001.md
+artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001
+```
+
 ## 当前重点
 
-当前这轮多车参数实验已按事前停止标准结束，不再继续调位置追结果。已建立的
-有效链路是：
+当前这轮多车参数实验已按事前停止标准结束，不再继续调位置追结果。随后新增
+的 AD receiver proxy stress test 已建立了一个新的推进链路：
 
 ```text
 exact pairing
@@ -191,12 +205,13 @@ exact pairing
 → positive-clearance near cut-in
 → actor-specific TTC attribution
 → claim-specific accepted / down-weighted / rejected judgment
+→ frozen task receiver proxy
+→ distance / lane / multicar causal direction checks
 ```
 
-下一次如继续 HUGSIM，优先补齐真实源日志锚点并做冻结 camera-only AD
-receiver 的 matched real-vs-sim 输入对比；如果短期拿不到源数据，再换不同
-车辆资产、地图约束行为或不同场景做 simulator-internal counterfactual
-边界测试。不要继续修改本场景切入参数追结果。
+下一次如继续 HUGSIM，优先接入一个真实冻结 camera-only AD 感知模型，复用
+当前五组输入和输出 schema；真实源日志锚点仍是后续 matched real-sim 对比的
+关键 gate。不要继续修改同一切入参数追结果。
 
 ## 暂缓内容
 
