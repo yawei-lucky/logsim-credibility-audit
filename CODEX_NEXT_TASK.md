@@ -239,6 +239,31 @@ HUGSIM credibility evidence. A useful boundary finding was also accepted:
 the no-actor baseline still has background/native detections in 4/37 frames,
 so a real receiver input is not cleanly zero even when no actor is injected.
 
+The latest cross-receiver agreement result is now:
+
+```text
+docs/runs/hugsim_receiver_agreement_001.md
+artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002
+```
+
+It compares the semantic/depth proxy and RGB detector on the same five
+rollouts using center-path task signals. All receiver-agreement checks were
+`accepted`: close-front > far-front, close-front > adjacent-near, multicar >
+far-front, and run-level center-path rank agreement with Spearman = 1.0. The
+no-actor background/native detection boundary was also retained. Overall
+evidence remains `down-weighted` because agreement is still simulator-internal
+and not matched real-sim or full AD behavior.
+
+Source-data handling is now intentionally lightweight. The HUGSIM-related
+local directories currently known for this project are `/home/yawei/HUGSIM`,
+`/home/yawei/HUGSIM_assets`, and this repository's `artifacts/`. They have
+been checked for the released scene source images. `/home/yawei/HUGSIM_assets`
+contains `scene-0383.zip`, `scene.pth`, one native dynamic model,
+`ground_param.pkl`, `cfg.yaml`, and `meta_data.json`, but no real camera image
+files. If a future local directory is supplied, run the same simple inventory;
+if real RGB and source identity are absent, do not spend more effort on
+source recovery in this phase.
+
 The next material HUGSIM action should prioritize a driving-domain camera-only
 receiver while preserving the matched real-sim gate for later. Practical steps
 are:

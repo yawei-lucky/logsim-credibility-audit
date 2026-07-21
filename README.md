@@ -143,6 +143,10 @@ OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真
   检查同样 accepted，同时保留 no-actor 中 4/37 帧背景/边缘道路对象检测的
   边界发现；整体仍为 down-weighted，因为这不是完整 AD stack 或 real-sim
   matched comparison。
+- Cross-receiver task-response agreement；已对齐 semantic/depth proxy 和
+  RGB detector 的中心路径任务信号。两个接收方在近距/远距、同车道/相邻车道、
+  多车合流三个方向上全部一致，run-level Spearman=1.0；整体仍为
+  down-weighted，因为这是 HUGSIM 内部接收方一致性，不是 real-sim 证据。
 
 第一份运行是环境 bring-up，没有产生闭环证据。第二份运行已经完整进入：
 
@@ -207,6 +211,13 @@ docs/runs/hugsim_camera_detector_001.md
 artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001
 ```
 
+最新的 cross-receiver agreement 结果把两个接收方放在同一任务变量上对齐：
+
+```text
+docs/runs/hugsim_receiver_agreement_001.md
+artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002
+```
+
 ## 当前重点
 
 当前这轮多车参数实验已按事前停止标准结束，不再继续调位置追结果。随后新增
@@ -223,6 +234,7 @@ exact pairing
 → distance / lane / multicar causal direction checks
 → frozen RGB camera detector
 → boxes / confidence / tracking / risk-ranking checks
+→ cross-receiver task-response agreement
 ```
 
 下一次如继续 HUGSIM，优先接入一个驾驶域冻结 camera-only AD 感知模型，复用

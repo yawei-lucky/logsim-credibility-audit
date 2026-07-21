@@ -246,6 +246,12 @@ NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSI
 - 该结果整体仍为 `down-weighted`，因为它是通用 COCO 单前视检测器，不是
   完整 AD stack、规划/控制、real-sim matched comparison 或全局 HUGSIM
   可信性证据。
+- 已新增 cross-receiver task-response agreement：对同五组 rollout 对齐
+  semantic/depth proxy 与 RGB detector 的中心路径任务信号；
+- 两个接收方在近距/远距、同车道/相邻车道、多车合流三个方向上全部一致，
+  run-level 中心路径排序 Spearman=1.0；
+- no-actor 背景/边缘检测差异被保留为边界发现；整体仍为 `down-weighted`，
+  因为这仍是 HUGSIM 内部接收方一致性，不是 real-sim 或完整 AD 行为证据。
 
 第一份 run report 的结论是：
 
@@ -398,6 +404,28 @@ artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detect
 artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_summary.json
 ```
 
+第十一份 cross-receiver task-response agreement report 已完成：
+
+```text
+semantic/depth proxy result
+→ RGB detector result
+→ align center-path task signal
+→ distance / lane-relation / multicar direction agreement accepted
+→ run-level center-path Spearman = 1.0
+→ no-actor background-detection boundary retained
+→ overall down-weighted; simulator-internal receiver agreement only
+```
+
+这一轮新验证的是：不同接收方构造在同一组 HUGSIM 反事实输入上，对任务相关
+中心路径变量给出了相同方向排序。结果见：
+
+```text
+docs/runs/hugsim_receiver_agreement_001.md
+artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement.png
+artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement_summary.json
+artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement_by_run.csv
+```
+
 ---
 
 ## 7. 当前遗留问题
@@ -521,10 +549,17 @@ ChatGPT Project / Custom GPT
 
 ## 11. 当前下一步最小行动
 
-本轮 frozen camera detector stress test 已在同五组 HUGSIM rollout 上接入
-CAM_FRONT RGB 检测器并生成可视化。由于真实源 RGB / source identity 仍缺失，
-核心 matched real-sim AD 对比仍 blocked；但主线已经从语义/深度代理推进到
-真实 RGB 模型接收方。
+本轮 cross-receiver agreement 已证明 semantic/depth proxy 与 RGB detector
+在同五组 HUGSIM rollout 上保持相同的任务方向排序。由于真实源 RGB / source
+identity 仍缺失，核心 matched real-sim AD 对比仍 blocked；但主线已经从单一
+接收方推进到跨接收方一致性证据。
+
+源数据处理采用轻量规则：已知相关目录为 `/home/yawei/HUGSIM`、
+`/home/yawei/HUGSIM_assets` 和本仓库 `artifacts/`。目前发布资产目录只有
+`scene-0383.zip`、重建场景、动态物体模型、地面参数、配置和 metadata，没有
+原始六相机 RGB 图像；因此不再把 source recovery 当成本阶段主阻塞点。若后续
+出现新目录，只做一次普通清点；没有真实 RGB / source identity 就切回可推进
+的 AD 接收方一致性与反事实因果方向实验。
 
 下一步只在以下方向中选择一个有材料提升的动作：
 
