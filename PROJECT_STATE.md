@@ -551,8 +551,9 @@ ChatGPT Project / Custom GPT
 
 本轮 cross-receiver agreement 已证明 semantic/depth proxy 与 RGB detector
 在同五组 HUGSIM rollout 上保持相同的任务方向排序。由于真实源 RGB / source
-identity 仍缺失，核心 matched real-sim AD 对比仍 blocked；但主线已经从单一
-接收方推进到跨接收方一致性证据。
+identity 仍缺失，核心 matched real-sim AD 对比仍 blocked。该结果现在作为
+`docs/hugsim_metric_evidence_map.md` 中的指标审计材料，不再把增加接收方或曲线
+作为默认下一步。semantic/depth 是待验证的 HUGSIM 输出，不是独立真值。
 
 源数据处理采用轻量规则：已知相关目录为 `/home/yawei/HUGSIM`、
 `/home/yawei/HUGSIM_assets` 和本仓库 `artifacts/`。目前发布资产目录只有
@@ -561,13 +562,11 @@ identity 仍缺失，核心 matched real-sim AD 对比仍 blocked；但主线已
 出现新目录，只做一次普通清点；没有真实 RGB / source identity 就切回可推进
 的 AD 接收方一致性与反事实因果方向实验。
 
-下一步只在以下方向中选择一个有材料提升的动作：
-
-1. 接入驾驶域冻结 camera-only AD 感知模型，复用当前五组输入和输出 schema，
-   与语义/深度代理和 COCO 检测器比较 boxes、confidence、tracking 稳定性和风险排序；
-2. 补齐 `scene-0383` 的授权 nuScenes RGB、ASAP 12Hz 映射和 source identity；
-3. 如果短期拿不到源数据，则下载不同 3DRealCar 身份并使用更可信的地图约束/分阶段行为；
-4. 跨场景复核 horizon-valid metric gate。
+下一步先按路线 B 审计指标：明确每个量的 construct、provenance、reference
+independence、receiver contract、因果敏感性和 claim boundary；优先审计
+RGB/semantic/depth、内部 3D geometry、HUGSIM 评分器以及已有 perception/task
+proxy。完成指标收敛后，再选择少量指标进入同一冻结 AD 接收方的 matched
+real-sim 比较；短期缺少真实源数据时保留 source gate，不用新增 proxy 曲线替代。
 
 不自行扩展到完整 benchmark 或最终可信指标；AD 侧先做 bounded camera-only
 receiver 对比，不直接安装或运行完整 AD stack。

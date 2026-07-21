@@ -264,15 +264,18 @@ files. If a future local directory is supplied, run the same simple inventory;
 if real RGB and source identity are absent, do not spend more effort on
 source recovery in this phase.
 
-The next material HUGSIM action should prioritize a driving-domain camera-only
-receiver while preserving the matched real-sim gate for later. Practical steps
-are:
+The next material HUGSIM action is Route B: audit the measurements before
+adding another receiver, scenario, or response curve. Use
+`docs/hugsim_metric_evidence_map.md` as the current evidence map. Treat RGB,
+semantic, and depth as simulator outputs under audit; semantic/depth are not
+independent ground truth. Practical steps are:
 
-1. connect a locally available or explicitly approved driving-domain
-   camera-only detector/AD perception receiver and reuse the current five-run
-   scenario set;
-2. compare boxes, confidence, tracking stability, and risk ranking against
-   both the semantic/depth proxy and the COCO detector baseline;
+1. qualify each existing geometry, rendering, perception, task, and HUGSIM
+   score metric by construct, provenance, reference independence, receiver
+   contract, causal sensitivity, and strongest allowed claim;
+2. retain the existing proxy/detector/cross-receiver results as metric-audit
+   material and correct any interpretation that promotes perception signals
+   to planning, control, or simulator-credibility claims;
 3. obtain the licensed nuScenes source images and the ASAP
    `interp_12Hz_trainval` mapping for `scene-0383`;
 4. render split-derived test candidate poses using their exact metadata
@@ -280,8 +283,8 @@ are:
    before calling them genuinely held out;
 5. freeze a bounded camera-only AD receiver input contract and feed matched
    real/sim observations to the same AD receiver;
-6. use distinct vehicle assets and more credible map-constrained or staged
-   behavior for subsequent counterfactual interventions.
+6. only after the matched factual comparison, use controlled distance, lane,
+   occlusion, or motion interventions and then progress to planning/control.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.

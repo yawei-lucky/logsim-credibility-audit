@@ -28,6 +28,12 @@
 
 当前阶段使用 **HUGSIM** 作为实验载体。最小闭环证据链已经跑通，当前工作已进入严格配对的 relation-level counterfactual audit。
 
+在继续增加场景或接收方之前，当前优先采用“路线 B：先审计指标”。
+`docs/hugsim_metric_evidence_map.md` 记录已有量到底测量什么、来源是否独立、
+能够支持和不能支持哪些主张，以及升级为真实—仿真证据所需的参考。
+HUGSIM 输出的 RGB、semantic 和 depth 都是待验证的仿真输出；semantic/depth
+可用于内部诊断，但不默认作为可信 ground truth。
+
 当前 HUGSIM 实验的目的不是证明 HUGSIM 本身可信，也不是复现完整 benchmark，而是完成：
 
 > HUGSIM relation-level counterfactual credibility audit
