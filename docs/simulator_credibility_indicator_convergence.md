@@ -139,9 +139,11 @@ Candidate endpoints:
 - performance stratified by scene, camera, range, occlusion, and reconstruction
   support.
 
-The normal scenes currently provide response and persistence baselines only.
-Independent labels are required before these become precision or false-positive
-metrics.
+The normal scenes now have a fixed human-visible support audit over 14
+detection-conditioned responses: 7 are visibly supported and 7 are nuisance
+responses. This is enough to show that raw count/persistence is not a safe
+standalone endpoint. It is not ODD precision/recall: the labels inspect HUGSIM
+RGB rather than matched reality, and the sample cannot expose false negatives.
 
 ### F. Matched real-simulation task equivalence
 
@@ -167,10 +169,9 @@ Do not choose a bound because it makes the current simulator pass. The former
 
 ## 6. Near-term execution order
 
-1. freeze the cross-scene Sparse4Dv3 response summary;
-2. label a small fixed normal-scene subset for native objects and nuisance
-   regions;
-3. calculate labelled nuisance robustness and threshold stability;
+1. keep the frozen cross-scene Sparse4Dv3 response summary;
+2. keep the fixed normal-scene human-visible target/nuisance audit;
+3. do not turn its detection-conditioned 50% support result into ODD precision;
 4. define one downstream task boundary, preferably lane relation plus critical-
    object risk ordering before metric planning;
 5. when source RGB becomes available, run the same endpoints on matched real

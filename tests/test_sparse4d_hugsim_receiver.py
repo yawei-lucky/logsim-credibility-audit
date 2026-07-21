@@ -24,6 +24,10 @@ cross_scene = load_module(
     "sparse4d_cross_scene", "scripts/analyze_sparse4d_cross_scene_baseline.py"
 )
 box_bias = load_module("sparse4d_box_bias", "scripts/analyze_sparse4d_box_bias.py")
+normal_annotations = load_module(
+    "sparse4d_normal_annotations",
+    "scripts/audit_sparse4d_normal_scene_annotations.py",
+)
 
 
 class Sparse4DHugsimReceiverTest(unittest.TestCase):
@@ -110,6 +114,28 @@ class Sparse4DHugsimReceiverTest(unittest.TestCase):
         partial = np.asarray([5.0, 0.0, 15.0, 10.0])
         self.assertEqual(box_bias.box_iou(first, same), 1.0)
         self.assertAlmostEqual(box_bias.box_iou(first, partial), 1.0 / 3.0)
+
+    def test_normal_annotation_sample_positions_are_fixed(self):
+        self.assertEqual(normal_annotations.fixed_sample_positions(37), [0, 18, 36])
+
+    def test_normal_annotation_summary_separates_support_and_nuisance(self):
+        manifest = {
+            "records": [
+                {"detection_id": "a", "scene": "normal_0041", "class_name": "car"},
+                {"detection_id": "b", "scene": "normal_0138", "class_name": "pedestrian"},
+                {"detection_id": "c", "scene": "normal_0138", "class_name": "bus"},
+            ]
+        }
+        annotations = {
+            "a": {"detection_id": "a", "label": "nuisance", "region_type": "road", "notes": "none"},
+            "b": {"detection_id": "b", "label": "supported_target", "region_type": "person", "notes": "visible"},
+            "c": {"detection_id": "c", "label": "uncertain", "region_type": "blur", "notes": "unclear"},
+        }
+        summary = normal_annotations.summarize(manifest, annotations)
+        self.assertEqual(summary["label_counts"], {"nuisance": 1, "supported_target": 1, "uncertain": 1})
+        self.assertEqual(summary["decidable_count"], 2)
+        self.assertEqual(summary["supported_target_rate_decidable"], 0.5)
+        self.assertEqual(summary["nuisance_or_mismatch_rate_decidable"], 0.5)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,95 @@
+{
+  "protocol": {
+    "name": "sparse4d_normal_scene_human_visible_support_v1",
+    "selection": "All Sparse4Dv3 predictions with score >= 0.2 at the first, middle, and final receiver frames of normal_0041 and normal_0138.",
+    "review_views": "Up to two HUGSIM RGB cameras with the largest visible projection area for each predicted 3D box.",
+    "reviewer_reference": "HUGSIM rendered RGB only; no semantic, depth, internal actor box, or real-world label was used for the decision.",
+    "claim_boundary": "Labels record whether the sampled receiver response has human-visible support in the simulated RGB. They do not establish real-world correctness and cannot measure false negatives or recall."
+  },
+  "annotations": [
+    {
+      "detection_id": "normal_0041_f000_r000",
+      "label": "nuisance",
+      "region_type": "road_edge_and_reconstruction_blur",
+      "notes": "The projected car box covers the lower road edge and blurred curb/ground region; no visible vehicle supports it in either projected view."
+    },
+    {
+      "detection_id": "normal_0041_f000_r001",
+      "label": "nuisance",
+      "region_type": "road_surface_and_image_edge",
+      "notes": "The projected car box falls on road surface at the image edge; no visible vehicle supports it in either projected view."
+    },
+    {
+      "detection_id": "normal_0041_f036_r000",
+      "label": "supported_target",
+      "region_type": "visible_vehicle",
+      "notes": "A vehicle is visibly present inside the projected truck box in the front camera."
+    },
+    {
+      "detection_id": "normal_0138_f000_r000",
+      "label": "supported_target",
+      "region_type": "visible_pedestrian",
+      "notes": "A pedestrian is visibly present at the roadside shelter inside the projected box."
+    },
+    {
+      "detection_id": "normal_0138_f018_r000",
+      "label": "supported_target",
+      "region_type": "visible_pedestrian",
+      "notes": "A pedestrian is visibly present near the shelter inside the projected box."
+    },
+    {
+      "detection_id": "normal_0138_f018_r001",
+      "label": "nuisance",
+      "region_type": "vegetation_and_reconstruction_blur",
+      "notes": "The projected bus box spans roadside vegetation and blurred reconstruction content; no bus is visible."
+    },
+    {
+      "detection_id": "normal_0138_f018_r002",
+      "label": "nuisance",
+      "region_type": "vegetation_road_and_reconstruction_blur",
+      "notes": "The projected car box spans vegetation and road/reconstruction blur; no car is visible in either projected view."
+    },
+    {
+      "detection_id": "normal_0138_f018_r003",
+      "label": "supported_target",
+      "region_type": "visible_pedestrian",
+      "notes": "A pedestrian is visibly present inside the projected box in both rear-facing views."
+    },
+    {
+      "detection_id": "normal_0138_f018_r004",
+      "label": "nuisance",
+      "region_type": "vegetation_and_camera_boundary",
+      "notes": "The projected pedestrian box lies on vegetation at a camera boundary; no pedestrian is visible in either projected view."
+    },
+    {
+      "detection_id": "normal_0138_f018_r005",
+      "label": "nuisance",
+      "region_type": "vegetation_and_camera_boundary",
+      "notes": "The projected pedestrian box lies on vegetation at a camera boundary; no pedestrian is visible in either projected view."
+    },
+    {
+      "detection_id": "normal_0138_f036_r000",
+      "label": "nuisance",
+      "region_type": "roadside_vegetation_and_reconstruction_blur",
+      "notes": "The projected bus box spans roadside vegetation and blurred road content; no bus is visible."
+    },
+    {
+      "detection_id": "normal_0138_f036_r001",
+      "label": "supported_target",
+      "region_type": "visible_pedestrian",
+      "notes": "A small pedestrian is visibly present near the shelter inside the projected box."
+    },
+    {
+      "detection_id": "normal_0138_f036_r002",
+      "label": "supported_target",
+      "region_type": "visible_pedestrian",
+      "notes": "A small pedestrian is visibly present near the shelter inside the projected box."
+    },
+    {
+      "detection_id": "normal_0138_f036_r003",
+      "label": "supported_target",
+      "region_type": "visible_pedestrian",
+      "notes": "A small pedestrian is visibly present near the shelter inside the projected box."
+    }
+  ]
+}

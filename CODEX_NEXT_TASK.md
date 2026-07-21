@@ -347,11 +347,27 @@ vehicle, consistent with a scale-depth/domain-shift mechanism. Internal pixel-
 space alignment is accepted; the causal mechanism remains down-weighted because
 the mask and calibration are HUGSIM outputs.
 
-The immediate next action is to freeze a small normal-scene annotation set for
-native vehicles/pedestrians and nuisance regions in `scene-0041` and
-`scene-0138`. Use it to turn threshold/persistence response counts into labelled
-precision/error evidence. Then bind acceptance to one downstream lane/risk/
-action decision margin. Do not add another detector or actor treatment first.
+The fixed normal-scene annotation audit is now complete:
+
+```text
+docs/runs/hugsim_sparse4d_normal_scene_annotation_001.md
+docs/runs/hugsim_sparse4d_normal_scene_annotations_001.json
+artifacts/sparse4d_receiver_baseline/normal-scene-annotation-run003
+```
+
+Across the 14 detection-conditioned responses, 7 have human-visible target
+support and 7 are nuisance responses on road/edge/vegetation/reconstruction
+regions. The fixed sample and counts are accepted as reproducible facts; the
+claim that every sampled response has a visible target is rejected; simulator-
+usefulness evidence remains down-weighted because the reference is HUGSIM RGB,
+not matched reality. This is not ODD precision/recall and does not measure false
+negatives.
+
+The immediate next action is now to define one downstream AD task boundary:
+lane relation plus critical-object risk ordering. Bind nuisance and geometry
+errors to whether they change that decision/ranking, instead of using a generic
+score or metre threshold. Do not add another detector, actor treatment, or
+response curve first.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
