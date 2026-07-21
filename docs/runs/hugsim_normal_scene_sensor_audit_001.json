@@ -1,0 +1,60 @@
+{
+  "audit_id": "hugsim_normal_scene_sensor_audit_001",
+  "scope": [
+    "scene-0041 normal 9-second six-camera rollout",
+    "scene-0138 normal 9-second six-camera rollout"
+  ],
+  "decisions": [
+    {
+      "claim_id": "six_camera_array_and_calibration_contract",
+      "tested": true,
+      "decision": "accepted",
+      "basis": "All 37 observations per scene had matching RGB/semantic/depth shapes for six cameras; intrinsics matched array dimensions, principal points were in bounds, v2c rotations were orthonormal with determinant approximately one, and calibration was constant over the rollout."
+    },
+    {
+      "claim_id": "depth_numeric_validity",
+      "tested": true,
+      "decision": "accepted",
+      "basis": "No non-finite or non-positive depth pixels were observed in either 37-frame six-camera rollout."
+    },
+    {
+      "claim_id": "rgb_semantic_depth_internal_boundary_covariation",
+      "tested": true,
+      "decision": "down-weighted",
+      "basis": "The two scenes show measurable but scene- and camera-dependent boundary co-variation. All modalities share the HUGSIM renderer, so this is not independent correctness evidence."
+    },
+    {
+      "claim_id": "center_path_risk_proxy_cross_scene_robustness",
+      "tested": true,
+      "decision": "rejected",
+      "basis": "In scene-0041 the peak center-path risk was produced by a false car detection covering the ego hood / lower-image blur rather than the visible native truck. Scene-0138 also produced two low-confidence roadside false car detections."
+    },
+    {
+      "claim_id": "real_sensor_or_cross_camera_3d_consistency",
+      "tested": false,
+      "decision": "rejected",
+      "basis": "scope_exceeds_evidence: no independent real RGB, labels, depth, calibration reference, or shared 3D correspondence was available. This rejects the stronger claim and is not a HUGSIM capability-failure finding."
+    }
+  ],
+  "summary_metrics": {
+    "scene-0041": {
+      "observations": 37,
+      "semantic_edges_near_depth_edge_six_camera_mean": 0.7557,
+      "rgb_semantic_boundary_gradient_ratio_six_camera_mean": 4.1914,
+      "maximum_semantic_distribution_l1_step": 0.1046,
+      "detector_frames_with_road_class": 16,
+      "detector_center_frames": 16,
+      "detector_peak_center_risk_proxy": 2.0585
+    },
+    "scene-0138": {
+      "observations": 37,
+      "semantic_edges_near_depth_edge_six_camera_mean": 0.4613,
+      "rgb_semantic_boundary_gradient_ratio_six_camera_mean": 1.79,
+      "maximum_semantic_distribution_l1_step": 0.15,
+      "detector_frames_with_road_class": 2,
+      "detector_center_frames": 0,
+      "detector_peak_center_risk_proxy": 0.0
+    }
+  },
+  "claim_boundary": "Accepted results establish bounded internal contracts and diagnostics only. They do not establish real-sensor accuracy, cross-camera 3D consistency, planning, control, or global HUGSIM credibility."
+}

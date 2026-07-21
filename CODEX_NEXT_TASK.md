@@ -258,11 +258,11 @@ Source-data handling is now intentionally lightweight. The HUGSIM-related
 local directories currently known for this project are `/home/yawei/HUGSIM`,
 `/home/yawei/HUGSIM_assets`, and this repository's `artifacts/`. They have
 been checked for the released scene source images. `/home/yawei/HUGSIM_assets`
-contains `scene-0383.zip`, `scene.pth`, one native dynamic model,
-`ground_param.pkl`, `cfg.yaml`, and `meta_data.json`, but no real camera image
-files. If a future local directory is supplied, run the same simple inventory;
-if real RGB and source identity are absent, do not spend more effort on
-source recovery in this phase.
+now contains reconstructed packages for `scene-0383`, `scene-0041`, and
+`scene-0138`, but none contains the corresponding real camera image files or
+complete immutable source identity. If a future local directory is supplied,
+run the same simple inventory; if real RGB and source identity are absent, do
+not spend more effort on source recovery in this phase.
 
 The next material HUGSIM action is Route B: audit the measurements before
 adding another receiver, scenario, or response curve. Use
@@ -296,6 +296,21 @@ Their first/middle/last six-camera previews and bounded run records are in
 `docs/runs/hugsim_scene_collection_001.md`. They extend the conditions available
 to the metric audit; they do not constitute real-sim evidence, and the current
 rollouts do not test injected multi-actor interaction.
+
+The first normal-scene sensor/receiver audit is now complete. It accepted the
+bounded array/calibration contract and depth numerical validity, but retained
+cross-modal boundary co-variation as `down-weighted`. More importantly, it
+rejected cross-scene robustness of the existing center-path risk proxy: the
+`scene-0041` peak was caused by a false car detection on the ego hood/lower
+image, and `scene-0138` produced two roadside false car detections. See
+`docs/runs/hugsim_normal_scene_sensor_audit_001.md`.
+
+The immediate next action is to establish a nuisance-audited normal-scene
+receiver baseline that distinguishes visible vehicles from ego-hood,
+vegetation, sign, and reconstruction-artifact false positives. Do not use raw
+maximum bbox or center-path risk as a cross-scene safety variable before that
+baseline is fixed. Use the weak `scene-0138` lateral views as the first internal
+projection/occlusion diagnostic target; do not add controlled actors yet.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
