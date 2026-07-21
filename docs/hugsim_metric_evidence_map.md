@@ -131,3 +131,34 @@ depth，也没有在 HUGSIM 上微调。
 
 因此当前最强主张仅限于 bounded task-response / relation-direction evidence；
 real—sim equivalence、规划控制和仿真器整体有效性仍未测试。
+
+## 9. 跨场景汇总后的指标收敛
+
+完整定义见 `docs/simulator_credibility_indicator_convergence.md`，实验见
+`docs/runs/hugsim_sparse4d_cross_scene_001.md`。
+
+当前 Sparse4Dv3 结果定位为 **task-level receiver-consistency candidate**，
+不是 sensor consistency。六相机数组和标定检查当前只形成 receiver input
+contract；没有匹配真实 RGB 或独立传感器参考，不能升级为传感器一致性。
+
+当前保留的最小指标族为：
+
+| 指标族 | 当前端点 | 当前用途 |
+|---|---|---|
+| Evidence validity gate | 输入身份、冻结接收方、相机/时间/预处理、完整历史未来窗口 | 先判断证据是否有效，不计质量分 |
+| Observability / sensitivity | 目标阳性帧率、漏检时长、paired intervention effect | 判断任务信息是否到达接收方 |
+| Relation / ordering | same/adjacent、near/far、top-risk identity | 判断任务关系和排序是否保持 |
+| Metric / temporal | XY/速度误差、track dominant fraction、identity switch | 判断量值和时序是否足以支持下游任务 |
+| Nuisance robustness | 跨场景、阈值稳定性、标注干扰区域假响应 | 判断结果是否被背景或重建 artifact 主导 |
+| Matched real-sim equivalence | 同一冻结接收方的 paired differences 和 action invariance | 未来可信性升级 |
+
+当前受控端点为 near/far 6/6、车道关系 43/44，dominant track fraction 为
+100%/83%/100%；这些支持粗粒度 presence/relation/ordering/short tracking。
+近车纵向偏差约为其设定中位距离的 81%，邻车横向偏差约为 4 米设定偏移的
+65%，所以不能据此接受面向规划的米制 3D 定位。
+
+框偏差诊断进一步发现：Sparse4Dv3 3D 框回投到注入车辆区域的中位 2D IoU
+仍为 0.69/0.74/0.82，而接收方估计的车体尺寸明显更大。这支持内部的
+scale-depth/domain-shift 诊断，说明 gross image-plane projection failure 不太可能
+是唯一原因；但 HUGSIM semantic 和标定并非独立真值，因此该机制解释仍为
+down-weighted。

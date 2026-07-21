@@ -1,4 +1,5 @@
 import importlib.util
+import sys
 import unittest
 from pathlib import Path
 
@@ -6,6 +7,7 @@ import numpy as np
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "scripts"))
 
 
 def load_module(name: str, relative_path: str):
@@ -18,6 +20,10 @@ def load_module(name: str, relative_path: str):
 
 receiver = load_module("sparse4d_receiver", "scripts/run_sparse4d_hugsim_receiver.py")
 analysis = load_module("sparse4d_analysis", "scripts/analyze_sparse4d_hugsim_baseline.py")
+cross_scene = load_module(
+    "sparse4d_cross_scene", "scripts/analyze_sparse4d_cross_scene_baseline.py"
+)
+box_bias = load_module("sparse4d_box_bias", "scripts/analyze_sparse4d_box_bias.py")
 
 
 class Sparse4DHugsimReceiverTest(unittest.TestCase):
@@ -76,6 +82,34 @@ class Sparse4DHugsimReceiverTest(unittest.TestCase):
         self.assertEqual(metrics["vehicle_detection_count"], 1)
         self.assertEqual(metrics["vehicle_detections_per_frame"], 0.5)
         self.assertEqual(metrics["vehicle_positive_frame_rate"], 0.5)
+
+    def test_lane_relation_uses_controlled_intervention_midpoint(self):
+        self.assertEqual(cross_scene.lane_relation(0.2), "same_lane")
+        self.assertEqual(cross_scene.lane_relation(-2.1), "right_adjacent_or_beyond")
+        self.assertEqual(cross_scene.lane_relation(2.1), "left_adjacent_or_beyond")
+
+    def test_normal_scene_summary_reports_threshold_stability(self):
+        rows = [
+            {
+                "timestamp_s": 0.0,
+                "predictions": [
+                    {"label_id": 0, "class_name": "car", "score": 0.4, "instance_id": 7},
+                    {"label_id": 8, "class_name": "pedestrian", "score": 0.6, "instance_id": 8},
+                ],
+            },
+            {"timestamp_s": 0.5, "predictions": []},
+        ]
+        summary = cross_scene.summarize_normal_scene(rows)
+        self.assertEqual(summary["thresholds"]["0.2"]["vehicle_positive_frame_count"], 1)
+        self.assertEqual(summary["thresholds"]["0.5"]["vehicle_positive_frame_count"], 0)
+        self.assertEqual(summary["thresholds"]["0.5"]["class_counts"], {"pedestrian": 1})
+
+    def test_box_bias_iou_distinguishes_overlap(self):
+        first = np.asarray([0.0, 0.0, 10.0, 10.0])
+        same = np.asarray([0.0, 0.0, 10.0, 10.0])
+        partial = np.asarray([5.0, 0.0, 15.0, 10.0])
+        self.assertEqual(box_bias.box_iou(first, same), 1.0)
+        self.assertAlmostEqual(box_bias.box_iou(first, partial), 1.0 / 3.0)
 
 
 if __name__ == "__main__":

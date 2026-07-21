@@ -1,0 +1,47 @@
+{
+  "experiment": "hugsim_sparse4d_cross_scene_001",
+  "layer_position": "task-level receiver-consistency candidate",
+  "normal_scene_semantic_correctness": "down-weighted",
+  "controlled_endpoints": {
+    "near_far_ordering": {
+      "decision": "accepted",
+      "correct_pairs": 6,
+      "evaluated_pairs": 6
+    },
+    "lane_relation": {
+      "decision": "accepted",
+      "agreement_frames": 43,
+      "evaluated_frames": 44
+    },
+    "track_dominant_fraction": {
+      "front_far": 1.0,
+      "front_near": 0.8333333333333334,
+      "adjacent_near": 1.0
+    },
+    "absolute_3d_localization": {
+      "decision": "down-weighted",
+      "median_xy_error_m": {
+        "front_far": 2.5557627133826406,
+        "front_near": 4.24431113497505,
+        "adjacent_near": 3.8002093420134684
+      }
+    }
+  },
+  "box_bias_diagnostic": {
+    "pixel_space_projection_alignment": "accepted",
+    "scale_depth_explanation": "down-weighted",
+    "median_projected_bbox_iou": {
+      "front_far": 0.6925260977153134,
+      "front_near": 0.7404085892864716,
+      "adjacent_near": 0.8211556090440522
+    }
+  },
+  "claim_boundary": {
+    "supported": "bounded object presence, relation, ordering, short tracking, and internal pixel-space alignment",
+    "not_established": "sensor consistency with reality, metric localization for planning, action invariance, or closed-loop credibility"
+  },
+  "artifact_roots": [
+    "artifacts/sparse4d_receiver_baseline/cross-scene-summary-run003",
+    "artifacts/sparse4d_receiver_baseline/box-bias-diagnostic-run001"
+  ]
+}

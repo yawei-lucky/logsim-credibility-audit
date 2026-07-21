@@ -94,6 +94,8 @@ def annotate_camera(
     row: dict[str, Any],
     camera: str,
     threshold: float,
+    label_ids: frozenset[int] = VEHICLE_LABEL_IDS,
+    max_predictions: int = 1,
 ) -> np.ndarray:
     image = np.asarray(rgb).copy()
     projection = camera_projection(info, camera)
@@ -101,8 +103,8 @@ def annotate_camera(
     predictions = [
         prediction
         for prediction in row["predictions"]
-        if prediction["label_id"] in VEHICLE_LABEL_IDS and prediction["score"] >= threshold
-    ][:1]
+        if prediction["label_id"] in label_ids and prediction["score"] >= threshold
+    ][:max_predictions]
     for prediction in reversed(predictions):
         box = np.asarray(prediction["box_xyz_wlh_yaw_vxyz"], dtype=np.float64)
         corners, depth = project(box_corners(box), projection)

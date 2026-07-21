@@ -175,7 +175,7 @@ with an accepted diagnostic finding. In the current audits:
   candidate and records the exact metadata intrinsics, camera-to-world poses,
   native dynamic policy, and bounded camera-only receiver contract. It fails
   closed while source RGB or exact simulation renders are absent.
-- Fifty-three unit tests pass.
+- Fifty-six unit tests pass.
 
 ## Immediate Goal
 
@@ -321,23 +321,37 @@ same-lane/adjacent-lane ordering are `accepted`. Absolute actor XY agreement is
 3.80 m (adjacent). The result supports bounded task-response and relation-
 direction evidence, not real-sim equivalence or global simulator validity.
 
-The immediate next action is no longer to add another receiver. First audit
-the material absolute-position bias:
-
-1. verify the HUGSIM vehicle/camera/Sparse4D coordinate and calibration
-   transform with synthetic projected points and per-camera overlays;
-2. keep HUGSIM actor-state Z outside the reference until its camera-projectable
-   convention is established;
-3. manually label a small, fixed set of native visible vehicles and nuisance
-   regions in `scene-0041` and `scene-0138`, so normal-scene Sparse4Dv3 outputs
-   can become precision/error evidence instead of unlabelled response counts;
-4. only after those checks decide whether the remaining bias is more consistent
-   with receiver domain shift or simulator/adapter geometry;
-5. retain the source-anchor gate for eventual matched real-sim Sparse4Dv3
-   comparison.
-
 Do not use the 2 m or 4 m diagnostic lines as final credibility thresholds, and
 do not add more controlled vehicles merely to produce another response curve.
+
+The requested cross-scene aggregation and first box-bias investigation are now
+also complete:
+
+```text
+docs/simulator_credibility_indicator_convergence.md
+docs/runs/hugsim_sparse4d_cross_scene_001.md
+docs/runs/hugsim_sparse4d_cross_scene_001_audit.json
+artifacts/sparse4d_receiver_baseline/cross-scene-summary-run003
+artifacts/sparse4d_receiver_baseline/box-bias-diagnostic-run001
+```
+
+The current evidence is a task-level receiver-consistency candidate, not
+sensor consistency. Near/far ordering is 6/6, lane relation is 43/44, and
+dominant track identity is 100%/83%/100% across far/near/adjacent conditions.
+This supports bounded presence/relation/ordering/short-tracking use, not metric
+3D localization for planning.
+
+The box-bias diagnostic found median 2D reprojection IoU of 0.69/0.74/0.82
+despite 2.56/4.24/3.80 m XY error. Sparse4Dv3 estimates a materially larger
+vehicle, consistent with a scale-depth/domain-shift mechanism. Internal pixel-
+space alignment is accepted; the causal mechanism remains down-weighted because
+the mask and calibration are HUGSIM outputs.
+
+The immediate next action is to freeze a small normal-scene annotation set for
+native vehicles/pedestrians and nuisance regions in `scene-0041` and
+`scene-0138`. Use it to turn threshold/persistence response counts into labelled
+precision/error evidence. Then bind acceptance to one downstream lane/risk/
+action decision margin. Do not add another detector or actor treatment first.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
