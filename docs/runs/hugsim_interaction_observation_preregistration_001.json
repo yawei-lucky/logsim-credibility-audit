@@ -1,0 +1,103 @@
+{
+  "experiment_id": "CF-I-OBS-001",
+  "parent_experiment": "CF-I-LOOP-001",
+  "purpose": "test whether frozen planner states and causal timing transport into the rendered six-camera observation boundary",
+  "status": "frozen_before_formal_render_output",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "analysis_script_sha256": "20a4e05ef11f8df05b94faac996a822a1ece22d4879aded8e418949837ace076",
+  "scenario": {
+    "relative_path": "configs/hugsim/scenarios/scene-0383-interaction-observation-001.yaml",
+    "sha256": "9e84f874fd637ed26133cd2673f11a5fcbc677f0c223860573ad61a71108dacc"
+  },
+  "parent_trace": {
+    "path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_interaction_planner_loop/analysis-run001/interaction_planner_loop_traces.json",
+    "sha256": "a128e04da5ac21361c820b99340c4c1ce61e8ccd5b75a72c22aebff7e7ce62ab"
+  },
+  "assets": {
+    "base_config": {
+      "path": "/home/yawei/logsim-credibility-audit/configs/hugsim/nuscenes_smoke_base.yaml",
+      "sha256": "01a11220a902e1ec3e81aa7424cf16bf74a540508031d345792e03dc1afc2135"
+    },
+    "camera_config": {
+      "path": "/home/yawei/HUGSIM/configs/sim/nuscenes_camera.yaml",
+      "sha256": "f059629db1b1831e81e0a7b8f43bf9775b70684319859e8c1e4bc00bf2cb8e9a"
+    },
+    "kinematic_config": {
+      "path": "/home/yawei/HUGSIM/configs/sim/kinematic.yaml",
+      "sha256": "fc987ae8da2412ecca8e10b9e49daf2da366795151e970b139c3426ea9966c96"
+    },
+    "scene_config": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml",
+      "sha256": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7"
+    },
+    "scene_model": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth",
+      "sha256": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9"
+    },
+    "scene_ground": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/ground_param.pkl",
+      "sha256": "97ea9b7fd05c3fb189f1804692023a3449f40ac3f8bae80ead1607bb549ccddc"
+    },
+    "vehicle_model": {
+      "path": "/home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10/gs.pth",
+      "sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006"
+    },
+    "vehicle_dimensions": {
+      "path": "/home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10/wlh.json",
+      "sha256": "edc468f1d24229a56ccfeaf89324e8b6bf46237d90df21980933562d07a8538f"
+    }
+  },
+  "execution": {
+    "conditions": [
+      "aligned_baseline",
+      "aligned_treatment"
+    ],
+    "aligned_dt_seconds": 0.10526315789473684,
+    "torch_seed": 0,
+    "declared_stimulus_index": 8,
+    "selected_indices": [6, 7, 8, 9, 10, 11, 14],
+    "causal_indices": [6, 7, 8, 9, 10, 11],
+    "render_modalities_used_for_decision": ["RGB"],
+    "render_modalities_not_used_for_decision": ["semantic", "depth"]
+  },
+  "thresholds": {
+    "state_replay_l2": 1e-06,
+    "render_position_m": 0.0001,
+    "render_yaw_rad": 0.0001,
+    "minimum_projection_depth_m": 0.2,
+    "rgb_difference": 10,
+    "minimum_support_pixels": 25,
+    "projection_dilation_pixels": 16,
+    "minimum_support_inside_fraction": 0.9
+  },
+  "controls": {
+    "expected_visible_camera": "CAM_BACK",
+    "expected_nonvisible_cameras": [
+      "CAM_BACK_LEFT",
+      "CAM_BACK_RIGHT",
+      "CAM_FRONT",
+      "CAM_FRONT_LEFT",
+      "CAM_FRONT_RIGHT"
+    ],
+    "empty_actor_pair": "render each selected state again with the dynamic actor map removed while camera pose and scene remain fixed",
+    "rotated_visible_camera": "CAM_BACK_LEFT",
+    "projection_shift_pixels": 200,
+    "observation_timestamp_shift_frames": 2
+  },
+  "indicators": {
+    "CF-I-O1": "planner state to render transform fidelity with a time-shifted state negative",
+    "CF-I-O2": "independent camera projection versus paired RGB actor-support membership with a rotated-camera negative",
+    "CF-I-O3": "paired RGB actor support inside a dilated projected box with a shifted-projection negative",
+    "CF-I-O4": "rendered observation divergence does not precede the declared state cause, with an early timestamp-label negative"
+  },
+  "stop_rule": "if any indicator fails to discriminate its frozen positive and negative controls, stop before adding an AD receiver and diagnose the observation transport gap",
+  "independence_notice": "Projection and RGB pairing are recomputed outside the HUGSIM scorer and do not use HUGSIM semantic, depth, NC, TTC, PDMS, or a detector. State, calibration, vehicle dimensions, RGB, and scene nevertheless remain HUGSIM-produced and are not independent real-world truth.",
+  "strongest_allowed_claim": "Within the selected scene-0383 rear-actor window, frozen planner state, camera membership, projected RGB location, and causal onset transport consistently into HUGSIM rendered observations.",
+  "forbidden_claims": [
+    "HUGSIM RGB is equivalent to a real camera",
+    "semantic or depth output is correct",
+    "the AttackPlanner behavior is realistic traffic behavior",
+    "an AD receiver perceives or responds correctly",
+    "closed-loop safety or overall simulator credibility is established"
+  ]
+}
