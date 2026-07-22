@@ -1,0 +1,188 @@
+{
+  "experiment_id": "CF-I-LOOP-001",
+  "created_at": "2026-07-22T08:43:38.394333+00:00",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration": "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+  "execution_entrypoint": "sim.utils.plan.planner.plan_traj",
+  "indicator_results": {
+    "CF-I-T1": {
+      "released_max_offset_seconds": 2.75,
+      "aligned_max_offset_seconds": 0.0,
+      "control_discrimination": "accepted"
+    },
+    "CF-I-T2": {
+      "declared_stimulus_index": 8,
+      "aligned_first_divergence_index": 8,
+      "aligned_pre_stimulus_max_l2": 0.0,
+      "anticipatory_first_divergence_index": 7,
+      "anticipatory_pre_stimulus_max_l2": 0.08198480942743247,
+      "control_discrimination": "accepted"
+    },
+    "CF-I-T3": {
+      "aligned_response_latency_steps": 0,
+      "aligned_post_stimulus_max_l2": 2.0172139211566944,
+      "constant_post_stimulus_max_l2": 0.0,
+      "control_discrimination": "accepted"
+    },
+    "CF-I-T4": {
+      "conditions": {
+        "released_baseline": {
+          "coverage": 24,
+          "max_position_residual_m": 1.0614034533500665,
+          "min_acceleration_mps2": -0.5146198272705078,
+          "max_acceleration_mps2": 2.1052627563476562
+        },
+        "released_treatment": {
+          "coverage": 24,
+          "max_position_residual_m": 1.3373348601162425,
+          "min_acceleration_mps2": -0.4972114562988281,
+          "max_acceleration_mps2": 2.1052627563476562
+        },
+        "aligned_baseline": {
+          "coverage": 24,
+          "max_position_residual_m": 1.893596552138277e-05,
+          "min_acceleration_mps2": 1.1398539543151855,
+          "max_acceleration_mps2": 4.999999046325684
+        },
+        "aligned_treatment": {
+          "coverage": 24,
+          "max_position_residual_m": 2.457652561416168e-05,
+          "min_acceleration_mps2": -0.4108395576477051,
+          "max_acceleration_mps2": 4.999999046325684
+        }
+      },
+      "aligned_decision": "accepted",
+      "released_decision": "rejected",
+      "control_discrimination": "accepted"
+    }
+  },
+  "transport": {
+    "prior_state_harness_decisions": {
+      "CF-I-T1": "accepted",
+      "CF-I-T2": "accepted",
+      "CF-I-T3": "accepted",
+      "CF-I-T4": "accepted"
+    },
+    "planner_loop_decisions": {
+      "CF-I-T1": "accepted",
+      "CF-I-T2": "accepted",
+      "CF-I-T3": "accepted",
+      "CF-I-T4": "accepted"
+    },
+    "max_actor_state_l2_difference_vs_state_harness": {
+      "released_baseline": 7.489331194422155,
+      "released_treatment": 0.8349261190264866,
+      "aligned_baseline": 8.471383745486966,
+      "aligned_treatment": 1.3737308290782333,
+      "aligned_anticipatory_negative": 3.3065822478931644,
+      "constant_baseline": 0.0,
+      "constant_treatment": 0.0
+    },
+    "success": true
+  },
+  "credibility": {
+    "evidence_decision": "down-weighted",
+    "claim_decisions": {
+      "cf_i_t1_transports_to_planner_loop": "accepted",
+      "cf_i_t2_transports_to_planner_loop": "accepted",
+      "cf_i_t3_transports_to_planner_loop": "accepted",
+      "cf_i_t4_transports_to_planner_loop": "accepted",
+      "released_grid_is_temporally_consistent_interaction": "rejected",
+      "anticipatory_control_respects_declared_causal_order": "rejected",
+      "constant_planner_has_online_stimulus_response": "rejected",
+      "all_four_indicator_decisions_transport": "accepted"
+    },
+    "rejected_claim_contexts": {
+      "released_grid_is_temporally_consistent_interaction": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "planner-loop future indices and state transitions use incompatible times",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+        ],
+        "diagnostic_finding": "CF-I-LOOP-001-D1"
+      },
+      "anticipatory_control_respects_declared_causal_order": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "planner-loop responder diverges before the declared stimulus",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update"
+        ],
+        "diagnostic_finding": "CF-I-LOOP-001-D2"
+      },
+      "constant_planner_has_online_stimulus_response": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "planner-loop ConstantPlanner traces remain identical after stimulus",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:ConstantPlanner.update"
+        ],
+        "diagnostic_finding": "CF-I-LOOP-001-D3"
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "CF-I-LOOP-001-D1": {
+      "component": "planner-loop CF-I-T1/T4",
+      "expected": "matching indexed times and world-time state continuity",
+      "observed": "released offset=2.750000 s; maximum residual=1.337335 m",
+      "expectation_met": false,
+      "implication": "released planner-loop interaction timing is not qualified",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+      ]
+    },
+    "CF-I-LOOP-001-D2": {
+      "component": "planner-loop CF-I-T2 anticipatory control",
+      "expected": "no divergence before declared index 8",
+      "observed": "first divergence occurred at index 7",
+      "expectation_met": false,
+      "implication": "T2 retains result-before-cause sensitivity in planner.plan_traj",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update"
+      ]
+    },
+    "CF-I-LOOP-001-D3": {
+      "component": "planner-loop CF-I-T3 ConstantPlanner control",
+      "expected": "an online mechanism responds after ego stimulus",
+      "observed": "post-stimulus paired L2 maximum=0.000000",
+      "expectation_met": false,
+      "implication": "T3 retains no-response discrimination in planner.plan_traj",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:ConstantPlanner.update"
+      ]
+    },
+    "CF-I-LOOP-001-D4": {
+      "component": "T1--T4 state-harness to planner-loop transport",
+      "expected": "all four frozen control decisions reproduce",
+      "observed": "transport success=True",
+      "expectation_met": true,
+      "implication": "indicator transport is qualified only before rendering",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_planner_loop_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+      ]
+    }
+  },
+  "strongest_allowed_claim": "CF-I-T1..T4 retain frozen control discrimination inside planner.plan_traj. This does not qualify rendering, traffic realism, AD response, or closed-loop outcomes.",
+  "stop_rule_triggered": false
+}

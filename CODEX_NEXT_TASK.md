@@ -70,12 +70,26 @@ grid was correctly rejected by T1/T4; a one-step-early response was rejected by
 T2; independent ConstantPlanner motion was rejected as interaction by T3. See
 `docs/runs/hugsim_interaction_state_indicators_001.md`.
 
-Next transport the same indicators into the actual one-responder HUGSIM planner
-loop. Log actor/ego states and effective timestamps first. Preserve the released
-grid as a negative case and identify the aligned configuration as a modified
-positive control. If the actual loop does not reproduce the state-level
-discrimination, stop and diagnose the transport gap. Render only after those
-state logs pass; do not add an AD receiver yet.
+CF-I-LOOP-001 has now transported the same four decisions into HUGSIM's actual
+`planner.plan_traj` loop. The aligned controls passed; the released timing,
+one-step-early cause, and ConstantPlanner controls retained their expected
+negative decisions. All four transport claims are narrowly `accepted`, while
+overall evidence remains `down-weighted`. See
+`docs/runs/hugsim_interaction_planner_loop_indicators_001.md`.
+
+The exact AttackPlanner traces changed relative to the direct state harness.
+A bounded replay isolated HUGSIM's float32 state writeback as the cause: a
+cast-matched direct replay reproduced the actual loop traces exactly, while the
+four indicator decisions were unchanged. Treat this as a precision-sensitivity
+boundary; only the decisions, not exact trajectories, transported robustly.
+
+Next perform a small state-to-observation transport audit. Freeze the same
+actor states, camera poses, timestamps, and controls; independently project the
+actor geometry into the cameras and check camera membership, image location,
+visibility, and causal order before interpreting rendered outputs. This step
+may support only a bounded state-to-observation transport claim. Common-renderer
+RGB/semantic/depth agreement is not evidence of real-sensor correctness. Do not
+add an AD receiver or another scene yet.
 
 This experiment may support only an adversarial ego-response capability claim.
 It must not be generalized to realistic merging, yielding, or traffic-agent
@@ -126,8 +140,13 @@ branch.
 - CF-I-STATE-001 validated T1--T4 on preregistered state-level controls. It
   accepted their narrow control discrimination and preserved the released
   time-grid and ConstantPlanner cases as negative evidence. Overall evidence is
-  still `down-weighted`: the direct controller harness is not yet the actual
-  rendered planner loop or realistic behavior.
+  still `down-weighted`: the direct controller harness is not a rendered scene
+  or realistic behavior.
+- CF-I-LOOP-001 reproduced all four frozen control decisions inside the actual
+  `planner.plan_traj` loop. It also found that exact AttackPlanner traces are
+  sensitive to the loop's float32 state writeback, while the indicator
+  decisions remained stable. This qualifies only pre-render planner-loop
+  indicator transport; rendering and realism remain untested.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.
