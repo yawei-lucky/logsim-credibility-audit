@@ -14,11 +14,17 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — Supporting Receiver Qualification
+## Immediate Direction — CF-R Risk-Information Causality
 
-The first law/indicator framework, CF-M constant-speed audit, and CF-O
-controlled-occlusion audit are complete. The next complementary mechanism is
-CF-I interaction capability.
+The first simulator-internal causal-law and indicator pilot is closed. Its
+scope and remaining boundaries are recorded in
+`docs/runs/counterfactual_indicator_phase_001_closure.md`.
+
+Sparse4Dv3 R50 has passed a bounded supporting-receiver qualification gate for
+vehicle presence, longitudinal/lateral ordinal relations, and short temporal
+identity. It is not qualified as absolute 3D truth, a risk model, or a
+planning/control judge. See
+`docs/runs/hugsim_supporting_receiver_qualification_001.md`.
 
 The current framework is:
 
@@ -46,6 +52,25 @@ Leave numerical tolerances and behavior ranges open when they lack a defensible
 basis.
 
 ## Current Deliverable
+
+Execute `docs/runs/hugsim_cf_risk_causality_preregistration_001.md`. Reuse the
+already complete CF-M `slow / nominal / fast` RGB sequences; do not render new
+conditions. Run the frozen Sparse4Dv3 receiver once, then apply the committed
+analysis and stop regardless of result.
+
+This experiment tests transport of dynamic risk information, not real danger:
+
+```text
+logged conflict evolution
+  -> rendered actor observability
+  -> qualified Sparse4Dv3 direction response
+```
+
+Do not repeat the prior static near/far × same/adjacent matrix. Do not use
+Sparse4Dv3 confidence or HUGSIM TTC/PDMS as the risk truth, and do not run a
+planning/control or closed-loop test before CF-R is judged.
+
+## Completed Basis
 
 CF-I-CAP-001 confirmed narrow internal stimulus-response paths in IDM and
 AttackPlanner, including an AttackPlanner response under inputs reachable from

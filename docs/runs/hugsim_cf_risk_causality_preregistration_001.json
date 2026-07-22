@@ -1,0 +1,110 @@
+{
+  "audit_id": "hugsim_cf_risk_causality_001",
+  "date": "2026-07-22",
+  "status": "preregistered_receiver_not_run",
+  "preregistration_strength": "prospective_receiver_analysis_not_world_state_blind",
+  "prior_world_state_and_render_outputs_seen": true,
+  "prospective_output": "frozen Sparse4Dv3 receiver outputs and CF-R analysis",
+  "task_construct": "dynamic relative-conflict information transport, not calibrated physical risk",
+  "fixed_runtime": {
+    "audit_repo_base_commit": "b9a036f79bba1ac7388eaed9a9fc729f8e712c89",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "scene": "scene-0383"
+  },
+  "conditions": {
+    "slow": {
+      "actor_speed_mps": 0.5,
+      "risk_information_role": "highest ego closure",
+      "config": "configs/hugsim/scenarios/scene-0383-motion-slow-001.yaml",
+      "config_sha256": "0505ab48f98ae3b51b928e0bdf02406cd880a02d81d1f62e5685f167d34bf24c",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-slow-001-run001",
+      "input_sha256": {
+        "observations.pkl": "00ea654932b33f42a07fbf37510fad89dd7feb49ef2720fcec49263140784069",
+        "infos.pkl": "0cbc157bf83564246705a7826b808e7937541f4e746d578901088d045a454d30",
+        "audit_steps.pkl": "2a2b3e205c80512a5ba19c6152615f3223670fba2b0aae8e25d7435adac9dcac",
+        "audit_summary.json": "0f48796f4d12cced1da3c87d5126b2d7111a1d16350ac090e6e837bbc8db47ab"
+      }
+    },
+    "nominal": {
+      "actor_speed_mps": 1.0,
+      "risk_information_role": "medium ego closure",
+      "config": "configs/hugsim/scenarios/scene-0383-motion-nominal-001.yaml",
+      "config_sha256": "a5f17e04e9f416203c816973326754ebe04b4cc840b28b1ea236e7d0d50c4f0a",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-nominal-001-run001",
+      "input_sha256": {
+        "observations.pkl": "10017438412b0595deae274b2879f16ef87776dd811066c72ba4183dbfd0f339",
+        "infos.pkl": "1cc7532db334103c931f2bcb4783a0f689992c646ac29eb3889858c3a582d160",
+        "audit_steps.pkl": "cca5e473fbadf575cae4a88131466c8ed23f8cea0154853c562cd77c6ef55838",
+        "audit_summary.json": "d2e93bdcb67f8de62ffec15bc4b2fddc73564a608f4357bae4ed33aecba1bbf7"
+      }
+    },
+    "fast": {
+      "actor_speed_mps": 1.5,
+      "risk_information_role": "lowest ego closure",
+      "config": "configs/hugsim/scenarios/scene-0383-motion-fast-001.yaml",
+      "config_sha256": "20df023b316c834135581c8d0116c6b40586fbd00db4c31ab3585b6e1319c04a",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-fast-001-run001",
+      "input_sha256": {
+        "observations.pkl": "07055933c0f0e11d6fe2cf6341e98cf6066067a72e7bd5a7a37888ef994cfcf6",
+        "infos.pkl": "8fff36864ce8ffd3cc1a41bfa7a5afee413a4b95146bf750468da720cbd85f86",
+        "audit_steps.pkl": "98a35d2a20693e0e7606306fb0a4dbf84505f757b4e23589e8daa2b34688d5cc",
+        "audit_summary.json": "2aeba78548e49e9a69dc27f5bd90c16a8e464bad745f4cf76c5d8cf7975bde96"
+      }
+    }
+  },
+  "complete_future_window": {
+    "valid_start_exclusive_s": 0.0,
+    "valid_end_inclusive_s": 6.5,
+    "planned_future_s": 2.5,
+    "reset_boundary": "t=0 contains the first speed-dependent ConstantPlanner update and is excluded"
+  },
+  "state_relations": [
+    "at every valid timestamp: slow actor forward < nominal < fast",
+    "at every valid timestamp: slow ego-footprint clearance < nominal < fast"
+  ],
+  "receiver_relations": [
+    ["slow", "nominal"],
+    ["nominal", "fast"],
+    ["slow", "fast"]
+  ],
+  "receiver_motion_relation": "associated longitudinal slope: slow < nominal < fast; more negative means stronger observed closure",
+  "receiver": {
+    "name": "Sparse4Dv3 R50 official release",
+    "source_commit": "249ffbb695f4e9db628d953e2bf6d36de04bbb69",
+    "checkpoint_sha256": "5beed4d4933ca6448d72586b0f8812863574289ff3c4192de71dc9f46a42f0ed",
+    "config_sha256": "22ae67545157a43786356b1e7c4f9fc50076ab29062acef71f4163a3609626dc",
+    "runner_sha256": "bfe7c9e9f274555eb0d8629053f93705c56ea5f8c23ecf218bdc0fe314c2c770",
+    "score_threshold": 0.2,
+    "frame_stride": 2,
+    "modalities": [
+      "HUGSIM RGB",
+      "HUGSIM camera intrinsics",
+      "HUGSIM camera extrinsics"
+    ],
+    "excluded_modalities": [
+      "HUGSIM semantic",
+      "HUGSIM depth"
+    ],
+    "role": "qualified supporting ordinal receiver, not risk truth"
+  },
+  "analysis_script_sha256": "e8aec9db37c2bdaa685ce29f2e0c711f232b9c1528f00d0c5167bc9f16ded376",
+  "gates": [
+    "exact hashes for reused CF-M RGB/state/run inputs",
+    "all state and receiver comparisons restricted to the complete-future window",
+    "state forward and footprint-clearance order passes at every valid timestamp",
+    "receiver source commit, config, checkpoint, threshold, cadence, and modalities match the frozen contract",
+    "missing receiver association remains unavailable and is not imputed"
+  ],
+  "decision_rules": {
+    "accepted": "state gate passes, every planned receiver observation is available, and the claimed receiver order has zero reversal or tie",
+    "down-weighted": "state gate passes and aggregate receiver direction is expected, but one or more observations are unavailable or reversed",
+    "rejected": "state order fails, aggregate receiver direction reverses, or an input/identity/horizon gate fails"
+  },
+  "strongest_allowed_claim": "within the reused 0.5/1.0/1.5 m/s designed range and complete-future window, HUGSIM state preserves the declared relative-conflict order and the qualified Sparse4Dv3 receiver preserves or fails to preserve the corresponding longitudinal direction",
+  "forbidden_claims": [
+    "the factor levels are real-world safe or unsafe thresholds",
+    "Sparse4Dv3 confidence, distance, or velocity is calibrated risk truth",
+    "the result establishes braking need, planning/control response, collision probability, or closed-loop credibility",
+    "the result establishes real-sim equivalence or general HUGSIM fitness"
+  ]
+}

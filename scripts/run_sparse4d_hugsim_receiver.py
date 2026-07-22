@@ -16,6 +16,7 @@ import math
 import os
 import pickle
 import platform
+import subprocess
 import sys
 import time
 from collections import Counter
@@ -311,7 +312,15 @@ def build_model(root: Path, checkpoint: Path) -> tuple[Any, Any, dict[str, Any]]
     model.cuda().eval()
     provenance = {
         "sparse4d_root": str(root),
+        "source_git_commit": subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip(),
         "config": str(config_path),
+        "config_sha256": sha256_file(config_path),
         "checkpoint": str(checkpoint),
         "checkpoint_sha256": sha256_file(checkpoint),
         "torch_version": torch.__version__,
