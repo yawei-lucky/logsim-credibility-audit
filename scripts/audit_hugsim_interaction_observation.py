@@ -117,6 +117,7 @@ def main() -> int:
     import numpy as np
     import torch
     from omegaconf import OmegaConf
+    from scene.cameras import Camera
     from sim.utils.plan import planner
 
     from analyze_hugsim_occlusion_metamorphic import projected_mask
@@ -179,6 +180,13 @@ def main() -> int:
     transform_rows: list[dict[str, Any]] = []
     membership_rows: list[dict[str, Any]] = []
     spatial_rows: list[dict[str, Any]] = []
+    shared_dynamics = Camera.__init__.__defaults__[-1]
+    if not isinstance(shared_dynamics, dict):
+        raise RuntimeError("unexpected Camera dynamics default; corrective control is unavailable")
+
+    def clear_shared_camera_dynamics() -> None:
+        """Prevent one paired render from contaminating the next Camera instance."""
+        shared_dynamics.clear()
 
     for condition in conditions:
         loop = planner(
@@ -208,9 +216,11 @@ def main() -> int:
                 continue
             simulation.planner = loop
             simulation.render_kwargs["planning"] = planning
+            clear_shared_camera_dynamics()
             actor_observation = simulation._get_obs()
             actor_info = simulation._get_info()
             simulation.render_kwargs["planning"] = [{}, {}]
+            clear_shared_camera_dynamics()
             empty_observation = simulation._get_obs()
             simulation.render_kwargs["planning"] = planning
 
@@ -359,7 +369,7 @@ def main() -> int:
         },
     }
 
-    prereg_ref = "docs/runs/hugsim_interaction_observation_preregistration_001.json"
+    prereg_ref = str(prereg_path.relative_to(repo_root))
     planner_ref = f"HUGSIM@{revision}:sim/utils/plan.py:planner.plan_traj"
     render_ref = f"HUGSIM@{revision}:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv._get_obs"
     claims = {
@@ -378,7 +388,7 @@ def main() -> int:
     rejected_contexts = {}
     for index, (indicator, passed) in enumerate(decisions.items(), start=1):
         component, expected, observed = labels[indicator]
-        finding_id = f"CF-I-OBS-001-D{index}"
+        finding_id = f"{prereg['experiment_id']}-D{index}"
         findings[finding_id] = {
             "component": component,
             "expected": expected,
@@ -410,7 +420,15 @@ def main() -> int:
             "rejected_claim_contexts": rejected_contexts,
         },
         "diagnostic_findings": findings,
-        "strongest_allowed_claim": "Within the frozen scene-0383 rear-actor window, planner state, camera membership, projected RGB location, and causal onset transport consistently into HUGSIM rendered observations. This does not establish real-sensor or AD-response credibility.",
+        "measurement_chain": {
+            "shared_camera_dynamics_cleared_before_each_paired_render": True,
+            "reason": "HUGSIM Camera uses a mutable default dynamics dictionary that render mutates in place",
+        },
+        "strongest_allowed_claim": (
+            "Within the frozen scene-0383 rear-actor window, planner state, camera membership, projected RGB location, and causal onset transport consistently into HUGSIM rendered observations. This does not establish real-sensor or AD-response credibility."
+            if all(decisions.values())
+            else "Only individually accepted indicator decisions may be retained; complete state-to-observation transport is not qualified."
+        ),
         "stop_rule_triggered": not all(decisions.values()),
     }
     audit_output.parent.mkdir(parents=True, exist_ok=True)
@@ -437,7 +455,7 @@ def main() -> int:
     axes[2].set_xlabel("declared frame index")
     axes[2].set_ylabel("changed pixels, six cameras")
     axes[2].legend()
-    figure.suptitle("CF-I-OBS-001 state-to-observation transport")
+    figure.suptitle(f"{prereg['experiment_id']} state-to-observation transport")
     figure.savefig(output_dir / "interaction_observation_summary.png", dpi=160)
     plt.close(figure)
 
