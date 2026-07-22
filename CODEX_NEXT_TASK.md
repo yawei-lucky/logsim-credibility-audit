@@ -23,6 +23,33 @@ counterfactual robustness branch. An exact factual starting scene is not
 required for every counterfactual, but HUGSIM-internal self-reference cannot
 provide the external validity of the instruments used to judge it.
 
+## Immediate Next Task
+
+Complete one **validation-instrument qualification pass** using existing
+evidence only. Do not run a new scene or add a receiver yet.
+
+Update `docs/hugsim_metric_evidence_map.md` with one compact table covering each
+retained instrument/reference:
+
+- what it actually measures;
+- its external-validity basis;
+- its dependence on HUGSIM outputs;
+- known error, applicable range, and strongest allowed claim;
+- missing evidence required before it can judge a designed counterfactual.
+
+Then select at most two instruments that are qualified enough for the next
+bounded experiment. If none qualifies, report the smallest qualification gap
+instead of forcing an experiment. Only after this decision choose one branch:
+
+1. direct matched real–simulation equivalence, if source evidence is ready; or
+2. designed-counterfactual robustness, using qualified constraints and a
+   declared uncertainty range.
+
+Completion means the evidence map identifies which existing "rulers" can and
+cannot judge the next experiment, and why. Do not create a final credibility
+score, install another AD model, add scenarios, or tune a response threshold in
+this task.
+
 Durable guiding questions:
 
 > HUGSIM 提供给智驾系统的任务相关信息，是否与现实一致到足以产生可信的感知、决策和闭环结果？
@@ -372,14 +399,9 @@ usefulness evidence remains down-weighted because the reference is HUGSIM RGB,
 not matched reality. This is not ODD precision/recall and does not measure false
 negatives.
 
-The next stage now begins with a strategic qualification pass rather than a
-new detailed response curve. For each retained evidence source, record whether
-its external-validity basis is matched reality, independent measurement,
-physical/causal law, real-data receiver characterization, or HUGSIM-internal
-self-reference. Then separate two future experiment tracks: direct matched
-real–simulation equivalence when source data becomes available, and designed
-counterfactual robustness without an exact real starting scene. Only after
-this qualification pass should one downstream AD task boundary be selected.
+The immediate execution contract is defined in `Immediate Next Task` above.
+The earlier lane-relation and critical-object-risk proposal remains a possible
+later experiment, not the current task.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
