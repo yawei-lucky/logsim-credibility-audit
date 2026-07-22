@@ -1,0 +1,23 @@
+# CF-O 001 factorial control: partial occluder only, 20 m ahead and 2.0 m right.
+mode: occlusion_partial_occluder_only_001
+plan_list:
+- - 2.0
+  - 20.0
+  - -0.3
+  - 0.0
+  - 1.0
+  - "2024_07_05_15_57_10"
+  - ConstantPlanner
+  - {}
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 0.0
+start_velo: 1
+start_steer: 0
+scene_name: scene-0383
+iteration: 30000
