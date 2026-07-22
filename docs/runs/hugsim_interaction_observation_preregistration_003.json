@@ -1,0 +1,114 @@
+{
+  "experiment_id": "CF-I-OBS-003",
+  "parent_experiment": "CF-I-OBS-002",
+  "purpose": "test whether the CF-I-O3 failure belongs to HUGSIM metadata-box geometry or persists when the rendered Gaussian asset envelope and origin are projected",
+  "status": "frozen_before_formal_asset_envelope_output",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "analysis_script_sha256": "1ec653a9fecaafe9cbccd3dcdc4e7de06ccd7c73db9d0cad4fbe264a6a93805a",
+  "comparison_baseline": {
+    "audit_path": "docs/runs/hugsim_interaction_observation_indicators_002.json",
+    "audit_sha256": "5a2d30b7ccbf35da76a82903029b7dad5060ff292b267bd9978c3e1177a13ec0",
+    "measurements_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_interaction_observation/analysis-run002/interaction_observation_measurements.json",
+    "measurements_sha256": "e91f7424575dbdddb052836b0d70d55b88bcbc141f61867acec9b1733c57491d",
+    "metadata_box_o3_decision": "rejected"
+  },
+  "scenario": {
+    "relative_path": "configs/hugsim/scenarios/scene-0383-interaction-observation-001.yaml",
+    "sha256": "9e84f874fd637ed26133cd2673f11a5fcbc677f0c223860573ad61a71108dacc"
+  },
+  "parent_trace": {
+    "path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_interaction_planner_loop/analysis-run001/interaction_planner_loop_traces.json",
+    "sha256": "a128e04da5ac21361c820b99340c4c1ce61e8ccd5b75a72c22aebff7e7ce62ab"
+  },
+  "assets": {
+    "base_config": {
+      "path": "/home/yawei/logsim-credibility-audit/configs/hugsim/nuscenes_smoke_base.yaml",
+      "sha256": "01a11220a902e1ec3e81aa7424cf16bf74a540508031d345792e03dc1afc2135"
+    },
+    "camera_config": {
+      "path": "/home/yawei/HUGSIM/configs/sim/nuscenes_camera.yaml",
+      "sha256": "f059629db1b1831e81e0a7b8f43bf9775b70684319859e8c1e4bc00bf2cb8e9a"
+    },
+    "kinematic_config": {
+      "path": "/home/yawei/HUGSIM/configs/sim/kinematic.yaml",
+      "sha256": "fc987ae8da2412ecca8e10b9e49daf2da366795151e970b139c3426ea9966c96"
+    },
+    "scene_config": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml",
+      "sha256": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7"
+    },
+    "scene_model": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth",
+      "sha256": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9"
+    },
+    "scene_ground": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/ground_param.pkl",
+      "sha256": "97ea9b7fd05c3fb189f1804692023a3449f40ac3f8bae80ead1607bb549ccddc"
+    },
+    "vehicle_model": {
+      "path": "/home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10/gs.pth",
+      "sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006"
+    },
+    "vehicle_dimensions": {
+      "path": "/home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10/wlh.json",
+      "sha256": "edc468f1d24229a56ccfeaf89324e8b6bf46237d90df21980933562d07a8538f"
+    }
+  },
+  "execution": {
+    "conditions": ["aligned_baseline", "aligned_treatment"],
+    "aligned_dt_seconds": 0.10526315789473684,
+    "torch_seed": 0,
+    "declared_stimulus_index": 8,
+    "selected_indices": [6, 7, 8, 9, 10, 11, 14],
+    "causal_indices": [6, 7, 8, 9, 10, 11],
+    "render_modalities_used_for_decision": ["RGB"],
+    "render_modalities_not_used_for_decision": ["semantic", "depth"]
+  },
+  "projection_model": {
+    "source": "gaussian_opacity_quantile_envelope",
+    "minimum_opacity": 0.5,
+    "lower_quantile": 0.005,
+    "upper_quantile": 0.995,
+    "origin": "quantile envelope center transformed by the exact planner body-to-world matrix",
+    "qualification_boundary": "asset-derived internal envelope, not a real vehicle box or external truth"
+  },
+  "thresholds": {
+    "state_replay_l2": 1e-06,
+    "render_position_m": 0.0001,
+    "render_yaw_rad": 0.0001,
+    "minimum_projection_depth_m": 0.2,
+    "rgb_difference": 10,
+    "minimum_support_pixels": 25,
+    "projection_dilation_pixels": 16,
+    "minimum_support_inside_fraction": 0.9
+  },
+  "controls": {
+    "expected_visible_camera": "CAM_BACK",
+    "expected_nonvisible_cameras": ["CAM_BACK_LEFT", "CAM_BACK_RIGHT", "CAM_FRONT", "CAM_FRONT_LEFT", "CAM_FRONT_RIGHT"],
+    "empty_actor_pair": "render each selected state again with the dynamic actor map removed while camera pose and scene remain fixed",
+    "rotated_visible_camera": "CAM_BACK_LEFT",
+    "projection_shift_pixels": 200,
+    "observation_timestamp_shift_frames": 2
+  },
+  "indicators": {
+    "CF-I-O1": "unchanged planner state to render transform control",
+    "CF-I-O2": "unchanged camera membership control using the asset envelope projection",
+    "CF-I-O3": "paired RGB support inside the projected opacity-qualified Gaussian envelope, retaining the 0.90 gate and shifted-projection negative",
+    "CF-I-O4": "unchanged rendered causal-onset control"
+  },
+  "decision_logic": {
+    "asset_envelope_o3_accepted": "supports metadata-box mismatch as the source of the CF-I-OBS-002 localization rejection within this window",
+    "asset_envelope_o3_rejected": "indicates a deeper asset-envelope to RGB projection mismatch or an unqualified envelope definition",
+    "metadata_box_result": "remains rejected regardless of this result"
+  },
+  "stop_rule": "after this bounded split, close first-round CF-I with both the metadata-box and asset-envelope decisions; do not tune the envelope or threshold again in this phase",
+  "independence_notice": "The envelope is independently derived from the Gaussian asset rather than obj_boxes, but both the asset and RGB are HUGSIM-produced. This is an internal attribution test, not external sensor truth.",
+  "strongest_allowed_claim": "The experiment may attribute the bounded localization failure to metadata-box geometry versus the rendered-asset envelope; it cannot establish real-camera or real-vehicle geometry equivalence.",
+  "forbidden_claims": [
+    "the Gaussian envelope is a real vehicle ground-truth box",
+    "HUGSIM RGB is equivalent to a real camera",
+    "the AttackPlanner interaction is realistic traffic behavior",
+    "AD perception, planning, control, or safety is credible",
+    "HUGSIM is generally credible as an AD test domain"
+  ]
+}

@@ -104,6 +104,14 @@ def main() -> int:
     if sha256(trace_path) != prereg["parent_trace"]["sha256"]:
         raise RuntimeError("parent trace hash mismatch")
     traces = json.loads(trace_path.read_text())
+    if "comparison_baseline" in prereg:
+        comparison = prereg["comparison_baseline"]
+        comparison_audit = repo_root / comparison["audit_path"]
+        comparison_measurements = Path(comparison["measurements_path"])
+        if sha256(comparison_audit) != comparison["audit_sha256"]:
+            raise RuntimeError("comparison audit hash mismatch")
+        if sha256(comparison_measurements) != comparison["measurements_sha256"]:
+            raise RuntimeError("comparison measurements hash mismatch")
 
     output_dir.mkdir(parents=True)
     os.environ.setdefault("MPLCONFIGDIR", "/tmp/matplotlib-cf-i-obs")
@@ -160,6 +168,39 @@ def main() -> int:
     negative_shift_pixels = int(prereg["controls"]["projection_shift_pixels"])
     temporal_shift = int(prereg["controls"]["observation_timestamp_shift_frames"])
     aligned_dt = float(prereg["execution"]["aligned_dt_seconds"])
+    projection_model = prereg.get("projection_model", {"source": "metadata_box"})
+
+    asset_envelope: dict[str, Any] | None = None
+    if projection_model["source"] == "gaussian_opacity_quantile_envelope":
+        model_params = torch.load(
+            prereg["assets"]["vehicle_model"]["path"],
+            map_location="cpu",
+            weights_only=False,
+        )[0]
+        xyz = model_params[1]
+        opacity = torch.sigmoid(model_params[7][:, 0])
+        selected_xyz = xyz[
+            opacity >= float(projection_model["minimum_opacity"])
+        ]
+        lower = torch.quantile(
+            selected_xyz,
+            float(projection_model["lower_quantile"]),
+            dim=0,
+        ).numpy()
+        upper = torch.quantile(
+            selected_xyz,
+            float(projection_model["upper_quantile"]),
+            dim=0,
+        ).numpy()
+        asset_envelope = {
+            "local_lower_xyz_m": lower.tolist(),
+            "local_upper_xyz_m": upper.tolist(),
+            "local_center_xyz_m": ((lower + upper) * 0.5).tolist(),
+            "local_extent_xyz_m": (upper - lower).tolist(),
+            "qualified_gaussian_count": int(selected_xyz.shape[0]),
+        }
+    elif projection_model["source"] != "metadata_box":
+        raise ValueError(f"unsupported projection model: {projection_model['source']}")
 
     camera_names = tuple(simulation.cam_params.keys())
     expected_camera = prereg["controls"]["expected_visible_camera"]
@@ -187,6 +228,26 @@ def main() -> int:
     def clear_shared_camera_dynamics() -> None:
         """Prevent one paired render from contaminating the next Camera instance."""
         shared_dynamics.clear()
+
+    def selected_projection_box(observed_box: Any, planning: Any) -> Any:
+        if asset_envelope is None:
+            return observed_box
+        center_local = np.asarray(asset_envelope["local_center_xyz_m"])
+        extent_local = np.asarray(asset_envelope["local_extent_xyz_m"])
+        body_to_world = planning[0]["agent_0"].detach().cpu().numpy()
+        center_world = body_to_world[:3, :3] @ center_local + body_to_world[:3, 3]
+        return np.asarray(
+            [
+                center_world[2],
+                -center_world[0],
+                -center_world[1],
+                extent_local[2],
+                extent_local[0],
+                extent_local[1],
+                observed_box[6],
+            ],
+            dtype=np.float64,
+        )
 
     for condition in conditions:
         loop = planner(
@@ -225,6 +286,7 @@ def main() -> int:
             simulation.render_kwargs["planning"] = planning
 
             observed_box = np.asarray(actor_info["obj_boxes"][0], dtype=np.float64)
+            projection_box = selected_projection_box(observed_box, planning)
             observed_position = np.asarray([-observed_box[1], observed_box[0]])
             position_error = float(np.linalg.norm(observed_position - expected_after[:2]))
             yaw_error = float(abs(math.atan2(math.sin(observed_box[6] - expected_after[2]), math.cos(observed_box[6] - expected_after[2]))))
@@ -243,7 +305,7 @@ def main() -> int:
                 try:
                     projection, _ = projected_mask(
                         actor_info,
-                        observed_box,
+                        projection_box,
                         camera,
                         actor_rgb.shape[:2],
                         minimum_depth,
@@ -277,6 +339,7 @@ def main() -> int:
                     spatial_rows.append({
                         "condition": condition,
                         "index": index,
+                        "projection_source": projection_model["source"],
                         "support_inside_dilated_projection_fraction": inside_fraction,
                         "support_inside_shifted_projection_fraction": shifted_inside_fraction,
                         "positive_passed": support_pixels >= minimum_pixels and inside_fraction >= minimum_inside_fraction,
@@ -353,6 +416,8 @@ def main() -> int:
             "control_discrimination": "accepted" if o2 else "rejected",
         },
         "CF-I-O3": {
+            "projection_source": projection_model["source"],
+            "asset_envelope": asset_envelope,
             "minimum_support_inside_fraction": min(row["support_inside_dilated_projection_fraction"] for row in spatial_rows),
             "maximum_shifted_projection_inside_fraction": max(row["support_inside_shifted_projection_fraction"] for row in spatial_rows),
             "shifted_projection_decision": "rejected" if spatial_negative_rejected else "accepted",
@@ -423,6 +488,8 @@ def main() -> int:
         "measurement_chain": {
             "shared_camera_dynamics_cleared_before_each_paired_render": True,
             "reason": "HUGSIM Camera uses a mutable default dynamics dictionary that render mutates in place",
+            "projection_model": projection_model,
+            "derived_asset_envelope": asset_envelope,
         },
         "strongest_allowed_claim": (
             "Within the frozen scene-0383 rear-actor window, planner state, camera membership, projected RGB location, and causal onset transport consistently into HUGSIM rendered observations. This does not establish real-sensor or AD-response credibility."
@@ -439,22 +506,33 @@ def main() -> int:
         "spatial_rows": spatial_rows,
     }, indent=2) + "\n")
 
-    figure, axes = plt.subplots(1, 3, figsize=(16, 4.8), constrained_layout=True)
-    axes[0].bar(["state replay", "render position", "render yaw"], [replay_max, max(row["position_error_m"] for row in transform_rows), max(row["yaw_error_rad"] for row in transform_rows)])
-    axes[0].set_yscale("symlog", linthresh=1e-8)
-    axes[0].set_title("O1 state-to-transform error")
+    figure, axes = plt.subplots(2, 2, figsize=(14, 9), constrained_layout=True)
+    axes[0, 0].bar(["state replay", "render position", "render yaw"], [replay_max, max(row["position_error_m"] for row in transform_rows), max(row["yaw_error_rad"] for row in transform_rows)])
+    axes[0, 0].set_yscale("symlog", linthresh=1e-8)
+    axes[0, 0].set_title("O1 state-to-transform error")
     support_by_camera = {camera: [row["support_pixels"] for row in membership_rows if row["camera"] == camera] for camera in camera_names}
-    axes[1].bar(range(len(camera_names)), [float(np.median(support_by_camera[camera])) for camera in camera_names])
-    axes[1].set_xticks(range(len(camera_names)), [name.replace("CAM_", "") for name in camera_names], rotation=35, ha="right")
-    axes[1].set_title("O2 median actor RGB support")
-    axes[1].set_ylabel("changed pixels")
-    axes[2].plot(causal_indices, causal_counts, marker="o", label="actual pairing")
-    axes[2].plot(shifted_indices, shifted_counts, marker="o", label=f"{temporal_shift}-frame early label")
-    axes[2].axvline(declared_stimulus, color="black", linestyle="--", label="declared cause")
-    axes[2].set_title("O4 observation divergence")
-    axes[2].set_xlabel("declared frame index")
-    axes[2].set_ylabel("changed pixels, six cameras")
-    axes[2].legend()
+    axes[0, 1].bar(range(len(camera_names)), [float(np.median(support_by_camera[camera])) for camera in camera_names])
+    axes[0, 1].set_xticks(range(len(camera_names)), [name.replace("CAM_", "") for name in camera_names], rotation=35, ha="right")
+    axes[0, 1].set_title("O2 median actor RGB support")
+    axes[0, 1].set_ylabel("changed pixels")
+    for condition in conditions:
+        rows = [row for row in spatial_rows if row["condition"] == condition]
+        axes[1, 0].plot(
+            [row["index"] for row in rows],
+            [row["support_inside_dilated_projection_fraction"] for row in rows],
+            marker="o",
+            label=condition.replace("aligned_", ""),
+        )
+    axes[1, 0].axhline(minimum_inside_fraction, color="black", linestyle="--", label="frozen gate")
+    axes[1, 0].set(title=f"O3 {projection_model['source']} localization", xlabel="frame index", ylabel="support fraction", ylim=(0, 1.05))
+    axes[1, 0].legend()
+    axes[1, 1].plot(causal_indices, causal_counts, marker="o", label="actual pairing")
+    axes[1, 1].plot(shifted_indices, shifted_counts, marker="o", label=f"{temporal_shift}-frame early label")
+    axes[1, 1].axvline(declared_stimulus, color="black", linestyle="--", label="declared cause")
+    axes[1, 1].set_title("O4 observation divergence")
+    axes[1, 1].set_xlabel("declared frame index")
+    axes[1, 1].set_ylabel("changed pixels, six cameras")
+    axes[1, 1].legend()
     figure.suptitle(f"{prereg['experiment_id']} state-to-observation transport")
     figure.savefig(output_dir / "interaction_observation_summary.png", dpi=160)
     plt.close(figure)
