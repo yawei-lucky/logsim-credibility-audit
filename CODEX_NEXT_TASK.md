@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — CF-R Risk-Information Causality
+## Immediate Direction — Target Risk / Planning Receiver Qualification
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -51,24 +51,31 @@ The purpose is a revisable research skeleton, not an exhaustive standard.
 Leave numerical tolerances and behavior ranges open when they lack a defensible
 basis.
 
+CF-R 001 is complete and overall `down-weighted`. State order passed 26/26;
+the supporting receiver retained the aggregate closure hierarchy, with one
+small early pairwise reversal and several within-trace non-closing steps. See
+`docs/runs/hugsim_cf_risk_causality_001.md`.
+
 ## Current Deliverable
 
-Execute `docs/runs/hugsim_cf_risk_causality_preregistration_001.md`. Reuse the
-already complete CF-M `slow / nominal / fast` RGB sequences; do not render new
-conditions. Run the frozen Sparse4Dv3 receiver once, then apply the committed
-analysis and stop regardless of result.
+Do not add another Sparse4Dv3 curve. Identify and qualify the smallest target
+AD receiver whose native outputs include critical-object/risk ranking or a
+planning/control response. Record its real-data task basis, required input and
+temporal contract, output construct, uncertainty/failure modes, and strongest
+allowed HUGSIM claim before integration.
 
-This experiment tests transport of dynamic risk information, not real danger:
+The next experiment should connect the retained dynamic conflict direction to
+an actual downstream output:
 
 ```text
-logged conflict evolution
-  -> rendered actor observability
-  -> qualified Sparse4Dv3 direction response
+qualified conflict information
+  -> target critical-object / risk decision
+  -> planning or control direction
 ```
 
-Do not repeat the prior static near/far × same/adjacent matrix. Do not use
-Sparse4Dv3 confidence or HUGSIM TTC/PDMS as the risk truth, and do not run a
-planning/control or closed-loop test before CF-R is judged.
+Do not relabel Sparse4Dv3 confidence or distance as a risk output, and do not
+install or run a full AD stack before this qualification gate is reviewed.
+Closed-loop outcome validation remains later.
 
 ## Completed Basis
 
@@ -133,18 +140,9 @@ The first internal CF-I round is now closed with positive evidence, negative
 evidence, and explicit boundaries. Do not add more CF-I scenes or tune opacity,
 quantiles, dilation, or thresholds merely to turn O3 green.
 
-Next perform a bounded supporting-receiver qualification gate. Before using a
-camera-only AD model as a credibility ruler, record:
-
-1. its real-data qualification basis and task scope;
-2. input, camera, and calibration compatibility;
-3. output semantics needed for vehicle position, tracking, and risk ordering;
-4. known failure modes and uncertainty;
-5. the strongest HUGSIM claim it may support.
-
-This next step qualifies the receiver; it does not yet interpret a new HUGSIM
-AD experiment. The unresolved spatial-ground-truth boundary from CF-I must be
-carried into every later association or distance claim.
+The bounded supporting-receiver gate and CF-R transport experiment are now
+complete. Their unresolved spatial-ground-truth and receiver-jitter boundaries
+must be carried into every later association, distance, risk, or action claim.
 
 This experiment may support only an adversarial ego-response capability claim.
 It must not be generalized to realistic merging, yielding, or traffic-agent
@@ -224,8 +222,8 @@ branch.
 
 ## Explicitly Deferred
 
-- Do not run a new HUGSIM receiver experiment before the supporting receiver
-  and its allowed claims pass the qualification gate.
+- Do not run a target risk/planning/control experiment before that receiver and
+  its allowed claims pass the new qualification gate.
 - Do not add another receiver or more HUGSIM scenes merely to obtain curves.
 - Do not install a full AD stack yet.
 - Do not define final numerical credibility thresholds or the final four-layer

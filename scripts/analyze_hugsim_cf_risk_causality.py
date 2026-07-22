@@ -82,7 +82,10 @@ def verify_preregistration(
     if git_blob(repo, resolved, relative) != path.read_bytes():
         raise ValueError("preregistration differs from the committed version")
     script = "scripts/analyze_hugsim_cf_risk_causality.py"
-    if hashlib.sha256(git_blob(repo, resolved, script)).hexdigest() != preregistration[
+    committed_script = git_blob(repo, resolved, script)
+    if committed_script != (repo / script).read_bytes():
+        raise ValueError("local analysis script differs from preregistration commit")
+    if hashlib.sha256(committed_script).hexdigest() != preregistration[
         "analysis_script_sha256"
     ]:
         raise ValueError("analysis script hash differs from preregistration")
@@ -164,6 +167,14 @@ def valid_receiver_rows(
         for row in rows
         if 0.0 < float(row["timestamp_s"]) <= valid_end_s + 1e-9
     }
+
+
+def expected_receiver_timestamps(valid_end_s: float, rate_hz: float) -> list[float]:
+    step = 1.0 / rate_hz
+    return [
+        round(step * index, 8)
+        for index in range(1, int(round(valid_end_s / step)) + 1)
+    ]
 
 
 def receiver_relation(
@@ -413,10 +424,21 @@ def main() -> int:
         raise ValueError("Sparse4D checkpoint differs")
     if model["config_sha256"] != receiver_contract["config_sha256"]:
         raise ValueError("Sparse4D config differs")
+    if model.get("runner_sha256") != receiver_contract["runner_sha256"]:
+        raise ValueError("receiver runner hash differs")
     if int(receiver_manifest["receiver_input"]["frame_stride"]) != int(
         receiver_contract["frame_stride"]
     ):
         raise ValueError("receiver frame stride differs")
+    receiver_input = receiver_manifest["receiver_input"]
+    if receiver_input["camera_order"] != receiver_contract["camera_order"]:
+        raise ValueError("receiver camera order differs")
+    if receiver_input["modalities"] != receiver_contract["modalities"]:
+        raise ValueError("receiver modalities differ")
+    if receiver_input["explicitly_excluded"] != receiver_contract[
+        "excluded_modalities"
+    ]:
+        raise ValueError("receiver excluded modalities differ")
 
     predictions = {
         condition: load_json(
@@ -424,6 +446,24 @@ def main() -> int:
         )
         for condition in CONDITIONS
     }
+    expected_timestamps = expected_receiver_timestamps(
+        valid_end_s, float(receiver_input["receiver_rate_hz"])
+    )
+    for condition in CONDITIONS:
+        run_manifest = receiver_manifest["runs"][condition]
+        if Path(run_manifest["source"]).resolve() != run_paths[condition]:
+            raise ValueError(f"{condition}: receiver source path differs")
+        if float(run_manifest["summary"]["score_threshold"]) != float(
+            receiver_contract["score_threshold"]
+        ):
+            raise ValueError(f"{condition}: receiver threshold differs")
+        actual_timestamps = sorted(
+            valid_receiver_rows(predictions[condition], valid_end_s)
+        )
+        if actual_timestamps != expected_timestamps:
+            raise ValueError(
+                f"{condition}: receiver timestamp set differs from the complete expected set"
+            )
     relations = {}
     for riskier, safer in RELATIONS:
         receiver = receiver_relation(predictions[riskier], predictions[safer], valid_end_s)

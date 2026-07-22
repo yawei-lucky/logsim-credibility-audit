@@ -321,6 +321,7 @@ def build_model(root: Path, checkpoint: Path) -> tuple[Any, Any, dict[str, Any]]
         ).stdout.strip(),
         "config": str(config_path),
         "config_sha256": sha256_file(config_path),
+        "runner_sha256": sha256_file(Path(__file__).resolve()),
         "checkpoint": str(checkpoint),
         "checkpoint_sha256": sha256_file(checkpoint),
         "torch_version": torch.__version__,

@@ -54,6 +54,12 @@ class CFRiskCausalityTest(unittest.TestCase):
         self.assertEqual(result["closing_step_count"], 2)
         self.assertEqual(result["dominant_instance_fraction"], 1.0)
 
+    def test_expected_receiver_timestamps_fail_closed(self):
+        self.assertEqual(
+            cf_risk.expected_receiver_timestamps(1.5, 2.0),
+            [0.5, 1.0, 1.5],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
