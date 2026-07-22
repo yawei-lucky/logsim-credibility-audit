@@ -1,0 +1,83 @@
+{
+  "experiment_id": "hugsim_occlusion_metamorphic_002",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration_commit": "a0d44bf",
+  "credibility": {
+    "overall_segment": "down-weighted",
+    "claim_decisions": {
+      "controlled_occlusion_geometry": "accepted",
+      "target_rgb_support_monotonicity": "accepted",
+      "corrective_repeat_determinism": "accepted",
+      "real_sensor_occlusion_equivalence": "rejected",
+      "general_hugsim_ad_test_domain_fitness": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "real_sensor_occlusion_equivalence": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "The box, calibration, and RGB outputs are all HUGSIM-produced and no independent real sensor or visibility annotation is used.",
+        "diagnostic_finding": null
+      },
+      "general_hugsim_ad_test_domain_fitness": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "CF-O 002 covers one camera, one scene, one repeated vehicle asset, two extreme occluder placements, and no AD receiver or closed-loop interaction.",
+        "diagnostic_finding": null
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "controlled_geometry_holds": {
+      "component": "paired HUGSIM actor state plus independently recomputed footprint and camera projection",
+      "expected": "Actor states remain paired, occluders stay nearer than the target, strong projected coverage exceeds partial coverage, and actors do not intersect.",
+      "observed": "All 37 frames pass; state and planar-offset residuals are zero, minimum actor clearance is 0.424 m, median partial coverage is 0.437, and strong coverage is 1.0.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The declared occlusion geometry is internally consistent in this setup, without establishing independent real-world geometry truth.",
+      "evidence_refs": [
+        "docs/runs/hugsim_occlusion_metamorphic_002.md",
+        "scripts/analyze_hugsim_occlusion_metamorphic.py"
+      ]
+    },
+    "target_rgb_support_direction_holds": {
+      "component": "factorially isolated CAM_FRONT target RGB support",
+      "expected": "Every qualified partial-support value is at least the strong-support value, with a strict median decrease and stable background control band.",
+      "observed": "All 37 frames are qualified with zero reversals or unavailable frames; partial median is 1.0, strong median is 0.0, maximum strong support is 0.0022, and background drift is zero.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The renderer follows the expected target-support direction for this extreme two-level occlusion intervention, not a calibrated continuous visibility law.",
+      "evidence_refs": [
+        "docs/runs/hugsim_occlusion_metamorphic_002.md"
+      ]
+    },
+    "corrective_repeat_is_exact_but_not_independent": {
+      "component": "CF-O 001 to CF-O 002 repeatability and evidence independence",
+      "expected": "The coordinate-only analysis repair leaves raw simulation outputs unchanged and remains identified as a corrective repeat.",
+      "observed": "Across all six conditions, run001 versus run002 maximum RGB absolute difference is zero and maximum ego-state difference is zero; the same scene, configs, and deterministic controller are reused.",
+      "expectation_met": true,
+      "evidence_decision": "down-weighted",
+      "implication": "The repair is reproducible, but run002 adds no independent scene or reality source and therefore cannot upgrade the overall segment beyond down-weighted.",
+      "evidence_refs": [
+        "docs/runs/hugsim_occlusion_metamorphic_001.md",
+        "docs/runs/hugsim_occlusion_metamorphic_002.md"
+      ]
+    }
+  },
+  "summary": {
+    "completed_steps_per_condition": 36,
+    "paired_condition_count": 6,
+    "qualified_frame_count": 37,
+    "geometry_violation_count": 0,
+    "support_reversal_count": 0,
+    "support_unavailable_count": 0,
+    "median_partial_projected_coverage": 0.43659290982631455,
+    "median_strong_projected_coverage": 1.0,
+    "median_partial_target_support": 1.0,
+    "median_strong_target_support": 0.0,
+    "maximum_background_changed_fraction": 0.0,
+    "run001_run002_maximum_rgb_absolute_difference": 0,
+    "run001_run002_maximum_ego_state_absolute_difference": 0.0
+  },
+  "artifact_root": "artifacts/hugsim_occlusion_metamorphic/analysis-run002",
+  "claim_boundary": "One-scene, one-camera, one-asset, two-level internal geometry and RGB target-support direction after a coordinate-analysis repair; no calibrated continuous visibility, real sensor, AD receiver, real-sim equivalence, or general simulator-fitness claim."
+}

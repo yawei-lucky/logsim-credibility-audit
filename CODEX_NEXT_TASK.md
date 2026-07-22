@@ -14,10 +14,11 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — CF-O Controlled Occlusion
+## Immediate Direction — CF-I Interaction Capability
 
-The first law/indicator framework and the CF-M constant-speed audit are now
-complete. The next complementary mechanism is CF-O controlled occlusion.
+The first law/indicator framework, CF-M constant-speed audit, and CF-O
+controlled-occlusion audit are complete. The next complementary mechanism is
+CF-I interaction capability.
 
 The current framework is:
 
@@ -46,22 +47,25 @@ basis.
 
 ## Current Deliverable
 
-First determine whether HUGSIM can change an independent occluder's placement
-while holding the target actor, ego trajectory, cameras, lighting, and
-background fixed. Then specify a small no/partial/strong-occlusion design with:
+First inspect whether the available HUGSIM controllers can create a genuine
+stimulus-response relation between two actors. A scripted vehicle following the
+same trajectory regardless of its neighbor is not an interaction model.
 
-- explicit target/occluder identities and depth order;
-- a geometric occlusion measure and target-visible support measure;
-- a preregistered expectation that stronger occlusion cannot increase direct
-  target support;
-- missing/ambiguous target support reported as unavailable rather than passed;
-- HUGSIM semantic/depth used only as internal diagnostics, not reality truth;
-- no detector-confidence monotonicity requirement and no receiver in the first
-  mechanism check.
+If a responding controller can be run in the available scene, define one small
+paired design with responder-only versus responder-plus-merging/crossing actor,
+and one timing variation. Hold identities, initial responder state, ego plan,
+road, and unaffected actors fixed. Check in this order:
 
-If an independent occluder cannot be manipulated without changing the target or
-background, record that capability boundary and do not manufacture a pixel-mask
-substitute. CF-I interaction follows CF-O; do not add more CF-M speed levels.
+- actor identity, state continuity, and configured stimulus timing;
+- no responder divergence before the stimulus can causally arrive;
+- response after the stimulus, without impossible jumps or result-before-cause;
+- controller-declared response range, clearly separated from real-driver
+  realism.
+
+If no interaction-aware controller can run with the available map/assets,
+record that CF-I capability boundary and stop. Do not relabel independent
+ConstantPlanner trajectories as credible interaction, and do not add a receiver
+or more scenes merely to produce curves.
 
 After the matrix is ready, execute in this order:
 
@@ -88,6 +92,14 @@ branch.
   are checks, not independent statistical samples. Overall evidence remains
   `down-weighted` because the state source is HUGSIM and the actor is scripted.
   See `docs/runs/hugsim_motion_metamorphic_001.md`.
+- CF-O 001 rejected its camera-space measurement chain after diagnosing an
+  inverted stored-height convention; this is method evidence, not a HUGSIM
+  visibility failure.
+- CF-O 002 accepted the narrow controlled-geometry and extreme two-level target
+  RGB-support direction checks across all 37 frames. Overall evidence remains
+  `down-weighted`: it is a corrective repeat using HUGSIM-produced state,
+  calibration, and RGB, not a continuous visibility law or independent reality
+  anchor. See `docs/runs/hugsim_occlusion_metamorphic_002.md`.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.
