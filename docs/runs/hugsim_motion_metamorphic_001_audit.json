@@ -1,0 +1,93 @@
+{
+  "experiment_id": "hugsim_motion_metamorphic_001",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration_commit": "93217332f64f8d6d3fd5b5c2e229e46521bb70ff",
+  "credibility": {
+    "overall_segment": "down-weighted",
+    "claim_decisions": {
+      "constant_speed_state_evolution": "accepted",
+      "controlled_relative_motion_order": "accepted",
+      "predefined_indicator_negative_control_sensitivity": "accepted",
+      "general_vehicle_dynamics_validated": "rejected",
+      "general_hugsim_ad_test_domain_fitness": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "general_vehicle_dynamics_validated": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "CF-M 001 covers only ConstantPlanner straight-line constant-speed state evolution; it does not exercise general acceleration, braking, steering, tire-road dynamics, or externally qualified vehicle bounds.",
+        "diagnostic_finding": null
+      },
+      "general_hugsim_ad_test_domain_fitness": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "The audit uses simulator-produced states in one scene with one scripted actor and does not test real-world state truth, perception, planning, control, or closed-loop AD outcomes.",
+        "diagnostic_finding": null
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "constant_speed_vector_integration_holds": {
+      "component": "HUGSIM saved actor state plus independently recomputed kinematics",
+      "expected": "Every adjacent state transition follows the declared constant speed and actor heading within preregistered numerical tolerances.",
+      "observed": "All 108 transitions pass; maximum vector integration residual is 1.64e-8 m versus the 1e-5 m tolerance, with zero speed, heading, and acceleration residual violations.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The saved ConstantPlanner state sequence is internally consistent with its declared constant-speed mechanism, without establishing independent real-world state truth.",
+      "evidence_refs": [
+        "docs/runs/hugsim_motion_metamorphic_001.md",
+        "scripts/analyze_hugsim_motion_metamorphic.py"
+      ]
+    },
+    "relative_motion_orders_hold": {
+      "component": "paired HUGSIM ego/actor state plus independent geometry",
+      "expected": "Faster same-direction actors travel farther and retain larger ego-relative forward gaps and footprint clearances under identical ego trajectories.",
+      "observed": "All 110 accumulated relation-check timestamps across the three preregistered order checks follow the expected direction, with zero reversals or ties; this count is not an independent statistical sample size.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The speed intervention produces the expected relative-motion direction within the declared design, not a universal speed-to-risk relation.",
+      "evidence_refs": [
+        "docs/runs/hugsim_motion_metamorphic_001.md"
+      ]
+    },
+    "state_source_dependence": {
+      "component": "evidence independence",
+      "expected": "Internal mechanism evidence remains separated from independent real-world state evidence.",
+      "observed": "Metrics are independently recomputed, but all actor and ego states originate from HUGSIM and the controller is scripted.",
+      "expectation_met": true,
+      "evidence_decision": "down-weighted",
+      "implication": "The result qualifies an internal mechanism check only and cannot establish real vehicle dynamics or AD test-domain fitness.",
+      "evidence_refs": [
+        "docs/runs/hugsim_motion_metamorphic_001.md",
+        "docs/counterfactual_credibility_constraints.md"
+      ]
+    }
+  },
+  "summary": {
+    "completed_steps_per_condition": 36,
+    "state_transitions_per_condition": 36,
+    "maximum_vector_integration_residual_m": 1.6391770274459813e-08,
+    "integration_tolerance_m": 1e-05,
+    "ordinal_comparison_timestamp_count": 110,
+    "ordinal_reversal_or_tie_count": 0,
+    "end_state": {
+      "slow": {
+        "travel_m": 4.5,
+        "forward_gap_m": 5.115062421914519,
+        "ego_clearance_m": 1.8269732844387692
+      },
+      "nominal": {
+        "travel_m": 9.0,
+        "forward_gap_m": 9.74006242191452,
+        "ego_clearance_m": 6.451973284438765
+      },
+      "fast": {
+        "travel_m": 13.5,
+        "forward_gap_m": 14.36506242191452,
+        "ego_clearance_m": 11.076973284438763
+      }
+    }
+  },
+  "artifact_root": "artifacts/hugsim_motion_metamorphic/analysis-run001",
+  "claim_boundary": "ConstantPlanner constant-speed internal state and controlled relative-motion ordering only; no general dynamics, behavior realism, receiver, AD safety, real-sim equivalence, or general simulator-fitness claim."
+}

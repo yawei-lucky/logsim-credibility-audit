@@ -14,10 +14,10 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction
+## Immediate Direction — CF-O Controlled Occlusion
 
-Finish a usable first version of the counterfactual law-and-constraint system
-before running more specific HUGSIM or receiver experiments.
+The first law/indicator framework and the CF-M constant-speed audit are now
+complete. The next complementary mechanism is CF-O controlled occlusion.
 
 The current framework is:
 
@@ -46,19 +46,22 @@ basis.
 
 ## Current Deliverable
 
-The first representative intervention matrix is now drafted in section 9 of
-`docs/counterfactual_credibility_constraints.md`. It covers four different
-mechanisms:
+First determine whether HUGSIM can change an independent occluder's placement
+while holding the target actor, ego trajectory, cameras, lighting, and
+background fixed. Then specify a small no/partial/strong-occlusion design with:
 
-- longitudinal/lateral geometry;
-- speed and continuous motion;
-- controlled occlusion;
-- merge or crossing interaction.
+- explicit target/occluder identities and depth order;
+- a geometric occlusion measure and target-visible support measure;
+- a preregistered expectation that stronger occlusion cannot increase direct
+  target support;
+- missing/ambiguous target support reported as unavailable rather than passed;
+- HUGSIM semantic/depth used only as internal diagnostics, not reality truth;
+- no detector-confidence monotonicity requirement and no receiver in the first
+  mechanism check.
 
-Review it only for overall causal logic and falsifiability. Do not expand it
-into an exhaustive taxonomy. Once that bounded review passes, preserve CF-G as
-the existing pilot and prepare CF-M, CF-O, and CF-I in that order, choosing a
-small implementable subset rather than another cosmetic scene collection.
+If an independent occluder cannot be manipulated without changing the target or
+background, record that capability boundary and do not manufacture a pixel-mask
+substitute. CF-I interaction follows CF-O; do not add more CF-M speed levels.
 
 After the matrix is ready, execute in this order:
 
@@ -79,6 +82,12 @@ branch.
 ## Existing Evidence to Retain
 
 - The ordinal near/far and same/adjacent experiment is an early method pilot.
+- CF-M 001 accepted the narrow ConstantPlanner constant-speed state and
+  controlled relative-motion relations: 108/108 transitions and all 110
+  accumulated relation-check timestamps passed with zero reversal/tie. These
+  are checks, not independent statistical samples. Overall evidence remains
+  `down-weighted` because the state source is HUGSIM and the actor is scripted.
+  See `docs/runs/hugsim_motion_metamorphic_001.md`.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.
