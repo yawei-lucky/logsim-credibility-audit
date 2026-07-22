@@ -47,22 +47,35 @@ basis.
 
 ## Current Deliverable
 
-CF-I-CAP-001 confirmed a narrow internal stimulus-response mechanism in IDM and
-AttackPlanner. ConstantPlanner and UnicyclePlanner do not consume another
-vehicle's state or plan, so their independent trajectories are not interaction.
-See `docs/runs/hugsim_interaction_capability_001.md`.
+CF-I-CAP-001 confirmed narrow internal stimulus-response paths in IDM and
+AttackPlanner, including an AttackPlanner response under inputs reachable from
+the scene loop. ConstantPlanner and UnicyclePlanner do not consume live vehicle
+state, so their independent trajectories are not interaction. The released
+scene-level gate is nevertheless rejected: ego prediction indices use
+`dt=0.25 s`, AttackPlanner candidate indices use `2/19≈0.1053 s`, and
+indexwise costs compare mismatched future times. See
+`docs/runs/hugsim_interaction_capability_001.md`.
 
-Next run one small scene-level paired design around `AttackPlanner`, because it
-is the available mechanism that does not require a route/map. Introduce one
-timed change in ego motion while holding responder identity, initial state,
-scene, road, and unaffected actors fixed. HUGSIM extrapolates the current ego
-state for `AttackPlanner`; it does not pass the external AD's full plan. Check:
+The research output is an audited indicator, not a repaired HUGSIM result.
+CF-I-CAP-001 now defines `CF-I-T1`, a hard time-alignment indicator. It rejects
+the released `0.25/0.1053 s` mismatch (maximum indexed offset `2.75 s`) and
+accepts an aligned `0.1053/0.1053 s` positive control. This is narrow
+indicator-validation evidence; preserve both outcomes.
 
-- actor identity, state continuity, and configured stimulus timing;
-- no responder divergence before the stimulus can causally arrive;
-- response after the stimulus, without impossible jumps or result-before-cause;
-- controller-declared response range, clearly separated from real-driver
-  realism.
+Next run one state-only paired rollout using the released mismatch as a negative
+control and the aligned configuration as a positive control. Use one responder
+to avoid the planner-wide `ATTACK_FREQ` ambiguity. Introduce one timed change in
+ego motion while holding responder identity, initial state, scene, road, and
+unaffected actors fixed. Validate these candidate indicators:
+
+- `CF-I-T1`: stimulus and response-candidate indexed-time alignment;
+- pre-stimulus responder divergence;
+- post-stimulus response latency and state continuity.
+
+The indicators should reject the known temporal negative, accept the aligned
+control where appropriate, and report coverage rather than treating missing
+observations as passing. Do not render or add a receiver until the state-level
+indicators demonstrate this discrimination.
 
 This experiment may support only an adversarial ego-response capability claim.
 It must not be generalized to realistic merging, yielding, or traffic-agent
@@ -104,11 +117,12 @@ branch.
   `down-weighted`: it is a corrective repeat using HUGSIM-produced state,
   calibration, and RGB, not a continuous visibility law or independent reality
   anchor. See `docs/runs/hugsim_occlusion_metamorphic_002.md`.
-- CF-I-CAP-001 accepted the narrow internal mechanism claim for IDM neighbor
-  response and AttackPlanner ego-plan response. Overall evidence is
-  `down-weighted`: it is a controller-level synthetic probe, not scene-level
-  causal timing or real-driver realism. Independent ConstantPlanner trajectories
-  remain rejected as interaction evidence.
+- CF-I-CAP-001 accepted narrow internal IDM and AttackPlanner response
+  diagnostics, including a reachable AttackPlanner input and aligned-grid
+  control. It rejected the released scene loop as temporally qualified
+  interaction because its compared futures use `0.25 s` and about `0.1053 s`
+  index steps. Overall evidence is `down-weighted`; independent ConstantPlanner
+  trajectories remain rejected as interaction evidence.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.

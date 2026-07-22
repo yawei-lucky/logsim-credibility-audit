@@ -1,14 +1,18 @@
 {
+  "experiment_id": "CF-I-CAP-001",
   "audit_id": "CF-I-CAP-001",
-  "created_at": "2026-07-22T07:33:07.942263+00:00",
-  "scope": "controller-level internal stimulus-response capability",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "created_at": "2026-07-22T07:55:04.653675+00:00",
+  "scope": "controller capability and released scene-loop qualification",
   "hugsim": {
     "root": "/home/yawei/HUGSIM",
     "revision": "adeca402cad4af8635e13d0a105e2fee6a14de85",
     "controller_source": "/home/yawei/HUGSIM/sim/utils/agent_controller.py",
     "controller_source_sha256": "bc4689fe9ccbc9c997e273c92662ed0933b5e3317cd25fff99fefd9964a23a28",
     "planner_source": "/home/yawei/HUGSIM/sim/utils/plan.py",
-    "planner_source_sha256": "61d170928bc54d7efeef8d5d58ade5c19621560253d9fb552d56b2612f11f912"
+    "planner_source_sha256": "61d170928bc54d7efeef8d5d58ade5c19621560253d9fb552d56b2612f11f912",
+    "spline_source": "/home/yawei/HUGSIM/submodules/Pplan/Sampling/spline_planner.py",
+    "spline_source_sha256": "ba691c4d426724956d440df5503501ce3181c6edfb8edc2283c557ba76619ea2"
   },
   "controller_interfaces": {
     "ConstantPlanner.update": "(self, state, dt)",
@@ -27,59 +31,248 @@
       "stimulus": "same neighbor moved from off-route to 6 m ahead on route",
       "far_output": [
         0.0,
-        1.0,
+        1.25,
         0.0,
-        5.399691581726074
+        5.499614238739014
       ],
       "close_output": [
         0.0,
-        1.0,
+        1.25,
         0.0,
-        1.209538221359253
+        0.26192283630371094
       ],
-      "next_speed_delta_mps": -4.190153121948242,
+      "next_speed_delta_mps": -5.237691402435303,
       "response_detected": true
     },
-    "attack_ego_future_plan": {
+    "attack_reachable_ego_distance": {
       "held_fixed": [
-        "actor initial state",
-        "dt",
+        "responder initial state",
+        "ego heading and speed",
         "candidate generator",
         "other neighbors"
       ],
-      "stimulus": "ego future plan changed from straight to progressive 5 m lateral shift",
-      "straight_output": [
-        -5.010194419834628e-08,
-        1.146198832757584,
-        4.371139006309477e-08,
-        5.888888911197059
+      "stimulus": "current ego state moved from 15 m to 5 m ahead of responder",
+      "far_ego_state": [
+        0.0,
+        0.0,
+        0.0,
+        0.5
       ],
-      "lateral_output": [
-        0.05868251846171503,
-        1.115064899777049,
-        -0.09650179821474092,
-        5.613806501367968
+      "near_ego_state": [
+        0.0,
+        -10.0,
+        0.0,
+        0.5
+      ],
+      "far_predicted_final": [
+        0.0,
+        2.375,
+        0.0,
+        0.5
+      ],
+      "near_predicted_final": [
+        0.0,
+        -7.625,
+        0.0,
+        0.5
+      ],
+      "far_output": [
+        -1.5014438670999832e-08,
+        -14.65650969529086,
+        4.371139006309477e-08,
+        3.526315789473684
+      ],
+      "near_output": [
+        -1.407267281736981e-08,
+        -14.6780547857945,
+        4.371139006309477e-08,
+        3.116959069904528
       ],
       "response_delta": [
-        0.05868256856365923,
-        -0.03113393298053513,
-        -0.09650184192613098,
-        -0.27508240982909093
+        9.417658536300226e-10,
+        -0.02154509050363984,
+        0.0,
+        -0.4093567195691561
       ],
-      "response_l2": 0.29899147701662154,
+      "response_l2": 0.4099233035352232,
+      "identical_input_repeat_l2": 0.0,
+      "response_detected": true
+    },
+    "attack_aligned_time_grid_control": {
+      "prediction_index_dt_seconds": 0.10526315789473684,
+      "candidate_index_dt_seconds": 0.10526315789473684,
+      "attack_update_dt_argument_seconds": 0.1,
+      "far_output": [
+        -1.5014438670999832e-08,
+        -14.65650969529086,
+        4.371139006309477e-08,
+        3.526315789473684
+      ],
+      "near_output": [
+        -1.3884319640870062e-08,
+        -14.682363804027315,
+        4.371139006309477e-08,
+        3.035087723481028
+      ],
+      "response_delta": [
+        1.13011903012977e-09,
+        -0.025854108736455217,
+        0.0,
+        -0.4912280659926562
+      ],
+      "response_l2": 0.4919079667554103,
       "response_detected": true
     }
   },
-  "judgments": {
-    "two_independent_constant_planners_are_interaction": "rejected",
-    "idm_has_internal_neighbor_stimulus_response": "accepted",
-    "attack_planner_has_internal_ego_plan_stimulus_response": "accepted",
-    "overall_evidence": "down-weighted"
+  "indicator_validation": {
+    "indicator_id": "CF-I-T1",
+    "name": "stimulus-response indexed-time alignment",
+    "law_type": "hard constraint",
+    "measurement": "maximum absolute timestamp offset at compared trajectory indices",
+    "valid_coverage": {
+      "compared_indices": 20,
+      "total_indices": 20
+    },
+    "falsifier": "any indexwise cost compares states representing different future times",
+    "released_negative_control": {
+      "prediction_index_dt_seconds": 0.25,
+      "candidate_index_dt_seconds": 0.10526315789473684,
+      "max_abs_time_offset_seconds": 2.75,
+      "decision": "rejected"
+    },
+    "aligned_positive_control": {
+      "prediction_index_dt_seconds": 0.10526315789473684,
+      "candidate_index_dt_seconds": 0.10526315789473684,
+      "max_abs_time_offset_seconds": 0.0,
+      "decision": "accepted"
+    },
+    "control_discrimination": "accepted",
+    "strongest_allowed_claim": "CF-I-T1 distinguishes this source-confirmed time-grid mismatch from an aligned control; it does not assess behavioral realism."
+  },
+  "credibility": {
+    "claim_decisions": {
+      "independent_constant_planners_are_online_interaction": "rejected",
+      "independent_unicycle_planners_are_online_interaction": "rejected",
+      "idm_has_internal_neighbor_stimulus_response": "accepted",
+      "attack_planner_has_reachable_internal_ego_response": "accepted",
+      "cf_i_t1_discriminates_known_time_grid_controls": "accepted",
+      "released_scene_loop_is_temporally_qualified_interaction": "rejected"
+    },
+    "evidence_decision": "down-weighted",
+    "rejected_claim_contexts": {
+      "independent_constant_planners_are_online_interaction": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "ConstantPlanner.update has no live vehicle input.",
+        "evidence_refs": [
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:ConstantPlanner.update"
+        ],
+        "diagnostic_finding": "CF-I-CAP-001-D1"
+      },
+      "independent_unicycle_planners_are_online_interaction": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "UnicyclePlanner.update advances only its restored trajectory clock.",
+        "evidence_refs": [
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:UnicyclePlanner.update"
+        ],
+        "diagnostic_finding": "CF-I-CAP-001-D2"
+      },
+      "released_scene_loop_is_temporally_qualified_interaction": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "Indexed ego predictions and AttackPlanner candidates use different time steps in the released local configuration.",
+        "evidence_refs": [
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:configs/sim/kinematic.yaml:dt",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+        ],
+        "diagnostic_finding": "CF-I-CAP-001-D5"
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "CF-I-CAP-001-D1": {
+      "evidence_decision": "accepted",
+      "component": "ConstantPlanner.update",
+      "expected": "online interaction requires a live other-vehicle input",
+      "observed": "interface is (state, dt)",
+      "expectation_met": false,
+      "implication": "independent ConstantPlanner tracks are scripted motion, not online interaction",
+      "evidence_refs": [
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:ConstantPlanner.update"
+      ]
+    },
+    "CF-I-CAP-001-D2": {
+      "evidence_decision": "accepted",
+      "component": "UnicyclePlanner.update",
+      "expected": "online interaction requires a live other-vehicle input",
+      "observed": "interface is (dt)",
+      "expectation_met": false,
+      "implication": "restored UnicyclePlanner tracks cannot react online to another vehicle",
+      "evidence_refs": [
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:UnicyclePlanner.update"
+      ]
+    },
+    "CF-I-CAP-001-D3": {
+      "evidence_decision": "accepted",
+      "component": "IDM.update",
+      "expected": "a close on-route lead lowers the next speed versus an off-route neighbor",
+      "observed": "next speed delta was -5.237691 m/s",
+      "expectation_met": true,
+      "implication": "IDM has a route-dependent internal neighbor-response path",
+      "evidence_refs": [
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:IDM.update"
+      ]
+    },
+    "CF-I-CAP-001-D4": {
+      "evidence_decision": "accepted",
+      "component": "AttackPlanner.update",
+      "expected": "a reachable ego-distance stimulus changes deterministic responder output",
+      "observed": "response L2 was 0.409923; identical-input repeat L2 was 0.000000",
+      "expectation_met": true,
+      "implication": "AttackPlanner has an internal ego-response path",
+      "evidence_refs": [
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj"
+      ]
+    },
+    "CF-I-CAP-001-D5": {
+      "evidence_decision": "accepted",
+      "component": "planner.plan_traj to AttackPlanner.update time base",
+      "expected": "states compared at the same array index represent the same future time",
+      "observed": "ego prediction dt was 0.25 s and AttackPlanner candidate index dt was 0.105263 s",
+      "expectation_met": false,
+      "implication": "released local scene-loop interaction timing is not qualified",
+      "evidence_refs": [
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:configs/sim/kinematic.yaml:dt",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+      ]
+    },
+    "CF-I-CAP-001-D6": {
+      "evidence_decision": "accepted",
+      "component": "CF-I-T1 indicator",
+      "expected": "reject a mismatched time-grid control and accept an aligned control",
+      "observed": "released maximum offset was 2.75 s; aligned-control maximum offset was 0.00 s",
+      "expectation_met": true,
+      "implication": "CF-I-T1 is qualified for this narrow implementation-audit use",
+      "evidence_refs": [
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:configs/sim/kinematic.yaml:dt",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+      ]
+    }
   },
   "scene_loop_trace": {
     "attack_stimulus_source": "plan.py extrapolates the current ego state with constant_headaway and passes future_states[0] as attacked_states",
-    "ordinary_neighbor_boundary": "plan.py passes neighbors[1:] as safe_neighbors; generic non-ego vehicle-to-vehicle response is not qualified by this probe"
+    "ordinary_neighbor_boundary": "plan.py passes neighbors[1:] as safe_neighbors; generic non-ego vehicle-to-vehicle response is not qualified by this probe",
+    "ego_prediction_index_dt_seconds": 0.25,
+    "attack_update_dt_argument_seconds": 0.1,
+    "attack_candidate_index_dt_seconds": 0.10526315789473684,
+    "time_grid_aligned": false,
+    "attack_frequency_boundary": "plan.py stores one planner-wide ATTACK_FREQ; use one AttackPlanner responder until per-actor timing is separately checked"
   },
-  "claim_boundary": "The code contains controller-level vehicle stimulus-response mechanisms. This does not establish realistic traffic behavior, scene-level causal timing, sensor credibility, AD response, or real-world fitness.",
-  "capability_gate": "passed_for_internal_mechanism_only"
+  "claim_boundary": "The code contains controller-level vehicle stimulus-response mechanisms, and AttackPlanner responds under a reachable input construction. The released local scene loop is not temporally qualified because compared futures use different time grids. This does not establish realistic traffic behavior, sensor credibility, AD response, or real-world fitness.",
+  "capability_gate": "internal_mechanism_found_scene_level_gate_rejected"
 }
