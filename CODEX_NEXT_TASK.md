@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — Target Risk / Planning Receiver Qualification
+## Immediate Direction — SparseDrive Adapter Qualification
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -56,25 +56,49 @@ the supporting receiver retained the aggregate closure hierarchy, with one
 small early pairwise reversal and several within-trace non-closing steps. See
 `docs/runs/hugsim_cf_risk_causality_001.md`.
 
+The target-receiver route decision is complete. SparseDrive-S Stage2 is the
+first integration candidate because it natively outputs planning scores,
+candidate trajectories, a final ego plan and agent-motion predictions from the
+nuScenes six-camera contract. VAD-Tiny is retained only as a later independent
+architecture check. See
+`docs/runs/hugsim_target_ad_receiver_qualification_001.md`.
+
+A full real-nuScenes GT rerun of Sparse4Dv3 is not the next blocker. It becomes
+necessary only if a later claim uses Sparse4Dv3 absolute position, velocity,
+identity error or outputs as a downstream module input, or uses its ordinal
+response to set an externally valid acceptance boundary, uncertainty range or
+real-world fitness claim. It cannot by itself qualify HUGSIM.
+
 ## Current Deliverable
 
-Do not add another Sparse4Dv3 curve. Identify and qualify the smallest target
-AD receiver whose native outputs include critical-object/risk ranking or a
-planning/control response. Record its real-data task basis, required input and
-temporal contract, output construct, uncertainty/failure modes, and strongest
-allowed HUGSIM claim before integration.
+Do not add another Sparse4Dv3 curve or compare more target models. Implement
+the smallest **SparseDrive-S Stage2 adapter/runtime qualification gate** before
+interpreting any planning response:
 
-The next experiment should connect the retained dynamic conflict direction to
-an actual downstream output:
+1. first map and unit-check six-camera order/projection, the virtual
+   LiDAR/ego reference frame, 2 Hz timestamps, global transforms, the
+   future-trajectory-derived straight conditioning label, the required 10-D
+   `ego_status`, and a clean temporal reset for every independent run;
+2. only after that data-contract gate, pin source, config and checkpoint hashes
+   in an isolated environment;
+3. exclude HUGSIM semantic/depth and preserve the model's native planning and
+   agent-motion outputs without a custom risk proxy;
+4. run one bounded deterministic smoke sequence and check only contract,
+   shapes, finite outputs and reset reproducibility;
+5. preregister the slow/nominal/fast planning-direction test after this gate
+   passes.
+
+The subsequent experiment should connect the retained dynamic conflict
+direction to an actual downstream output:
 
 ```text
 qualified conflict information
-  -> target critical-object / risk decision
-  -> planning or control direction
+  -> native planning scores / candidates / final plan
+  -> planning direction
 ```
 
-Do not relabel Sparse4Dv3 confidence or distance as a risk output, and do not
-install or run a full AD stack before this qualification gate is reviewed.
+Do not relabel Sparse4Dv3 confidence or distance as a risk output. SparseDrive
+outputs an open-loop trajectory, not brake/steer control or physical risk.
 Closed-loop outcome validation remains later.
 
 ## Completed Basis
@@ -222,10 +246,11 @@ branch.
 
 ## Explicitly Deferred
 
-- Do not run a target risk/planning/control experiment before that receiver and
-  its allowed claims pass the new qualification gate.
+- Do not interpret a target planning result before the SparseDrive input,
+  runtime and reset contract passes the current qualification gate.
 - Do not add another receiver or more HUGSIM scenes merely to obtain curves.
-- Do not install a full AD stack yet.
+- Do not install VAD, UniAD, SparseDriveV2 or another full AD stack while the
+  selected SparseDrive-S Stage2 gate is unresolved.
 - Do not define final numerical credibility thresholds or the final four-layer
   metric yet.
 - Do not claim general HUGSIM or AD-test-domain credibility from current pilots.
