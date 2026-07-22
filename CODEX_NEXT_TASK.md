@@ -47,14 +47,16 @@ basis.
 
 ## Current Deliverable
 
-First inspect whether the available HUGSIM controllers can create a genuine
-stimulus-response relation between two actors. A scripted vehicle following the
-same trajectory regardless of its neighbor is not an interaction model.
+CF-I-CAP-001 confirmed a narrow internal stimulus-response mechanism in IDM and
+AttackPlanner. ConstantPlanner and UnicyclePlanner do not consume another
+vehicle's state or plan, so their independent trajectories are not interaction.
+See `docs/runs/hugsim_interaction_capability_001.md`.
 
-If a responding controller can be run in the available scene, define one small
-paired design with responder-only versus responder-plus-merging/crossing actor,
-and one timing variation. Hold identities, initial responder state, ego plan,
-road, and unaffected actors fixed. Check in this order:
+Next run one small scene-level paired design around `AttackPlanner`, because it
+is the available mechanism that does not require a route/map. Introduce one
+timed change in ego motion while holding responder identity, initial state,
+scene, road, and unaffected actors fixed. HUGSIM extrapolates the current ego
+state for `AttackPlanner`; it does not pass the external AD's full plan. Check:
 
 - actor identity, state continuity, and configured stimulus timing;
 - no responder divergence before the stimulus can causally arrive;
@@ -62,10 +64,12 @@ road, and unaffected actors fixed. Check in this order:
 - controller-declared response range, clearly separated from real-driver
   realism.
 
-If no interaction-aware controller can run with the available map/assets,
-record that CF-I capability boundary and stop. Do not relabel independent
-ConstantPlanner trajectories as credible interaction, and do not add a receiver
-or more scenes merely to produce curves.
+This experiment may support only an adversarial ego-response capability claim.
+It must not be generalized to realistic merging, yielding, or traffic-agent
+behavior. IDM remains a later option if a qualified route becomes available.
+
+Do not relabel independent ConstantPlanner trajectories as credible interaction,
+and do not add a receiver or more scenes merely to produce curves.
 
 After the matrix is ready, execute in this order:
 
@@ -100,6 +104,11 @@ branch.
   `down-weighted`: it is a corrective repeat using HUGSIM-produced state,
   calibration, and RGB, not a continuous visibility law or independent reality
   anchor. See `docs/runs/hugsim_occlusion_metamorphic_002.md`.
+- CF-I-CAP-001 accepted the narrow internal mechanism claim for IDM neighbor
+  response and AttackPlanner ego-plan response. Overall evidence is
+  `down-weighted`: it is a controller-level synthetic probe, not scene-level
+  causal timing or real-driver realism. Independent ConstantPlanner trajectories
+  remain rejected as interaction evidence.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.

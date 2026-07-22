@@ -1,0 +1,85 @@
+{
+  "audit_id": "CF-I-CAP-001",
+  "created_at": "2026-07-22T07:33:07.942263+00:00",
+  "scope": "controller-level internal stimulus-response capability",
+  "hugsim": {
+    "root": "/home/yawei/HUGSIM",
+    "revision": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "controller_source": "/home/yawei/HUGSIM/sim/utils/agent_controller.py",
+    "controller_source_sha256": "bc4689fe9ccbc9c997e273c92662ed0933b5e3317cd25fff99fefd9964a23a28",
+    "planner_source": "/home/yawei/HUGSIM/sim/utils/plan.py",
+    "planner_source_sha256": "61d170928bc54d7efeef8d5d58ade5c19621560253d9fb552d56b2612f11f912"
+  },
+  "controller_interfaces": {
+    "ConstantPlanner.update": "(self, state, dt)",
+    "UnicyclePlanner.update": "(self, dt)",
+    "IDM.update": "(self, state, path, dt, neighbors)",
+    "AttackPlanner.update": "(self, state, unified_map, dt, neighbors, attacked_states, new_plan=True)"
+  },
+  "probes": {
+    "idm_neighbor_position": {
+      "held_fixed": [
+        "responder initial state",
+        "route",
+        "dt",
+        "IDM parameters"
+      ],
+      "stimulus": "same neighbor moved from off-route to 6 m ahead on route",
+      "far_output": [
+        0.0,
+        1.0,
+        0.0,
+        5.399691581726074
+      ],
+      "close_output": [
+        0.0,
+        1.0,
+        0.0,
+        1.209538221359253
+      ],
+      "next_speed_delta_mps": -4.190153121948242,
+      "response_detected": true
+    },
+    "attack_ego_future_plan": {
+      "held_fixed": [
+        "actor initial state",
+        "dt",
+        "candidate generator",
+        "other neighbors"
+      ],
+      "stimulus": "ego future plan changed from straight to progressive 5 m lateral shift",
+      "straight_output": [
+        -5.010194419834628e-08,
+        1.146198832757584,
+        4.371139006309477e-08,
+        5.888888911197059
+      ],
+      "lateral_output": [
+        0.05868251846171503,
+        1.115064899777049,
+        -0.09650179821474092,
+        5.613806501367968
+      ],
+      "response_delta": [
+        0.05868256856365923,
+        -0.03113393298053513,
+        -0.09650184192613098,
+        -0.27508240982909093
+      ],
+      "response_l2": 0.29899147701662154,
+      "response_detected": true
+    }
+  },
+  "judgments": {
+    "two_independent_constant_planners_are_interaction": "rejected",
+    "idm_has_internal_neighbor_stimulus_response": "accepted",
+    "attack_planner_has_internal_ego_plan_stimulus_response": "accepted",
+    "overall_evidence": "down-weighted"
+  },
+  "scene_loop_trace": {
+    "attack_stimulus_source": "plan.py extrapolates the current ego state with constant_headaway and passes future_states[0] as attacked_states",
+    "ordinary_neighbor_boundary": "plan.py passes neighbors[1:] as safe_neighbors; generic non-ego vehicle-to-vehicle response is not qualified by this probe"
+  },
+  "claim_boundary": "The code contains controller-level vehicle stimulus-response mechanisms. This does not establish realistic traffic behavior, scene-level causal timing, sensor credibility, AD response, or real-world fitness.",
+  "capability_gate": "passed_for_internal_mechanism_only"
+}
