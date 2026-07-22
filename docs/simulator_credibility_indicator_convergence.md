@@ -192,13 +192,16 @@ Do not choose a bound because it makes the current simulator pass. The former
 5. keep the qualified critical-object/risk-order partial-order task boundary;
    its numerical geometry, motion, rendering, and receiver uncertainty ranges
    remain unqualified and must not be replaced with convenient thresholds;
-6. keep the published preregistration for ordinal metamorphic audit 001,
-   labeling its 2x2 interventions as test-design coverage and preserving the
-   frozen expected relations and reversal stop rules;
+6. keep ordinal metamorphic audit 001 as completed designed-range evidence:
+   four geometry relations pass, receiver direction has zero reversals, two
+   relations are accepted and two are down-weighted by one unavailable frame;
 7. in parallel, keep source RGB recovery as the direct matched real–simulation
    upgrade rather than a gate on all designed counterfactuals;
-8. run the declared five-condition matrix exactly once, then decide from its
-   bounded result whether any later planner/control experiment is justified.
+8. before any new HUGSIM condition, qualify Sparse4Dv3's external real-nuScenes
+   receiver scope and determine whether a task-relevant uncertainty bound is
+   available; if not, freeze the minimum labelled-real or second-receiver gap;
+9. only after that external axis is addressed, decide whether an independent
+   receiver, real-data anchor, or planner/control endpoint is justified.
 
 The detector-box/calibration root-cause investigation follows the cross-scene
 summary. It should diagnose why absolute geometry is weak, but it does not

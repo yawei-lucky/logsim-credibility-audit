@@ -1,0 +1,93 @@
+{
+  "experiment_id": "hugsim_ordinal_metamorphic_001",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration_commit": "c784cbcdd6c3ff4554a26e79d683bcf8703b42b1",
+  "credibility": {
+    "overall_segment": "down-weighted",
+    "claim_decisions": {
+      "independent_planar_geometry_partial_order": "accepted",
+      "center_near_over_center_far_receiver_relation": "accepted",
+      "center_near_over_adjacent_near_receiver_relation": "down-weighted",
+      "center_far_over_adjacent_far_receiver_relation": "accepted",
+      "adjacent_near_over_adjacent_far_receiver_relation": "down-weighted",
+      "all_receiver_relations_fully_available": "rejected",
+      "designed_range_ordinal_robustness": "down-weighted",
+      "general_hugsim_ad_test_domain_fitness": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "all_receiver_relations_fully_available": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "The adjacent_near actor has no qualified Sparse4Dv3 association at t=6.5 s, making two of four relation comparisons unavailable at one planned receiver timestamp.",
+        "diagnostic_finding": "adjacent_near_end_window_association_gap",
+        "evidence_refs": [
+          "docs/runs/hugsim_ordinal_metamorphic_001.md",
+          "scripts/analyze_hugsim_ordinal_metamorphic.py"
+        ]
+      },
+      "general_hugsim_ad_test_domain_fitness": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "The audit covers one scene, one actor asset, one frozen supporting receiver and a designed factor range without real-world-qualified uncertainty bounds or AD planning/control.",
+        "diagnostic_finding": null
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "all_predeclared_geometry_relations_hold": {
+      "component": "recorded HUGSIM state plus independent planar geometry analysis",
+      "expected": "Every dominant condition has smaller forward/lateral factor value, ego-footprint clearance and planned-corridor clearance at every complete-future timestamp.",
+      "observed": "All four relations pass at all 26 timestamps; every minimum comparison margin is positive.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The intended designed interventions are geometrically valid in HUGSIM's recorded state, without establishing independent real-world state truth.",
+      "evidence_refs": [
+        "docs/runs/hugsim_ordinal_metamorphic_001.md",
+        "scripts/analyze_hugsim_ordinal_metamorphic.py"
+      ]
+    },
+    "adjacent_near_end_window_association_gap": {
+      "component": "HUGSIM RGB/calibration to frozen Sparse4Dv3 receiver interface",
+      "expected": "The injected actor has a qualified association at every one of the 13 complete-future receiver timestamps.",
+      "observed": "The adjacent_near association is unavailable at t=6.5 s; all other available predeclared comparisons preserve the expected direction.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "Full temporal receiver support is not established, while the cause remains unresolved among rendering, calibration/domain shift and receiver behavior.",
+      "evidence_refs": [
+        "docs/runs/hugsim_ordinal_metamorphic_001.md",
+        "scripts/analyze_hugsim_ordinal_metamorphic.py"
+      ]
+    },
+    "valid_window_no_actor_vehicle_baseline": {
+      "component": "frozen Sparse4Dv3 receiver baseline",
+      "expected": "No injected-actor association is inferred from the no-actor condition inside the declared audit window.",
+      "observed": "Zero qualified vehicle detections occur in the 13 receiver timestamps inside (0, 6.5] s; one low-confidence car response exists only at t=0.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The ordinal comparisons are not explained by a valid-window vehicle response already present in the paired no-actor input.",
+      "evidence_refs": [
+        "docs/runs/hugsim_ordinal_metamorphic_001.md"
+      ]
+    }
+  },
+  "summary": {
+    "complete_future_window_s": [
+      0.0,
+      6.5
+    ],
+    "geometry_timestamp_count": 26,
+    "receiver_timestamp_count": 13,
+    "relation_decisions": {
+      "accepted": 2,
+      "down-weighted": 2,
+      "rejected": 0
+    },
+    "receiver_reversal_count": 0,
+    "receiver_unavailable_comparison_count": 2,
+    "unique_unavailable_condition_timestamps": [
+      "adjacent_near@6.5s"
+    ]
+  },
+  "artifact_root": "artifacts/hugsim_ordinal_metamorphic/analysis-run002",
+  "claim_boundary": "Designed-range planar and receiver ordinal evidence only; no calibrated real-world risk, real-sensor equivalence, AD planning/control, direct real-sim equivalence or general simulator fitness claim."
+}

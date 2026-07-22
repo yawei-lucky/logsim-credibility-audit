@@ -23,7 +23,7 @@ counterfactual robustness branch. An exact factual starting scene is not
 required for every counterfactual, but HUGSIM-internal self-reference cannot
 provide the external validity of the instruments used to judge it.
 
-## Immediate Next Task — Execute Ordinal Metamorphic Audit 001 Once
+## Immediate Next Task — Qualify One External Receiver-Uncertainty Axis
 
 The validation-instrument qualification pass is complete in
 `docs/hugsim_metric_evidence_map.md`. It retains two limited-use candidates:
@@ -33,33 +33,37 @@ The validation-instrument qualification pass is complete in
 2. frozen Sparse4Dv3 ordinal relation response as one supporting receiver
    probe.
 
-The critical-object / risk-order construct, qualitative acceptance rule, and
-prospective run manifest are now frozen in:
+The critical-object / risk-order construct and ordinal metamorphic audit 001
+are complete. Read the result and machine decision first:
 
 ```text
-docs/hugsim_metric_evidence_map.md                 # section 12
-docs/runs/hugsim_ordinal_metamorphic_preregistration_001.md
-docs/runs/hugsim_ordinal_metamorphic_preregistration_001.json
+docs/hugsim_metric_evidence_map.md                 # sections 12–13
+docs/runs/hugsim_ordinal_metamorphic_001.md
+docs/runs/hugsim_ordinal_metamorphic_001_audit.json
 ```
 
-The next task is to publish the manifest before observing new output, then run
-the five declared conditions exactly once:
+The run provides two accepted and two down-weighted relation results, with zero
+receiver reversals and one unique missing `adjacent_near@6.5s` association.
+Do not tune that frame or add more HUGSIM conditions now. The next strategic
+step is to qualify one external uncertainty axis for the instrument already in
+use: Sparse4Dv3 receiver validity on real nuScenes.
 
-- no actor;
-- centre/near and centre/far;
-- adjacent/near and adjacent/far.
+- use official/primary Sparse4Dv3 and nuScenes sources, not HUGSIM outputs;
+- record exactly which real-data detection/tracking construct and benchmark
+  scope the released checkpoint supports;
+- determine whether the published evidence provides a task-relevant error or
+  stability range for critical-object identity and ordinal relation use;
+- distinguish benchmark-wide performance from a usable per-scenario
+  acceptance boundary;
+- do not infer a numerical uncertainty bound from the current HUGSIM errors;
+- if public evidence is insufficient, freeze the smallest missing independent
+  dataset/annotation or second-receiver experiment instead of installing a
+  full AD stack or adding another simulator scene.
 
-Use only the paths, hashes, 36-step runtime, complete-future gate, independent
-footprint/corridor recomputation, Sparse4Dv3 contract, expected partial order,
-and decision rules in the manifest. Do not alter a position, speed, threshold,
-frame range, association rule, or expected relation after output inspection.
-Do not add the excluded occlusion manipulation under audit 001.
-
-Produce one machine-readable audit, one concise report, and one visual summary
-of expected/reversal/unavailable counts. Stop after the declared matrix even
-if a relation fails. The strongest possible conclusion remains designed-range
-ordinal robustness, not real-world frequency, calibrated risk, direct
-real-sim equivalence, or general HUGSIM suitability as an AD test domain.
+Success is an updated instrument-qualification record that either gives a
+defensible receiver scope/range or explicitly proves why one is still missing.
+Only then decide whether the next major experiment should add an independent
+receiver, a labelled real-data anchor, or a planner/control endpoint.
 
 Durable guiding questions:
 

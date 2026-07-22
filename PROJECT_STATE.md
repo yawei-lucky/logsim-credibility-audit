@@ -672,7 +672,20 @@ AD/ODD 运动合同、matched-real 渲染扰动分布或第二个独立接收方
 ordinal metamorphic audit 001 已预注册：固定 `scene-0383`、一个 actor、无 actor
 基线和纵向×横向 2×2 矩阵，并冻结期望偏序、stop rule、输入哈希与允许主张。
 遮挡因没有无混杂操纵明确排除。所有级别都标为 test-design coverage，不冒充
-现实分布。下一步先发布 manifest，再按清单只运行一次五条件矩阵并停止。
+现实分布。
+
+该矩阵已在预注册提交后严格运行一次并停止。五个条件均完成 36/36 steps，四条
+独立几何偏序在 26 个完整未来时域帧全部成立；Sparse4Dv3 四条关系无反转，其中
+两条 13/13 accepted，另两条因 `adjacent_near@6.5s` 同一个 association 缺失为
+12/13 down-weighted。整体 segment 为 down-weighted；完整 receiver availability
+主张 rejected，但没有任何方向关系被结果反转。报告见
+`docs/runs/hugsim_ordinal_metamorphic_001.md`。
+
+下一步不再增加 HUGSIM 条件，也不围绕缺失帧调参。先用官方/原始真实 nuScenes
+证据审计 Sparse4Dv3 这一现有尺子的外部效度：它能支持什么检测/跟踪构念、场景
+范围和误差/稳定性边界。若公开 benchmark 不能转化为本任务的 per-scenario
+acceptance boundary，就冻结所需的最小真实标注或第二接收方证据，再决定下一条
+实验分支。
 
 不自行扩展到完整 benchmark 或最终可信指标；AD 侧先做 bounded camera-only
 receiver 对比，不直接安装或运行完整 AD stack。

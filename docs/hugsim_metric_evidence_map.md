@@ -302,4 +302,33 @@ uncertainty envelope 尚未获资格**。仓库目前没有可独立支撑以下
 该测试已经预注册为
 `docs/runs/hugsim_ordinal_metamorphic_preregistration_001.md` 及同名 JSON。
 它固定 `scene-0383`、一个车辆资产、无 actor 基线和纵向×横向 2×2 矩阵；遮挡
-因缺少无混杂操纵在 001 中明确排除。当前状态为 `preregistered_not_run`。
+因缺少无混杂操纵在 001 中明确排除。发布时状态为 `preregistered_not_run`；执行
+结果记录在下一节。
+
+## 13. 序数形变审计 001 结果
+
+预注册随后在提交 `c784cbcdd6c3ff4554a26e79d683bcf8703b42b1` 固定后按清单
+运行。五个条件均完成 36/36 steps；严格配对和完整未来时域 gate 通过。结果见
+`docs/runs/hugsim_ordinal_metamorphic_001.md`。
+
+| 预声明关系 | 独立几何 | Sparse4Dv3 expected / reversal / unavailable | 裁决 |
+|---|---:|---:|---|
+| centre/near > centre/far | 26/26 | 13 / 0 / 0 | `accepted` |
+| centre/near > adjacent/near | 26/26 | 12 / 0 / 1 | `down-weighted` |
+| centre/far > adjacent/far | 26/26 | 13 / 0 / 0 | `accepted` |
+| adjacent/near > adjacent/far | 26/26 | 12 / 0 / 1 | `down-weighted` |
+
+四条几何关系均逐帧成立，所有可用 receiver 对比都沿预期方向，未出现反转。
+两条关系因 `adjacent_near@6.5s` 同一个 association 缺失而 down-weighted；“所有
+关系在所有 receiver 时刻完整可用”的具体主张被 rejected。原因尚未在渲染、
+标定/domain shift 与 receiver 之间隔离，因此不归因为 HUGSIM 单方失败。
+
+这一实验说明资格化后的大方向手段确实能工作：HUGSIM 内部 NC/TTC/PDMS 在有效
+窗口对五个条件都为 1.0，而独立几何 + 冻结 receiver 的序数关系能区分纵向和
+横向任务变化。但它仍只是 design-range causal/ordinal positive evidence；数值
+范围没有现实资格，接收方只有一个，不能升级为 AD 测试域适用性结论。
+
+下一步停止增加 HUGSIM 条件，先资格化一个外部 uncertainty axis。优先选择
+receiver 外部效度：审计 Sparse4Dv3 在真实 nuScenes 上可独立支持哪些检测/跟踪
+构念、误差和适用范围；若官方/公开证据不能给出本任务所需边界，就明确记录需要
+的最小真实标注或第二接收方证据，不从本次 HUGSIM 结果反推阈值。
