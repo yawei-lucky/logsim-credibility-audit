@@ -9,6 +9,9 @@ their own scope.
 - Prefer the smallest reliable solution that satisfies the current task.
 - Keep work bounded, reproducible, and easy to review.
 - Match rigor and validation effort to the actual risk.
+- For routine work, review the overall direction and the files directly in
+  scope. Do not perform an exhaustive repository-wide consistency sweep unless
+  the user requests it or the work has reached a stage-closing form.
 - Avoid premature abstraction, unnecessary configuration, and broad frameworks
   that are not required by the current project phase.
 - If work is drifting into excessive scope, brittle automation, or unnecessary
@@ -95,17 +98,19 @@ their own scope.
 
 ## Current Sources of Truth
 
-Read the following before substantive HUGSIM work:
+Start from the current task and load other sources only when they are relevant.
+Routine work should not reread the full project archive on every turn.
 
-1. `docs/research_guiding_principles.md`
-2. `docs/hugsim_metric_evidence_map.md`
-3. `CODEX_NEXT_TASK.md`
-4. `PROJECT_STATE.md`
-5. `docs/hugsim_matched_receiver_validation_plan.md`
-6. `README.md`
-7. `docs/hugsim_credibility_decision_rules.md`
-8. `docs/hugsim_smoke_test_plan.md`
-9. `docs/hugsim_cuda_pixi_runbook.md` when runtime or GPU work is involved
+1. Always start with `CODEX_NEXT_TASK.md`.
+2. Use `docs/research_guiding_principles.md` for durable research direction.
+3. Use `docs/counterfactual_credibility_constraints.md` for the current
+   counterfactual-validity phase.
+4. Consult `docs/hugsim_metric_evidence_map.md` and
+   `docs/hugsim_credibility_decision_rules.md` when designing or judging an
+   experiment.
+5. Consult `PROJECT_STATE.md`, older plans, run records, and `README.md` only
+   when their history or interface is needed.
+6. Use `docs/hugsim_cuda_pixi_runbook.md` for runtime or GPU work.
 
 If an older workflow note conflicts with the current state, prefer the newer
 project-state documents and report the conflict instead of silently combining

@@ -332,3 +332,7 @@ uncertainty envelope 尚未获资格**。仓库目前没有可独立支撑以下
 receiver 外部效度：审计 Sparse4Dv3 在真实 nuScenes 上可独立支持哪些检测/跟踪
 构念、误差和适用范围；若官方/公开证据不能给出本任务所需边界，就明确记录需要
 的最小真实标注或第二接收方证据，不从本次 HUGSIM 结果反推阈值。
+
+> 方向更新（2026-07-22）：上述是本次实验完成时的后续建议，现已后移。当前先按
+> `docs/counterfactual_credibility_constraints.md` 完成反事实规律与可证伪骨架；
+> Sparse4Dv3 外部资格审计留到接收方实验阶段。
