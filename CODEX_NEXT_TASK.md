@@ -83,13 +83,30 @@ cast-matched direct replay reproduced the actual loop traces exactly, while the
 four indicator decisions were unchanged. Treat this as a precision-sensitivity
 boundary; only the decisions, not exact trajectories, transported robustly.
 
-Next perform a small state-to-observation transport audit. Freeze the same
-actor states, camera poses, timestamps, and controls; independently project the
-actor geometry into the cameras and check camera membership, image location,
-visibility, and causal order before interpreting rendered outputs. This step
-may support only a bounded state-to-observation transport claim. Common-renderer
-RGB/semantic/depth agreement is not evidence of real-sensor correctness. Do not
-add an AD receiver or another scene yet.
+CF-I-OBS-001 then exposed a paired-control defect: HUGSIM `Camera` instances
+share a mutable default dynamics dictionary, so the actor persisted into the
+nominal no-actor render. This is retained as negative method evidence, not
+misreported as a HUGSIM visual failure.
+
+The frozen corrective repeat CF-I-OBS-002 accepted state-to-transform fidelity,
+six-camera membership, and causal observation onset. It rejected spatial
+localization: RGB support inside the projected `wlh.json` box plus 16 pixels
+fell from about `0.98` to `0.48` as the actor approached. Asset inspection found
+that the high-opacity Gaussian envelope is larger than the declared dimensions
+and vertically offset from the transform origin. See
+`docs/runs/hugsim_interaction_observation_indicators_002.md`.
+
+Next split the failed localization question instead of relaxing its threshold:
+
+1. audit whether HUGSIM `obj_boxes` consistently envelope the rendered actor;
+2. derive an opacity-qualified Gaussian asset envelope and origin, then test
+   whether that independently projected envelope localizes RGB support across
+   distance.
+
+This distinguishes metadata-to-render inconsistency from a deeper projection
+failure. Do not add an AD receiver or another scene until this boundary is
+resolved. Common-renderer RGB/semantic/depth agreement remains insufficient for
+real-sensor correctness.
 
 This experiment may support only an adversarial ego-response capability claim.
 It must not be generalized to realistic merging, yielding, or traffic-agent
@@ -147,6 +164,12 @@ branch.
   sensitive to the loop's float32 state writeback, while the indicator
   decisions remained stable. This qualifies only pre-render planner-loop
   indicator transport; rendering and realism remain untested.
+- CF-I-OBS-001 rejected its paired RGB measurement after diagnosing shared
+  mutable camera dynamics that retained the actor in the no-actor control.
+  CF-I-OBS-002 corrected only that contamination: state transform, camera
+  membership, and causal onset were accepted, while projected metadata-box
+  localization remained rejected and worsened with proximity. This is bounded
+  internal state-to-observation evidence, not real-sensor equivalence.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.
