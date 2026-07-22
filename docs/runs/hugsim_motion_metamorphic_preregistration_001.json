@@ -1,0 +1,74 @@
+{
+  "audit_id": "hugsim_motion_metamorphic_001",
+  "status": "preregistered_not_run",
+  "scope": "ConstantPlanner constant-speed state continuity and controlled same-direction relative-motion ordering in scene-0383",
+  "conditions": {
+    "slow": {
+      "speed_mps": 0.5,
+      "config": "configs/hugsim/scenarios/scene-0383-motion-slow-001.yaml",
+      "config_sha256": "0505ab48f98ae3b51b928e0bdf02406cd880a02d81d1f62e5685f167d34bf24c",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-slow-001-run001"
+    },
+    "nominal": {
+      "speed_mps": 1.0,
+      "config": "configs/hugsim/scenarios/scene-0383-motion-nominal-001.yaml",
+      "config_sha256": "a5f17e04e9f416203c816973326754ebe04b4cc840b28b1ea236e7d0d50c4f0a",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-nominal-001-run001"
+    },
+    "fast": {
+      "speed_mps": 1.5,
+      "config": "configs/hugsim/scenarios/scene-0383-motion-fast-001.yaml",
+      "config_sha256": "20df023b316c834135581c8d0116c6b40586fbd00db4c31ab3585b6e1319c04a",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-fast-001-run001"
+    }
+  },
+  "fixed_design": {
+    "scene": "scene-0383",
+    "actor_model": "2024_07_05_15_57_10",
+    "actor_right_m": 0.0,
+    "actor_forward_m": 18.0,
+    "actor_yaw_rad": 0.0,
+    "controller": "ConstantPlanner",
+    "max_steps": 36,
+    "plan_writer_horizon": 6,
+    "plan_writer_step_m": 1.0
+  },
+  "controller_source": {
+    "path": "/home/yawei/HUGSIM/sim/utils/agent_controller.py",
+    "sha256": "bc4689fe9ccbc9c997e273c92662ed0933b5e3317cd25fff99fefd9964a23a28"
+  },
+  "analysis_script_sha256": "623d7a9ca6c0403c9aedc00f6753858f183a701ed2668a91808b3a2d9886aa8b",
+  "numeric_tolerances": {
+    "integration_residual_m": 1e-05,
+    "speed_error_mps": 1e-05,
+    "heading_change_rad": 1e-05,
+    "acceleration_residual_mps2": 0.0001
+  },
+  "hard_constraints": [
+    "exactly one actor at every recorded timestamp",
+    "strictly increasing timestamps",
+    "per-transition displacement matches configured constant speed within tolerance",
+    "finite-difference speed, heading, and acceleration residuals remain within tolerance"
+  ],
+  "monotonic_relations": [
+    "after the first recorded state: fast travel > nominal travel > slow travel",
+    "at matched timestamps: fast forward gap > nominal forward gap > slow forward gap",
+    "at matched timestamps: fast clearance > nominal clearance > slow clearance"
+  ],
+  "synthetic_negative_controls": [
+    "a one-metre teleport must fail the hard constraint",
+    "motion at the configured speed in the opposite direction must fail vector integration",
+    "swapped slow and fast series must fail the ordinal relation"
+  ],
+  "independence_notice": "Metrics are independently recomputed from HUGSIM-saved states but the states are still simulator-produced rather than independent real-world truth.",
+  "strongest_allowed_claim": "Within scene-0383, ConstantPlanner, and the declared 0.5/1.0/1.5 m/s design range, saved actor states satisfy the preregistered constant-speed and same-direction relative-motion relations.",
+  "forbidden_claims": [
+    "general vehicle dynamics are validated",
+    "acceleration and braking behavior are realistic",
+    "the scripted actor is a realistic driver",
+    "a perception or AD receiver responds correctly",
+    "physical risk or safety is established",
+    "real-simulation equivalence is established",
+    "HUGSIM is generally credible as an AD test domain"
+  ]
+}
