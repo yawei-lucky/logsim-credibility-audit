@@ -1,0 +1,132 @@
+{
+  "audit_id": "hugsim_ordinal_metamorphic_001",
+  "date": "2026-07-22",
+  "status": "preregistered_not_run",
+  "preregistration_strength": "prospective_manifest_not_blind",
+  "prior_related_outputs_seen": true,
+  "task_construct": "critical-object identity and coordinate-wise ordinal risk relation over a declared deterministic ego corridor",
+  "scope": "designed-range ordinal causal consistency, not calibrated real-world risk",
+  "fixed_runtime": {
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "audit_repo_base_commit": "fbb09d6ccd153cf6a3fe40a322902438d595753a",
+    "scene": "scene-0383",
+    "max_steps": 36,
+    "control_convention": "corrected",
+    "plan_horizon_waypoints": 6,
+    "plan_step_m": 1.0,
+    "complete_future_seconds": 2.5
+  },
+  "fixed_actor": {
+    "plan_list_index": 0,
+    "asset_id": "2024_07_05_15_57_10",
+    "height_m": -0.3,
+    "yaw_rad": 0.0,
+    "speed_mps": 1.0,
+    "controller": "ConstantPlanner",
+    "controller_args": {}
+  },
+  "conditions": {
+    "no_actor": {
+      "right_m": null,
+      "forward_m": null,
+      "config": "configs/hugsim/scenarios/scene-0383-ordinal-no-actor-001.yaml",
+      "config_sha256": "c6af7b278b1a0a3abc73694b9b1cb2aa5265e850cc753bdc279b5e691ddeac0d",
+      "output": "artifacts/hugsim_ordinal_metamorphic/scene-0383-ordinal-no-actor-001-run001"
+    },
+    "center_near": {
+      "right_m": 0.0,
+      "forward_m": 16.0,
+      "config": "configs/hugsim/scenarios/scene-0383-ordinal-center-near-001.yaml",
+      "config_sha256": "3f097158104c0b36679bb6ef55c9260d40c643948e61c2e2bf68cfdf79c8f2e3",
+      "output": "artifacts/hugsim_ordinal_metamorphic/scene-0383-ordinal-center-near-001-run001"
+    },
+    "center_far": {
+      "right_m": 0.0,
+      "forward_m": 24.0,
+      "config": "configs/hugsim/scenarios/scene-0383-ordinal-center-far-001.yaml",
+      "config_sha256": "c4d71dc5de40b3ecf6e4a7582dd93b4e0010793791f9da0c73cae9ae0be9b564",
+      "output": "artifacts/hugsim_ordinal_metamorphic/scene-0383-ordinal-center-far-001-run001"
+    },
+    "adjacent_near": {
+      "right_m": 4.0,
+      "forward_m": 16.0,
+      "config": "configs/hugsim/scenarios/scene-0383-ordinal-adjacent-near-001.yaml",
+      "config_sha256": "5beabeb6439745fc83e7737b5ba4c6eff508b6075f35e2b75daa59da8b62abe5",
+      "output": "artifacts/hugsim_ordinal_metamorphic/scene-0383-ordinal-adjacent-near-001-run001"
+    },
+    "adjacent_far": {
+      "right_m": 4.0,
+      "forward_m": 24.0,
+      "config": "configs/hugsim/scenarios/scene-0383-ordinal-adjacent-far-001.yaml",
+      "config_sha256": "c1273ead3fa15ea68663495487fdfc5d76e71811c916b8de6402108f1bc7e081",
+      "output": "artifacts/hugsim_ordinal_metamorphic/scene-0383-ordinal-adjacent-far-001-run001"
+    }
+  },
+  "expected_partial_order": [
+    ["center_near", "center_far"],
+    ["center_near", "adjacent_near"],
+    ["center_far", "adjacent_far"],
+    ["adjacent_near", "adjacent_far"]
+  ],
+  "explicitly_incomparable": [
+    ["center_far", "adjacent_near"]
+  ],
+  "input_hashes": {
+    "base_yaml": "01a11220a902e1ec3e81aa7424cf16bf74a540508031d345792e03dc1afc2135",
+    "scene_cfg": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+    "camera_yaml": "f059629db1b1831e81e0a7b8f43bf9775b70684319859e8c1e4bc00bf2cb8e9a",
+    "kinematic_yaml": "fc987ae8da2412ecca8e10b9e49daf2da366795151e970b139c3426ea9966c96",
+    "actor_gs_pth": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
+    "actor_wlh_json": "edc468f1d24229a56ccfeaf89324e8b6bf46237d90df21980933562d07a8538f",
+    "runner": "7819768c0171fce2f99d3e78b1369bec469df4eaff01a5f125a4de5c81cf859c",
+    "plan_writer": "f0045497943e751b7404a8d0a736737c4923f421e98e45db74371c19753a8941"
+  },
+  "receiver": {
+    "name": "Sparse4Dv3 R50 official release",
+    "source_commit": "249ffbb695f4e9db628d953e2bf6d36de04bbb69",
+    "checkpoint_sha256": "5beed4d4933ca6448d72586b0f8812863574289ff3c4192de71dc9f46a42f0ed",
+    "score_threshold": 0.2,
+    "frame_stride": 2,
+    "modalities": [
+      "HUGSIM RGB",
+      "HUGSIM camera intrinsics",
+      "HUGSIM camera extrinsics"
+    ],
+    "excluded_modalities": [
+      "HUGSIM semantic",
+      "HUGSIM depth"
+    ],
+    "role": "supporting ordinal probe, not truth"
+  },
+  "primary_receiver_summary": "per-contrast counts of expected, reversal, and unavailable common valid timestamps",
+  "gates": [
+    "all five outputs are new and complete 36 of 36 steps",
+    "exact timestamp, ego, plan, and action pairing",
+    "all scored frames have complete future actor history",
+    "independent oriented-footprint and swept-corridor recomputation preserves the intended contrast"
+  ],
+  "decision_rules": {
+    "accepted": "geometry gate passes, every planned receiver timestamp is available, and the claimed ordinal relation has zero reversals",
+    "down-weighted": "geometry is valid and aggregate direction is expected, but one or more receiver timestamps are unavailable or reversed",
+    "rejected": "the claimed relation is contradicted by independent geometry, aggregate receiver direction reverses, or an identity/horizon gate fails"
+  },
+  "occlusion": {
+    "manipulated": false,
+    "reason": "pixel masking would test receiver preprocessing; a second actor would confound actor count and interaction structure",
+    "allowed_observation": "report natural visibility differences without causal occlusion claims"
+  },
+  "stop_rules": [
+    "do not change positions, speed, threshold, frame range, association rule, or expected order after inspecting output",
+    "stop after one complete five-run matrix regardless of result",
+    "retain early termination as failed evidence and do not replace it under audit 001",
+    "any manifest or config change requires audit 002 and new hashes"
+  ],
+  "strongest_allowed_claim": "within the declared 2x2 design range and complete-future window, the HUGSIM intervention satisfies independently recomputed geometric order and the frozen Sparse4Dv3 probe preserves the predeclared longitudinal and lateral ordinal relations without reversal",
+  "forbidden_claims": [
+    "the factor levels are real-world safe or unsafe thresholds",
+    "the scripted actor is a realistic traffic policy",
+    "Sparse4Dv3 is independent 3D truth",
+    "HUGSIM RGB is real-sensor equivalent",
+    "the result proves real AD action, collision risk, real-sim equivalence, or general HUGSIM fitness"
+  ]
+}

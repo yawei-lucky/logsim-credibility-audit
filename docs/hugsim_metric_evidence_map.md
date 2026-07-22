@@ -185,3 +185,121 @@ down-weighted。标注只查看 HUGSIM RGB，虽然独立于 HUGSIM semantic/dep
 因此 nuisance robustness 作为任务级指标族被保留，但接受阈值不能来自本次小
 样本比例；下一步需先声明一个 critical-object / lane-relation / risk-order 下游
 决策边界，再判断哪些误响应会改变 AD 决策。
+
+## 11. 验证工具资格审计 001
+
+本节完成下一阶段的第一轮“先验证尺子”审计。表中的“下一实验用途”是工具
+使用范围，不是新的 segment-level evidence label；具体实验仍只使用
+`accepted`、`down-weighted`、`rejected` 裁决具体主张。
+
+| 工具或参考 | 直接测量的构念 | 外部效度与 HUGSIM 依赖 | 下一实验用途 | 当前最强允许主张 | 最小资格缺口 |
+|---|---|---|---|---|---|
+| Source / exact-pairing gate | 源数据可用性、身份、位姿、时间和输入一一配对 | 依赖不可变 source identity、哈希和独立真实观测，不依赖 HUGSIM 质量结果 | 直接 real-sim 分支的强制 gate；当前 blocked | 当前只有 metadata 候选，尚无 real-sim pair | 原始六相机 RGB、nuScenes token、ASAP 映射和 checkpoint split provenance |
+| Run identity / complete-future horizon gate | 运行同一性、计划/状态前缀和评分未来时域是否完整 | 使用直接日志、哈希、时间索引和独立重算；读取 HUGSIM 记录但不以其评分结论自证 | 所有后续实验的强制有效性 gate | 某段证据可复现、严格配对且未被尾窗填充污染 | 无法单独提供现实性或任务正确性 |
+| 独立重算的二维 footprint、净距和相对关系 | 给定 box 下的碰撞/正净距、中心线穿越、near/far 和 lateral ordering | 算法基于欧氏/刚体几何，独立于 HUGSIM scorer；输入 box 仍来自 HUGSIM | 可作为 designed counterfactual 的干预有效性约束 | 在仿真器声明状态成立的前提下，干预具有指定几何关系 | 独立测量状态、行为动力学范围和与 AD 决策相关的 margin |
+| HUGSIM ego/actor state 与 NC/TTC/PDMS | 仿真器声明状态及其内部 AD-performance score | 完全依赖 HUGSIM 状态、地图、计划与 scorer；已审出尾窗填充和 TTC 构念边界 | 内部状态/评分诊断，不作现实裁判 | 完整未来时域内的 HUGSIM 内部状态和二值 planned-path TTC surrogate | 独立状态/结果、物理 TTC 或受控场地对照 |
+| HUGSIM RGB / semantic / depth 与边界共变 | 渲染像素、声明语义/深度和跨模态内部对齐 | 三种模态共享 HUGSIM renderer，无独立现实参考 | 仅作可见性、错位和 artifact 定位 | 模态是否在 HUGSIM 内部共同变化 | 匹配或独立 RGB、depth/lidar、语义标注和误差范围 |
+| COCO detector 与 center-path risk proxy | 通用 2D 类别响应及人工加权图像风险 | detector 有外部 COCO 训练基础，但非驾驶域；risk proxy 未校准且已被 nuisance 主导 | nuisance 诊断；不进入下一反事实裁决 | 背景/重建内容能否诱发通用检测响应 | 驾驶域真实数据、独立任务标签和 risk/action calibration |
+| 冻结 Sparse4Dv3 序数关系响应 | 六相机 RGB 下的车辆存在、near/far、same/adjacent 和短时跟踪 | 官方 real-nuScenes-trained receiver，不读取 HUGSIM semantic/depth；真实 benchmark 能力为官方报告，尚未在本项目独立复核，HUGSIM 标定/域差仍存在 | 可作为一个 supporting receiver probe，限序数方向 | 在已测 receiver contract 中，HUGSIM RGB 能驱动该接收方产生预期关系方向 | matched/独立 3D 参考、第二个不同失败模式接收方、task margin 和 receiver uncertainty |
+| 固定人眼可见性标注 | 检测响应在渲染 RGB 中是否有可见目标支撑 | 人工判断独立于 HUGSIM semantic/depth/state，但仍只观察 HUGSIM RGB，且仅一次小样本复核 | 固定样本 nuisance 审计，不作现实语义真值 | 14 个固定响应中 7 个有可见支撑、7 个为 nuisance | 真实或独立场景标注、完整目标清单、多复核者和 recall 设计 |
+| Cross-receiver agreement | 不同输出构造的干预排序方向是否一致 | 当前接收方共享 HUGSIM 输入，部分还依赖 HUGSIM semantic/depth，误差相关性未量化 | 内部收敛诊断，不作多数投票 | 当前少量条件中的 effect-direction convergence | 各接收方真实数据资格、依赖性审计、独立参考和不确定性 |
+| Task acceptance boundary / uncertainty envelope | 哪些误差会改变关键目标、风险排序或动作 | 当前没有冻结的外部任务 margin，也没有合理参数/模型不确定性范围 | 当前不可用；是 designed counterfactual 分支的阻塞缺口 | 不能给出任务适用性通过结论 | 外部可辩护的任务构念、margin、参数范围和结论稳定性规则 |
+
+资格判断的直接依据为：
+
+- source/pairing：`docs/runs/hugsim_source_anchor_gate_001.md`；
+- horizon、几何与 scorer：`docs/runs/hugsim_horizon_factorial_001.md`、
+  `docs/runs/hugsim_near_cut_in_001.md`；
+- sensor/proxy/nuisance：`docs/runs/hugsim_normal_scene_sensor_audit_001.md`、
+  `docs/runs/hugsim_camera_detector_001.md`；
+- receiver 与依赖关系：`docs/runs/hugsim_sparse4d_receiver_baseline_001.md`、
+  `docs/runs/hugsim_sparse4d_cross_scene_001.md`、
+  `docs/runs/hugsim_receiver_agreement_001.md`；
+- 人眼固定样本：`docs/runs/hugsim_sparse4d_normal_scene_annotation_001.md`。
+
+### 资格结论
+
+当前保留两个有限用途候选：
+
+1. **时域有效性 + 独立二维几何/因果约束套件**，用于确认反事实干预本身在
+   HUGSIM 声明状态下有效；
+2. **冻结 Sparse4Dv3 的序数关系响应**，作为一个 real-data-trained supporting
+   receiver probe，不作为真值或唯一裁判。
+
+这两类工具合起来最多回答：“干预是否按声明发生，以及一个冻结驾驶域接收方
+是否沿预期序数方向响应。”它们不能回答“HUGSIM 是否足以作为 AD 测试域”。
+
+直接 matched real-sim 分支仍被 source gate 阻断。Designed-counterfactual
+分支可以作为下一准备方向，但现在不应立即跑新场景；最小缺口是先为一个任务
+结论建立外部可辩护的 acceptance boundary 和 uncertainty envelope。若该结论在
+合理范围内不稳定，就不能用单次 HUGSIM 结果作可信判断。
+
+## 12. 任务边界资格审计 001 — 关键目标与风险排序
+
+本轮不把“关键目标”定义为某个检测器最高置信度的框，也不把 HUGSIM 的 TTC
+或 PDMS 当成危险真值。外部方法依据只支持以下更窄的任务构念：在一个声明的
+自车候选走廊和有限未来时域内，比较各 actor 与走廊的空间冲突关系，并检查
+**关键目标身份和风险序数关系**在合理变化下是否稳定。
+
+这一限定来自三类外部依据：
+
+- [ISO 34502:2022](https://www.iso.org/standard/78951.html)给出面向 ADS 的场景化
+  安全评价框架，但适用范围和场景必须明确；它不是跨 ODD 的通用危险阈值表；
+- [Criticality Metrics for Automated Driving](https://elib.dlr.de/187762/1/Westhofen2022_Article_CriticalityMetricsForAutomated.pdf)
+  明确把 pass/fail target value 绑定到上位安全目标，并指出指标有效性依赖场景
+  类型和所用 future-prediction model；
+- [RSS formal model](https://arxiv.org/abs/1708.06374)说明纵向、横向、交叉路线和
+  遮挡风险可以用显式几何、运动界和响应假设形成可检查约束；它提供构造方法，
+  但反应时间、加减速度等参数仍须针对被测系统和 ODD 声明。
+
+### 冻结的任务构念
+
+对每个 actor 和每个声明的未来假设，保留两个不合成为单一分数的基本关系：
+
+1. actor footprint 是否进入或穿越自车候选走廊，以及首次冲突的先后；
+2. actor footprint 到自车/候选走廊的最小正净距及其变化方向。
+
+只在 actor A 对所有声明假设都不比 actor B 更安全，并在至少一个关系上更危险
+时，写作 `A > B`。若不同未来假设、不同几何关系或接收方可见性给出相反排序，
+结果必须写成 **unresolved partial order**，不能靠加权平均强行产生唯一冠军。
+Sparse4Dv3 只检查“接收方是否仍得到该 actor 及其序数关系”，不决定几何风险
+真值；HUGSIM semantic、depth、NC、TTC 和 PDMS 也不参与外部裁决。
+
+### 当前 acceptance boundary
+
+本轮能够冻结的不是“几米/几秒即危险”，而是一个序数稳健性边界：
+
+- 运行身份、输入和完整未来时域 gate 必须通过；
+- 每个离散干预必须由独立二维 footprint/净距重算确认其声明关系；
+- 距离减小、进入自车走廊或冲突时间提前时，关键目标身份/排序不得在没有明确
+  遮挡或可见性原因的情况下向更安全方向反转；
+- 在声明的几何、运动、渲染 nuisance 和 receiver 变化集合中，关键目标身份与
+  偏序保持不反转，才可报告“该序数结论在此设计范围内稳健”；
+- 任何反转都保留为边界/失效证据，不用多数投票覆盖。
+
+该边界允许的最强主张是：**某项受控干预在 HUGSIM 声明状态下满足几何约束，
+且一个冻结驾驶域接收方得到的关键目标/风险方向在声明的设计变化内不反转。**
+它不允许写成现实碰撞概率、真实 AD 安全/危险判定、real-sim 等效，或 HUGSIM
+已经适合作为一般 AD 测试域。
+
+### 资格结果与剩余缺口
+
+任务构念和定性 acceptance rule 已获外部方法支撑，可以进入实验设计；**数值
+uncertainty envelope 尚未获资格**。仓库目前没有可独立支撑以下范围的数据：
+
+| 不确定性维度 | 下一实验必须声明的量 | 当前状态 |
+|---|---|---|
+| 几何 | box/位姿/标定误差和车道/走廊边界误差 | 无独立 3D 真值或 matched source，未资格化 |
+| 运动 | 速度、加速度、制动能力、反应时间和多未来轨迹 | 无目标 AD/ODD 合同，未资格化 |
+| 渲染 nuisance | 光照、模糊、遮挡和重建 artifact 的合理变化范围 | 无 matched real 分布，未资格化 |
+| receiver | 检测/跟踪波动、漏检范围和模型间差异 | 只有一个冻结 Sparse4Dv3，未资格化 |
+
+因此下一步不能直接设一个“真实风险阈值”。可以先做**设计范围内的序数形变
+测试**：预注册若干离散、可复算的干预级别，只裁决风险方向是否反转；这些级别
+必须明确标为 test-design coverage，不能冒充现实分布。要把结论升级为 AD 测试
+域适用性，仍需目标 AD/ODD 合同、独立状态参考或真实数据统计来资格化上述范围。
+
+该测试已经预注册为
+`docs/runs/hugsim_ordinal_metamorphic_preregistration_001.md` 及同名 JSON。
+它固定 `scene-0383`、一个车辆资产、无 actor 基线和纵向×横向 2×2 矩阵；遮挡
+因缺少无混杂操纵在 001 中明确排除。当前状态为 `preregistered_not_run`。

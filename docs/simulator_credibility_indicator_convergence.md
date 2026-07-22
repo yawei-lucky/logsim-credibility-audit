@@ -186,13 +186,19 @@ Do not choose a bound because it makes the current simulator pass. The former
 1. keep the frozen cross-scene Sparse4Dv3 response summary;
 2. keep the fixed normal-scene human-visible target/nuisance audit;
 3. do not turn its detection-conditioned 50% support result into ODD precision;
-4. perform the strategic qualification pass for every retained metric,
-   receiver, constraint, and uncertainty range;
-5. in parallel, keep source RGB recovery as the direct matched real–simulation
+4. keep the completed validation-instrument qualification table and its two
+   limited-use candidates: temporal/planar-geometry constraints and Sparse4Dv3
+   ordinal response;
+5. keep the qualified critical-object/risk-order partial-order task boundary;
+   its numerical geometry, motion, rendering, and receiver uncertainty ranges
+   remain unqualified and must not be replaced with convenient thresholds;
+6. keep the published preregistration for ordinal metamorphic audit 001,
+   labeling its 2x2 interventions as test-design coverage and preserving the
+   frozen expected relations and reversal stop rules;
+7. in parallel, keep source RGB recovery as the direct matched real–simulation
    upgrade rather than a gate on all designed counterfactuals;
-6. only after the qualification pass, select a downstream task boundary and
-   add planner/control conclusions when its inputs, margins, and uncertainty
-   ranges are qualified for the claimed scope.
+8. run the declared five-condition matrix exactly once, then decide from its
+   bounded result whether any later planner/control experiment is justified.
 
 The detector-box/calibration root-cause investigation follows the cross-scene
 summary. It should diagnose why absolute geometry is weak, but it does not

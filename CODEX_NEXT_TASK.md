@@ -23,32 +23,43 @@ counterfactual robustness branch. An exact factual starting scene is not
 required for every counterfactual, but HUGSIM-internal self-reference cannot
 provide the external validity of the instruments used to judge it.
 
-## Immediate Next Task
+## Immediate Next Task — Execute Ordinal Metamorphic Audit 001 Once
 
-Complete one **validation-instrument qualification pass** using existing
-evidence only. Do not run a new scene or add a receiver yet.
+The validation-instrument qualification pass is complete in
+`docs/hugsim_metric_evidence_map.md`. It retains two limited-use candidates:
 
-Update `docs/hugsim_metric_evidence_map.md` with one compact table covering each
-retained instrument/reference:
+1. temporal-validity plus independently recomputed planar geometry/causal
+   constraints;
+2. frozen Sparse4Dv3 ordinal relation response as one supporting receiver
+   probe.
 
-- what it actually measures;
-- its external-validity basis;
-- its dependence on HUGSIM outputs;
-- known error, applicable range, and strongest allowed claim;
-- missing evidence required before it can judge a designed counterfactual.
+The critical-object / risk-order construct, qualitative acceptance rule, and
+prospective run manifest are now frozen in:
 
-Then select at most two instruments that are qualified enough for the next
-bounded experiment. If none qualifies, report the smallest qualification gap
-instead of forcing an experiment. Only after this decision choose one branch:
+```text
+docs/hugsim_metric_evidence_map.md                 # section 12
+docs/runs/hugsim_ordinal_metamorphic_preregistration_001.md
+docs/runs/hugsim_ordinal_metamorphic_preregistration_001.json
+```
 
-1. direct matched real–simulation equivalence, if source evidence is ready; or
-2. designed-counterfactual robustness, using qualified constraints and a
-   declared uncertainty range.
+The next task is to publish the manifest before observing new output, then run
+the five declared conditions exactly once:
 
-Completion means the evidence map identifies which existing "rulers" can and
-cannot judge the next experiment, and why. Do not create a final credibility
-score, install another AD model, add scenarios, or tune a response threshold in
-this task.
+- no actor;
+- centre/near and centre/far;
+- adjacent/near and adjacent/far.
+
+Use only the paths, hashes, 36-step runtime, complete-future gate, independent
+footprint/corridor recomputation, Sparse4Dv3 contract, expected partial order,
+and decision rules in the manifest. Do not alter a position, speed, threshold,
+frame range, association rule, or expected relation after output inspection.
+Do not add the excluded occlusion manipulation under audit 001.
+
+Produce one machine-readable audit, one concise report, and one visual summary
+of expected/reversal/unavailable counts. Stop after the declared matrix even
+if a relation fails. The strongest possible conclusion remains designed-range
+ordinal robustness, not real-world frequency, calibrated risk, direct
+real-sim equivalence, or general HUGSIM suitability as an AD test domain.
 
 Durable guiding questions:
 
@@ -70,6 +81,8 @@ not the current grading scheme.
 
 ```text
 docs/research_guiding_principles.md
+docs/hugsim_metric_evidence_map.md
+docs/simulator_credibility_indicator_convergence.md
 docs/hugsim_matched_receiver_validation_plan.md
 docs/hugsim_credibility_decision_rules.md
 docs/hugsim_smoke_test_plan.md
@@ -400,8 +413,8 @@ not matched reality. This is not ODD precision/recall and does not measure false
 negatives.
 
 The immediate execution contract is defined in `Immediate Next Task` above.
-The earlier lane-relation and critical-object-risk proposal remains a possible
-later experiment, not the current task.
+Any new lane-relation or critical-object experiment waits until that task
+boundary and uncertainty envelope are qualified.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.
