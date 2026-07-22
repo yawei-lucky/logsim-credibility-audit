@@ -1,0 +1,75 @@
+{
+  "experiment_id": "CF-I-LOOP-001",
+  "parent_indicator_experiment": "CF-I-STATE-001",
+  "purpose": "test whether CF-I-T1 through CF-I-T4 retain their frozen control discrimination inside HUGSIM planner.plan_traj",
+  "status": "frozen_before_formal_output",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "execution": {
+    "entrypoint": "sim.utils.plan.planner.plan_traj",
+    "rendering": false,
+    "prediction_steps": 20,
+    "attack_update_dt_seconds": 0.1,
+    "attack_best_k": 1,
+    "attack_frequency": 1,
+    "num_transitions": 24,
+    "declared_stimulus_index": 8,
+    "responder_plan_state": [0.0, -15.0, -0.3, 0.0, 3.0],
+    "ego_initial_state": [0.0, 0.0, 0.0, 0.5],
+    "stimulus": "set ego speed from 0.5 m/s to 0 at the declared index",
+    "torch_seed": 0
+  },
+  "assets": {
+    "vehicle_model": {
+      "path": "/home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10/gs.pth",
+      "sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006"
+    },
+    "vehicle_dimensions": {
+      "path": "/home/yawei/HUGSIM_assets/3DRealCar/2024_07_05_15_57_10/wlh.json",
+      "sha256": "edc468f1d24229a56ccfeaf89324e8b6bf46237d90df21980933562d07a8538f"
+    },
+    "scene_ground": {
+      "path": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/ground_param.pkl",
+      "sha256": "97ea9b7fd05c3fb189f1804692023a3449f40ac3f8bae80ead1607bb549ccddc"
+    }
+  },
+  "controls": {
+    "released_grid": {
+      "planner_dt_seconds": 0.25,
+      "expected_role": "known time-alignment and state-time negative"
+    },
+    "aligned_grid": {
+      "planner_dt_seconds": 0.10526315789473684,
+      "expected_role": "time-alignment and state-time positive"
+    },
+    "anticipatory": {
+      "actual_stimulus_index": 7,
+      "declared_stimulus_index": 8,
+      "expected_role": "known cause-before-effect negative"
+    },
+    "constant_planner": {
+      "expected_role": "known no-online-response negative"
+    }
+  },
+  "frozen_indicators": {
+    "CF-I-T1": {
+      "tolerance_seconds": 1e-09,
+      "expected": "reject released_grid and accept aligned_grid"
+    },
+    "CF-I-T2": {
+      "state_l2_tolerance": 1e-08,
+      "expected": "accept declared-index treatment and reject anticipatory control"
+    },
+    "CF-I-T3": {
+      "state_l2_tolerance": 1e-08,
+      "expected": "detect aligned AttackPlanner response and no ConstantPlanner response"
+    },
+    "CF-I-T4": {
+      "position_tolerance_m": 0.001,
+      "acceleration_bounds_mps2": [-6.0, 5.0],
+      "expected": "reject released_grid and accept aligned_grid in the frozen near-straight range"
+    }
+  },
+  "transport_success": "all four indicators reproduce their CF-I-STATE-001 control decisions",
+  "stop_rule": "if any control decision changes, stop before rendering and diagnose the state-harness-to-planner transport gap",
+  "claim_boundary": "indicator transport into planner.plan_traj only; no rendering, traffic realism, sensor, AD, or closed-loop credibility claim"
+}
