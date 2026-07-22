@@ -1,0 +1,106 @@
+{
+  "audit_id": "hugsim_occlusion_metamorphic_002",
+  "status": "preregistered_not_run",
+  "scope": "Corrective replication of CAM_FRONT internal geometry and RGB target-support response after fixing the HUGSIM box-height sign convention",
+  "conditions": {
+    "no_actor": {
+      "config": "configs/hugsim/scenarios/scene-0383-occlusion-no-actor-001.yaml",
+      "config_sha256": "07b10ffb28cf8f48f4692e34c1d31121c0cb932ab1cf9fe6dc26890bdd3fb10c",
+      "output": "artifacts/hugsim_occlusion_metamorphic/scene-0383-occlusion-no-actor-001-run002"
+    },
+    "target_only": {
+      "config": "configs/hugsim/scenarios/scene-0383-occlusion-target-only-001.yaml",
+      "config_sha256": "6854fb28943607b05299cbbc7ae1e74fab97a0520b640fdd8142c01cda428c7b",
+      "output": "artifacts/hugsim_occlusion_metamorphic/scene-0383-occlusion-target-only-001-run002"
+    },
+    "partial_occluder_only": {
+      "config": "configs/hugsim/scenarios/scene-0383-occlusion-partial-occluder-only-001.yaml",
+      "config_sha256": "50528c8e7687ef3b29800b2439e5c734322f97a9356fece2a8183a462a6f0bc7",
+      "output": "artifacts/hugsim_occlusion_metamorphic/scene-0383-occlusion-partial-occluder-only-001-run002"
+    },
+    "partial_both": {
+      "config": "configs/hugsim/scenarios/scene-0383-occlusion-partial-both-001.yaml",
+      "config_sha256": "ebf958338ad0d31e0c3674e4fe9e47f2fabb95a40ad7e520bf762b580168d269",
+      "output": "artifacts/hugsim_occlusion_metamorphic/scene-0383-occlusion-partial-both-001-run002"
+    },
+    "strong_occluder_only": {
+      "config": "configs/hugsim/scenarios/scene-0383-occlusion-strong-occluder-only-001.yaml",
+      "config_sha256": "47f42d47cf681bd72ba8c0dff8295441f09de661f98dcbe324aef9398303eb3a",
+      "output": "artifacts/hugsim_occlusion_metamorphic/scene-0383-occlusion-strong-occluder-only-001-run002"
+    },
+    "strong_both": {
+      "config": "configs/hugsim/scenarios/scene-0383-occlusion-strong-both-001.yaml",
+      "config_sha256": "e96bf3990a59f365968e8a2aa93fef3849616edebb052f3b52090269a202baf7",
+      "output": "artifacts/hugsim_occlusion_metamorphic/scene-0383-occlusion-strong-both-001-run002"
+    }
+  },
+  "fixed_design": {
+    "scene": "scene-0383",
+    "camera": "CAM_FRONT",
+    "actor_model": "2024_07_05_15_57_10",
+    "target_right_m": 0.0,
+    "target_forward_m": 24.0,
+    "partial_occluder_right_m": 2.0,
+    "strong_occluder_right_m": 0.0,
+    "occluder_forward_m": 20.0,
+    "actor_yaw_rad": 0.0,
+    "actor_speed_mps": 1.0,
+    "max_steps": 36,
+    "plan_writer_horizon": 6,
+    "plan_writer_step_m": 1.0
+  },
+  "controller_source": {
+    "path": "/home/yawei/HUGSIM/sim/utils/agent_controller.py",
+    "sha256": "bc4689fe9ccbc9c997e273c92662ed0933b5e3317cd25fff99fefd9964a23a28"
+  },
+  "analysis_script_sha256": "5b5b9af5403690e7dfc2d627cd5a4743cd24cd39bda212f430460bfb908977fb",
+  "numeric_tolerances": {
+    "actor_state_max_abs": 1e-08
+  },
+  "projection": {
+    "minimum_center_depth_m": 0.2,
+    "minimum_actor_clearance_m": 0.1,
+    "maximum_partial_outside_strong_target_fraction": 0.02,
+    "require_strict_overlap_order": true
+  },
+  "rgb_support": {
+    "difference_threshold": 10,
+    "minimum_baseline_pixels": 25,
+    "background_control_height_fraction": 0.2,
+    "maximum_background_changed_fraction": 0.0001,
+    "require_per_frame_nonincrease": true,
+    "require_strict_median_drop": true
+  },
+  "hard_constraints": [
+    "corresponding target and occluder states remain invariant across factorial pairs",
+    "saved target-occluder planar offsets match the declared four-metre longitudinal and two/zero-metre lateral separations",
+    "ego states, actions, plans, timestamps, camera, and base assets remain paired",
+    "target and occluder footprints retain more than 0.1 m clearance",
+    "the occluder camera-center depth remains smaller than target depth",
+    "partial-only overlap is at most two percent of the target projection and is excluded from the nested RGB-support comparison domain",
+    "strong projected target-box coverage is greater than partial coverage and partial coverage is positive",
+    "paired RGB differences remain stable in the actor-free background control band"
+  ],
+  "monotonic_relations": [
+    "at every qualified frame partial target RGB support is not smaller than strong target RGB support",
+    "across the complete window median partial target RGB support is strictly greater than median strong target RGB support"
+  ],
+  "synthetic_negative_controls": [
+    "swapping partial and strong support series must produce a monotonic reversal",
+    "placing the occluder behind the target must fail camera-depth ordering",
+    "insufficient unoccluded target pixels must be reported unavailable rather than passed",
+    "the HUGSIM stored-height sign must be inverted when forming vehicle-frame z"
+  ],
+  "independence_notice": "Projection, footprint, and RGB-difference metrics are independently recomputed without HUGSIM semantic, depth, NC, TTC, or PDMS, but their calibration, boxes, and pixels remain simulator-produced rather than independent real-world truth; CF-O 002 is also a corrective repeat after the 001 analysis defect was observed.",
+  "strongest_allowed_claim": "Within scene-0383, CAM_FRONT, this vehicle asset, trajectory, and the two declared occluder placements, saved geometry has the preregistered occlusion order and rendered target-direct RGB support changes in the expected direction.",
+  "forbidden_claims": [
+    "the numerical occlusion fraction is realistic",
+    "HUGSIM RGB or sensor output is equivalent to reality",
+    "object detection or tracking under occlusion is validated",
+    "an AD receiver responds correctly",
+    "closed-loop risk or safety is established",
+    "real-simulation equivalence is established",
+    "HUGSIM is generally credible as an AD test domain",
+    "CF-O 002 is an independent scene or independent statistical replication"
+  ]
+}

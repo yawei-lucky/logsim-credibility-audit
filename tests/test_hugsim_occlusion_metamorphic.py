@@ -74,7 +74,7 @@ class OcclusionMetamorphicAnalysisTest(unittest.TestCase):
             [10.0, 14.0, -1.0, 1.6, 3.6, 1.2, np.pi / 2]
         )
         local = box_in_vehicle_frame(state, global_box)
-        np.testing.assert_allclose(local[:3], [10.0, 0.0, 0.5], atol=1e-12)
+        np.testing.assert_allclose(local[:3], [10.0, 0.0, -0.5], atol=1e-12)
         self.assertAlmostEqual(local[6], 0.0)
 
     def test_declared_planar_actor_offset_is_checked(self):

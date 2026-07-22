@@ -135,7 +135,9 @@ def box_in_vehicle_frame(info: dict[str, Any], box: np.ndarray) -> np.ndarray:
         [
             cosine * delta[0] + sine * delta[1],
             -sine * delta[0] + cosine * delta[1],
-            delta[2],
+            # HUGSIM stores the third box coordinate as negative renderer height.
+            # Vehicle/camera z is positive upward, so this axis is inverted.
+            -delta[2],
         ],
         dtype=np.float64,
     )
@@ -766,7 +768,10 @@ def main() -> int:
     output.mkdir(parents=True, exist_ok=False)
 
     preregistration = load_json(preregistration_path)
-    if preregistration["audit_id"] != "hugsim_occlusion_metamorphic_001":
+    if preregistration["audit_id"] not in {
+        "hugsim_occlusion_metamorphic_001",
+        "hugsim_occlusion_metamorphic_002",
+    }:
         raise ValueError("unexpected preregistration audit ID")
     if sha256_file(Path(__file__).resolve()) != preregistration["analysis_script_sha256"]:
         raise ValueError("current analysis script differs from preregistration")

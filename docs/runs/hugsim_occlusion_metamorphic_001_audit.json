@@ -1,0 +1,68 @@
+{
+  "experiment_id": "hugsim_occlusion_metamorphic_001",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration_commit": "4b9bcd4",
+  "credibility": {
+    "overall_segment": "rejected",
+    "claim_decisions": {
+      "paired_world_state_intervention_integrity": "accepted",
+      "camera_projection_measurement_valid": "rejected",
+      "target_rgb_support_monotonicity": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "camera_projection_measurement_valid": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "The analysis used the wrong sign for HUGSIM's stored box-height coordinate, placing the projected mask below the rendered actor.",
+        "diagnostic_finding": "stored_height_sign_invalidates_projected_mask",
+        "evidence_refs": [
+          "docs/runs/hugsim_occlusion_metamorphic_001.md",
+          "docs/runs/hugsim_occlusion_metamorphic_preregistration_001.json"
+        ]
+      },
+      "target_rgb_support_monotonicity": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "All 37 reference-support frames were unavailable because the invalid projected mask had zero intersection with the rendered target; this is not evidence that HUGSIM visibility failed.",
+        "diagnostic_finding": null
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "paired_actor_state_holds": {
+      "component": "paired HUGSIM ego/actor state",
+      "expected": "Actor roles, states, declared offsets, ego trajectory, actions, plans, and timestamps remain paired across the six factorial conditions.",
+      "observed": "All role-state comparisons have zero maximum box difference; declared planar-offset residual is zero and minimum actor footprint clearance is 0.424 m.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The world-state intervention was executed as declared, independently of the failed camera projection measurement.",
+      "evidence_refs": [
+        "docs/runs/hugsim_occlusion_metamorphic_001.md"
+      ]
+    },
+    "stored_height_sign_invalidates_projected_mask": {
+      "component": "CF-O 001 vehicle-frame box projection",
+      "expected": "The projected target box overlaps the target-only RGB change support in CAM_FRONT.",
+      "observed": "The full image contains 1641 to 3883 changed pixels per frame, but all 37 projected masks have zero intersection because their vertical locations are below the rendered target.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "CF-O 001 cannot adjudicate camera-space occlusion or target RGB support; a preregistered coordinate-sign correction is required.",
+      "evidence_refs": [
+        "docs/runs/hugsim_occlusion_metamorphic_001.md",
+        "docs/runs/hugsim_occlusion_metamorphic_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv.objs_list"
+      ]
+    }
+  },
+  "summary": {
+    "completed_steps_per_condition": 36,
+    "paired_condition_count": 6,
+    "state_invariance_maximum_absolute_difference": 0.0,
+    "minimum_actor_clearance_m": 0.4238217949867219,
+    "unavailable_rgb_support_frames": 37,
+    "full_frame_target_rgb_changed_pixels_min": 1641,
+    "full_frame_target_rgb_changed_pixels_max": 3883
+  },
+  "artifact_root": "artifacts/hugsim_occlusion_metamorphic/analysis-run001",
+  "claim_boundary": "CF-O 001 accepts only paired world-state intervention integrity; its camera projection and RGB visibility measurement chain is invalidated by a diagnosed coordinate-sign error."
+}
