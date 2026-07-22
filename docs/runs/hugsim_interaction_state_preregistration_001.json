@@ -1,0 +1,70 @@
+{
+  "experiment_id": "CF-I-STATE-001",
+  "purpose": "validate four state-level CF-I audit indicators on known positive and negative controls",
+  "status": "frozen_before_formal_output",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "common": {
+    "prediction_steps": 20,
+    "attack_update_dt_seconds": 0.1,
+    "attack_best_k": 1,
+    "new_plan_every_step": true,
+    "num_transitions": 24,
+    "declared_stimulus_index": 8,
+    "responder_initial_state": [0.0, -15.0, 0.0, 3.0],
+    "ego_initial_state": [0.0, 0.0, 0.0, 0.5],
+    "stimulus": "set ego speed from 0.5 m/s to 0 at the declared index",
+    "other_neighbors": 0,
+    "torch_seed": 0
+  },
+  "controls": {
+    "released_grid": {
+      "ego_prediction_index_dt_seconds": 0.25,
+      "expected_role": "known time-alignment negative"
+    },
+    "aligned_grid": {
+      "ego_prediction_index_dt_seconds": 0.10526315789473684,
+      "expected_role": "time-alignment positive"
+    },
+    "anticipatory": {
+      "actual_stimulus_index": 7,
+      "declared_stimulus_index": 8,
+      "expected_role": "known cause-before-effect negative"
+    },
+    "constant_planner": {
+      "expected_role": "known no-online-response negative"
+    }
+  },
+  "indicators": {
+    "CF-I-T1": {
+      "name": "indexed-time alignment",
+      "type": "hard constraint",
+      "measurement": "maximum absolute timestamp offset at compared future indices",
+      "tolerance_seconds": 1e-09,
+      "expected": "reject released_grid and accept aligned_grid"
+    },
+    "CF-I-T2": {
+      "name": "causal response onset",
+      "type": "hard constraint",
+      "measurement": "first responder divergence index and maximum pre-stimulus divergence",
+      "state_l2_tolerance": 1e-08,
+      "expected": "accept declared-index treatment and reject anticipatory control"
+    },
+    "CF-I-T3": {
+      "name": "post-stimulus response existence",
+      "type": "mechanism capability check",
+      "measurement": "maximum post-stimulus paired state divergence",
+      "state_l2_tolerance": 1e-08,
+      "expected": "detect aligned AttackPlanner response and no ConstantPlanner response"
+    },
+    "CF-I-T4": {
+      "name": "world-time state continuity",
+      "type": "conditional hard constraint",
+      "measurement": "position displacement minus trapezoidal speed integral, plus acceleration bounds",
+      "position_tolerance_m": 0.001,
+      "acceleration_bounds_mps2": [-6.0, 5.0],
+      "expected": "reject released_grid and accept aligned_grid in the selected short-step near-straight range"
+    }
+  },
+  "stop_rule": "if any indicator cannot distinguish its named known controls, do not render or add a receiver",
+  "claim_boundary": "indicator discrimination in this deterministic state-level construction only; no traffic realism, sensor, AD, or closed-loop credibility claim"
+}
