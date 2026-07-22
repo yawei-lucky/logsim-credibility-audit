@@ -1,0 +1,277 @@
+{
+  "experiment_id": "CF-I-STATE-001",
+  "created_at": "2026-07-22T08:13:27.854350+00:00",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration": "docs/runs/hugsim_interaction_state_preregistration_001.json",
+  "scope": "deterministic state-level CF-I indicator validation",
+  "indicator_results": {
+    "CF-I-T1": {
+      "released_max_offset_seconds": 2.75,
+      "aligned_max_offset_seconds": 0.0,
+      "released_decision": "rejected",
+      "aligned_decision": "accepted",
+      "control_discrimination": "accepted"
+    },
+    "CF-I-T2": {
+      "declared_stimulus_index": 8,
+      "aligned_first_divergence_index": 8,
+      "aligned_pre_stimulus_max_l2": 0.0,
+      "anticipatory_first_divergence_index": 7,
+      "anticipatory_pre_stimulus_max_l2": 0.24595396452913454,
+      "aligned_decision": "accepted",
+      "anticipatory_decision": "rejected",
+      "control_discrimination": "accepted"
+    },
+    "CF-I-T3": {
+      "aligned_first_divergence_index": 8,
+      "aligned_response_latency_steps": 0,
+      "aligned_post_stimulus_max_l2": 5.411099661803175,
+      "constant_first_divergence_index": null,
+      "constant_post_stimulus_max_l2": 0.0,
+      "aligned_decision": "accepted",
+      "constant_interaction_decision": "rejected",
+      "control_discrimination": "accepted"
+    },
+    "CF-I-T4": {
+      "position_tolerance_m": 0.001,
+      "acceleration_bounds_mps2": [
+        -6.0,
+        5.0
+      ],
+      "conditions": {
+        "released_baseline": {
+          "coverage": 24,
+          "position_residual_m": [
+            0.4722991689750695,
+            0.5425515551316127,
+            0.6128039412881541,
+            0.6830563274446955,
+            0.7473838144392188,
+            0.7998614994772909,
+            0.8345644833968957,
+            0.869267467316499,
+            0.9039704512361018,
+            0.9386734351557047,
+            0.9615266198431678,
+            0.9962296064870841,
+            1.060557093481608,
+            1.1248845804761318,
+            1.1892120674706552,
+            1.2535395544651804,
+            1.3178670414597038,
+            1.382194528454228,
+            1.4465220154487517,
+            1.5108495024432758,
+            1.5751769894377996,
+            1.6395044764323237,
+            1.7097568625888655,
+            1.7565532671766886
+          ],
+          "max_position_residual_m": 1.7565532671766886,
+          "min_acceleration_mps2": 0.14035089392411138,
+          "max_acceleration_mps2": 2.1052631578947363
+        },
+        "released_treatment": {
+          "coverage": 24,
+          "position_residual_m": [
+            0.4722991689750695,
+            0.5425515551316127,
+            0.6128039412881541,
+            0.6830563274446955,
+            0.7473838144392188,
+            0.7998614994772909,
+            0.8345644833968957,
+            0.869267467316499,
+            0.9098953503981193,
+            0.9505232334797402,
+            0.9911511165613625,
+            1.0317789996429831,
+            1.090181583843072,
+            1.1663588691616318,
+            1.2425361544801907,
+            1.2831640402861244,
+            1.2882425265794306,
+            1.2933210128727373,
+            1.2983994991660441,
+            1.2975530853892288,
+            1.2967066716124138,
+            1.2958602578355989,
+            1.2861149304728405,
+            1.2736320837730588
+          ],
+          "max_position_residual_m": 1.2983994991660441,
+          "min_acceleration_mps2": -0.34760805433639064,
+          "max_acceleration_mps2": 2.1052631578947363
+        },
+        "aligned_baseline": {
+          "coverage": 24,
+          "position_residual_m": [
+            2.7755575615628914e-16,
+            1.6653345369377348e-15,
+            1.2212453270876722e-15,
+            7.771561172376096e-16,
+            2.220446049250313e-16,
+            1.1102230246251565e-16,
+            1.3322676295501878e-15,
+            7.771561172376096e-16,
+            5.551115123125783e-16,
+            0.0,
+            1.5543122344752192e-15,
+            1.1102230246251565e-15,
+            3.3306690738754696e-16,
+            1.1102230246251565e-16,
+            7.771561172376096e-16,
+            5.551115123125783e-16,
+            3.3306690738754696e-16,
+            2.220446049250313e-16,
+            1.1102230246251565e-16,
+            0.0,
+            2.220446049250313e-16,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "max_position_residual_m": 1.6653345369377348e-15,
+          "min_acceleration_mps2": -1.222222208976755,
+          "max_acceleration_mps2": 4.999999999999999
+        },
+        "aligned_treatment": {
+          "coverage": 24,
+          "position_residual_m": [
+            2.7755575615628914e-16,
+            1.6653345369377348e-15,
+            1.2212453270876722e-15,
+            7.771561172376096e-16,
+            2.220446049250313e-16,
+            1.1102230246251565e-16,
+            1.3322676295501878e-15,
+            7.771561172376096e-16,
+            4.440892098500626e-16,
+            7.771561172376096e-16,
+            6.661338147750939e-16,
+            3.3306690738754696e-16,
+            2.220446049250313e-16,
+            5.551115123125783e-16,
+            1.1102230246251565e-16,
+            5.551115123125783e-16,
+            0.0,
+            4.440892098500626e-16,
+            0.0,
+            0.0,
+            2.220446049250313e-16,
+            2.5089372837072688e-05,
+            2.519727827188234e-05,
+            2.5306080188469693e-05
+          ],
+          "max_position_residual_m": 2.5306080188469693e-05,
+          "min_acceleration_mps2": -0.44444441795350365,
+          "max_acceleration_mps2": 4.999999999999999
+        }
+      },
+      "aligned_decision": "accepted",
+      "released_decision": "rejected",
+      "control_discrimination": "accepted"
+    }
+  },
+  "credibility": {
+    "evidence_decision": "down-weighted",
+    "claim_decisions": {
+      "cf_i_t1_control_discrimination": "accepted",
+      "cf_i_t2_control_discrimination": "accepted",
+      "cf_i_t3_control_discrimination": "accepted",
+      "cf_i_t4_control_discrimination": "accepted",
+      "released_grid_is_temporally_consistent_interaction": "rejected",
+      "anticipatory_control_respects_declared_causal_order": "rejected",
+      "constant_planner_has_online_stimulus_response": "rejected",
+      "aligned_attackplanner_has_state_level_response": "accepted"
+    },
+    "rejected_claim_contexts": {
+      "released_grid_is_temporally_consistent_interaction": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "future indices and world-state transitions use incompatible time bases",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_state_preregistration_001.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+        ],
+        "diagnostic_finding": "CF-I-STATE-001-D1"
+      },
+      "anticipatory_control_respects_declared_causal_order": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "responder divergence begins before the declared stimulus index",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_state_preregistration_001.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update"
+        ],
+        "diagnostic_finding": "CF-I-STATE-001-D2"
+      },
+      "constant_planner_has_online_stimulus_response": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "paired ConstantPlanner states remain identical after the ego stimulus",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_state_preregistration_001.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:ConstantPlanner.update"
+        ],
+        "diagnostic_finding": "CF-I-STATE-001-D3"
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "CF-I-STATE-001-D1": {
+      "component": "CF-I-T1 and CF-I-T4",
+      "expected": "compared state indices share time and displacement agrees with world time",
+      "observed": "released maximum time offset=2.750000 s; maximum continuity residual=1.756553 m",
+      "expectation_met": false,
+      "implication": "released-grid interaction timing is not qualified",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_state_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+      ]
+    },
+    "CF-I-STATE-001-D2": {
+      "component": "CF-I-T2 anticipatory negative",
+      "expected": "no responder divergence before declared stimulus index 8",
+      "observed": "first divergence occurred at index 7",
+      "expectation_met": false,
+      "implication": "CF-I-T2 detects the constructed result-before-cause control",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_state_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update"
+      ]
+    },
+    "CF-I-STATE-001-D3": {
+      "component": "CF-I-T3 ConstantPlanner negative",
+      "expected": "an online interaction mechanism changes after the ego stimulus",
+      "observed": "maximum post-stimulus paired L2 divergence=0.000000",
+      "expectation_met": false,
+      "implication": "CF-I-T3 does not mistake independent scripted motion for response",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_state_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:ConstantPlanner.update"
+      ]
+    },
+    "CF-I-STATE-001-D4": {
+      "component": "CF-I-T1 through CF-I-T4 control discrimination",
+      "expected": "each indicator separates its preregistered known controls",
+      "observed": "all four control-discrimination decisions accepted=True",
+      "expectation_met": true,
+      "implication": "the four indicators are qualified only for this state-level test use",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_state_preregistration_001.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/agent_controller.py:AttackPlanner.update",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:submodules/Pplan/Sampling/spline_planner.py:compute_spline_xyvaqrt"
+      ]
+    }
+  },
+  "strongest_allowed_claim": "CF-I-T1..T4 distinguish their frozen state-level controls. This does not qualify realistic interaction behavior, rendered sensors, AD response, or closed-loop outcomes.",
+  "stop_rule_triggered": false
+}

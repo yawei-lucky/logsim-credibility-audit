@@ -57,25 +57,25 @@ indexwise costs compare mismatched future times. See
 `docs/runs/hugsim_interaction_capability_001.md`.
 
 The research output is an audited indicator, not a repaired HUGSIM result.
-CF-I-CAP-001 now defines `CF-I-T1`, a hard time-alignment indicator. It rejects
-the released `0.25/0.1053 s` mismatch (maximum indexed offset `2.75 s`) and
-accepts an aligned `0.1053/0.1053 s` positive control. This is narrow
-indicator-validation evidence; preserve both outcomes.
+CF-I-STATE-001 has now validated four state-level indicators against frozen
+known controls:
 
-Next run one state-only paired rollout using the released mismatch as a negative
-control and the aligned configuration as a positive control. Use one responder
-to avoid the planner-wide `ATTACK_FREQ` ambiguity. Introduce one timed change in
-ego motion while holding responder identity, initial state, scene, road, and
-unaffected actors fixed. Validate these candidate indicators:
+- `CF-I-T1` indexed-time alignment;
+- `CF-I-T2` causal response onset;
+- `CF-I-T3` post-stimulus response existence;
+- `CF-I-T4` world-time state continuity.
 
-- `CF-I-T1`: stimulus and response-candidate indexed-time alignment;
-- pre-stimulus responder divergence;
-- post-stimulus response latency and state continuity.
+All four control-discrimination claims are narrowly `accepted`. The released
+grid was correctly rejected by T1/T4; a one-step-early response was rejected by
+T2; independent ConstantPlanner motion was rejected as interaction by T3. See
+`docs/runs/hugsim_interaction_state_indicators_001.md`.
 
-The indicators should reject the known temporal negative, accept the aligned
-control where appropriate, and report coverage rather than treating missing
-observations as passing. Do not render or add a receiver until the state-level
-indicators demonstrate this discrimination.
+Next transport the same indicators into the actual one-responder HUGSIM planner
+loop. Log actor/ego states and effective timestamps first. Preserve the released
+grid as a negative case and identify the aligned configuration as a modified
+positive control. If the actual loop does not reproduce the state-level
+discrimination, stop and diagnose the transport gap. Render only after those
+state logs pass; do not add an AD receiver yet.
 
 This experiment may support only an adversarial ego-response capability claim.
 It must not be generalized to realistic merging, yielding, or traffic-agent
@@ -123,6 +123,11 @@ branch.
   interaction because its compared futures use `0.25 s` and about `0.1053 s`
   index steps. Overall evidence is `down-weighted`; independent ConstantPlanner
   trajectories remain rejected as interaction evidence.
+- CF-I-STATE-001 validated T1--T4 on preregistered state-level controls. It
+  accepted their narrow control discrimination and preserved the released
+  time-grid and ConstantPlanner cases as negative evidence. Overall evidence is
+  still `down-weighted`: the direct controller harness is not yet the actual
+  rendered planner loop or realistic behavior.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.
