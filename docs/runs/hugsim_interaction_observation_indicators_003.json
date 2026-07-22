@@ -1,0 +1,186 @@
+{
+  "experiment_id": "CF-I-OBS-003",
+  "created_at": "2026-07-22T12:44:34.980629+00:00",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration": "docs/runs/hugsim_interaction_observation_preregistration_003.json",
+  "indicator_results": {
+    "CF-I-O1": {
+      "max_state_replay_l2": 0.0,
+      "max_render_position_error_m": 0.0,
+      "max_render_yaw_error_rad": 8.881784197001252e-16,
+      "shifted_state_negative_decision": "rejected",
+      "control_discrimination": "accepted"
+    },
+    "CF-I-O2": {
+      "qualified_camera_rows": 84,
+      "positive_mismatch_count": 0,
+      "rotated_mapping_mismatch_count": 28,
+      "rotated_mapping_decision": "rejected",
+      "control_discrimination": "accepted"
+    },
+    "CF-I-O3": {
+      "projection_source": "gaussian_opacity_quantile_envelope",
+      "asset_envelope": {
+        "local_lower_xyz_m": [
+          -1.9631026983261108,
+          -1.3175547122955322,
+          -0.7755914926528931
+        ],
+        "local_upper_xyz_m": [
+          1.9583641290664673,
+          0.0,
+          0.8595476746559143
+        ],
+        "local_center_xyz_m": [
+          -0.0023692846298217773,
+          -0.6587773561477661,
+          0.04197809100151062
+        ],
+        "local_extent_xyz_m": [
+          3.921466827392578,
+          1.3175547122955322,
+          1.6351392269134521
+        ],
+        "qualified_gaussian_count": 67073
+      },
+      "minimum_support_inside_fraction": 0.6617544558398885,
+      "maximum_shifted_projection_inside_fraction": 0.30848622037895934,
+      "shifted_projection_decision": "rejected",
+      "control_discrimination": "rejected"
+    },
+    "CF-I-O4": {
+      "declared_stimulus_index": 8,
+      "actual_first_observation_divergence_index": 9,
+      "actual_changed_pixels": {
+        "6": 0,
+        "7": 0,
+        "8": 0,
+        "9": 300614,
+        "10": 499649,
+        "11": 643181
+      },
+      "shifted_first_divergence_index": 6,
+      "shifted_changed_pixels": {
+        "6": 500303,
+        "7": 306662,
+        "8": 8325,
+        "9": 311303
+      },
+      "shifted_pairing_decision": "rejected",
+      "control_discrimination": "accepted"
+    }
+  },
+  "credibility": {
+    "evidence_decision": "down-weighted",
+    "claim_decisions": {
+      "cf_i_o1_state_to_render_transform_discrimination": "accepted",
+      "cf_i_o2_camera_membership_discrimination": "accepted",
+      "cf_i_o3_projection_localization_discrimination": "rejected",
+      "cf_i_o4_observation_onset_discrimination": "accepted"
+    },
+    "rejected_claim_contexts": {
+      "cf_i_o3_projection_localization_discrimination": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "CF-I-O3 did not discriminate its frozen positive and negative controls",
+        "evidence_refs": [
+          "docs/runs/hugsim_interaction_observation_preregistration_003.json",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+          "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv._get_obs"
+        ],
+        "diagnostic_finding": "CF-I-OBS-003-D3"
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "CF-I-OBS-003-D1": {
+      "component": "planner state to render transform",
+      "expected": "state and transform controls discriminate",
+      "observed": "replay=0.000e+00 m; pass=True",
+      "expectation_met": true,
+      "implication": "qualified only for frozen state-to-observation transport",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_observation_preregistration_003.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv._get_obs"
+      ]
+    },
+    "CF-I-OBS-003-D2": {
+      "component": "projected camera membership",
+      "expected": "CAM_BACK positive and five camera negatives discriminate",
+      "observed": "positive mismatches=0; rotated mismatches=28",
+      "expectation_met": true,
+      "implication": "qualified only for frozen state-to-observation transport",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_observation_preregistration_003.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv._get_obs"
+      ]
+    },
+    "CF-I-OBS-003-D3": {
+      "component": "RGB support localization",
+      "expected": "support lies in the independently projected actor region",
+      "observed": "minimum inside=0.6618; pass=False",
+      "expectation_met": false,
+      "implication": "observation transport is not qualified",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_observation_preregistration_003.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv._get_obs"
+      ]
+    },
+    "CF-I-OBS-003-D4": {
+      "component": "rendered causal onset",
+      "expected": "no observation divergence before state cause and shifted pairing is rejected",
+      "observed": "actual first=9; shifted first=6; pass=True",
+      "expectation_met": true,
+      "implication": "qualified only for frozen state-to-observation transport",
+      "evidence_decision": "accepted",
+      "evidence_refs": [
+        "docs/runs/hugsim_interaction_observation_preregistration_003.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/utils/plan.py:planner.plan_traj",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:sim/hugsim_env/envs/hug_sim.py:HUGSimEnv._get_obs"
+      ]
+    }
+  },
+  "measurement_chain": {
+    "shared_camera_dynamics_cleared_before_each_paired_render": true,
+    "reason": "HUGSIM Camera uses a mutable default dynamics dictionary that render mutates in place",
+    "projection_model": {
+      "source": "gaussian_opacity_quantile_envelope",
+      "minimum_opacity": 0.5,
+      "lower_quantile": 0.005,
+      "upper_quantile": 0.995,
+      "origin": "quantile envelope center transformed by the exact planner body-to-world matrix",
+      "qualification_boundary": "asset-derived internal envelope, not a real vehicle box or external truth"
+    },
+    "derived_asset_envelope": {
+      "local_lower_xyz_m": [
+        -1.9631026983261108,
+        -1.3175547122955322,
+        -0.7755914926528931
+      ],
+      "local_upper_xyz_m": [
+        1.9583641290664673,
+        0.0,
+        0.8595476746559143
+      ],
+      "local_center_xyz_m": [
+        -0.0023692846298217773,
+        -0.6587773561477661,
+        0.04197809100151062
+      ],
+      "local_extent_xyz_m": [
+        3.921466827392578,
+        1.3175547122955322,
+        1.6351392269134521
+      ],
+      "qualified_gaussian_count": 67073
+    }
+  },
+  "strongest_allowed_claim": "Only individually accepted indicator decisions may be retained; complete state-to-observation transport is not qualified.",
+  "stop_rule_triggered": true
+}

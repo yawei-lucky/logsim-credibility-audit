@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — CF-I Interaction Capability
+## Immediate Direction — Supporting Receiver Qualification
 
 The first law/indicator framework, CF-M constant-speed audit, and CF-O
 controlled-occlusion audit are complete. The next complementary mechanism is
@@ -96,17 +96,30 @@ that the high-opacity Gaussian envelope is larger than the declared dimensions
 and vertically offset from the transform origin. See
 `docs/runs/hugsim_interaction_observation_indicators_002.md`.
 
-Next split the failed localization question instead of relaxing its threshold:
+CF-I-OBS-003 completed the planned localization split without relaxing the
+threshold. The Gaussian asset envelope improved minimum close-range RGB support
+coverage from about `0.48` to `0.66`, but still failed the frozen `0.90` gate.
+Metadata geometry therefore contributes to the mismatch but is not the only
+explanation; a centre-only Gaussian envelope also does not qualify as precise
+spatial truth. See
+`docs/runs/hugsim_interaction_observation_indicators_003.md`.
 
-1. audit whether HUGSIM `obj_boxes` consistently envelope the rendered actor;
-2. derive an opacity-qualified Gaussian asset envelope and origin, then test
-   whether that independently projected envelope localizes RGB support across
-   distance.
+The first internal CF-I round is now closed with positive evidence, negative
+evidence, and explicit boundaries. Do not add more CF-I scenes or tune opacity,
+quantiles, dilation, or thresholds merely to turn O3 green.
 
-This distinguishes metadata-to-render inconsistency from a deeper projection
-failure. Do not add an AD receiver or another scene until this boundary is
-resolved. Common-renderer RGB/semantic/depth agreement remains insufficient for
-real-sensor correctness.
+Next perform a bounded supporting-receiver qualification gate. Before using a
+camera-only AD model as a credibility ruler, record:
+
+1. its real-data qualification basis and task scope;
+2. input, camera, and calibration compatibility;
+3. output semantics needed for vehicle position, tracking, and risk ordering;
+4. known failure modes and uncertainty;
+5. the strongest HUGSIM claim it may support.
+
+This next step qualifies the receiver; it does not yet interpret a new HUGSIM
+AD experiment. The unresolved spatial-ground-truth boundary from CF-I must be
+carried into every later association or distance claim.
 
 This experiment may support only an adversarial ego-response capability claim.
 It must not be generalized to realistic merging, yielding, or traffic-agent
@@ -170,6 +183,11 @@ branch.
   membership, and causal onset were accepted, while projected metadata-box
   localization remained rejected and worsened with proximity. This is bounded
   internal state-to-observation evidence, not real-sensor equivalence.
+- CF-I-OBS-003 projected a frozen opacity-qualified Gaussian centre envelope.
+  It improved minimum localization coverage from about `0.48` to `0.66` but
+  remained below the `0.90` gate. Both metadata-box and simple asset-envelope
+  spatial-truth claims remain rejected; first-round CF-I is closed without
+  further tuning.
 - Independently recomputed planar geometry verifies only HUGSIM-declared state,
   not real-world state.
 - Sparse4Dv3 is a provisional supporting receiver probe, not truth.
@@ -181,7 +199,8 @@ branch.
 
 ## Explicitly Deferred
 
-- Do not make Sparse4Dv3 external benchmark qualification the immediate task.
+- Do not run a new HUGSIM receiver experiment before the supporting receiver
+  and its allowed claims pass the qualification gate.
 - Do not add another receiver or more HUGSIM scenes merely to obtain curves.
 - Do not install a full AD stack yet.
 - Do not define final numerical credibility thresholds or the final four-layer
