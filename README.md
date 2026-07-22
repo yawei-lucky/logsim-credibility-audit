@@ -34,6 +34,12 @@
 HUGSIM 输出的 RGB、semantic 和 depth 都是待验证的仿真输出；semantic/depth
 可用于内部诊断，但不默认作为可信 ground truth。
 
+下一阶段采用两级反事实验证思想：不要求每个设计场景都有匹配现实起点，但先
+验证所使用的指标、接收方、约束和不确定性范围是否具备外部效度。匹配真实日志
+是直接 real-sim 等效性的强证据路径，不是所有反事实实验的普遍前置条件；无精确
+现实对应物的场景只能在物理/因果约束、多接收方交叉验证、敏感性和下游结果稳定
+性范围内形成有边界的可信主张。详见 `docs/research_guiding_principles.md`。
+
 当前 HUGSIM 实验的目的不是证明 HUGSIM 本身可信，也不是复现完整 benchmark，而是完成：
 
 > HUGSIM relation-level counterfactual credibility audit
@@ -296,10 +302,11 @@ exact pairing
 → fixed human-visible target / nuisance annotation audit
 ```
 
-下一次如继续 HUGSIM，不再优先增加接收方。正常场景固定可见性标注已经完成；
-下一步先声明 lane relation + critical-object risk ordering 的下游 AD 决策边界，
-把 nuisance/几何误差绑定到排序或动作是否改变。真实源日志锚点仍是后续 matched
-real-sim 对比的关键 gate。不要继续修改同一切入参数追结果。
+下一次如继续 HUGSIM，不再优先增加接收方或细化响应曲线。先完成验证工具的
+战略资格审计：区分 matched reality、独立测量、物理/因果规律、真实数据接收方
+能力和 HUGSIM 内部自指。随后再分别推进 matched real-sim direct-equivalence
+与 designed counterfactual robustness；真实源日志锚点只作为前一条路径的关键
+gate，不阻断后一条路径。不要继续修改同一切入参数追结果。
 
 ## 暂缓内容
 

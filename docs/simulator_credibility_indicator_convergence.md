@@ -18,6 +18,13 @@ error may preserve `near < far`, but it may cross a braking or collision-
 prediction boundary. Therefore no universal pixel, box, or meter threshold is
 used as the final credibility threshold.
 
+A matched real starting scene is a strong direct-equivalence design, not a
+mandatory starting point for every counterfactual. Designed counterfactuals may
+be evaluated without an exact real counterpart after the relevant metrics,
+constraints, receivers, and uncertainty ranges are qualified using independent
+reality evidence or testable laws. Their strongest claim is bounded causal and
+decision robustness, not exact real–simulation equivalence.
+
 ## 2. Where the current experiment sits
 
 The Sparse4Dv3 experiment is primarily a **task-level receiver-consistency
@@ -41,8 +48,8 @@ chain, but the layers are not current project stages or a grading rubric:
 |---|---|---|
 | Log reproduction | source gate and pose manifest only | matched real source observations and immutable identity |
 | Sensor consistency | camera input contract and internal diagnostics only | matched real sensor reference or independent measurement |
-| Task-level consistency | controlled receiver sensitivity, relation, ordering, and tracking | same frozen receiver on matched real and simulated observations |
-| Closed-loop outcome credibility | HUGSIM loop and scoring diagnostics only | target planner/controller plus matched real or controlled-track outcome |
+| Task-level consistency | controlled receiver sensitivity, relation, ordering, and tracking | same frozen receiver on matched real/sim observations, or externally qualified instruments plus uncertainty-robust task conclusions |
+| Closed-loop outcome credibility | HUGSIM loop and scoring diagnostics only | target planner/controller plus matched real/controlled-track outcome, or a separately qualified bounded robustness claim that is not direct real-outcome equivalence |
 
 ## 3. Current fit-for-use conclusion
 
@@ -145,9 +152,9 @@ responses. This is enough to show that raw count/persistence is not a safe
 standalone endpoint. It is not ODD precision/recall: the labels inspect HUGSIM
 RGB rather than matched reality, and the sample cannot expose false negatives.
 
-### F. Matched real-simulation task equivalence
+### F. External validity and task-equivalence qualification
 
-This is the required credibility upgrade:
+The strongest direct upgrade is matched real-simulation task equivalence:
 
 - same frozen receiver and complete input contract;
 - paired differences for object discovery, relations, geometry, tracking, and
@@ -155,6 +162,13 @@ This is the required credibility upgrade:
 - pre-specified equivalence bounds and uncertainty intervals;
 - decision/action invariance for the intended planner or controller;
 - explicit receiver, ODD, task, and intervention applicability range.
+
+It is one branch rather than a universal sequence gate. For designed
+counterfactuals without an exact real counterpart, the validation instruments
+must first be qualified on independent reality evidence, controlled
+measurements, or testable physical/causal laws. The resulting claim is bounded
+fitness-for-use or robustness across a declared uncertainty range, not that the
+generated future is the unique real outcome.
 
 ## 5. Threshold rule
 
@@ -172,11 +186,13 @@ Do not choose a bound because it makes the current simulator pass. The former
 1. keep the frozen cross-scene Sparse4Dv3 response summary;
 2. keep the fixed normal-scene human-visible target/nuisance audit;
 3. do not turn its detection-conditioned 50% support result into ODD precision;
-4. define one downstream task boundary, preferably lane relation plus critical-
-   object risk ordering before metric planning;
-5. when source RGB becomes available, run the same endpoints on matched real
-   and simulated inputs;
-6. only then add planner/control equivalence and closed-loop outcomes.
+4. perform the strategic qualification pass for every retained metric,
+   receiver, constraint, and uncertainty range;
+5. in parallel, keep source RGB recovery as the direct matched real–simulation
+   upgrade rather than a gate on all designed counterfactuals;
+6. only after the qualification pass, select a downstream task boundary and
+   add planner/control conclusions when its inputs, margins, and uncertainty
+   ranges are qualified for the claimed scope.
 
 The detector-box/calibration root-cause investigation follows the cross-scene
 summary. It should diagnose why absolute geometry is weak, but it does not

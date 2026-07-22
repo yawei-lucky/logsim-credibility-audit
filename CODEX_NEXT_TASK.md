@@ -1,4 +1,4 @@
-# Codex Next Task — Audit Metrics and Expand Bounded Scene Coverage
+# Codex Next Task — Qualify Validation Instruments and Split Evidence Paths
 
 > Read this file first when resuming HUGSIM work.
 
@@ -15,6 +15,13 @@ This project uses the broad definition:
 HUGSIM is the first case study, not the final research target. It is a
 real-driving-sequence reconstruction-based, counterfactual closed-loop neural
 simulator.
+
+The next-stage sequencing rule is two-level: qualify the indicators,
+constraints, receivers, acceptance bounds, and uncertainty ranges first; then
+use them on either a direct matched real–simulation branch or a designed
+counterfactual robustness branch. An exact factual starting scene is not
+required for every counterfactual, but HUGSIM-internal self-reference cannot
+provide the external validity of the instruments used to judge it.
 
 Durable guiding questions:
 
@@ -276,15 +283,17 @@ independent ground truth. Practical steps are:
 2. retain the existing proxy/detector/cross-receiver results as metric-audit
    material and correct any interpretation that promotes perception signals
    to planning, control, or simulator-credibility claims;
-3. obtain the licensed nuScenes source images and the ASAP
-   `interp_12Hz_trainval` mapping for `scene-0383`;
-4. render split-derived test candidate poses using their exact metadata
-   intrinsics and `camtoworld`, and verify checkpoint training provenance
-   before calling them genuinely held out;
-5. freeze a bounded camera-only AD receiver input contract and feed matched
-   real/sim observations to the same AD receiver;
-6. only after the matched factual comparison, use controlled distance, lane,
-   occlusion, or motion interventions and then progress to planning/control.
+3. qualify the retained metrics, receivers, constraints, and uncertainty ranges
+   using evidence independent of the current HUGSIM result; do not call an
+   indicator strong merely because it is internally consistent;
+4. keep source recovery, exact metadata-pose rendering, and the same frozen AD
+   on matched real/sim observations as a parallel direct-equivalence upgrade;
+5. allow designed distance, lane, occlusion, or motion counterfactuals without
+   an exact matched starting scene when they satisfy the two-level validation
+   principle in `docs/research_guiding_principles.md`;
+6. label such experiments as causal/mechanism/robustness evidence, not direct
+   real–simulation equivalence, and progress to planning/control only after the
+   relevant task margins and uncertainty ranges are qualified.
 
 Two additional normal-scene carriers have now been collected and executed:
 
@@ -363,11 +372,14 @@ usefulness evidence remains down-weighted because the reference is HUGSIM RGB,
 not matched reality. This is not ODD precision/recall and does not measure false
 negatives.
 
-The immediate next action is now to define one downstream AD task boundary:
-lane relation plus critical-object risk ordering. Bind nuisance and geometry
-errors to whether they change that decision/ranking, instead of using a generic
-score or metre threshold. Do not add another detector, actor treatment, or
-response curve first.
+The next stage now begins with a strategic qualification pass rather than a
+new detailed response curve. For each retained evidence source, record whether
+its external-validity basis is matched reality, independent measurement,
+physical/causal law, real-data receiver characterization, or HUGSIM-internal
+self-reference. Then separate two future experiment tracks: direct matched
+real–simulation equivalence when source data becomes available, and designed
+counterfactual robustness without an exact real starting scene. Only after
+this qualification pass should one downstream AD task boundary be selected.
 
 Do not independently install a full AD stack, run the full benchmark, expand to
 OmniDreams/Cosmos, or design the final four-layer credibility metric.

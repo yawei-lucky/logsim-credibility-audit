@@ -15,9 +15,9 @@ matter to a receiver performing a driving task.
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-This matched real-versus-sim comparison is the primary guide for developing
-credibility evidence. Agreement should be evaluated at task-relevant levels,
-not only through pixel similarity:
+This matched real-versus-sim comparison is the strongest direct-comparison
+guide for developing credibility evidence. Agreement should be evaluated at
+task-relevant levels, not only through pixel similarity:
 
 - perception and scene understanding;
 - hazard recognition and risk ordering;
@@ -27,6 +27,65 @@ not only through pixel similarity:
 Matching outputs do not make simulation literally identical to reality. They
 provide bounded evidence that the simulation is fit for a specified driving
 task, receiver, ODD, and intervention range.
+
+## Reality Grounding Without Requiring a Real Starting Scene
+
+A designed counterfactual does **not** require every test case to begin from a
+matched real-log scene. Requiring an exact real counterpart for every case
+would prevent simulation from testing rare, unsafe, or deliberately novel
+conditions—the main reason to use counterfactual simulation.
+
+Distinguish two levels of grounding:
+
+1. **Scenario-level factual anchoring** is a strong evidence path, but it is
+   optional for an individual designed counterfactual.
+2. **Framework- and instrument-level external validity** is required before an
+   indicator can support a real-world-equivalence claim. The metric, receiver,
+   physical constraint, or behavioral model must be qualified somewhere
+   against evidence that is not produced solely by the simulator under test.
+
+External qualification may use matched real observations, independent manual
+or sensor measurements, controlled-track experiments, physical laws,
+empirical behavior distributions, or receiver behavior already characterized
+on real data. It need not always use an exact log match, but it must provide a
+traceable source of real-world validity.
+
+> 可信反事实不要求每个场景都有匹配现实起点；但用于判断它的指标、约束和接收方，必须通过独立现实证据或可检验规律获得资格。
+
+An indicator is not self-validating. Calling it "strong" requires evidence
+that it measures the intended construct, separates known conforming and
+nonconforming cases, is calibrated to a task or decision consequence,
+generalizes over its declared range, and does not use HUGSIM outputs as the
+sole reference for judging those same outputs.
+
+### Two-level validation logic
+
+**Level 1 — qualify the validation instruments.** Establish the applicability,
+error envelope, independence, and failure modes of each metric, receiver,
+constraint, and reference using external evidence where appropriate.
+
+**Level 2 — evaluate designed counterfactuals.** A counterfactual without an
+exact real counterpart may then be assessed through:
+
+- physical, geometric, visibility, and causal constraints;
+- consistency across qualified receivers with materially different failure
+  modes;
+- sensitivity to plausible vehicle behavior, rendering, dynamics, and
+  receiver uncertainty;
+- stability of task relations, critical-object ordering, decisions, and
+  outcomes across that uncertainty range.
+
+Such evidence can support physical admissibility, causal consistency,
+model-robust task behavior, and bounded fitness for stress testing. It cannot
+establish that one exact unobserved future is the unique real outcome. A
+matched factual comparison remains the strongest direct upgrade for
+real–simulation equivalence, not a universal prerequisite for running or
+learning from a counterfactual experiment.
+
+Multiple receivers are also not automatically independent. Versions from the
+same model family or models trained on the same data may share failure modes;
+their agreement must be weighted by evidence dependence rather than counted as
+simple votes.
 
 ## Receiver: Automated Driving and Human-in-the-Loop
 
@@ -109,15 +168,29 @@ mechanism.
 
 ## Intended Research Progression
 
+The progression has two evidence paths rather than one mandatory linear chain:
+
 ```text
-real-log anchor
--> matched real/sim observations
--> matched automated or human receiver
--> controlled counterfactual intervention
--> behavior and outcome comparison
--> positive evidence, negative evidence, and applicability boundaries
--> credibility-validation framework and metrics
+instrument / framework qualification
+  -> independent reality evidence, physical laws, controlled measurements
+  -> qualified metrics, receivers, constraints, and uncertainty ranges
+
+case-level evaluation
+  -> matched factual real/sim path, when available
+  OR
+  -> designed counterfactual path without an exact real counterpart
+       -> causal constraints + receiver convergence + sensitivity analysis
+
+both paths
+  -> behavior and outcome comparison
+  -> positive evidence, negative evidence, and applicability boundaries
+  -> credibility-validation framework and metrics
 ```
+
+The future four-layer evidence chain is therefore an organizational structure,
+not a serial self-proof. Each layer should form an evidence network with
+independence, external validity, causal constraints, and downstream
+consequences made explicit.
 
 The eventual output should be a unified validation protocol for
 fitness-for-use. It may combine mandatory validity gates, dimension-specific

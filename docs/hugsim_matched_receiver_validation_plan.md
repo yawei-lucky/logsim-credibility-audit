@@ -6,6 +6,19 @@
 
 This is a bounded next-stage plan, not the final credibility metric.
 
+## Scope of This Plan
+
+This document specifies the strongest **direct matched real–simulation**
+evidence branch. Its Source Anchor Gate is mandatory before a claim of direct
+real–simulation equivalence for the selected factual condition, but it is not a
+universal prerequisite for every designed counterfactual experiment.
+
+A counterfactual without an exact factual counterpart may proceed under the
+two-level principle in `docs/research_guiding_principles.md` once its metrics,
+constraints, receivers, and uncertainty ranges have an explicit qualification
+basis. Such a run can support bounded causal-consistency and robustness claims;
+it cannot be relabelled as direct matched real–simulation evidence.
+
 ## Research Question
 
 For a fixed receiver, task, ODD, and intervention range:
@@ -98,8 +111,9 @@ time, planning, or control claims.
 
 ## Stage B2 — Matched Temporal Clip
 
-Before testing temporal or behavioral endpoints, recover and render a
-contiguous matched real–simulation clip. Freeze and verify:
+Before testing matched real–simulation temporal or behavioral equivalence
+endpoints, recover and render a contiguous matched real–simulation clip. Freeze
+and verify:
 
 - per-camera capture timestamps and inter-camera timing offsets;
 - camera ordering, intrinsics, extrinsics, resize/crop, and normalization;
@@ -164,10 +178,10 @@ real/simulation label where practical. Pre-specify sample size, exclusions,
 primary endpoints, and equivalence bounds. A single-participant pilot may
 validate the procedure, but it cannot establish population-level consistency.
 
-## Stage E — Controlled Counterfactuals
+## Stage E1 — Real-Anchored Controlled Counterfactuals
 
-Only after Availability is ready and Pairing Integrity passes for the factual
-anchor:
+Within the direct matched-anchor branch, only after Availability is ready and
+Pairing Integrity passes for the factual anchor:
 
 - introduce positive and negative controls;
 - vary object distance, lane relation, visibility, or approach rate in
@@ -178,9 +192,30 @@ anchor:
 
 A counterfactual branch has no real pixel counterpart unless the same
 intervention is reproduced in controlled real driving or on a test track.
-Without that counterpart, expected-direction changes are simulator-internal
-causal-response evidence only; they are not direct real–simulation consistency
-evidence.
+Without that counterpart, it is not direct real–simulation consistency
+evidence. If the instruments have an independent qualification basis, the
+branch may still support the bounded claims described below.
+
+## Stage E2 — Designed Counterfactuals Without an Exact Real Counterpart
+
+These experiments do not wait for an exact matched starting scene when their
+purpose is mechanism audit, stress testing, or robustness analysis. Before a
+claim is accepted, record:
+
+- which physical, geometric, visibility, or causal constraints define an
+  admissible intervention;
+- how each metric or receiver was qualified independently of the current
+  HUGSIM outcome;
+- the plausible parameter and model uncertainty range;
+- whether materially different qualified receivers preserve the same task
+  relation, critical-object ordering, or response direction;
+- whether the downstream conclusion remains stable across the declared range;
+- the strongest allowed claim and the unavailable direct-equivalence claim.
+
+Agreement inside a single HUGSIM state/render/metric loop is insufficient.
+Conversely, the exact unobserved trajectory need not be claimed as truth: the
+relevant result is whether a bounded task conclusion is physically admissible,
+causally coherent, and robust to plausible world-model uncertainty.
 
 ## Statistical Interpretation
 
@@ -193,5 +228,8 @@ evidence.
   significant” is not evidence of equivalence.
 - Limit conclusions to the tested receiver, task, ODD, and intervention range.
 
-Without a real closed-loop counterpart, the strongest possible result is
-open-loop receiver-consistency evidence, not closed-loop outcome credibility.
+Without a real closed-loop counterpart, do not claim direct real closed-loop
+equivalence. A separately qualified designed counterfactual may still support
+bounded planner/control robustness or stress-test fitness when the evidence
+network covers intervention validity, uncertainty sensitivity, receiver
+dependence, and outcome stability.

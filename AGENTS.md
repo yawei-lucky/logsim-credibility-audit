@@ -42,16 +42,24 @@ their own scope.
 - "Log-driven" means that the simulator constructs its environment from real
   road-driving capture sequences and generates counterfactual closed-loop
   evolution; exact log replay is not required.
+- A designed counterfactual need not start from an exactly matched real-log
+  scene. Scenario-level factual anchoring is a strong direct-equivalence path,
+  not a universal prerequisite. Framework-level external validity remains
+  required: indicators, constraints, receiver baselines, uncertainty ranges,
+  and acceptance bounds must be qualified independently of the current
+  simulator output before supporting bounded real-world fitness claims.
 - The current HUGSIM goal is to collect bounded positive evidence, negative
   evidence, capability boundaries, and unresolved areas for a general
   credibility-validation framework. Prioritize task-relevant real-versus-sim
-  receiver consistency over visual attractiveness alone.
+  receiver consistency and externally qualified counterfactual robustness over
+  visual attractiveness alone.
 - The current immediate route is metric audit and evidence mapping before new
   proxy metrics or receiver-response curves are added. Bounded normal scenes
   may be collected to cover materially different geometry, rendering, and
   perception conditions. A real source-log matched anchor remains a necessary
-  later evidence upgrade before real-sim consistency claims, but its current
-  absence is not a reason to stop the metric audit.
+  later evidence upgrade before direct matched real-sim consistency claims,
+  but its current absence is not a reason to stop metric audit or qualified
+  designed-counterfactual robustness experiments.
 - Do not expand to OmniDreams / Cosmos, a full HUGSIM benchmark, installation of
   full AD agents, or a final quantitative credibility metric unless the user
   explicitly changes the project direction.
@@ -61,8 +69,11 @@ their own scope.
 
 ## Research and Evidence Rules
 
-- Complete the Source Availability Gate before treating a simulator as
-  externally auditable.
+- Complete the Source Availability Gate before claiming source/reconstruction
+  provenance is externally auditable or making direct matched real-sim claims.
+  A blocked exact source pair does not block a designed-counterfactual audit
+  whose instruments have an independent qualification basis and whose claim is
+  limited to causal consistency or bounded robustness.
 - Distinguish paper-reported claims from independently inspectable or
   reproducible evidence.
 - Do not invent citations, paper claims, artifact availability, or experimental
