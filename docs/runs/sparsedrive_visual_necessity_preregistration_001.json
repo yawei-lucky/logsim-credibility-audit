@@ -1,0 +1,58 @@
+{
+  "audit_id": "sparsedrive_visual_necessity_001",
+  "date": "2026-07-23",
+  "purpose": "Test whether the pinned SparseDrive plan on the existing real source window causally depends on RGB and on the declared ego forward velocity. This does not test semantic correctness or simulator credibility.",
+  "held_fixed": [
+    "official-sample scene-0383 source frames 12, 18, 24 and 30",
+    "six-camera ordering except inside the declared RGB intervention",
+    "source timestamps, calibration, camera-rig poses and navigation command",
+    "SparseDrive source, compatibility patch, checkpoint and reset procedure",
+    "four-frame warm-up and native six-step planning output"
+  ],
+  "interventions": {
+    "rgb_spatial_information": {
+      "baseline": "unaltered official-sample RGB",
+      "control": "replace every camera pixel with the rounded ImageNet normalization mean",
+      "ego_status": "held equal to baseline"
+    },
+    "rgb_temporal_history": {
+      "baseline": "chronological source RGB",
+      "control": "repeat the first source RGB frame at all four logical timestamps",
+      "ego_status": "held equal to baseline"
+    },
+    "ego_forward_velocity": {
+      "baseline": "pose-derived ego_status[7]",
+      "controls": [
+        "baseline minus 2.0 m/s",
+        "baseline plus 2.0 m/s"
+      ],
+      "delta_mps": 2.0,
+      "rgb": "held equal to baseline"
+    }
+  },
+  "primary_observation": "fully warmed native six-point planning trajectory at source frame 30",
+  "repeat_reference": "independent reset with identical RGB, state, calibration, pose and command",
+  "frozen_local_tolerance_m": 0.0001,
+  "decision_rules": {
+    "rgb_stream_influence": "accepted only if the constant-RGB warmed-plan maximum absolute coordinate change exceeds the paired repeat maximum plus 0.0001 m",
+    "visual_history_influence": "accepted only if the frozen-history warmed-plan maximum absolute coordinate change exceeds the paired repeat maximum plus 0.0001 m",
+    "ego_velocity_influence": "accepted only if both plus and minus 2.0 m/s warmed-plan changes exceed the paired repeat maximum plus 0.0001 m",
+    "complete_rgb_neglect": "rejected if rgb_stream_influence is accepted",
+    "shortcut_or_semantic_correctness": "not decidable from effect magnitude; report only as down-weighted or rejected overclaim"
+  },
+  "descriptive_diagnostics": [
+    "fully warmed plan ADE and endpoint difference from baseline",
+    "longitudinal and lateral endpoint deltas",
+    "planning-mode changes",
+    "plan ADE to a constant-velocity extrapolation formed from each supplied ego status",
+    "whether ablated outputs remain non-degenerate"
+  ],
+  "strongest_allowed_claim": "On this one real, near-straight, four-frame input slice, a declared RGB or ego-status intervention did or did not causally change the frozen SparseDrive native plan beyond paired numerical repeat sensitivity.",
+  "forbidden_claims": [
+    "RGB sensitivity proves correct object, lane or risk semantics",
+    "a plausible plan under removed RGB proves a safe fallback",
+    "the larger effect from non-commensurate RGB and velocity interventions proves feature dominance",
+    "the result qualifies HUGSIM or establishes SparseDrive safety",
+    "one slice rules out learned shortcuts in general"
+  ]
+}

@@ -53,6 +53,10 @@ VARIANTS = (
     "temporal_reverse",
     "front_intrinsic_shift",
 )
+VISUAL_NECESSITY_VARIANTS = (
+    "normalization_center_rgb",
+    "temporal_freeze_first",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -247,6 +251,37 @@ def load_rgb(path: Path, expected_height: int, expected_width: int) -> np.ndarra
     return rgb
 
 
+def image_indices_for_variant(
+    frame_indices: list[int],
+    variant: str,
+) -> list[int]:
+    if variant == "temporal_reverse":
+        return list(reversed(frame_indices))
+    if variant == "temporal_freeze_first":
+        return [frame_indices[0]] * len(frame_indices)
+    return list(frame_indices)
+
+
+def apply_rgb_intervention(rgb: np.ndarray, variant: str) -> np.ndarray:
+    if variant != "normalization_center_rgb":
+        return rgb
+    center = np.rint(IMAGE_MEAN).astype(np.uint8)
+    return np.broadcast_to(center, rgb.shape).copy()
+
+
+def apply_ego_forward_velocity_offset(
+    status: np.ndarray,
+    offset_mps: float,
+) -> np.ndarray:
+    result = np.asarray(status, dtype=np.float32).copy()
+    if result.shape != (10,) or not np.isfinite(result).all():
+        raise ValueError("ego status must be one finite 10-D vector")
+    if not math.isfinite(offset_mps):
+        raise ValueError("ego forward-velocity offset must be finite")
+    result[7] += float(offset_mps)
+    return result
+
+
 def prepare_source_frame(
     *,
     source_root: Path,
@@ -274,6 +309,7 @@ def prepare_source_frame(
             int(image_record["height"]),
             int(image_record["width"]),
         )
+        rgb = apply_rgb_intervention(rgb, variant)
         transformed, augmentation, resize_contract = resize_crop_rgb(rgb)
         normalized = (transformed - IMAGE_MEAN) / IMAGE_STD
         tensors.append(np.ascontiguousarray(normalized.transpose(2, 0, 1)))
@@ -417,13 +453,12 @@ def run_sequence(
     model: Any,
     torch: Any,
     front_intrinsic_shift_px: float,
+    ego_forward_velocity_offset_mps: float = 0.0,
 ) -> dict[str, Any]:
     reset_temporal_state(model)
     outputs = []
     frames = []
-    image_indices = (
-        list(reversed(frame_indices)) if variant == "temporal_reverse" else frame_indices
-    )
+    image_indices = image_indices_for_variant(frame_indices, variant)
     for logical_index, image_index in zip(
         frame_indices, image_indices, strict=True
     ):
@@ -444,6 +479,10 @@ def run_sequence(
             timestamps[previous_index],
             timestamps[earlier_index],
         )
+        status = apply_ego_forward_velocity_offset(
+            status,
+            ego_forward_velocity_offset_mps,
+        )
         future_indices = [
             logical_index + stride * step for step in range(1, PLAN_STEPS + 1)
         ]
@@ -462,6 +501,9 @@ def run_sequence(
             command=command,
             torch=torch,
             variant=variant,
+        )
+        contract["ego_forward_velocity_offset_mps"] = float(
+            ego_forward_velocity_offset_mps
         )
         raw_projections = attach_source_projections(
             data,

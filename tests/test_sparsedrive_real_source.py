@@ -9,8 +9,11 @@ SCRIPTS = Path(__file__).resolve().parents[1] / "scripts"
 sys.path.insert(0, str(SCRIPTS))
 
 from run_sparsedrive_real_source import (  # noqa: E402
+    apply_ego_forward_velocity_offset,
+    apply_rgb_intervention,
     command_from_reference,
     future_reference,
+    image_indices_for_variant,
     plan_reference_error,
     pose_derived_ego_status,
     validate_indices,
@@ -95,6 +98,33 @@ class SparseDriveRealSourceTest(unittest.TestCase):
         self.assertAlmostEqual(result["ade_m"], 1.0)
         self.assertAlmostEqual(result["fde_m"], 1.0)
         self.assertEqual(set(result["horizons"]), {"1s", "2s", "3s"})
+
+    def test_visual_interventions_freeze_time_or_remove_spatial_content(self):
+        indices = [12, 18, 24, 30]
+        self.assertEqual(
+            image_indices_for_variant(indices, "temporal_freeze_first"),
+            [12, 12, 12, 12],
+        )
+        self.assertEqual(
+            image_indices_for_variant(indices, "temporal_reverse"),
+            [30, 24, 18, 12],
+        )
+        rgb = np.zeros((3, 4, 3), dtype=np.uint8)
+        centered = apply_rgb_intervention(rgb, "normalization_center_rgb")
+        self.assertEqual(centered.shape, rgb.shape)
+        np.testing.assert_array_equal(centered[0, 0], [124, 116, 104])
+        np.testing.assert_array_equal(
+            apply_rgb_intervention(rgb, "baseline"),
+            rgb,
+        )
+
+    def test_ego_velocity_intervention_changes_only_forward_velocity(self):
+        status = np.arange(10, dtype=np.float32)
+        changed = apply_ego_forward_velocity_offset(status, 2.0)
+        expected = status.copy()
+        expected[7] += 2.0
+        np.testing.assert_array_equal(changed, expected)
+        np.testing.assert_array_equal(status, np.arange(10, dtype=np.float32))
 
 
 if __name__ == "__main__":
