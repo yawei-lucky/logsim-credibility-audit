@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — SparseDrive Live Plan-Loop Qualification
+## Immediate Direction — Replicated CF-R Closed-Loop Preregistration
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -73,6 +73,14 @@ independent resets were byte-identical. This qualifies only the interface: the
 replay writer did not infer from returned observations. See
 `docs/runs/hugsim_sparsedrive_plan_to_loop_001.md`.
 
+The subsequent no-actor live feedback gate is complete. SparseDrive consumed
+four newly returned observations and produced four fresh plans in each of two
+independent two-second runs. Interface and live-feedback capability are
+`accepted`. Exact numerical closed-loop reset reproducibility is `rejected`:
+maximum plan difference grew from about `1e-5 m` at handoff to `0.032 m` at the
+fourth update, while planning mode, action signs and no-event outcome remained
+stable. See `docs/runs/hugsim_sparsedrive_live_loop_001.md`.
+
 The official HUGSIM sample has also supplied a partial factual anchor: real
 six-camera images for three `scene-0383` timestamps were compared with
 exact-pose renders. The current checkpoint metadata produced better pixel
@@ -89,24 +97,24 @@ real-world fitness claim. It cannot by itself qualify HUGSIM.
 
 ## Current Deliverable
 
-Do not add another actor-speed curve or target model. Replace the frozen replay
-writer with the already qualified SparseDrive receiver:
+Do not add another normal run or target model. Prepare one bounded
+stronger/weaker conflict live comparison:
 
-1. independently reset and pre-warm SparseDrive with the exact recorded
-   `0.0, 0.5, 1.0 s` no-actor history;
-2. start HUGSIM from the matching `1.5 s` state and preserve continuous
-   receiver timestamps;
-3. infer a new native plan from every newly returned six-camera observation at
-   2 Hz, with the qualified two-substep control hold;
-4. fail on fallback, missing output, plan repetition, action-bound violation or
-   temporal-state contamination;
-5. run only a short normal-scene capability sequence first, with HUGSIM
-   NC/TTC/PDMS disabled.
+1. reproduce each retained source condition through `1.5 s` so actor, ego,
+   camera and SparseDrive history reach an exact common experiment boundary;
+2. use at least two independently reset live runs per condition;
+3. predeclare direct ego progress, speed and independently recomputed
+   ego–actor clearance; keep each relation separate;
+4. require the expected condition order in every paired repeat and no
+   task-level reversal;
+5. require the minimum between-condition effect to exceed the maximum
+   within-condition repeat variation for the same construct;
+6. disable HUGSIM NC/TTC/PDMS for acceptance and do not tune the horizon or
+   condition levels after seeing results.
 
-If this gate passes, preregister one bounded stronger/weaker conflict
-closed-loop comparison using direct geometry and vehicle-state outcomes. It
-will remain simulator-internal until an external or matched-real outcome basis
-is added.
+This tests whether a counterfactual effect survives the newly observed
+closed-loop sensitivity. It remains simulator-internal until an external or
+matched-real outcome basis is added.
 
 ## Completed Basis
 
