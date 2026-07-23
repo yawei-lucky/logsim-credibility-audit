@@ -1,0 +1,137 @@
+{
+  "audit_id": "hugsim_cf_r_plan_001",
+  "date": "2026-07-23",
+  "status": "preregistered_receiver_not_run",
+  "task_construct": "transport of designed relative-conflict order into a frozen AD receiver's native open-loop planning direction",
+  "fixed_runtime": {
+    "audit_repo_base_commit": "b9d6db180d8bdaeb6d7bcba665b01ba783800f88",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "scene": "scene-0383"
+  },
+  "conditions": {
+    "slow": {
+      "actor_speed_mps": 0.5,
+      "conflict_role": "strongest ego closure",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-slow-001-run001",
+      "input_sha256": {
+        "observations.pkl": "00ea654932b33f42a07fbf37510fad89dd7feb49ef2720fcec49263140784069",
+        "infos.pkl": "0cbc157bf83564246705a7826b808e7937541f4e746d578901088d045a454d30",
+        "audit_steps.pkl": "2a2b3e205c80512a5ba19c6152615f3223670fba2b0aae8e25d7435adac9dcac",
+        "audit_summary.json": "0f48796f4d12cced1da3c87d5126b2d7111a1d16350ac090e6e837bbc8db47ab"
+      }
+    },
+    "nominal": {
+      "actor_speed_mps": 1.0,
+      "conflict_role": "intermediate ego closure",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-nominal-001-run001",
+      "input_sha256": {
+        "observations.pkl": "10017438412b0595deae274b2879f16ef87776dd811066c72ba4183dbfd0f339",
+        "infos.pkl": "1cc7532db334103c931f2bcb4783a0f689992c646ac29eb3889858c3a582d160",
+        "audit_steps.pkl": "cca5e473fbadf575cae4a88131466c8ed23f8cea0154853c562cd77c6ef55838",
+        "audit_summary.json": "d2e93bdcb67f8de62ffec15bc4b2fddc73564a608f4357bae4ed33aecba1bbf7"
+      }
+    },
+    "fast": {
+      "actor_speed_mps": 1.5,
+      "conflict_role": "weakest ego closure",
+      "output": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-fast-001-run001",
+      "input_sha256": {
+        "observations.pkl": "07055933c0f0e11d6fe2cf6341e98cf6066067a72e7bd5a7a37888ef994cfcf6",
+        "infos.pkl": "8fff36864ce8ffd3cc1a41bfa7a5afee413a4b95146bf750468da720cbd85f86",
+        "audit_steps.pkl": "98a35d2a20693e0e7606306fb0a4dbf84505f757b4e23589e8daa2b34688d5cc",
+        "audit_summary.json": "2aeba78548e49e9a69dc27f5bd90c16a8e464bad745f4cf76c5d8cf7975bde96"
+      }
+    }
+  },
+  "held_fixed": [
+    "scene, actor asset and initial actor geometry",
+    "ego trajectory, ego state and all six camera calibrations",
+    "SparseDrive source, compatibility implementation, config and checkpoint",
+    "2 Hz receiver cadence, temporal reset, warm-up and straight command"
+  ],
+  "state_reference": {
+    "path": "artifacts/hugsim_cf_risk_causality/analysis-run001/cf_risk_causality_audit.json",
+    "sha256": "36a2967dfc4a00e61ce042fb0fe0511a8bc27cd493ad2ed1854b25248df4e459",
+    "required_gates": [
+      "slow actor forward < nominal < fast",
+      "slow ego-footprint clearance < nominal < fast"
+    ]
+  },
+  "receiver": {
+    "name": "SparseDrive-S Stage2 official release",
+    "source": {
+      "commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+      "working_diff_sha256": "541f5a5a561745bff64962ba8ffe679d657f578acef3193e3550f205f06a1e3d"
+    },
+    "config_sha256": "812414bb981eadca1365654575eeb799c91252de756a1d5b573e0a284cc88f11",
+    "checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+    "runner_sha256": "6cc984ebd34f15c0a6e6d5f6e3d42d4515d980cd159b8ff01243c87ae4a3b32a",
+    "compatibility_patch_sha256": "c5ccfa1ef4988349b8bedfc5b0724b90b8d805d6edabb77e819442946ebef500",
+    "attention_implementation": "TorchMHA",
+    "frame_stride": 2,
+    "start_frame": 0,
+    "max_frames": 13,
+    "selected_frame_indices": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      22,
+      24
+    ],
+    "ego_status_mode": "recorded_scalar",
+    "command_one_hot_right_left_straight": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "modalities": [
+      "HUGSIM RGB",
+      "HUGSIM camera intrinsics",
+      "HUGSIM camera extrinsics",
+      "HUGSIM ego pose and recorded scalar ego state"
+    ],
+    "excluded_modalities": [
+      "HUGSIM semantic",
+      "HUGSIM depth",
+      "HUGSIM NC/TTC score"
+    ]
+  },
+  "analysis_window": {
+    "valid_start_inclusive_s": 1.5,
+    "valid_end_inclusive_s": 6.0,
+    "reason": "four receiver frames are available at 1.5 s and the full 3 s planning horizon remains inside the recorded 9 s source"
+  },
+  "primary_metric": {
+    "name": "native final_planning 3 s longitudinal endpoint",
+    "expected_relation_at_every_timestamp": "slow < nominal < fast",
+    "meaning": "stronger declared conflict should not produce greater longitudinal progress",
+    "tie_rule": "a tie is not positive response evidence"
+  },
+  "diagnostics_not_acceptance_metrics": [
+    "planning score and selected mode",
+    "3 s lateral endpoint",
+    "first-step speed"
+  ],
+  "decision_rules": {
+    "accepted": "all input and state gates pass and slow < nominal < fast holds strictly at every preregistered timestamp",
+    "down-weighted": "all input and state gates pass and aggregate medians preserve slow < nominal < fast, but one or more timestamp comparisons reverse or tie",
+    "rejected": "an input/state gate fails or the aggregate median order does not preserve slow < nominal < fast"
+  },
+  "analysis_script_sha256": "9e7a242f0d60f3e4f2327f42b2652ebf6474118328a7c1a5cda03e890e1ff462",
+  "strongest_allowed_claim": "within the designed 0.5/1.0/1.5 m/s actor-speed range, audited internal input contract and fully warmed 1.5-6.0 s window, the frozen SparseDrive receiver did or did not preserve the declared conflict order in its native 3 s longitudinal planning endpoint",
+  "forbidden_claims": [
+    "the actor-speed levels are real-world safe or unsafe thresholds",
+    "the plan is a brake, steering or closed-loop control action",
+    "the result is physical TTC, collision probability or safety truth",
+    "failure of this longitudinal relation proves that every possible AD response is invalid",
+    "the result establishes real-sim equivalence or general HUGSIM credibility"
+  ]
+}

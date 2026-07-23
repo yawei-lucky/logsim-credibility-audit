@@ -14,6 +14,7 @@ from run_sparsedrive_hugsim_receiver import (  # noqa: E402
     command_vector,
     densify_plan,
     ego_status_vector,
+    ego_status_sources,
     model_lidar_to_hugsim_vehicle,
     plan_kinematics,
     project_model_plan_to_raw_camera,
@@ -151,6 +152,41 @@ class SparseDriveHugsimReceiverTest(unittest.TestCase):
         self.assertAlmostEqual(status[5], 0.2)
         self.assertAlmostEqual(status[6], 4.5)
         self.assertAlmostEqual(status[9], -0.2)
+
+    def test_pose_derived_ego_status_uses_three_sampled_poses(self):
+        earlier = info(timestamp=0.0, speed=99.0)
+        earlier["ego_box"][:3] = [0.0, 0.0, 0.0]
+        previous = info(timestamp=0.5, speed=99.0)
+        previous["ego_box"][:3] = [0.5, 0.0, 0.0]
+        current = info(timestamp=1.0, speed=99.0, steer=0.1)
+        current["ego_box"][:3] = [1.5, 0.0, 0.0]
+
+        status = ego_status_vector(
+            current,
+            previous,
+            earlier,
+            mode="pose_derived",
+        )
+
+        np.testing.assert_allclose(status[:3], [2.0, 0.0, 0.0])
+        np.testing.assert_allclose(status[3:6], [0.0, 0.0, 0.0])
+        np.testing.assert_allclose(status[6:9], [2.0, 0.0, 0.0])
+        self.assertAlmostEqual(status[9], 0.1)
+
+    def test_pose_derived_ego_status_requires_two_preceding_poses(self):
+        with self.assertRaisesRegex(ValueError, "two preceding"):
+            ego_status_vector(
+                info(timestamp=1.0),
+                info(timestamp=0.5),
+                mode="pose_derived",
+            )
+
+    def test_ego_status_sources_are_explicit(self):
+        self.assertIn("observed", " ".join(ego_status_sources("recorded_scalar")))
+        self.assertIn(
+            "finite difference",
+            " ".join(ego_status_sources("pose_derived")),
+        )
 
     def test_wrapped_rate_crosses_pi_without_jump(self):
         rate = wrapped_rate(-math.pi + 0.05, math.pi - 0.05, 0.5)

@@ -63,6 +63,7 @@ NATIVE_TENSOR_KEYS = (
 RESET_TOLERANCE = 1e-4
 PLANNING_STEP_SECONDS = 0.5
 MODEL_PLAN_GROUND_Z_M = -1.8
+EGO_STATUS_MODES = ("recorded_scalar", "pose_derived")
 
 
 def parse_args() -> argparse.Namespace:
@@ -101,6 +102,18 @@ def parse_args() -> argparse.Namespace:
         default=4,
         help="Bounded receiver frames per condition.",
     )
+    parser.add_argument(
+        "--start-frame",
+        type=int,
+        default=0,
+        help="First HUGSIM source-frame index passed to the receiver.",
+    )
+    parser.add_argument(
+        "--ego-status-mode",
+        choices=EGO_STATUS_MODES,
+        default="recorded_scalar",
+        help="How the SparseDrive 10-D ego-status vector is constructed.",
+    )
     return parser.parse_args()
 
 
@@ -128,14 +141,18 @@ def wrapped_rate(current: float, previous: float, dt: float) -> float:
 def ego_status_vector(
     info: dict[str, Any],
     previous_info: dict[str, Any] | None,
+    previous_previous_info: dict[str, Any] | None = None,
+    mode: str = "recorded_scalar",
 ) -> np.ndarray:
     """Map available HUGSIM state to SparseDrive's 10-D CAN-bus contract.
 
-    The mapping is provisional: longitudinal acceleration and velocity occupy
-    the first component of their respective xyz triples, yaw rate is derived
-    from consecutive ego-box headings, and unavailable components are zero.
+    ``recorded_scalar`` uses the simulator's scalar longitudinal acceleration
+    and speed. ``pose_derived`` independently reconstructs all available
+    velocity/acceleration components from three consecutive poses.
     """
 
+    if mode not in EGO_STATUS_MODES:
+        raise ValueError(f"unsupported ego-status mode: {mode}")
     yaw_rate = 0.0
     if previous_info is not None:
         dt = float(info["timestamp"]) - float(previous_info["timestamp"])
@@ -144,24 +161,94 @@ def ego_status_vector(
             float(np.asarray(previous_info["ego_box"])[6]),
             dt,
         )
-    status = np.asarray(
-        [
-            float(info["accelerate"]),
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            yaw_rate,
-            float(info["ego_velo"]),
-            0.0,
-            0.0,
-            float(info["ego_steer"]),
-        ],
-        dtype=np.float32,
-    )
+    if mode == "recorded_scalar":
+        status = np.asarray(
+            [
+                float(info["accelerate"]),
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                yaw_rate,
+                float(info["ego_velo"]),
+                0.0,
+                0.0,
+                float(info["ego_steer"]),
+            ],
+            dtype=np.float32,
+        )
+    else:
+        if previous_info is None or previous_previous_info is None:
+            raise ValueError(
+                "pose_derived ego status requires two preceding sampled poses"
+            )
+        current_box = np.asarray(info["ego_box"], dtype=np.float64)
+        previous_box = np.asarray(previous_info["ego_box"], dtype=np.float64)
+        earlier_box = np.asarray(
+            previous_previous_info["ego_box"],
+            dtype=np.float64,
+        )
+        current_dt = float(info["timestamp"]) - float(previous_info["timestamp"])
+        previous_dt = float(previous_info["timestamp"]) - float(
+            previous_previous_info["timestamp"]
+        )
+        if current_dt <= 0 or previous_dt <= 0:
+            raise ValueError("pose-derived status requires increasing timestamps")
+        current_velocity_world = (
+            current_box[:3] - previous_box[:3]
+        ) / current_dt
+        previous_velocity_world = (
+            previous_box[:3] - earlier_box[:3]
+        ) / previous_dt
+        acceleration_world = (
+            current_velocity_world - previous_velocity_world
+        ) / (0.5 * (current_dt + previous_dt))
+        yaw = float(current_box[6])
+        cosine, sine = math.cos(yaw), math.sin(yaw)
+        vehicle_to_world = np.asarray(
+            [
+                [cosine, -sine, 0.0],
+                [sine, cosine, 0.0],
+                [0.0, 0.0, 1.0],
+            ],
+            dtype=np.float64,
+        )
+        velocity_vehicle = vehicle_to_world.T @ current_velocity_world
+        acceleration_vehicle = vehicle_to_world.T @ acceleration_world
+        status = np.concatenate(
+            (
+                acceleration_vehicle,
+                np.asarray([0.0, 0.0, yaw_rate]),
+                velocity_vehicle,
+                np.asarray([float(info["ego_steer"])]),
+            )
+        ).astype(np.float32)
     if not np.isfinite(status).all():
         raise ValueError("non-finite HUGSIM ego state")
     return status
+
+
+def ego_status_sources(mode: str) -> list[str]:
+    if mode == "recorded_scalar":
+        return [
+            "acceleration_x: observed HUGSIM accelerate",
+            "acceleration_yz: unavailable, zero",
+            "angular_rate_xy: unavailable, zero",
+            "angular_rate_z: derived from consecutive ego headings",
+            "velocity_x: observed HUGSIM scalar ego_velo",
+            "velocity_yz: unavailable, zero",
+            "steering: observed HUGSIM ego_steer",
+        ]
+    if mode == "pose_derived":
+        return [
+            "acceleration_xyz: finite difference of two pose-derived velocities",
+            "angular_rate_xy: unavailable, zero",
+            "angular_rate_z: derived from consecutive ego headings",
+            "velocity_xyz: finite difference of consecutive ego positions",
+            "velocity/acceleration rotated from world into current ego frame",
+            "steering: observed HUGSIM ego_steer",
+        ]
+    raise ValueError(f"unsupported ego-status mode: {mode}")
 
 
 def model_lidar_to_hugsim_vehicle(
@@ -314,6 +401,9 @@ def prepare_sparsedrive_frame(
     info: dict[str, Any],
     previous_info: dict[str, Any] | None,
     torch: Any,
+    *,
+    previous_previous_info: dict[str, Any] | None = None,
+    ego_status_mode: str = "recorded_scalar",
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     data = prepare_frame(observation, info, torch)
     input_contract = data.pop("input_contract")
@@ -330,7 +420,12 @@ def prepare_sparsedrive_frame(
         )
         metadata["T_global"] = lidar_to_global
         metadata["T_global_inv"] = np.linalg.inv(lidar_to_global)
-    status = ego_status_vector(info, previous_info)
+    status = ego_status_vector(
+        info,
+        previous_info,
+        previous_previous_info,
+        mode=ego_status_mode,
+    )
     command = command_vector(info)
     data["ego_status"] = torch.from_numpy(status[None]).cuda()
     data["gt_ego_fut_cmd"] = torch.from_numpy(command[None]).cuda()
@@ -354,6 +449,8 @@ def prepare_sparsedrive_frame(
         "cameras": input_contract,
         "camera_order": [item["camera"] for item in input_contract],
         "timestamp_s": float(info["timestamp"]),
+        "ego_status_mode": ego_status_mode,
+        "ego_status_sources": ego_status_sources(ego_status_mode),
         "ego_status_10d": status.astype(float).tolist(),
         "command_one_hot_right_left_straight": command.astype(float).tolist(),
         "reference_frame": (
@@ -680,36 +777,45 @@ def run_condition(
     torch: Any,
     frame_stride: int,
     max_frames: int,
+    start_frame: int,
+    ego_status_mode: str,
     output: Path,
 ) -> dict[str, Any]:
     observations = load_pickle(run_path / "observations.pkl")
     infos = load_pickle(run_path / "infos.pkl")
     if len(observations) != len(infos):
         raise ValueError(f"{label}: observation/info length mismatch")
-    indices = list(range(0, len(infos), frame_stride))[:max_frames]
+    indices = list(range(start_frame, len(infos), frame_stride))[:max_frames]
     if not indices:
         raise ValueError(f"{label}: no selected frames")
 
     reset_temporal_state(model)
     native_outputs = []
     frames = []
-    previous_info = None
     first_data = None
     first_native = None
     contracts = []
     for frame_index in indices:
+        previous_index = frame_index - frame_stride
+        earlier_index = frame_index - 2 * frame_stride
+        previous_info = infos[previous_index] if previous_index >= 0 else None
+        previous_previous_info = infos[earlier_index] if earlier_index >= 0 else None
         data, contract = prepare_sparsedrive_frame(
             observations[frame_index],
             infos[frame_index],
             previous_info,
             torch,
+            previous_previous_info=previous_previous_info,
+            ego_status_mode=ego_status_mode,
         )
         if first_data is None:
             first_data, _ = prepare_sparsedrive_frame(
                 observations[frame_index],
                 infos[frame_index],
-                None,
+                previous_info,
                 torch,
+                previous_previous_info=previous_previous_info,
+                ego_status_mode=ego_status_mode,
             )
         torch.cuda.synchronize()
         started = time.perf_counter()
@@ -733,6 +839,18 @@ def run_condition(
                     plan,
                     float(infos[frame_index]["ego_velo"]),
                 ),
+                "planning_selection": {
+                    "command_index_right_left_straight": int(
+                        np.argmax(command_vector(infos[frame_index]))
+                    ),
+                    "selected_mode_index": int(
+                        np.argmax(
+                            native["planning_score"].numpy()[
+                                int(np.argmax(command_vector(infos[frame_index])))
+                            ]
+                        )
+                    ),
+                },
                 "front_projection": {
                     "camera": "CAM_FRONT",
                     "source_view": "raw unmodified HUGSIM RGB",
@@ -751,7 +869,6 @@ def run_condition(
             }
         )
         contracts.append(contract)
-        previous_info = infos[frame_index]
 
     reset_temporal_state(model)
     with torch.no_grad():
@@ -777,6 +894,8 @@ def run_condition(
     return {
         "label": label,
         "input": str(run_path),
+        "ego_status_mode": ego_status_mode,
+        "start_frame": start_frame,
         "selected_frame_indices": indices,
         "frame_count": len(indices),
         "frames": frames,
@@ -799,6 +918,15 @@ def main() -> int:
         raise ValueError("--frame-stride must be at least 1")
     if args.max_frames < 1:
         raise ValueError("--max-frames must be at least 1")
+    if args.start_frame < 0:
+        raise ValueError("--start-frame must be non-negative")
+    if args.ego_status_mode == "pose_derived":
+        minimum_start = 2 * args.frame_stride
+        if args.start_frame < minimum_start:
+            raise ValueError(
+                "pose_derived requires --start-frame >= "
+                f"{minimum_start} for two sampled prehistory poses"
+            )
 
     root = args.sparsedrive_root.expanduser().resolve()
     checkpoint = args.checkpoint.expanduser().resolve()
@@ -845,6 +973,8 @@ def main() -> int:
         "anchor_paths": anchor_paths,
         "frame_stride": args.frame_stride,
         "max_frames": args.max_frames,
+        "start_frame": args.start_frame,
+        "ego_status_mode": args.ego_status_mode,
         "conditions": [],
         "evidence_boundary": {
             "status": "down-weighted",
@@ -871,6 +1001,8 @@ def main() -> int:
                 torch,
                 args.frame_stride,
                 args.max_frames,
+                args.start_frame,
+                args.ego_status_mode,
                 output,
             )
         )
