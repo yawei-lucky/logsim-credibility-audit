@@ -61,10 +61,14 @@ active first target because it natively outputs planning scores, candidate
 trajectories, a final ego plan and agent-motion predictions from the nuScenes
 six-camera contract. Its official checkpoint has passed a bounded local
 runtime gate on four HUGSIM frames: strict load, finite native outputs and
-reset reproducibility passed. This is engineering qualification only; the
-planning result is not yet interpretable. See
+reset reproducibility passed. The original adapter then exposed a missing
+model-LiDAR-to-vehicle transform. HUGSIM's six `l2c/v2c` pairs recover one
+common transform, and the calibrated fully warmed plan now passes a basic
+internal geometry and speed-continuity sanity check. This qualifies the
+adapter baseline only; the plan is not yet a real-world credibility indicator.
+See
 `docs/runs/hugsim_target_ad_receiver_qualification_001.md` and
-`docs/runs/hugsim_sparsedrive_runtime_smoke_001.md`.
+`docs/runs/hugsim_sparsedrive_axis_projection_001.md`.
 
 The official HUGSIM sample has also supplied a partial factual anchor: real
 six-camera images for three `scene-0383` timestamps were compared with
@@ -97,6 +101,14 @@ remaining **SparseDrive input-contract gate**:
 4. preregister one slow/nominal/fast planning-direction test, including
    unavailable-output, mode-switch and reversal rules;
 5. only then run that bounded paired experiment.
+
+Axis direction, units, internal origin/height and directional front-camera
+projection are now checked from HUGSIM's six-camera calibration. Do not revisit
+them without contrary evidence. External physical calibration remains
+`down-weighted`. The remaining input-contract work is the 10-D ego-status
+sensitivity audit plus equal warm-up. The old uncalibrated plan is retained as
+`rejected` method evidence; only the fully warmed calibrated baseline may
+advance.
 
 The subsequent experiment should connect the retained dynamic conflict
 direction to an actual downstream output:

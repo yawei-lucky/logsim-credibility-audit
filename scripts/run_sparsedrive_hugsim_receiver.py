@@ -23,7 +23,13 @@ from typing import Any
 
 import numpy as np
 
-from run_sparse4d_hugsim_receiver import parse_runs, prepare_frame, sha256_file
+from run_sparse4d_hugsim_receiver import (
+    CAMERA_ORDER,
+    intrinsic_matrix,
+    parse_runs,
+    prepare_frame,
+    sha256_file,
+)
 
 
 ANCHOR_KEYS = {
@@ -55,6 +61,8 @@ NATIVE_TENSOR_KEYS = (
     "ego_anchor_queue",
 )
 RESET_TOLERANCE = 1e-4
+PLANNING_STEP_SECONDS = 0.5
+MODEL_PLAN_GROUND_Z_M = -1.8
 
 
 def parse_args() -> argparse.Namespace:
@@ -154,6 +162,33 @@ def ego_status_vector(
     if not np.isfinite(status).all():
         raise ValueError("non-finite HUGSIM ego state")
     return status
+
+
+def model_lidar_to_hugsim_vehicle(
+    info: dict[str, Any],
+    tolerance: float = 1e-5,
+) -> np.ndarray:
+    """Derive the common nuScenes-LiDAR-to-HUGSIM-vehicle calibration."""
+
+    transforms = []
+    for camera in CAMERA_ORDER:
+        params = info["cam_params"][camera]
+        vehicle_to_camera = np.asarray(params["v2c"], dtype=np.float64)
+        lidar_to_camera = np.asarray(params["l2c"], dtype=np.float64)
+        transforms.append(np.linalg.inv(vehicle_to_camera) @ lidar_to_camera)
+    reference = transforms[0]
+    residual = max(float(np.max(np.abs(item - reference))) for item in transforms)
+    if residual > tolerance:
+        raise ValueError(
+            "camera calibrations do not imply one common LiDAR-to-vehicle "
+            f"transform: residual={residual}"
+        )
+    rotation = reference[:3, :3]
+    if not np.allclose(rotation.T @ rotation, np.eye(3), atol=tolerance):
+        raise ValueError("LiDAR-to-vehicle rotation is not orthonormal")
+    if not np.isclose(np.linalg.det(rotation), 1.0, atol=tolerance):
+        raise ValueError("LiDAR-to-vehicle rotation is not right-handed")
+    return reference.astype(np.float32)
 
 
 def ensure_anchor_assets(checkpoint: Path, anchor_dir: Path, torch: Any) -> dict[str, str]:
@@ -282,10 +317,39 @@ def prepare_sparsedrive_frame(
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     data = prepare_frame(observation, info, torch)
     input_contract = data.pop("input_contract")
+    model_to_vehicle_numpy = model_lidar_to_hugsim_vehicle(info)
+    model_to_vehicle = torch.from_numpy(model_to_vehicle_numpy).to(
+        device=data["projection_mat"].device,
+        dtype=data["projection_mat"].dtype,
+    )
+    data["projection_mat"] = data["projection_mat"] @ model_to_vehicle
+    for metadata in data["img_metas"]:
+        lidar_to_global = (
+            np.asarray(metadata["T_global"], dtype=np.float64)
+            @ model_to_vehicle_numpy.astype(np.float64)
+        )
+        metadata["T_global"] = lidar_to_global
+        metadata["T_global_inv"] = np.linalg.inv(lidar_to_global)
     status = ego_status_vector(info, previous_info)
     command = command_vector(info)
     data["ego_status"] = torch.from_numpy(status[None]).cuda()
     data["gt_ego_fut_cmd"] = torch.from_numpy(command[None]).cuda()
+    calibration_residual = max(
+        float(
+            np.max(
+                np.abs(
+                    np.linalg.inv(
+                        np.asarray(info["cam_params"][camera]["v2c"], dtype=np.float64)
+                    )
+                    @ np.asarray(
+                        info["cam_params"][camera]["l2c"], dtype=np.float64
+                    )
+                    - model_to_vehicle_numpy
+                )
+            )
+        )
+        for camera in CAMERA_ORDER
+    )
     contract = {
         "cameras": input_contract,
         "camera_order": [item["camera"] for item in input_contract],
@@ -293,9 +357,16 @@ def prepare_sparsedrive_frame(
         "ego_status_10d": status.astype(float).tolist(),
         "command_one_hot_right_left_straight": command.astype(float).tolist(),
         "reference_frame": (
-            "provisional virtual LiDAR frame coincident with the HUGSIM vehicle "
-            "frame used by the existing Sparse4D adapter"
+            "SparseDrive nuScenes LIDAR_TOP to HUGSIM vehicle transform "
+            "derived independently as inv(v2c) @ l2c for every camera"
         ),
+        "model_lidar_to_hugsim_vehicle": (
+            model_to_vehicle_numpy.astype(float).tolist()
+        ),
+        "nominal_model_axes": "x=right, y=forward, z=up",
+        "nominal_hugsim_vehicle_axes": "x=forward, y=left, z=up",
+        "six_camera_calibration_max_abs_residual": calibration_residual,
+        "six_camera_calibration_residual_tolerance": 1e-5,
     }
     return data, contract
 
@@ -373,6 +444,116 @@ def max_abs_difference(first: Any, second: Any, torch: Any) -> float:
     return float(torch.max(torch.abs(a - b))) if a.numel() else 0.0
 
 
+def plan_kinematics(plan: np.ndarray, ego_speed_mps: float) -> dict[str, Any]:
+    """Return descriptive plan geometry without assigning a credibility verdict."""
+
+    plan = np.asarray(plan, dtype=np.float64)
+    if plan.ndim != 2 or plan.shape[1] != 2 or len(plan) == 0:
+        raise ValueError(f"expected a non-empty Nx2 final plan, got {plan.shape}")
+    positions = np.concatenate((np.zeros((1, 2)), plan), axis=0)
+    deltas = np.diff(positions, axis=0)
+    step_speeds = np.linalg.norm(deltas, axis=1) / PLANNING_STEP_SECONDS
+    forward_steps = np.diff(np.concatenate(([0.0], plan[:, 1])))
+    first_step_distance = float(np.linalg.norm(deltas[0]))
+    equivalent_acceleration = (
+        2.0
+        * (first_step_distance - ego_speed_mps * PLANNING_STEP_SECONDS)
+        / (PLANNING_STEP_SECONDS**2)
+    )
+    return {
+        "axes": "x=right, y=forward",
+        "step_seconds": PLANNING_STEP_SECONDS,
+        "horizon_seconds": float(len(plan) * PLANNING_STEP_SECONDS),
+        "ego_speed_mps": float(ego_speed_mps),
+        "final_right_m": float(plan[-1, 0]),
+        "final_forward_m": float(plan[-1, 1]),
+        "max_abs_right_m": float(np.max(np.abs(plan[:, 0]))),
+        "forward_monotonic_non_decreasing": bool(np.all(forward_steps >= -1e-6)),
+        "step_speeds_mps": step_speeds.astype(float).tolist(),
+        "first_step_speed_mps": float(step_speeds[0]),
+        "first_step_speed_error_mps": float(step_speeds[0] - ego_speed_mps),
+        "first_step_equivalent_constant_acceleration_mps2": float(
+            equivalent_acceleration
+        ),
+        "equivalent_acceleration_assumption": (
+            "constant acceleration from scalar ego speed along the first "
+            "predicted displacement"
+        ),
+    }
+
+
+def densify_plan(plan: np.ndarray, points_per_step: int = 20) -> np.ndarray:
+    plan = np.asarray(plan, dtype=np.float64)
+    if plan.ndim != 2 or plan.shape[1] != 2 or len(plan) == 0:
+        raise ValueError(f"expected a non-empty Nx2 final plan, got {plan.shape}")
+    if points_per_step < 1:
+        raise ValueError("points_per_step must be at least one")
+    positions = np.concatenate((np.zeros((1, 2)), plan), axis=0)
+    dense = []
+    for start, end in zip(positions[:-1], positions[1:], strict=True):
+        fractions = np.linspace(0.0, 1.0, points_per_step, endpoint=False)
+        dense.extend(start + fractions[:, None] * (end - start))
+    dense.append(positions[-1])
+    return np.asarray(dense)
+
+
+def project_model_plan_to_raw_camera(
+    plan: np.ndarray,
+    info: dict[str, Any],
+    camera: str = "CAM_FRONT",
+    model_z_m: float = MODEL_PLAN_GROUND_Z_M,
+    points_per_step: int = 20,
+) -> dict[str, Any]:
+    """Project a SparseDrive plan onto an unmodified HUGSIM camera image.
+
+    The plan is evaluated at SparseDrive's official visualization ground plane.
+    """
+
+    params = info["cam_params"][camera]
+    intrinsic = params["intrinsic"]
+    model_to_vehicle = model_lidar_to_hugsim_vehicle(info).astype(np.float64)
+    projection = (
+        intrinsic_matrix(intrinsic)
+        @ np.asarray(params["v2c"], dtype=np.float64)
+        @ model_to_vehicle
+    )
+
+    def project(points_2d: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        points = np.column_stack(
+            (
+                points_2d[:, 0],
+                points_2d[:, 1],
+                np.full(len(points_2d), model_z_m),
+                np.ones(len(points_2d)),
+            )
+        )
+        camera_points = (projection @ points.T).T
+        depth = camera_points[:, 2]
+        pixels = np.full((len(points), 2), np.nan, dtype=np.float64)
+        in_front = depth > 0.1
+        pixels[in_front] = camera_points[in_front, :2] / depth[in_front, None]
+        visible = (
+            in_front
+            & (pixels[:, 0] >= 0)
+            & (pixels[:, 0] < float(intrinsic["W"]))
+            & (pixels[:, 1] >= 0)
+            & (pixels[:, 1] < float(intrinsic["H"]))
+        )
+        return pixels, visible
+
+    dense_model_xy = densify_plan(plan, points_per_step)
+    dense_pixels, dense_visible = project(dense_model_xy)
+    waypoint_pixels, waypoint_visible = project(np.asarray(plan, dtype=np.float64))
+    return {
+        "dense_model_xy": dense_model_xy,
+        "dense_pixels": dense_pixels,
+        "dense_visible": dense_visible,
+        "waypoint_pixels": waypoint_pixels,
+        "waypoint_visible": waypoint_visible,
+        "model_z_m": model_z_m,
+    }
+
+
 def save_runtime_visualization(
     label: str,
     indices: list[int],
@@ -385,33 +566,105 @@ def save_runtime_visualization(
 
     figure = plt.figure(figsize=(4 * len(indices), 7), constrained_layout=True)
     grid = figure.add_gridspec(2, len(indices), height_ratios=(1, 1.15))
+    colors = plt.get_cmap("tab10").colors
     for position, frame_index in enumerate(indices):
         axis = figure.add_subplot(grid[0, position])
         axis.imshow(np.asarray(observations[frame_index]["rgb"]["CAM_FRONT"]))
-        axis.set_title(f"frame {frame_index}, t={float(infos[frame_index]['timestamp']):.1f}s")
+        plan = native_outputs[position]["final_planning"].numpy()
+        projected = project_model_plan_to_raw_camera(plan, infos[frame_index])
+        visible = projected["dense_visible"]
+        pixels = projected["dense_pixels"]
+        if np.any(visible):
+            axis.plot(
+                pixels[visible, 0],
+                pixels[visible, 1],
+                color="#ff7f0e",
+                linewidth=4,
+                solid_capstyle="round",
+            )
+        waypoint_pixels = projected["waypoint_pixels"]
+        waypoint_visible = projected["waypoint_visible"]
+        if np.any(waypoint_visible):
+            axis.scatter(
+                waypoint_pixels[waypoint_visible, 0],
+                waypoint_pixels[waypoint_visible, 1],
+                color="#ff7f0e",
+                edgecolor="white",
+                linewidth=0.7,
+                s=28,
+                zorder=3,
+            )
+        visible_waypoints = int(np.count_nonzero(projected["waypoint_visible"]))
+        note = f"projected waypoints in view: {visible_waypoints}/{len(plan)}"
+        if visible_waypoints == 0:
+            note += "\nnear path is below/outside CAM_FRONT FOV"
+        axis.text(
+            0.02,
+            0.97,
+            note,
+            transform=axis.transAxes,
+            ha="left",
+            va="top",
+            color="white",
+            fontsize=8,
+            bbox={"facecolor": "black", "alpha": 0.65, "pad": 3},
+        )
+        axis.set_title(
+            f"frame {frame_index}, t={float(infos[frame_index]['timestamp']):.1f}s"
+        )
         axis.axis("off")
 
     plan_axis = figure.add_subplot(grid[1, :])
-    for frame_index, info_row, native in zip(
-        indices, (infos[index] for index in indices), native_outputs, strict=True
+    for position, (frame_index, info_row, native) in enumerate(
+        zip(
+            indices,
+            (infos[index] for index in indices),
+            native_outputs,
+            strict=True,
+        )
     ):
         plan = native["final_planning"].numpy()
+        diagnostic = plan_kinematics(plan, float(info_row["ego_velo"]))
+        plan_with_origin = np.concatenate((np.zeros((1, 2)), plan), axis=0)
         plan_axis.plot(
-            plan[:, 0],
-            plan[:, 1],
+            plan_with_origin[:, 0],
+            plan_with_origin[:, 1],
             marker="o",
-            label=f"frame {frame_index}, t={float(info_row['timestamp']):.1f}s",
+            color=colors[position % len(colors)],
+            label=(
+                f"frame {frame_index}: ego {diagnostic['ego_speed_mps']:.2f} m/s, "
+                f"predicted first step {diagnostic['first_step_speed_mps']:.2f} m/s"
+            ),
         )
     plan_axis.scatter([0], [0], color="black", marker="x", label="ego origin")
     plan_axis.set(
-        title="SparseDrive native final plans (model axes remain provisionally mapped)",
-        xlabel="model trajectory axis 0",
-        ylabel="model trajectory axis 1",
+        title=(
+            "Top-down native final plans (HUGSIM l2c/v2c input calibration)"
+        ),
+        xlabel="right (+) / left (-), metres",
+        ylabel="forward, metres",
+    )
+    all_plans = np.concatenate(
+        [native["final_planning"].numpy() for native in native_outputs],
+        axis=0,
+    )
+    lateral_limit = max(1.0, float(np.max(np.abs(all_plans[:, 0]))) + 0.25)
+    plan_axis.set_xlim(-lateral_limit, lateral_limit)
+    plan_axis.set_ylim(0.0, max(1.0, float(np.max(all_plans[:, 1]))) + 0.5)
+    plan_axis.text(
+        0.01,
+        0.98,
+        "Lateral scale enlarged for readability",
+        transform=plan_axis.transAxes,
+        ha="left",
+        va="top",
+        fontsize=9,
+        color="dimgray",
     )
     plan_axis.grid(alpha=0.3)
     plan_axis.legend()
     figure.suptitle(
-        "SparseDrive runtime smoke: CAM_FRONT inputs and native final plans",
+        "SparseDrive plan audit: raw CAM_FRONT projection and top-down geometry",
         fontsize=15,
     )
     path = output / f"{label}_runtime_smoke.png"
@@ -465,6 +718,8 @@ def run_condition(
         torch.cuda.synchronize()
         elapsed = time.perf_counter() - started
         native = cpu_copy(raw, torch)
+        plan = native["final_planning"].numpy()
+        projection = project_model_plan_to_raw_camera(plan, infos[frame_index])
         if first_native is None:
             first_native = native
         native_outputs.append(native)
@@ -474,6 +729,25 @@ def run_condition(
                 "timestamp_s": float(infos[frame_index]["timestamp"]),
                 "inference_seconds": elapsed,
                 "native": native_summary(raw, torch),
+                "plan_geometry": plan_kinematics(
+                    plan,
+                    float(infos[frame_index]["ego_velo"]),
+                ),
+                "front_projection": {
+                    "camera": "CAM_FRONT",
+                    "source_view": "raw unmodified HUGSIM RGB",
+                    "model_z_m": projection["model_z_m"],
+                    "visible_waypoint_count": int(
+                        np.count_nonzero(projection["waypoint_visible"])
+                    ),
+                    "waypoint_count": int(len(plan)),
+                    "visible_waypoint_indices_1_based": (
+                        np.flatnonzero(projection["waypoint_visible"]) + 1
+                    ).astype(int).tolist(),
+                    "origin_height_alignment": (
+                        "derived from common six-camera inv(v2c) @ l2c"
+                    ),
+                },
             }
         )
         contracts.append(contract)
@@ -576,10 +850,12 @@ def main() -> int:
             "status": "down-weighted",
             "allowed": (
                 "the official SparseDrive checkpoint loads strictly and emits "
-                "finite native outputs on a bounded HUGSIM RGB sequence"
+                "finite native outputs on a bounded HUGSIM RGB sequence; the "
+                "six-camera l2c/v2c calibration gives a common model-to-vehicle "
+                "transform and a directionally coherent raw CAM_FRONT projection"
             ),
             "not_allowed": [
-                "the provisional virtual-LiDAR/ego frame is correct",
+                "the HUGSIM camera/LiDAR calibration is externally physically valid",
                 "the 10-D ego-status adaptation is externally valid",
                 "the SparseDrive planning response is credible",
                 "HUGSIM is equivalent to reality",

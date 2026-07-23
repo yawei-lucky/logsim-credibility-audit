@@ -1,5 +1,11 @@
 # HUGSIM × SparseDrive Stage2 runtime smoke 001
 
+> Correction, 2026-07-23: this original run omitted the complete transform from
+> SparseDrive's nuScenes LiDAR frame into HUGSIM's vehicle frame. Runtime
+> execution remains valid, but interpretation of its plan geometry is
+> `rejected`. The calibrated run and direct image projection are recorded in
+> `docs/runs/hugsim_sparsedrive_axis_projection_001.md`.
+
 ## Outcome
 
 SparseDrive-S Stage2 is now locally runnable on HUGSIM six-camera RGB. The
@@ -92,16 +98,17 @@ MPLCONFIGDIR=/tmp/mpl-sparsedrive \
 
 ## Input-contract boundary
 
-The runtime adapter currently declares a virtual LiDAR frame coincident with
-the HUGSIM vehicle frame used by the existing Sparse4D adapter. The 10-D
+This original runtime adapter declared a virtual LiDAR frame coincident with
+the HUGSIM vehicle frame used by the existing Sparse4D adapter, but failed to
+apply the available LiDAR-to-vehicle calibration. The 10-D
 `ego_status` maps available longitudinal acceleration and speed, derives yaw
 rate from consecutive headings, carries steering angle, and sets unavailable
 components to zero. HUGSIM's `0/1/2` right/left/straight command is converted
 to the matching one-hot order.
 
-These choices are explicit and reproducible, but still provisional. They need
-an independent coordinate/calibration check and an ego-status sensitivity
-audit before planning direction is interpreted.
+The transform defect is fixed in the corrective audit using the common
+six-camera `inverse(v2c) × l2c` transform. The ego-status adaptation still
+requires a sensitivity audit before planning direction is used as evidence.
 
 The cold first frame planned much farther than the three history-conditioned
 frames even in this no-actor run. That is evidence that temporal warm-up
@@ -115,7 +122,8 @@ cold frame against a warmed frame.
 |---|---|---|
 | The pinned official SparseDrive checkpoint can run on bounded HUGSIM RGB and expose native planning/motion outputs | `accepted` | engineering/runtime claim only |
 | Temporal state reset is reproducible | `accepted` | tested first-frame outputs within `1e-4` absolute tolerance |
-| The current virtual-frame and 10-D ego-status mapping is qualified for planning interpretation | `down-weighted` | explicit and internally coherent, but not externally anchored |
+| The original virtual-frame mapping is qualified for planning interpretation | `rejected` | it omitted the available LiDAR-to-vehicle transform |
+| The 10-D ego-status mapping is qualified for planning interpretation | `down-weighted` | explicit and reproducible, but not yet sensitivity-tested |
 | Current SparseDrive output shows that HUGSIM planning behavior is credible | `rejected` | not tested; runtime success and finite tensors are not task-validity evidence |
 
 ## Next gate
