@@ -28,6 +28,37 @@ Matching outputs do not make simulation literally identical to reality. They
 provide bounded evidence that the simulation is fit for a specified driving
 task, receiver, ODD, and intervention range.
 
+### Target receiver versus validation instrument
+
+The same AD model may play two roles that must not be conflated:
+
+1. **Target AD / system under test.** Ask whether the fixed model receives
+   sufficiently equivalent task information and exposes comparable behavior
+   in real and simulated factual inputs. The model need not be perfect for this
+   receiver-specific comparison.
+2. **Validation instrument.** Use the model's outputs to assert that simulator
+   geometry, planning quality or risk is correct. This stronger role requires
+   a local real-data qualification, an error envelope and evidence that the
+   result is not an adapter or receiver failure.
+
+A real-data receiver qualification does not prove the AD is globally correct
+or safe. It checks the local input contract, non-degenerate operation,
+repeatability, sensitivity to known corruptions, and task error over a declared
+real-data slice.
+
+For matched factual and designed-counterfactual work, keep two differences
+separate:
+
+```text
+D_domain = target-AD difference between matched real and factual simulation
+E_CF     = target-AD change from simulated factual to counterfactual input
+```
+
+Counterfactual evidence is stronger when `E_CF` preserves the preregistered
+direction and remains distinguishable from factual domain discrepancy,
+receiver error, repeat sensitivity and reasonable perturbations. This does
+not make a nonexistent counterfactual future a measured real-world truth.
+
 ## Reality Grounding Without Requiring a Real Starting Scene
 
 A designed counterfactual does **not** require every test case to begin from a

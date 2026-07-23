@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — CF-R Closure and External-Validity Gate
+## Immediate Direction — Reality Bridge and SparseDrive Real Qualification
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -113,22 +113,84 @@ indicator:
 counterfactual condition effect > closed-loop repeat sensitivity
 ```
 
-The next decision is external validity, not another internal response run:
+The fixed next route is:
 
-1. identify the smallest independently qualified basis for the expected
-   response magnitude: a matched real outcome, a defensible real-log behavior
-   range, or an independently qualified vehicle/driver response envelope;
-2. state which of progress, speed, clearance or task outcome that basis can
-   actually qualify;
-3. if no magnitude basis is available, retain the present claim as internal
-   causal consistency and do not turn second-receiver agreement into a reality
-   surrogate;
-4. only then preregister either one matched real–sim response comparison or one
-   bounded external-range test.
+```text
+Reality Bridge source-availability gate
+  -> SparseDrive-REAL-QUAL-001 on real data only
+  -> matched factual real/sim SparseDrive comparison
+  -> compare counterfactual effect with domain and repeat uncertainty
+  -> second receiver or closed-loop external upgrade only if needed
+```
+
+### Reality Bridge 001
+
+Use the smallest continuous real source slice that can support both sides of
+the same SparseDrive input contract:
+
+1. require synchronized six-camera RGB, camera calibration, ego pose and
+   scalar/vector ego state, at least four 2 Hz receiver frames, and recorded
+   future ego trajectory for the chosen evaluation timestamps;
+2. first inventory the existing HUGSIM official sample and extracted members;
+   do not start a broad nuScenes download before this availability gate;
+3. render the same factual timestamps with the paired HUGSIM reconstruction
+   and freeze one explicit `CAM_BACK` crop/pad rule;
+4. preserve source identity, pose provenance and release-pairing limitations.
+
+The existing three matched `scene-0383` timestamps are a useful image anchor,
+but isolated timestamps without a four-frame history and future ego truth are
+not sufficient for a SparseDrive planning qualification.
+
+### SparseDrive-REAL-QUAL-001
+
+SparseDrive has two distinct roles:
+
+- as the target AD, it is the system whose real-versus-sim response is being
+  compared and does not need to be perfect;
+- as a measurement instrument used to interpret position, planning quality or
+  risk, its local adapter and error range require real-data qualification.
+
+Run one separate, bounded real-data experiment with the unchanged official
+checkpoint and the same local adapter:
+
+1. consume only real six-camera frames and official real calibration, temporal
+   history, ego status and planning-conditioning fields;
+2. require correct reset, finite non-degenerate native outputs and bounded
+   repeat variation;
+3. compare the native 1/2/3 s ego plan with recorded future ego motion using
+   preregistered longitudinal/lateral error, ADE/FDE and mode diagnostics;
+4. include known-corruption controls such as camera-order swap, timestamp
+   shift and calibration perturbation; the qualification method must detect
+   their degradation;
+5. report an empirical local error/uncertainty envelope rather than declaring
+   SparseDrive globally correct or safe.
+
+This experiment is meaningful because it can detect adapter, coordinate,
+history and degeneration failures, and can bound how much receiver error is
+already present on reality. It cannot prove SparseDrive is a correct driving
+policy, and a good result cannot by itself qualify HUGSIM.
+
+### Factual equivalence before counterfactual upgrade
+
+After the real-only qualification passes, run the same reset SparseDrive on
+the matched real and factual HUGSIM sequences and record:
+
+```text
+D_domain = factual SparseDrive output difference between real and simulation
+E_CF     = SparseDrive response change between simulated factual and
+           simulated counterfactual conditions
+```
+
+The existing CF-R evidence can be upgraded only when its effect remains
+directionally stable and is not swallowed by `D_domain`, real-data receiver
+error, closed-loop repeat sensitivity or a preregistered reasonable
+perturbation envelope. If factual real/sim response is already materially
+non-equivalent, stop interpreting the counterfactual AD result and diagnose
+rendering, calibration, temporal or interface causes first.
 
 The exact source-pair gate and receiver qualification requirements continue to
-apply. A second receiver may test model dependence, but it cannot by itself
-show that either receiver or HUGSIM matches reality.
+apply. A second receiver may test model dependence, but it cannot substitute
+for the reality bridge or show that either receiver matches reality.
 
 ## Completed Basis
 
