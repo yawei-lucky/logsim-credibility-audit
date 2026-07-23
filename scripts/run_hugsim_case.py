@@ -36,6 +36,15 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         help="Run SparseDrive live after exact recorded-history pre-warm.",
     )
+    parser.add_argument(
+        "--warm-start-source-run",
+        type=Path,
+        help=(
+            "Replay the source run inside HUGSIM through the SparseDrive "
+            "handoff boundary before opening the live loop."
+        ),
+    )
+    parser.add_argument("--warm-start-steps", type=int, default=6)
     parser.add_argument("--sparsedrive-start-index", type=int, default=0)
     parser.add_argument(
         "--sparsedrive-reference-native-output",
@@ -137,6 +146,8 @@ def main() -> int:
         raise ValueError("--max-steps must be at least 1")
     if args.control_hold_steps < 1:
         raise ValueError("--control-hold-steps must be at least 1")
+    if args.warm_start_steps < 1:
+        raise ValueError("--warm-start-steps must be at least 1")
     if output.exists():
         raise FileExistsError(f"Refusing to overwrite existing output: {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -189,6 +200,11 @@ def main() -> int:
         ]
     elif args.sparsedrive_live_source_run is not None:
         source_run = args.sparsedrive_live_source_run.expanduser().resolve()
+        warm_start_source_run = (
+            args.warm_start_source_run.expanduser().resolve()
+            if args.warm_start_source_run is not None
+            else None
+        )
         reference_native = (
             args.sparsedrive_reference_native_output.expanduser().resolve()
             if args.sparsedrive_reference_native_output is not None
@@ -196,6 +212,13 @@ def main() -> int:
         )
         if not source_run.is_dir():
             raise FileNotFoundError(f"Missing live source run: {source_run}")
+        if (
+            warm_start_source_run is not None
+            and warm_start_source_run != source_run
+        ):
+            raise ValueError(
+                "The HUGSIM warm start and SparseDrive source run must match"
+            )
         if reference_native is None or not reference_native.is_file():
             raise FileNotFoundError(
                 "A valid --sparsedrive-reference-native-output is required"
@@ -203,6 +226,15 @@ def main() -> int:
         if not writer_python.is_file():
             raise FileNotFoundError(f"Missing writer Python: {writer_python}")
         runner_cmd.extend(("--strict-action-bounds", "--skip-evaluation"))
+        if warm_start_source_run is not None:
+            runner_cmd.extend(
+                (
+                    "--warm-start-source-run",
+                    str(warm_start_source_run),
+                    "--warm-start-steps",
+                    str(args.warm_start_steps),
+                )
+            )
         sparse_root = str(Path(args.sparsedrive_root).expanduser().resolve())
         writer_env["PYTHONPATH"] = (
             f"{sparse_root}:{repo_root / 'scripts'}:"
@@ -228,6 +260,8 @@ def main() -> int:
             "--anchor-dir",
             str(Path(args.sparsedrive_anchor_dir).expanduser().resolve()),
         ]
+        if warm_start_source_run is not None:
+            writer_cmd.append("--source-warm-started")
     else:
         writer_cmd = [
             str(python),

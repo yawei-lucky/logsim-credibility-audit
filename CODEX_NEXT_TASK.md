@@ -100,6 +100,11 @@ real-world fitness claim. It cannot by itself qualify HUGSIM.
 Do not add another normal run or target model. Prepare one bounded
 stronger/weaker conflict live comparison:
 
+The frozen run and decision contract is
+`docs/runs/hugsim_cf_r_closed_loop_preregistration_001.json`. Do not change its
+horizon, condition levels, primary constructs or decision rules after observing
+the live outcomes.
+
 1. reproduce each retained source condition through `1.5 s` so actor, ego,
    camera and SparseDrive history reach an exact common experiment boundary;
 2. use at least two independently reset live runs per condition;

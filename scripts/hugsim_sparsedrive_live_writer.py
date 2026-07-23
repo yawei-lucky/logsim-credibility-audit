@@ -55,6 +55,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runtime-deps", required=True, type=Path)
     parser.add_argument("--anchor-dir", required=True, type=Path)
     parser.add_argument("--timeout-s", type=float, default=120.0)
+    parser.add_argument(
+        "--source-warm-started",
+        action="store_true",
+        help=(
+            "The live HUGSIM process already replayed the recorded source "
+            "through the 1.5 s boundary, so timestamps and action history "
+            "are already continuous."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -77,8 +86,11 @@ def adjusted_live_info(
     boundary_info: dict[str, Any],
     *,
     first_live_frame: bool,
+    source_warm_started: bool = False,
 ) -> dict[str, Any]:
     adjusted = copy.deepcopy(live_info)
+    if source_warm_started:
+        return adjusted
     adjusted["timestamp"] = float(boundary_info["timestamp"]) + float(
         live_info["timestamp"]
     )
@@ -228,8 +240,23 @@ def main() -> int:
             live_info,
             boundary_info,
             first_live_frame=first_live_frame,
+            source_warm_started=args.source_warm_started,
         )
         if first_live_frame:
+            expected_environment_timestamp = (
+                float(boundary_info["timestamp"])
+                if args.source_warm_started
+                else 0.0
+            )
+            if not np.isclose(
+                float(live_info["timestamp"]),
+                expected_environment_timestamp,
+                atol=1e-12,
+            ):
+                raise ValueError(
+                    "unexpected first live environment timestamp: "
+                    f"{live_info['timestamp']}"
+                )
             state_residual = maximum_boundary_state_residual(
                 live_info,
                 boundary_info,
@@ -307,7 +334,13 @@ def main() -> int:
         },
         "prewarm_indices": list(PREWARM_INDICES),
         "boundary_index": BOUNDARY_INDEX,
-        "receiver_timestamp_offset_s": float(boundary_info["timestamp"]),
+        "source_boundary_timestamp_s": float(boundary_info["timestamp"]),
+        "receiver_timestamp_offset_s": (
+            0.0
+            if args.source_warm_started
+            else float(boundary_info["timestamp"])
+        ),
+        "source_warm_started": args.source_warm_started,
         "initial_history_fields_from_boundary": list(INITIAL_HISTORY_FIELDS),
         "first_live_boundary_state_max_abs_residual": 0.0,
         "first_live_boundary_rgb_max_abs_difference": 0,

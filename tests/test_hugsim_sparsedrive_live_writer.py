@@ -57,6 +57,21 @@ class SparseDriveLiveWriterTest(unittest.TestCase):
         self.assertEqual(adjusted["timestamp"], 2.0)
         self.assertEqual(adjusted["accelerate"], -0.4)
 
+    def test_source_warm_started_info_is_not_offset_or_rewritten(self):
+        live = info(1.5, 0.2)
+        boundary = info(1.5, 0.2)
+
+        adjusted = adjusted_live_info(
+            live,
+            boundary,
+            first_live_frame=True,
+            source_warm_started=True,
+        )
+
+        self.assertEqual(adjusted["timestamp"], 1.5)
+        self.assertEqual(adjusted["accelerate"], 0.2)
+        self.assertEqual(adjusted["steer_rate"], 0.1)
+
     def test_boundary_state_and_rgb_residuals_detect_change(self):
         boundary = info(1.5, 0.2)
         live = info(0.0, 0.0)

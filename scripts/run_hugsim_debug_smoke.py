@@ -79,6 +79,20 @@ def parse_args() -> argparse.Namespace:
             "'upstream' reproduces the released HUGSIM traj2control behavior."
         ),
     )
+    parser.add_argument(
+        "--warm-start-source-run",
+        type=Path,
+        help=(
+            "Replay recorded source actions before opening the live FIFO, "
+            "while requiring state and RGB to reproduce the source run."
+        ),
+    )
+    parser.add_argument(
+        "--warm-start-steps",
+        type=int,
+        default=0,
+        help="Number of recorded 0.25 s source actions to replay.",
+    )
     return parser.parse_args()
 
 
@@ -100,6 +114,125 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: stream.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def load_pickle(path: Path) -> Any:
+    with path.open("rb") as stream:
+        return pickle.load(stream)
+
+
+def maximum_state_residual(
+    current: dict[str, Any],
+    reference: dict[str, Any],
+) -> float:
+    fields = (
+        "timestamp",
+        "ego_box",
+        "ego_pos",
+        "ego_rot",
+        "ego_velo",
+        "ego_steer",
+        "obj_boxes",
+    )
+    return max(
+        float(
+            np.max(
+                np.abs(
+                    np.asarray(current[field], dtype=np.float64)
+                    - np.asarray(reference[field], dtype=np.float64)
+                )
+            )
+        )
+        for field in fields
+    )
+
+
+def rgb_maximum_difference(
+    current: dict[str, Any],
+    reference: dict[str, Any],
+) -> int:
+    if set(current["rgb"]) != set(reference["rgb"]):
+        raise ValueError("warm-start camera membership differs from source")
+    return max(
+        int(
+            np.max(
+                np.abs(
+                    current["rgb"][camera].astype(np.int16)
+                    - reference["rgb"][camera].astype(np.int16)
+                )
+            )
+        )
+        for camera in reference["rgb"]
+    )
+
+
+def replay_source_warm_start(
+    env: Any,
+    observation: dict[str, Any],
+    info: dict[str, Any],
+    source_run: Path,
+    step_count: int,
+    *,
+    state_atol: float = 1e-8,
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
+    source_observations = load_pickle(source_run / "observations.pkl")
+    source_infos = load_pickle(source_run / "infos.pkl")
+    source_steps = load_pickle(source_run / "audit_steps.pkl")
+    if step_count < 1:
+        raise ValueError("warm-start step count must be at least 1")
+    if (
+        len(source_observations) <= step_count
+        or len(source_infos) <= step_count
+        or len(source_steps) < step_count
+    ):
+        raise ValueError("source run is shorter than requested warm start")
+
+    records = []
+    for index in range(step_count + 1):
+        state_residual = maximum_state_residual(info, source_infos[index])
+        rgb_residual = rgb_maximum_difference(
+            observation,
+            source_observations[index],
+        )
+        records.append(
+            {
+                "source_index": index,
+                "timestamp_s": float(info["timestamp"]),
+                "state_max_abs_residual": state_residual,
+                "rgb_max_abs_difference": rgb_residual,
+            }
+        )
+        if state_residual > state_atol or rgb_residual != 0:
+            raise ValueError(
+                "warm-start replay differs from source at index "
+                f"{index}: state={state_residual}, rgb={rgb_residual}"
+            )
+        if index == step_count:
+            break
+        source_step = source_steps[index]
+        if int(source_step["step_id"]) != index:
+            raise ValueError("source warm-start steps are not contiguous")
+        observation, _, terminated, truncated, info = env.step(
+            source_step["action"]
+        )
+        if terminated or truncated:
+            raise RuntimeError(
+                f"source warm start ended at step {index}"
+            )
+
+    return observation, info, {
+        "enabled": True,
+        "source_run": str(source_run),
+        "step_count": step_count,
+        "state_atol": state_atol,
+        "maximum_state_residual": max(
+            item["state_max_abs_residual"] for item in records
+        ),
+        "maximum_rgb_difference": max(
+            item["rgb_max_abs_difference"] for item in records
+        ),
+        "records": records,
+    }
 
 
 def ensure_fifo(path: Path) -> None:
@@ -221,6 +354,11 @@ def main() -> int:
         raise ValueError("--max-steps must be at least 1")
     if args.control_hold_steps < 1:
         raise ValueError("--control-hold-steps must be at least 1")
+    if (args.warm_start_source_run is None) != (args.warm_start_steps == 0):
+        raise ValueError(
+            "--warm-start-source-run and a positive --warm-start-steps "
+            "must be provided together"
+        )
 
     hugsim_root = Path(args.hugsim_root).expanduser().resolve()
     scenario_path = Path(args.scenario).expanduser().resolve()
@@ -228,6 +366,18 @@ def main() -> int:
     camera_path = Path(args.camera).expanduser().resolve()
     kinematic_path = Path(args.kinematic).expanduser().resolve()
     output = Path(args.output).expanduser().resolve()
+    warm_start_source_run = (
+        args.warm_start_source_run.expanduser().resolve()
+        if args.warm_start_source_run is not None
+        else None
+    )
+    if (
+        warm_start_source_run is not None
+        and not warm_start_source_run.is_dir()
+    ):
+        raise FileNotFoundError(
+            f"Missing warm-start source run: {warm_start_source_run}"
+        )
 
     # HUGSIM imports assume its repository root is both cwd and on sys.path.
     os.chdir(hugsim_root)
@@ -280,6 +430,28 @@ def main() -> int:
     print(f"[debug-smoke] creating environment from {local_model_path}", flush=True)
     env = gymnasium.make("hugsim_env/HUGSim-v0", cfg=cfg, output=str(output))
     obs, info = env.reset()
+    warm_start = {"enabled": False}
+    if warm_start_source_run is not None:
+        obs, info, warm_start = replay_source_warm_start(
+            env,
+            obs,
+            info,
+            warm_start_source_run,
+            args.warm_start_steps,
+        )
+        warm_start["source_input_sha256"] = {
+            name: sha256(warm_start_source_run / name)
+            for name in (
+                "observations.pkl",
+                "infos.pkl",
+                "audit_steps.pkl",
+            )
+        }
+        print(
+            "[debug-smoke] warm-start complete "
+            f"steps={args.warm_start_steps} timestamp={info['timestamp']}",
+            flush=True,
+        )
 
     ensure_fifo(obs_pipe)
     ensure_fifo(plan_pipe)
@@ -418,6 +590,7 @@ def main() -> int:
         },
         "requested_steps": args.max_steps,
         "completed_steps": len(audit_steps),
+        "warm_start": warm_start,
         "control_hold_steps": args.control_hold_steps,
         "plan_updates_consumed": sum(
             bool(step["plan_updated"]) for step in audit_steps
