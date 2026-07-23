@@ -14,6 +14,7 @@ import os
 import subprocess
 import time
 from pathlib import Path
+from typing import TextIO
 
 
 def parse_args() -> argparse.Namespace:
@@ -120,6 +121,7 @@ def run_writer_with_runner_monitor(
     runner: subprocess.Popen[str],
     *,
     runner_exit_grace_s: float = 10.0,
+    runner_log: TextIO | None = None,
 ) -> int:
     with log_path.open("w", encoding="utf-8") as log:
         writer = subprocess.Popen(
@@ -130,6 +132,7 @@ def run_writer_with_runner_monitor(
             env=env,
         )
         runner_exit_seen_at: float | None = None
+        runner_tail = ""
         while True:
             writer_code = writer.poll()
             if writer_code is not None:
@@ -139,6 +142,13 @@ def run_writer_with_runner_monitor(
                 runner_exit_seen_at = None
             elif runner_exit_seen_at is None:
                 runner_exit_seen_at = time.monotonic()
+                if runner.stdout is not None:
+                    runner_tail = runner.stdout.read()
+                    if runner_tail:
+                        print(runner_tail, end="", flush=True)
+                        if runner_log is not None:
+                            runner_log.write(runner_tail)
+                            runner_log.flush()
             elif (
                 time.monotonic() - runner_exit_seen_at
                 >= runner_exit_grace_s
@@ -151,7 +161,8 @@ def run_writer_with_runner_monitor(
                     writer.wait()
                 raise RuntimeError(
                     "HUGSIM runner exited while the receiver was still "
-                    f"waiting; runner code={runner_code}"
+                    f"waiting; runner code={runner_code}; "
+                    f"last output={runner_tail.strip()[-500:]!r}"
                 )
             time.sleep(0.25)
 
@@ -332,6 +343,7 @@ def main() -> int:
             writer_env,
             writer_log,
             runner,
+            runner_log=runner_stream,
         )
         if writer_code != 0:
             runner.terminate()
