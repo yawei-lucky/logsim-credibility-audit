@@ -116,10 +116,10 @@ counterfactual condition effect > closed-loop repeat sensitivity
 The fixed next route is:
 
 ```text
-Reality Bridge source-availability gate
-  -> SparseDrive-REAL-QUAL-001 on real data only
-  -> matched factual real/sim SparseDrive comparison
-  -> compare counterfactual effect with domain and repeat uncertainty
+Reality Bridge source-availability gate                       complete, partial provenance
+  -> SparseDrive-REAL-QUAL-001 on real data only              complete, down-weighted
+  -> matched factual real/sim SparseDrive comparison          pilot complete, down-weighted
+  -> same-window counterfactual effect vs domain/repeat       next
   -> second receiver or closed-loop external upgrade only if needed
 ```
 
@@ -137,9 +137,12 @@ the same SparseDrive input contract:
    and freeze one explicit `CAM_BACK` crop/pad rule;
 4. preserve source identity, pose provenance and release-pairing limitations.
 
-The existing three matched `scene-0383` timestamps are a useful image anchor,
-but isolated timestamps without a four-frame history and future ego truth are
-not sufficient for a SparseDrive planning qualification.
+The official archive now supplies frames `12, 18, 24, 30` as a continuous 2 Hz
+real six-camera input window. Source camera-rig poses provide ego-motion and a
+descriptive future-path reference. Exact nuScenes sample tokens, CAN bus,
+steering and the scene-specific original `LIDAR_TOP`/`CAM_FRONT` calibration
+remain absent; preserve those limitations rather than starting a broad data
+download. See `docs/runs/sparsedrive_real_source_qualification_001.md`.
 
 ### SparseDrive-REAL-QUAL-001
 
@@ -150,30 +153,26 @@ SparseDrive has two distinct roles:
 - as a measurement instrument used to interpret position, planning quality or
   risk, its local adapter and error range require real-data qualification.
 
-Run one separate, bounded real-data experiment with the unchanged official
-checkpoint and the same local adapter:
+The bounded real-data run with the unchanged official checkpoint is complete:
 
-1. consume only real six-camera frames and official real calibration, temporal
-   history, ego status and planning-conditioning fields;
-2. require correct reset, finite non-degenerate native outputs and bounded
-   repeat variation;
-3. compare the native 1/2/3 s ego plan with recorded future ego motion using
-   preregistered longitudinal/lateral error, ADE/FDE and mode diagnostics;
-4. include known-corruption controls such as camera-order swap, timestamp
-   shift and calibration perturbation; the qualification method must detect
-   their degradation;
-5. report an empirical local error/uncertainty envelope rather than declaring
-   SparseDrive globally correct or safe.
+1. real RGB produced finite non-degenerate native output;
+2. repeated plans differed by at most `9.54e-6 m`;
+3. the fully warmed plan had `0.706 m` ADE and `1.630 m` endpoint error against
+   recorded camera-rig motion, as a diagnostic rather than a benchmark score;
+4. camera swap, time reversal and calibration shift all changed the plan far
+   beyond reset variation;
+5. the corruptions did not uniformly worsen trajectory error, demonstrating
+   that single-slice imitation error is not a qualified correctness judge.
 
-This experiment is meaningful because it can detect adapter, coordinate,
-history and degeneration failures, and can bound how much receiver error is
-already present on reality. It cannot prove SparseDrive is a correct driving
-policy, and a good result cannot by itself qualify HUGSIM.
+This is enough to use SparseDrive as the target AD in a paired comparison. It
+does not qualify SparseDrive as an absolute measurement instrument or prove it
+is a correct driving policy.
 
 ### Factual equivalence before counterfactual upgrade
 
-After the real-only qualification passes, run the same reset SparseDrive on
-the matched real and factual HUGSIM sequences and record:
+The first matched factual run is complete. The same reset SparseDrive consumed
+real and HUGSIM RGB with ego state, command, source pose, calibration and
+future reference held fixed:
 
 ```text
 D_domain = factual SparseDrive output difference between real and simulation
@@ -181,12 +180,25 @@ E_CF     = SparseDrive response change between simulated factual and
            simulated counterfactual conditions
 ```
 
-The existing CF-R evidence can be upgraded only when its effect remains
-directionally stable and is not swallowed by `D_domain`, real-data receiver
-error, closed-loop repeat sensitivity or a preregistered reasonable
-perturbation envelope. If factual real/sim response is already materially
-non-equivalent, stop interpreting the counterfactual AD result and diagnose
-rendering, calibration, temporal or interface causes first.
+At the only fully warmed timestamp, `D_domain` was `0.358 m` plan ADE and
+`0.639 m` endpoint difference; the simulation-side plan was `0.639 m` shorter
+longitudinally, lateral difference was `0.015 m`, and planning mode stayed the
+same. Pixel SSIM decreased across the window while planning discrepancy did
+not change monotonically, so pixel similarity is not a task-equivalence
+surrogate. See `docs/runs/sparsedrive_real_sim_factual_001.md`.
+
+No externally qualified acceptance threshold exists, so this is not yet a
+factual equivalence pass or failure. The earlier CF-R scale is only a
+cross-experiment diagnostic: its timeline and intervention differ.
+
+The next bounded work is:
+
+1. extend this same source window to obtain several fully warmed factual
+   timestamps and a small empirical `D_domain` range;
+2. add one controlled lead-vehicle counterfactual to the same exact window;
+3. compute same-construct `E_CF` and judge whether it is distinguishable from
+   factual-domain and repeat envelopes;
+4. do not add another receiver or scene before this comparison.
 
 The exact source-pair gate and receiver qualification requirements continue to
 apply. A second receiver may test model dependence, but it cannot substitute
