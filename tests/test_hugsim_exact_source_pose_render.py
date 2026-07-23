@@ -11,6 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from render_hugsim_exact_source_pose import (  # noqa: E402
     CAMERAS,
     image_metrics,
+    parse_checkpoint_specs,
     select_camera_records,
 )
 
@@ -23,6 +24,14 @@ def identity(size):
 
 
 class HugsimExactSourcePoseRenderTest(unittest.TestCase):
+    def test_checkpoint_specs_require_existing_unique_paths(self):
+        parsed = parse_checkpoint_specs([f"actor={__file__}"])
+        self.assertEqual(parsed["actor"], Path(__file__).resolve())
+        with self.assertRaises(ValueError):
+            parse_checkpoint_specs([f"actor={__file__}", f"actor={__file__}"])
+        with self.assertRaises(FileNotFoundError):
+            parse_checkpoint_specs(["actor=/definitely/missing.pth"])
+
     def test_selects_one_complete_timestamp_group(self):
         frames = []
         for frame_index in (3, 4):

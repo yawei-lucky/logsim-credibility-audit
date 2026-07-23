@@ -119,8 +119,8 @@ The fixed next route is:
 Reality Bridge source-availability gate                       complete, partial provenance
   -> SparseDrive-REAL-QUAL-001 on real data only              complete, down-weighted
   -> matched factual real/sim SparseDrive comparison          pilot complete, down-weighted
-  -> same-window counterfactual effect vs domain/repeat       next
-  -> second receiver or closed-loop external upgrade only if needed
+  -> same-window counterfactual effect vs domain/repeat       complete, down-weighted
+  -> maneuver-conditioned risk indicator refinement          next
 ```
 
 ### Reality Bridge 001
@@ -214,14 +214,26 @@ No externally qualified acceptance threshold exists, so this is not yet a
 factual equivalence pass or failure. The earlier CF-R scale is only a
 cross-experiment diagnostic: its timeline and intervention differ.
 
+The same-window comparison is complete. Five fully warmed timestamps produced
+an empirical factual forward-domain range with maximum absolute discrepancy
+`0.639 m`. The 5 m actor caused metre-scale SparseDrive effects beyond both
+repeat and the observed factual-domain discrepancy, but the preregistered
+strong-less-forward-than-weak direction held at only 3/5 timestamps and is
+`rejected`. At frame 48 the strong condition changed planning mode and moved
+both farther left and farther forward; raw forward endpoint is therefore not a
+maneuver-independent risk indicator. See
+`docs/runs/sparsedrive_same_window_counterfactual_001.md`.
+
 The next bounded work is:
 
-1. extend this same source window to obtain several fully warmed factual
-   timestamps and a small empirical `D_domain` range;
-2. add one controlled lead-vehicle counterfactual to the same exact window;
-3. compute same-construct `E_CF` and judge whether it is distinguishable from
-   factual-domain and repeat envelopes;
-4. do not add another receiver or scene before this comparison.
+1. do not render another scene, add an actor level or install another receiver;
+2. use the existing native candidate plans/scores and actor geometry to
+   distinguish longitudinal following from a maneuver switch at the two
+   reversals;
+3. formulate a prospective maneuver-conditioned indicator combining
+   route-relative progress, actor clearance/path conflict and mode identity;
+4. retain the original 3/5 result as `rejected`; the refinement must not
+   retroactively turn it into a pass.
 
 The exact source-pair gate and receiver qualification requirements continue to
 apply. A second receiver may test model dependence, but it cannot substitute

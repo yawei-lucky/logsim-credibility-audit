@@ -67,6 +67,22 @@ class SparseDriveRealSimFactualTest(unittest.TestCase):
         )
         self.assertTrue(row["mode_equal"])
 
+    def test_validate_pair_marks_every_frame_after_warmup(self):
+        real = report(np.zeros((6, 2)))
+        template = real["baseline"]["frames"][0]
+        real["baseline"]["frames"] = []
+        for offset in range(6):
+            frame = copy.deepcopy(template)
+            frame["source_frame_index"] = 12 + 6 * offset
+            frame["timestamp_s"] = 1.0 + 0.5 * offset
+            real["baseline"]["frames"].append(frame)
+        sim = copy.deepcopy(real)
+        rows = validate_pair(real, sim)["rows"]
+        self.assertEqual(
+            [row["fully_warmed_four_frame_history"] for row in rows],
+            [False, False, False, True, True, True],
+        )
+
     def test_validate_pair_fails_when_held_fixed_state_differs(self):
         real = report(np.zeros((6, 2)))
         sim = copy.deepcopy(real)

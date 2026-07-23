@@ -1,0 +1,59 @@
+{
+  "audit_id": "sparsedrive_same_window_counterfactual_001",
+  "date": "2026-07-23",
+  "status": "frozen_before HUGSIM rendering and SparseDrive inference",
+  "question": "In the same matched scene-0383 source-pose window, is SparseDrive's response to a controlled lead-vehicle path gap distinguishable from numerical repeat sensitivity and how does its scale compare with the factual real-HUGSIM domain discrepancy?",
+  "window": {
+    "source_frames": [12, 18, 24, 30, 36, 42, 48, 54],
+    "receiver_rate_hz": 2,
+    "fully_warmed_evaluation_frames": [30, 36, 42, 48, 54],
+    "real_source_manifest": "artifacts/hugsim_source_anchor/scene-0383-sparsedrive-real-window-002/source_archive_manifest.json",
+    "real_source_manifest_sha256": "cf9ca0fc27ac23e6308e9b7f002612e66489488f1f6dfd88f6e85eb8fd5e4317"
+  },
+  "conditions": {
+    "factual": "no audit actor; retain native reconstructed dynamics",
+    "weak": "one RealCar actor scripted 10 m ahead along the recorded source camera-rig path",
+    "strong": "the same actor scripted 5 m ahead along the recorded source camera-rig path"
+  },
+  "counterfactual_metadata": {
+    "manifest": "artifacts/hugsim_counterfactual_metadata/scene-0383-source-window-lead-run003/counterfactual_metadata_manifest.json",
+    "manifest_sha256": "a5c34d9be863ffefcbff7c2e607876ae41fedb0adc57346c2c81946dd23e251e",
+    "excluded_setup_calibrations": [
+      "scene-0383-source-window-lead-run001: fixed-world placement mixed distance with large lateral displacement",
+      "scene-0383-source-window-lead-run002: 18 m weak condition moved far around the curved source path"
+    ]
+  },
+  "held_fixed": [
+    "official sample source timestamps and source-initial camera poses",
+    "six camera intrinsics and receiver camera ordering",
+    "HUGSIM background checkpoint and native reconstructed dynamics",
+    "RealCar Gaussian asset",
+    "SparseDrive checkpoint, adapter, calibration, command, ego state and temporal reset",
+    "image preprocessing and four-frame warm-up rule"
+  ],
+  "changed": "lead vehicle path gap only: absent, 10 m, or 5 m",
+  "setup_gates": [
+    "the audit actor is added to all six cameras at every selected timestamp without replacing native dynamics",
+    "both actor gaps remain positive and strong is closer than weak at every selected timestamp",
+    "the strong 5 m centre gap remains non-overlapping under the declared 3.0 m ego and 3.576 m actor lengths",
+    "all rendered images and SparseDrive native outputs are finite"
+  ],
+  "constructs": {
+    "D_domain_forward_m": "factual HUGSIM minus real SparseDrive 3 s final forward endpoint at the same fully warmed timestamp",
+    "E_CF_forward_m": "counterfactual minus factual-HUGSIM SparseDrive 3 s final forward endpoint at the same fully warmed timestamp",
+    "repeat_forward_m": "maximum absolute final-forward difference between independent reset repeats of the same input sequence",
+    "supporting_outputs": [
+      "full-plan ADE/FDE between conditions",
+      "final lateral endpoint",
+      "selected planning mode",
+      "per-timestamp real, factual, weak and strong front RGB with native plan overlays"
+    ]
+  },
+  "frozen_directional_expectation": "A credible target-AD response direction is strong final-forward progress < weak final-forward progress; factual ordering is reported but not required because the factual scene may contain native task cues.",
+  "decision_rules": {
+    "response_direction_accepted": "strong < weak at at least 4 of 5 fully warmed timestamps, with no non-finite output, and the median signed strong-minus-weak effect is more negative than the repeat-forward envelope",
+    "response_direction_rejected": "the setup gates pass but strong >= weak at at least 3 of 5 fully warmed timestamps, or the median effect is indistinguishable from repeat",
+    "domain_scale_diagnostic": "report per-timestamp and median absolute E_CF/D_domain ratios; this does not subtract away domain error or create a real counterfactual truth",
+    "overall_boundary": "Even a directional pass is receiver-, window-, actor-asset- and intervention-specific. It does not establish realistic actor behavior, HUGSIM-wide equivalence, collision validity, or AD safety."
+  }
+}

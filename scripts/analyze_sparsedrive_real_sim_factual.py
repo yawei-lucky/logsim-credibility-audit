@@ -113,7 +113,7 @@ def validate_pair(real: dict[str, Any], sim: dict[str, Any]) -> dict[str, Any]:
                 "source_frame_index": real_frame["source_frame_index"],
                 "timestamp_s": real_frame["timestamp_s"],
                 "history_depth_in_this_reset": len(rows) + 1,
-                "fully_warmed_four_frame_history": len(rows) == 3,
+                "fully_warmed_four_frame_history": len(rows) >= 3,
                 "held_fixed_max_abs_differences": {
                     "ego_status": status_difference,
                     "command": command_difference,
@@ -295,9 +295,16 @@ def main() -> int:
         ),
     )
     warmed = [row for row in rows if row["fully_warmed_four_frame_history"]]
-    if len(warmed) != 1:
-        raise ValueError("expected exactly one fully warmed receiver frame")
-    warmed_row = warmed[0]
+    if not warmed:
+        raise ValueError("expected at least one fully warmed receiver frame")
+    warmed_domain_ade = [row["plan_domain_ade_m"] for row in warmed]
+    warmed_domain_fde = [row["plan_domain_fde_m"] for row in warmed]
+    warmed_forward_delta = [
+        row["final_forward_delta_sim_minus_real_m"] for row in warmed
+    ]
+    warmed_right_delta = [
+        row["final_right_delta_sim_minus_real_m"] for row in warmed
+    ]
     visual_path = save_visualization(rows, pixels, output)
     cf_scale = cf_r_scale(load_json(cf_r_path))
     result = {
@@ -329,18 +336,40 @@ def main() -> int:
             "all_frame_domain_fde_m": float(
                 np.mean([row["plan_domain_fde_m"] for row in rows])
             ),
-            "fully_warmed_source_frame": warmed_row["source_frame_index"],
-            "fully_warmed_domain_ade_m": warmed_row["plan_domain_ade_m"],
-            "fully_warmed_domain_fde_m": warmed_row["plan_domain_fde_m"],
-            "fully_warmed_final_forward_delta_sim_minus_real_m": warmed_row[
-                "final_forward_delta_sim_minus_real_m"
+            "fully_warmed_source_frames": [
+                row["source_frame_index"] for row in warmed
             ],
-            "fully_warmed_final_right_delta_sim_minus_real_m": warmed_row[
-                "final_right_delta_sim_minus_real_m"
-            ],
-            "fully_warmed_mode_equal": warmed_row["mode_equal"],
-            "fully_warmed_domain_effect_exceeds_repeat": (
-                warmed_row["plan_domain_fde_m"] > repeat_envelope
+            "fully_warmed_count": len(warmed),
+            "fully_warmed_domain_ade_m": {
+                "mean": float(np.mean(warmed_domain_ade)),
+                "min": float(np.min(warmed_domain_ade)),
+                "max": float(np.max(warmed_domain_ade)),
+            },
+            "fully_warmed_domain_fde_m": {
+                "mean": float(np.mean(warmed_domain_fde)),
+                "min": float(np.min(warmed_domain_fde)),
+                "max": float(np.max(warmed_domain_fde)),
+            },
+            "fully_warmed_final_forward_delta_sim_minus_real_m": {
+                "mean": float(np.mean(warmed_forward_delta)),
+                "min": float(np.min(warmed_forward_delta)),
+                "max": float(np.max(warmed_forward_delta)),
+                "max_abs": float(np.max(np.abs(warmed_forward_delta))),
+            },
+            "fully_warmed_final_right_delta_sim_minus_real_m": {
+                "mean": float(np.mean(warmed_right_delta)),
+                "min": float(np.min(warmed_right_delta)),
+                "max": float(np.max(warmed_right_delta)),
+                "max_abs": float(np.max(np.abs(warmed_right_delta))),
+            },
+            "fully_warmed_mode_equal_count": sum(
+                bool(row["mode_equal"]) for row in warmed
+            ),
+            "fully_warmed_all_mode_equal": all(
+                bool(row["mode_equal"]) for row in warmed
+            ),
+            "fully_warmed_domain_effect_exceeds_repeat_count": sum(
+                row["plan_domain_fde_m"] > repeat_envelope for row in warmed
             ),
         },
         "cf_r_cross_experiment_scale_diagnostic": cf_scale,
@@ -352,7 +381,7 @@ def main() -> int:
                 "real RGB and HUGSIM RGB at the same declared source poses"
             ),
             "down-weighted": (
-                "one fully warmed frame and a provisional absolute "
+                "a short same-scene warmed window and a provisional absolute "
                 "model-LiDAR/CAM_FRONT anchor do not define an externally "
                 "qualified equivalence threshold"
             ),

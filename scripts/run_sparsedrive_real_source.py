@@ -90,6 +90,11 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=80.0,
     )
+    parser.add_argument(
+        "--baseline-only",
+        action="store_true",
+        help="Run only the primary sequence and its independent reset repeat.",
+    )
     parser.add_argument("--output", type=Path, required=True)
     return parser.parse_args()
 
@@ -102,8 +107,8 @@ def wrapped_rate(current: float, previous: float, dt: float) -> float:
 
 
 def validate_indices(frame_indices: list[int]) -> int:
-    if len(frame_indices) != 4:
-        raise ValueError("exactly four receiver frame indices are required")
+    if len(frame_indices) < 4:
+        raise ValueError("at least four receiver frame indices are required")
     if frame_indices != sorted(set(frame_indices)):
         raise ValueError("frame indices must be unique and strictly increasing")
     differences = np.diff(frame_indices)
@@ -625,9 +630,16 @@ def save_visualization(
 ) -> Path:
     import matplotlib.pyplot as plt
 
+    frames = baseline["frames"]
+    if len(frames) <= 4:
+        displayed_frames = frames
+    else:
+        displayed_indices = np.linspace(0, len(frames) - 1, 4, dtype=int)
+        displayed_frames = [frames[index] for index in displayed_indices]
+
     figure = plt.figure(figsize=(16, 8), constrained_layout=True)
     grid = figure.add_gridspec(2, 4, height_ratios=(1, 1.1))
-    for column, frame in enumerate(baseline["frames"]):
+    for column, frame in enumerate(displayed_frames):
         axis = figure.add_subplot(grid[0, column])
         image = frame["_raw_front"]
         axis.imshow(image)
@@ -716,7 +728,11 @@ def save_visualization(
             for name in controls
         ],
     ]
-    metric_axis.bar(labels, ade, color=["#ff7f0e", "#7f7f7f", "#7f7f7f", "#7f7f7f"])
+    metric_axis.bar(
+        labels,
+        ade,
+        color=["#ff7f0e", *(["#7f7f7f"] * len(controls))],
+    )
     metric_axis.set(
         title="Descriptive error to recorded camera-rig motion",
         ylabel="mean ADE, metres",
@@ -847,22 +863,26 @@ def main() -> int:
         torch=torch,
         front_intrinsic_shift_px=args.front_intrinsic_shift_px,
     )
-    controls = {
-        variant: run_sequence(
-            variant=variant,
-            source_root=source_root,
-            metadata=metadata,
-            frame_indices=frame_indices,
-            stride=stride,
-            poses=poses,
-            front_l2c=front_l2c,
-            model=model,
-            torch=torch,
-            front_intrinsic_shift_px=args.front_intrinsic_shift_px,
-        )
-        for variant in VARIANTS
-        if variant != "baseline"
-    }
+    controls = (
+        {}
+        if args.baseline_only
+        else {
+            variant: run_sequence(
+                variant=variant,
+                source_root=source_root,
+                metadata=metadata,
+                frame_indices=frame_indices,
+                stride=stride,
+                poses=poses,
+                front_l2c=front_l2c,
+                model=model,
+                torch=torch,
+                front_intrinsic_shift_px=args.front_intrinsic_shift_px,
+            )
+            for variant in VARIANTS
+            if variant != "baseline"
+        }
+    )
     repeat_difference = max_plan_difference(baseline, repeated)
     control_differences = {
         name: max_plan_difference(baseline, run)
@@ -984,6 +1004,7 @@ def main() -> int:
             "path": str(Path(__file__).resolve()),
             "sha256": sha256_file(Path(__file__).resolve()),
             "front_intrinsic_shift_px": float(args.front_intrinsic_shift_px),
+            "baseline_only": bool(args.baseline_only),
         },
         "baseline": clean_run_for_json(baseline),
         "baseline_repeat": clean_run_for_json(repeated),
@@ -1003,13 +1024,21 @@ def main() -> int:
             "baseline_warmed_final_frame_ade_m": baseline_warmed_ade,
             "baseline_warmed_final_frame_fde_m": baseline_warmed_fde,
             "control_reference_diagnostics": control_reference_diagnostics,
-            "all_controls_worsen_mean_ade": all(
-                item["mean_ade_worse_than_baseline"]
-                for item in control_reference_diagnostics.values()
+            "all_controls_worsen_mean_ade": (
+                all(
+                    item["mean_ade_worse_than_baseline"]
+                    for item in control_reference_diagnostics.values()
+                )
+                if controls
+                else None
             ),
-            "all_controls_worsen_warmed_ade": all(
-                item["warmed_ade_worse_than_baseline"]
-                for item in control_reference_diagnostics.values()
+            "all_controls_worsen_warmed_ade": (
+                all(
+                    item["warmed_ade_worse_than_baseline"]
+                    for item in control_reference_diagnostics.values()
+                )
+                if controls
+                else None
             ),
         },
         "artifacts": {

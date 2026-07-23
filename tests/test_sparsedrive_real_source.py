@@ -35,8 +35,9 @@ def pose(right: float, forward: float, yaw: float = 0.0) -> np.ndarray:
 
 
 class SparseDriveRealSourceTest(unittest.TestCase):
-    def test_validate_indices_requires_four_uniform_frames(self):
+    def test_validate_indices_requires_at_least_four_uniform_frames(self):
         self.assertEqual(validate_indices([12, 18, 24, 30]), 6)
+        self.assertEqual(validate_indices([12, 18, 24, 30, 36, 42]), 6)
         with self.assertRaises(ValueError):
             validate_indices([12, 18, 25, 30])
         with self.assertRaises(ValueError):

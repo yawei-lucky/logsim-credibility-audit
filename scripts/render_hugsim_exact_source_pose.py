@@ -102,6 +102,23 @@ def parse_metadata_specs(specs: list[str]) -> dict[str, Path]:
     return parsed
 
 
+def parse_checkpoint_specs(specs: list[str]) -> dict[str, Path]:
+    parsed = {}
+    for spec in specs:
+        if "=" not in spec:
+            raise ValueError("--dynamic-checkpoint must use ID=PATH")
+        dynamic_id, raw_path = spec.split("=", 1)
+        path = Path(raw_path).expanduser().resolve()
+        if not dynamic_id or dynamic_id in parsed:
+            raise ValueError(
+                f"invalid or duplicate dynamic checkpoint id: {dynamic_id!r}"
+            )
+        if not path.is_file():
+            raise FileNotFoundError(path)
+        parsed[dynamic_id] = path
+    return parsed
+
+
 def git_commit(repo: Path) -> str | None:
     result = subprocess.run(
         ["git", "rev-parse", "HEAD"],
@@ -170,15 +187,25 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
             for dynamic_id in frame.get("dynamics", {})
         }
     )
+    explicit_dynamic_paths = parse_checkpoint_specs(args.dynamic_checkpoint)
     dynamic_gaussians = {}
+    dynamic_checkpoint_paths = {}
     for dynamic_id in dynamic_ids:
-        path = args.model_dir / f"dynamic_{dynamic_id}.pth"
+        path = explicit_dynamic_paths.get(
+            dynamic_id,
+            args.model_dir / f"dynamic_{dynamic_id}.pth",
+        )
+        if not path.is_file():
+            raise FileNotFoundError(
+                f"no checkpoint for declared dynamic {dynamic_id!r}: {path}"
+            )
         dynamic = ObjModel(cfg.model.sh_degree, feat_mutable=False)
         dynamic_params, _ = torch.load(
             path, map_location="cuda", weights_only=False
         )
         dynamic.restore(dynamic_params, None)
         dynamic_gaussians[dynamic_id] = dynamic
+        dynamic_checkpoint_paths[dynamic_id] = path
 
     bg_color = [1.0, 1.0, 1.0] if cfg.model.white_background else [0.0, 0.0, 0.0]
     background = torch.tensor(bg_color, dtype=torch.float32, device="cuda")
@@ -334,10 +361,12 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
             "scene_checkpoint_sha256": sha256_file(args.model_dir / "scene.pth"),
             "model_iteration": int(model_iteration),
             "cfg_sha256": sha256_file(args.model_dir / "cfg.yaml"),
+            "dynamic_checkpoint_paths": {
+                dynamic_id: str(dynamic_checkpoint_paths[dynamic_id])
+                for dynamic_id in dynamic_ids
+            },
             "dynamic_checkpoint_sha256": {
-                dynamic_id: sha256_file(
-                    args.model_dir / f"dynamic_{dynamic_id}.pth"
-                )
+                dynamic_id: sha256_file(dynamic_checkpoint_paths[dynamic_id])
                 for dynamic_id in dynamic_ids
             },
         },
@@ -371,6 +400,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--real-root", type=Path, required=True)
     parser.add_argument("--metadata", action="append", required=True)
+    parser.add_argument(
+        "--dynamic-checkpoint",
+        action="append",
+        default=[],
+        metavar="ID=PATH",
+        help=(
+            "Explicit checkpoint for an injected dynamic id; native scene "
+            "dynamics continue to resolve from MODEL_DIR."
+        ),
+    )
     parser.add_argument("--frame-index", type=int, required=True)
     parser.add_argument("--source-archive-manifest", type=Path)
     parser.add_argument("--output", type=Path, required=True)
