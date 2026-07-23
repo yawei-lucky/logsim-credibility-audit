@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — Replicated CF-R Closed-Loop Preregistration
+## Immediate Direction — CF-R Closure and External-Validity Gate
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -81,6 +81,14 @@ maximum plan difference grew from about `1e-5 m` at handoff to `0.032 m` at the
 fourth update, while planning mode, action signs and no-event outcome remained
 stable. See `docs/runs/hugsim_sparsedrive_live_loop_001.md`.
 
+The replicated CF-R closed-loop experiment is also complete. Stronger
+lead-actor closure produced less final ego progress, lower final speed and
+smaller independently recomputed footprint clearance in both paired resets.
+For all three constructs, the minimum condition effect exceeded the maximum
+same-condition repeat variation. The bounded simulator-internal causal-response
+claim is `accepted`; response magnitude and real-world fitness remain
+unqualified. See `docs/runs/hugsim_cf_r_closed_loop_001.md`.
+
 The official HUGSIM sample has also supplied a partial factual anchor: real
 six-camera images for three `scene-0383` timestamps were compared with
 exact-pose renders. The current checkpoint metadata produced better pixel
@@ -97,29 +105,30 @@ real-world fitness claim. It cannot by itself qualify HUGSIM.
 
 ## Current Deliverable
 
-Do not add another normal run or target model. Prepare one bounded
-stronger/weaker conflict live comparison:
+Do not add another actor-speed level, normal run or target model merely to
+extend the accepted internal curve. Close the result around the reusable
+indicator:
 
-The frozen run and decision contract is
-`docs/runs/hugsim_cf_r_closed_loop_preregistration_001.json`. Do not change its
-horizon, condition levels, primary constructs or decision rules after observing
-the live outcomes.
+```text
+counterfactual condition effect > closed-loop repeat sensitivity
+```
 
-1. reproduce each retained source condition through `1.5 s` so actor, ego,
-   camera and SparseDrive history reach an exact common experiment boundary;
-2. use at least two independently reset live runs per condition;
-3. predeclare direct ego progress, speed and independently recomputed
-   ego–actor clearance; keep each relation separate;
-4. require the expected condition order in every paired repeat and no
-   task-level reversal;
-5. require the minimum between-condition effect to exceed the maximum
-   within-condition repeat variation for the same construct;
-6. disable HUGSIM NC/TTC/PDMS for acceptance and do not tune the horizon or
-   condition levels after seeing results.
+The next decision is external validity, not another internal response run:
 
-This tests whether a counterfactual effect survives the newly observed
-closed-loop sensitivity. It remains simulator-internal until an external or
-matched-real outcome basis is added.
+1. identify the smallest independently qualified basis for the expected
+   response magnitude: a matched real outcome, a defensible real-log behavior
+   range, or an independently qualified vehicle/driver response envelope;
+2. state which of progress, speed, clearance or task outcome that basis can
+   actually qualify;
+3. if no magnitude basis is available, retain the present claim as internal
+   causal consistency and do not turn second-receiver agreement into a reality
+   surrogate;
+4. only then preregister either one matched real–sim response comparison or one
+   bounded external-range test.
+
+The exact source-pair gate and receiver qualification requirements continue to
+apply. A second receiver may test model dependence, but it cannot by itself
+show that either receiver or HUGSIM matches reality.
 
 ## Completed Basis
 
