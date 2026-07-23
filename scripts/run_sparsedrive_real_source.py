@@ -190,11 +190,29 @@ def pose_derived_ego_status(
         pose_heading(previous_pose),
         current_dt,
     )
+    # The source/model pose uses x=right, y=forward, z=up. SparseDrive's
+    # nuScenes CAN-bus contract stores vehicle-frame [forward, left, up] for
+    # acceleration and velocity, and InstanceQueue consumes status[6] as the
+    # previous longitudinal speed. Reorder explicitly at this boundary.
+    acceleration_can = np.asarray(
+        [
+            acceleration_model[1],
+            -acceleration_model[0],
+            acceleration_model[2],
+        ]
+    )
+    velocity_can = np.asarray(
+        [
+            velocity_model[1],
+            -velocity_model[0],
+            velocity_model[2],
+        ]
+    )
     result = np.concatenate(
         (
-            acceleration_model,
+            acceleration_can,
             np.asarray([0.0, 0.0, yaw_rate]),
-            velocity_model,
+            velocity_can,
             np.asarray([0.0]),
         )
     ).astype(np.float32)
@@ -278,7 +296,7 @@ def apply_ego_forward_velocity_offset(
         raise ValueError("ego status must be one finite 10-D vector")
     if not math.isfinite(offset_mps):
         raise ValueError("ego forward-velocity offset must be finite")
-    result[7] += float(offset_mps)
+    result[6] += float(offset_mps)
     return result
 
 
@@ -356,10 +374,10 @@ def prepare_source_frame(
         "front_to_world": front_to_world.tolist(),
         "ego_status_10d": ego_status.astype(float).tolist(),
         "ego_status_sources": [
-            "acceleration_xyz: finite difference of source camera-rig poses",
+            "acceleration_forward_left_up: finite difference of source camera-rig poses, reordered from model right_forward_up axes",
             "angular_rate_xy: unavailable, zero",
             "angular_rate_z: finite difference of source camera-rig heading",
-            "velocity_xyz: finite difference of source camera-rig poses",
+            "velocity_forward_left_up: finite difference of source camera-rig poses, reordered from model right_forward_up axes",
             "steering: unavailable, zero",
         ],
         "command_one_hot_right_left_straight": command.astype(float).tolist(),
@@ -491,12 +509,17 @@ def run_sequence(
             [poses[index] for index in future_indices],
         )
         command = command_from_reference(reference)
+        input_global_pose = (
+            poses[frame_indices[0]]
+            if variant == "ego_pose_history_frozen"
+            else poses[logical_index]
+        )
         data, contract, visual = prepare_source_frame(
             source_root=source_root,
             metadata=metadata,
             logical_index=logical_index,
             image_index=image_index,
-            global_pose=poses[logical_index],
+            global_pose=input_global_pose,
             ego_status=status,
             command=command,
             torch=torch,
@@ -504,6 +527,11 @@ def run_sequence(
         )
         contract["ego_forward_velocity_offset_mps"] = float(
             ego_forward_velocity_offset_mps
+        )
+        contract["ego_pose_history_intervention"] = (
+            "first source pose repeated"
+            if variant == "ego_pose_history_frozen"
+            else "none"
         )
         raw_projections = attach_source_projections(
             data,

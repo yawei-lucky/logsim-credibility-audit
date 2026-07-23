@@ -1,0 +1,83 @@
+{
+  "audit_id": "sparsedrive_visual_necessity_002",
+  "date": "2026-07-23",
+  "corrective_reason": "Run 001 changed ego_status[7], but SparseDrive's released nuScenes CAN-bus contract stores forward speed at ego_status[6] and InstanceQueue reads index 6 into its longitudinal ego anchor. Run 001's ego-speed sensitivity decision is rejected. Its output directory is retained.",
+  "coordinate_boundary": {
+    "source_model_pose_axes": [
+      "right",
+      "forward",
+      "up"
+    ],
+    "sparsedrive_can_vector_axes": [
+      "forward",
+      "left",
+      "up"
+    ],
+    "mapping": "CAN [forward, left, up] = model [y, -x, z] for acceleration and velocity",
+    "source_basis": [
+      "SparseDrive tools/data_converter/nuscenes_converter.py get_ego_status",
+      "SparseDrive projects/mmdet3d_plugin/models/motion/instance_queue.py"
+    ]
+  },
+  "purpose": "Correctively test whether the pinned SparseDrive plan on the existing real source window causally depends on RGB, correctly ordered ego forward velocity, and ego-pose history. This does not test semantic correctness or simulator credibility.",
+  "held_fixed": [
+    "official-sample scene-0383 source frames 12, 18, 24 and 30",
+    "source timestamps, calibration, projection matrices and navigation command except inside the declared intervention",
+    "SparseDrive source, compatibility patch, checkpoint and reset procedure",
+    "four-frame warm-up and native six-step planning output"
+  ],
+  "interventions": {
+    "rgb_spatial_information": {
+      "baseline": "unaltered official-sample RGB",
+      "control": "replace every camera pixel with the rounded ImageNet normalization mean",
+      "ego_status_and_pose": "held equal to corrected baseline"
+    },
+    "rgb_temporal_history": {
+      "baseline": "chronological source RGB",
+      "control": "repeat the first source RGB frame at all four logical timestamps",
+      "ego_status_and_pose": "held equal to corrected baseline"
+    },
+    "ego_forward_velocity": {
+      "baseline": "pose-derived and coordinate-corrected ego_status[6]",
+      "controls": [
+        "baseline minus 2.0 m/s",
+        "baseline plus 2.0 m/s"
+      ],
+      "delta_mps": 2.0,
+      "rgb_and_pose": "held equal to corrected baseline"
+    },
+    "ego_pose_history": {
+      "baseline": "chronological source model-to-world poses",
+      "control": "repeat the first model-to-world pose in SparseDrive img_metas across all four logical timestamps",
+      "rgb_status_projection_and_command": "held equal to corrected baseline"
+    }
+  },
+  "primary_observation": "fully warmed native six-point planning trajectory at source frame 30",
+  "repeat_reference": "independent reset with identical RGB, corrected state, calibration, pose and command",
+  "frozen_local_tolerance_m": 0.0001,
+  "decision_rules": {
+    "rgb_stream_influence": "accepted only if the constant-RGB warmed-plan maximum absolute coordinate change exceeds the paired repeat maximum plus 0.0001 m",
+    "visual_history_influence": "accepted only if the frozen-RGB-history warmed-plan maximum absolute coordinate change exceeds the paired repeat maximum plus 0.0001 m",
+    "ego_velocity_influence": "accepted only if both plus and minus 2.0 m/s warmed-plan changes exceed the paired repeat maximum plus 0.0001 m",
+    "ego_pose_history_influence": "accepted only if the frozen-pose-history warmed-plan maximum absolute coordinate change exceeds the paired repeat maximum plus 0.0001 m",
+    "complete_rgb_neglect": "rejected if rgb_stream_influence is accepted",
+    "shortcut_or_semantic_correctness": "not decidable from effect magnitude; report only as down-weighted or rejected overclaim"
+  },
+  "descriptive_diagnostics": [
+    "fully warmed plan ADE and endpoint difference from corrected baseline",
+    "longitudinal and lateral endpoint deltas",
+    "planning-mode changes",
+    "plan ADE to constant-velocity extrapolation formed from each supplied ego status",
+    "whether ablated outputs remain non-degenerate",
+    "difference between the corrective baseline and the prior qualification baseline"
+  ],
+  "strongest_allowed_claim": "On this one real, near-straight, four-frame input slice, a declared RGB, correctly indexed ego-speed or ego-pose-history intervention did or did not causally change the frozen SparseDrive native plan beyond paired numerical repeat sensitivity.",
+  "forbidden_claims": [
+    "RGB sensitivity proves correct object, lane or risk semantics",
+    "ego-pose sensitivity proves shortcut learning rather than necessary temporal alignment",
+    "a plausible plan under removed RGB proves a safe fallback",
+    "the larger effect from non-commensurate interventions proves feature dominance",
+    "the result qualifies HUGSIM or establishes SparseDrive safety",
+    "one slice rules out learned shortcuts in general"
+  ]
+}

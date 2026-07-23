@@ -168,6 +168,7 @@ def save_visualization(
         "rgb_frozen": "#ff7f0e",
         "ego_speed_minus": "#1f77b4",
         "ego_speed_plus": "#9467bd",
+        "ego_pose_frozen": "#17becf",
     }
     labels = {
         "baseline": "baseline",
@@ -175,6 +176,7 @@ def save_visualization(
         "rgb_frozen": "frozen RGB history",
         "ego_speed_minus": "ego forward speed -2 m/s",
         "ego_speed_plus": "ego forward speed +2 m/s",
+        "ego_pose_frozen": "frozen ego-pose history",
     }
     for name in labels:
         plan = runs[name]["frames"][-1]["_final_plan"]
@@ -247,7 +249,11 @@ def main() -> int:
 
     qualification = load_json(qualification_path)
     preregistration = load_json(preregistration_path)
-    if preregistration.get("audit_id") != "sparsedrive_visual_necessity_001":
+    audit_id = preregistration.get("audit_id")
+    if audit_id not in {
+        "sparsedrive_visual_necessity_001",
+        "sparsedrive_visual_necessity_002",
+    }:
         raise ValueError("unexpected preregistration audit_id")
     registered_delta = float(
         preregistration["interventions"]["ego_forward_velocity"]["delta_mps"]
@@ -359,6 +365,7 @@ def main() -> int:
         ("rgb_frozen", "temporal_freeze_first", 0.0),
         ("ego_speed_minus", "baseline", -speed_delta),
         ("ego_speed_plus", "baseline", speed_delta),
+        ("ego_pose_frozen", "ego_pose_history_frozen", 0.0),
     )
     runs = {
         name: run_named_condition(
@@ -398,6 +405,7 @@ def main() -> int:
             "rgb_frozen",
             "ego_speed_minus",
             "ego_speed_plus",
+            "ego_pose_frozen",
         )
     }
     max_abs_effect_threshold = repeat_max_abs + RESET_TOLERANCE
@@ -441,6 +449,9 @@ def main() -> int:
         effects[name]["warmed_effect_exceeds_repeat_plus_tolerance"]
         for name in ("ego_speed_minus", "ego_speed_plus")
     )
+    pose_history_influence = effects["ego_pose_frozen"][
+        "warmed_effect_exceeds_repeat_plus_tolerance"
+    ]
 
     native_path = output / "native_outputs.pt"
     torch.save(
@@ -457,7 +468,7 @@ def main() -> int:
         output,
     )
     report = {
-        "audit_id": "sparsedrive_visual_necessity_001",
+        "audit_id": audit_id,
         "purpose": (
             "test whether the pinned SparseDrive plan causally depends on "
             "six-camera RGB and declared ego forward velocity on one real slice"
@@ -502,10 +513,15 @@ def main() -> int:
                 "poses, command and ego status"
             ),
             "ego_speed_minus": (
-                f"subtract {speed_delta:.3f} m/s only from ego_status[7]"
+                f"subtract {speed_delta:.3f} m/s only from ego_status[6]"
             ),
             "ego_speed_plus": (
-                f"add {speed_delta:.3f} m/s only to ego_status[7]"
+                f"add {speed_delta:.3f} m/s only to ego_status[6]"
+            ),
+            "ego_pose_frozen": (
+                "repeat the first source model-to-world pose in img_metas "
+                "across all four frames while leaving RGB, status, projection "
+                "matrices, timestamps and command unchanged"
             ),
         },
         "runs": {
@@ -531,6 +547,9 @@ def main() -> int:
             ),
             "declared_ego_forward_velocity_causally_influences_plan_on_this_slice": (
                 "accepted" if state_influence else "down-weighted"
+            ),
+            "declared_ego_pose_history_causally_influences_plan_on_this_slice": (
+                "accepted" if pose_history_influence else "down-weighted"
             ),
             "sparsedrive_completely_ignores_rgb_on_this_slice": (
                 "rejected" if visual_influence else "down-weighted"
