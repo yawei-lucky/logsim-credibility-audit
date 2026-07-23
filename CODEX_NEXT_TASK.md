@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — SparseDrive Input-Contract Qualification
+## Immediate Direction — SparseDrive Plan-to-Loop Qualification
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -56,19 +56,15 @@ the supporting receiver retained the aggregate closure hierarchy, with one
 small early pairwise reversal and several within-trace non-closing steps. See
 `docs/runs/hugsim_cf_risk_causality_001.md`.
 
-The target-receiver route decision is complete. SparseDrive-S Stage2 is now the
-active first target because it natively outputs planning scores, candidate
-trajectories, a final ego plan and agent-motion predictions from the nuScenes
-six-camera contract. Its official checkpoint has passed a bounded local
-runtime gate on four HUGSIM frames: strict load, finite native outputs and
-reset reproducibility passed. The original adapter then exposed a missing
-model-LiDAR-to-vehicle transform. HUGSIM's six `l2c/v2c` pairs recover one
-common transform, and the calibrated fully warmed plan now passes a basic
-internal geometry and speed-continuity sanity check. This qualifies the
-adapter baseline only; the plan is not yet a real-world credibility indicator.
-See
-`docs/runs/hugsim_target_ad_receiver_qualification_001.md` and
-`docs/runs/hugsim_sparsedrive_axis_projection_001.md`.
+The target-receiver route and first planning-direction experiment are complete.
+SparseDrive-S Stage2 passed the bounded runtime, calibration, reset, warm-up
+and ego-status sensitivity gates. CF-R-PLAN-001 then produced the
+preregistered strict order at all ten fully warmed timestamps: stronger lead
+actor closure caused less 3 s longitudinal progress, with no tie, reversal or
+planning-mode switch. The narrow planning-direction claim is `accepted`;
+realistic response magnitude and closed-loop safety remain unqualified. See
+`docs/runs/hugsim_sparsedrive_ego_status_sensitivity_001.md` and
+`docs/runs/hugsim_cf_r_plan_001.md`.
 
 The official HUGSIM sample has also supplied a partial factual anchor: real
 six-camera images for three `scene-0383` timestamps were compared with
@@ -86,42 +82,23 @@ real-world fitness claim. It cannot by itself qualify HUGSIM.
 
 ## Current Deliverable
 
-Do not add another Sparse4Dv3 curve or compare more target models. Source,
-checkpoint, fallback runtime, six-camera order, 2 Hz sampling, native-output
-preservation and reset have passed the narrow smoke gate. Finish only the
-remaining **SparseDrive input-contract gate**:
+Do not add another actor-speed curve or compare more target models. The current
+counterfactual chain now reaches a native AD open-loop plan. Qualify only the
+next interface:
 
-1. freeze and independently check the provisional virtual LiDAR/ego axes,
-   origin, units, projection matrices and global transforms;
-2. record which 10-D `ego_status` elements are observed, derived or unavailable,
-   then test whether reasonable unavailable-component alternatives reverse the
-   prospective planning direction;
-3. freeze the command label and require equal temporal warm-up plus independent
-   reset for every paired condition;
-4. preregister one slow/nominal/fast planning-direction test, including
-   unavailable-output, mode-switch and reversal rules;
-5. only then run that bounded paired experiment.
+1. inspect the existing HUGSIM plan-pipe contract and define the smallest
+   explicit SparseDrive-plan conversion;
+2. check axes, units, 0.5 s waypoint timing, horizon handling and independent
+   reset on one normal sequence;
+3. require the loop to consume the converted plan without fallback or silent
+   waypoint repetition;
+4. only after that capability gate, preregister one bounded stronger/weaker
+   conflict closed-loop comparison with direct geometric outcomes;
+5. keep HUGSIM NC/TTC/PDMS diagnostic-only unless independently recomputed.
 
-Axis direction, units, internal origin/height and directional front-camera
-projection are now checked from HUGSIM's six-camera calibration. Do not revisit
-them without contrary evidence. External physical calibration remains
-`down-weighted`. The remaining input-contract work is the 10-D ego-status
-sensitivity audit plus equal warm-up. The old uncalibrated plan is retained as
-`rejected` method evidence; only the fully warmed calibrated baseline may
-advance.
-
-The subsequent experiment should connect the retained dynamic conflict
-direction to an actual downstream output:
-
-```text
-qualified conflict information
-  -> native planning scores / candidates / final plan
-  -> planning direction
-```
-
-Do not relabel Sparse4Dv3 confidence or distance as a risk output. SparseDrive
-outputs an open-loop trajectory, not brake/steer control or physical risk.
-Closed-loop outcome validation remains later.
+This gate must not reinterpret SparseDrive's trajectory as an actuator command.
+The first closed-loop result remains simulator-internal and cannot establish
+real-world safety without an external or matched-real outcome basis.
 
 ## Completed Basis
 
@@ -268,11 +245,11 @@ branch.
 
 ## Explicitly Deferred
 
-- Do not interpret a target planning result before the remaining SparseDrive
-  virtual-frame, ego-status and equal-warm-up input contract passes.
+- Do not interpret the accepted target-planning direction as realistic response
+  magnitude, control action or closed-loop safety.
 - Do not add another receiver or more HUGSIM scenes merely to obtain curves.
-- Do not integrate VAD, UniAD, SparseDriveV2 or another full AD stack while the
-  selected SparseDrive-S Stage2 input contract is unresolved.
+- Do not integrate VAD, UniAD, SparseDriveV2 or another full AD stack before
+  deciding whether an architecture cross-check is needed for a specific claim.
 - Do not define final numerical credibility thresholds or the final four-layer
   metric yet.
 - Do not claim general HUGSIM or AD-test-domain credibility from current pilots.
