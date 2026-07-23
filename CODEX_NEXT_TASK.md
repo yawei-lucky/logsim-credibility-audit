@@ -156,7 +156,7 @@ SparseDrive has two distinct roles:
 The bounded real-data run with the unchanged official checkpoint is complete:
 
 1. real RGB produced finite non-degenerate native output;
-2. repeated plans differed by at most `9.54e-6 m`;
+2. repeated plans differed by at most `1.05e-5 m`;
 3. the fully warmed plan had `0.706 m` ADE and `1.630 m` endpoint error against
    recorded camera-rig motion, as a diagnostic rather than a benchmark score;
 4. camera swap, time reversal and calibration shift all changed the plan far
@@ -167,6 +167,29 @@ The bounded real-data run with the unchanged official checkpoint is complete:
 This is enough to use SparseDrive as the target AD in a paired comparison. It
 does not qualify SparseDrive as an absolute measurement instrument or prove it
 is a correct driving policy.
+
+A corrective adapter audit reordered source/model `[right, forward, up]`
+velocity and acceleration into SparseDrive's CAN-bus
+`[forward, left, up]` contract. The corrected baseline changed by only
+`9.54e-6 m`: released Stage2 inference uses supplied `ego_status` as a
+training target, while its live queue caches network-predicted status. The
+corrected run003 supersedes run002 for future adapters; prior paired factual
+numbers remain unchanged within repeat noise.
+
+The subsequent visual-necessity audit found:
+
+- constant six-camera RGB changed the warmed endpoint by `1.405 m`;
+- repeating the first RGB frame changed it by `0.158 m`;
+- supplied forward-speed `±2 m/s` had no effect beyond repeat, consistent with
+  the released inference graph;
+- freezing temporal ego-pose history collapsed the endpoint by `9.802 m` and
+  changed the planning mode.
+
+Thus complete RGB neglect is `rejected`, while correct visual semantics and
+absence of shortcut learning remain unqualified. A plausible trajectory can
+still be produced after RGB content is removed, so plan plausibility is not a
+semantic-validity metric. See
+`docs/runs/sparsedrive_visual_necessity_002.md`.
 
 ### Factual equivalence before counterfactual upgrade
 

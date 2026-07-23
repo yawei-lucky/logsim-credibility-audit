@@ -58,6 +58,19 @@ The cold-frame discrepancy is not an admissible equivalence result because
 SparseDrive lacks its required history there. The fully warmed result is the
 primary factual domain observation.
 
+## Post-run adapter correction
+
+A later audit corrected the pose-derived ego-status vector from source/model
+`[right, forward, up]` order to SparseDrive CAN-bus
+`[forward, left, up]` order. The corrected real baseline differed from this
+run by at most `9.54e-6 m`, within paired repeat noise. Released Stage2
+inference does not consume supplied `data["ego_status"]` as a planning input;
+it trains an auxiliary status prediction and caches that network prediction.
+
+The numeric factual `D_domain` observation therefore remains unchanged for
+this pinned checkpoint. The original adapter contract remains negative method
+evidence and must not be copied into another receiver.
+
 ## What this newly shows
 
 Pixel and task-output differences are not interchangeable:

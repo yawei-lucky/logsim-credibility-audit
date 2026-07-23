@@ -221,7 +221,7 @@ def save_visualization(
     effect_axis.legend(fontsize=8)
 
     figure.suptitle(
-        "SparseDrive visual-necessity and ego-status ablation\n"
+        "SparseDrive visual, ego-status, and pose-history ablation\n"
         "(sensitivity evidence; not semantic correctness)",
         fontsize=15,
     )
@@ -250,10 +250,7 @@ def main() -> int:
     qualification = load_json(qualification_path)
     preregistration = load_json(preregistration_path)
     audit_id = preregistration.get("audit_id")
-    if audit_id not in {
-        "sparsedrive_visual_necessity_001",
-        "sparsedrive_visual_necessity_002",
-    }:
+    if audit_id != "sparsedrive_visual_necessity_002":
         raise ValueError("unexpected preregistration audit_id")
     registered_delta = float(
         preregistration["interventions"]["ego_forward_velocity"]["delta_mps"]
@@ -471,7 +468,8 @@ def main() -> int:
         "audit_id": audit_id,
         "purpose": (
             "test whether the pinned SparseDrive plan causally depends on "
-            "six-camera RGB and declared ego forward velocity on one real slice"
+            "six-camera RGB, declared ego forward velocity and temporal "
+            "ego-pose history on one real slice"
         ),
         "preregistration": {
             "path": str(preregistration_path),
@@ -546,7 +544,7 @@ def main() -> int:
                 "accepted" if visual_history_influence else "down-weighted"
             ),
             "declared_ego_forward_velocity_causally_influences_plan_on_this_slice": (
-                "accepted" if state_influence else "down-weighted"
+                "accepted" if state_influence else "rejected"
             ),
             "declared_ego_pose_history_causally_influences_plan_on_this_slice": (
                 "accepted" if pose_history_influence else "down-weighted"
