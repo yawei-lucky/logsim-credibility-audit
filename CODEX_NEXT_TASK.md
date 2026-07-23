@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — SparseDrive Plan-to-Loop Qualification
+## Immediate Direction — SparseDrive Live Plan-Loop Qualification
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -66,6 +66,13 @@ realistic response magnitude and closed-loop safety remain unqualified. See
 `docs/runs/hugsim_sparsedrive_ego_status_sensitivity_001.md` and
 `docs/runs/hugsim_cf_r_plan_001.md`.
 
+The frozen plan-to-loop capability gate is also complete. One fully warmed
+native plan crossed the audited FIFO and corrected iLQR boundary unchanged,
+with one 0.5 s control held over exactly two 0.25 s environment steps. Two
+independent resets were byte-identical. This qualifies only the interface: the
+replay writer did not infer from returned observations. See
+`docs/runs/hugsim_sparsedrive_plan_to_loop_001.md`.
+
 The official HUGSIM sample has also supplied a partial factual anchor: real
 six-camera images for three `scene-0383` timestamps were compared with
 exact-pose renders. The current checkpoint metadata produced better pixel
@@ -82,23 +89,24 @@ real-world fitness claim. It cannot by itself qualify HUGSIM.
 
 ## Current Deliverable
 
-Do not add another actor-speed curve or compare more target models. The current
-counterfactual chain now reaches a native AD open-loop plan. Qualify only the
-next interface:
+Do not add another actor-speed curve or target model. Replace the frozen replay
+writer with the already qualified SparseDrive receiver:
 
-1. inspect the existing HUGSIM plan-pipe contract and define the smallest
-   explicit SparseDrive-plan conversion;
-2. check axes, units, 0.5 s waypoint timing, horizon handling and independent
-   reset on one normal sequence;
-3. require the loop to consume the converted plan without fallback or silent
-   waypoint repetition;
-4. only after that capability gate, preregister one bounded stronger/weaker
-   conflict closed-loop comparison with direct geometric outcomes;
-5. keep HUGSIM NC/TTC/PDMS diagnostic-only unless independently recomputed.
+1. independently reset and pre-warm SparseDrive with the exact recorded
+   `0.0, 0.5, 1.0 s` no-actor history;
+2. start HUGSIM from the matching `1.5 s` state and preserve continuous
+   receiver timestamps;
+3. infer a new native plan from every newly returned six-camera observation at
+   2 Hz, with the qualified two-substep control hold;
+4. fail on fallback, missing output, plan repetition, action-bound violation or
+   temporal-state contamination;
+5. run only a short normal-scene capability sequence first, with HUGSIM
+   NC/TTC/PDMS disabled.
 
-This gate must not reinterpret SparseDrive's trajectory as an actuator command.
-The first closed-loop result remains simulator-internal and cannot establish
-real-world safety without an external or matched-real outcome basis.
+If this gate passes, preregister one bounded stronger/weaker conflict
+closed-loop comparison using direct geometry and vehicle-state outcomes. It
+will remain simulator-internal until an external or matched-real outcome basis
+is added.
 
 ## Completed Basis
 
