@@ -17,6 +17,52 @@ from typing import Any
 import numpy as np
 
 
+def sparsedrive_plan_to_hugsim_lidar_plan(
+    final_planning: np.ndarray,
+    *,
+    source_timestep_s: float = 0.5,
+    controller_timestep_s: float = 0.5,
+    expected_waypoints: int = 6,
+) -> np.ndarray:
+    """Validate the identity mapping from SparseDrive to HUGSIM plan-pipe.
+
+    Both interfaces use ``[right, forward]`` metres.  The mapping is therefore
+    intentionally an identity copy, but timing and horizon are checked so a
+    caller cannot silently pad, truncate, repeat, or reinterpret the plan.
+    """
+    plan = np.asarray(final_planning, dtype=np.float64)
+    if plan.shape != (expected_waypoints, 2):
+        raise ValueError(
+            "Expected SparseDrive plan shape "
+            f"({expected_waypoints}, 2), got {plan.shape}"
+        )
+    if not np.isfinite(plan).all():
+        raise ValueError("SparseDrive plan contains non-finite values")
+    if not np.isclose(source_timestep_s, controller_timestep_s, atol=1e-12):
+        raise ValueError(
+            "SparseDrive and HUGSIM controller timesteps differ: "
+            f"{source_timestep_s} vs {controller_timestep_s}"
+        )
+    return plan.copy()
+
+
+def exact_control_hold_steps(
+    controller_timestep_s: float,
+    environment_timestep_s: float,
+) -> int:
+    """Return the exact number of environment steps per controller input."""
+    if controller_timestep_s <= 0 or environment_timestep_s <= 0:
+        raise ValueError("Timesteps must be positive")
+    ratio = controller_timestep_s / environment_timestep_s
+    rounded = round(ratio)
+    if rounded < 1 or not np.isclose(ratio, rounded, atol=1e-12):
+        raise ValueError(
+            "Controller timestep must be an integer multiple of the "
+            f"environment timestep, got ratio={ratio}"
+        )
+    return int(rounded)
+
+
 def controller_reference_from_lidar_plan(plan_traj: np.ndarray) -> np.ndarray:
     """Convert ``[right, forward]`` points to iLQR reference states.
 

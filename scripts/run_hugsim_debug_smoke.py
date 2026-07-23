@@ -51,6 +51,25 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--max-steps", type=int, default=3)
     parser.add_argument(
+        "--control-hold-steps",
+        type=int,
+        default=1,
+        help=(
+            "Environment steps that reuse one computed control action. "
+            "The plan pipe is read only at the start of each hold interval."
+        ),
+    )
+    parser.add_argument(
+        "--strict-action-bounds",
+        action="store_true",
+        help="Fail instead of passing an out-of-range control to HUGSIM.",
+    )
+    parser.add_argument(
+        "--skip-evaluation",
+        action="store_true",
+        help="Record loop evidence without running HUGSIM NC/TTC/PDMS scoring.",
+    )
+    parser.add_argument(
         "--control-convention",
         choices=("corrected", "upstream"),
         default="corrected",
@@ -184,10 +203,24 @@ def build_scoring_frame(
     }
 
 
+def require_action_in_bounds(action: dict[str, float], action_space: Any) -> None:
+    for name, value in action.items():
+        space = action_space[name]
+        scalar = float(value)
+        low = float(np.asarray(space.low).reshape(-1)[0])
+        high = float(np.asarray(space.high).reshape(-1)[0])
+        if not low <= scalar <= high:
+            raise ValueError(
+                f"{name}={scalar} is outside HUGSIM action bounds [{low}, {high}]"
+            )
+
+
 def main() -> int:
     args = parse_args()
     if args.max_steps < 1:
         raise ValueError("--max-steps must be at least 1")
+    if args.control_hold_steps < 1:
+        raise ValueError("--control-hold-steps must be at least 1")
 
     hugsim_root = Path(args.hugsim_root).expanduser().resolve()
     scenario_path = Path(args.scenario).expanduser().resolve()
@@ -258,22 +291,35 @@ def main() -> int:
     save_data: dict[str, Any] = {"type": "closeloop", "frames": []}
     terminated = False
     truncated = False
+    plan_traj: np.ndarray | None = None
+    action: dict[str, float] | None = None
+    plan_update_id = -1
 
     for step_id in range(args.max_steps):
         info_before = info
-        with obs_pipe.open("wb") as pipe:
-            pipe.write(pickle.dumps((obs, info_before)))
-        with plan_pipe.open("rb") as pipe:
-            plan_traj = pickle.loads(pipe.read())
-        if plan_traj is None:
-            print("[debug-smoke] planner returned None", flush=True)
-            break
-
-        if args.control_convention == "corrected":
-            acc, steer_rate = corrected_traj2control(plan_traj, info_before, plan2control)
-        else:
-            acc, steer_rate = upstream_traj2control(plan_traj, info_before)
-        action = {"acc": acc, "steer_rate": steer_rate}
+        plan_updated = step_id % args.control_hold_steps == 0
+        if plan_updated:
+            with obs_pipe.open("wb") as pipe:
+                pipe.write(pickle.dumps((obs, info_before)))
+            with plan_pipe.open("rb") as pipe:
+                plan_traj = pickle.loads(pipe.read())
+            if plan_traj is None:
+                print("[debug-smoke] planner returned None", flush=True)
+                break
+            plan_update_id += 1
+            if args.control_convention == "corrected":
+                acc, steer_rate = corrected_traj2control(
+                    plan_traj,
+                    info_before,
+                    plan2control,
+                )
+            else:
+                acc, steer_rate = upstream_traj2control(plan_traj, info_before)
+            action = {"acc": float(acc), "steer_rate": float(steer_rate)}
+            if args.strict_action_bounds:
+                require_action_in_bounds(action, env.action_space)
+        if plan_traj is None or action is None:
+            raise RuntimeError("control hold interval started without a plan")
         obs, reward, terminated, truncated, info = env.step(action)
 
         frame = build_scoring_frame(plan_traj, info, traj_transform_to_global)
@@ -283,6 +329,9 @@ def main() -> int:
         audit_steps.append(
             {
                 "step_id": step_id,
+                "plan_updated": plan_updated,
+                "plan_update_id": plan_update_id,
+                "control_hold_substep": step_id % args.control_hold_steps,
                 "info_before": info_before,
                 "plan_traj": plan_traj,
                 "action": action,
@@ -293,7 +342,8 @@ def main() -> int:
             }
         )
         print(
-            f"[debug-smoke] step={step_id} timestamp={info['timestamp']} "
+            f"[debug-smoke] step={step_id} plan_update={plan_updated} "
+            f"timestamp={info['timestamp']} "
             f"rc={info['rc']:.6f} collision={info['collision']} "
             f"acc={float(acc):.6f} steer_rate={float(steer_rate):.6f}",
             flush=True,
@@ -317,16 +367,21 @@ def main() -> int:
 
     eval_result: dict[str, Any] | None = None
     eval_error: str | None = None
-    try:
-        ground_xyz = np.asarray(o3d.io.read_point_cloud(str(output / "ground.ply")).points)
-        scene_xyz = np.asarray(o3d.io.read_point_cloud(str(output / "scene.ply")).points)
-        eval_result = hugsim_evaluate([save_data], ground_xyz, scene_xyz)
-        with (output / "eval.json").open("w", encoding="utf-8") as stream:
-            json.dump(jsonable(eval_result), stream, indent=2)
-    except Exception as exc:  # Keep the smoke evidence even if short-run scoring fails.
-        eval_error = f"{type(exc).__name__}: {exc}"
-        with (output / "eval_error.txt").open("w", encoding="utf-8") as stream:
-            stream.write(eval_error + "\n")
+    if not args.skip_evaluation:
+        try:
+            ground_xyz = np.asarray(
+                o3d.io.read_point_cloud(str(output / "ground.ply")).points
+            )
+            scene_xyz = np.asarray(
+                o3d.io.read_point_cloud(str(output / "scene.ply")).points
+            )
+            eval_result = hugsim_evaluate([save_data], ground_xyz, scene_xyz)
+            with (output / "eval.json").open("w", encoding="utf-8") as stream:
+                json.dump(jsonable(eval_result), stream, indent=2)
+        except Exception as exc:  # Keep loop evidence if short-run scoring fails.
+            eval_error = f"{type(exc).__name__}: {exc}"
+            with (output / "eval_error.txt").open("w", encoding="utf-8") as stream:
+                stream.write(eval_error + "\n")
 
     summary = {
         "run_status": (
@@ -363,6 +418,11 @@ def main() -> int:
         },
         "requested_steps": args.max_steps,
         "completed_steps": len(audit_steps),
+        "control_hold_steps": args.control_hold_steps,
+        "plan_updates_consumed": sum(
+            bool(step["plan_updated"]) for step in audit_steps
+        ),
+        "strict_action_bounds": args.strict_action_bounds,
         "control_convention": args.control_convention,
         "terminated": terminated,
         "truncated": truncated,
@@ -370,6 +430,7 @@ def main() -> int:
         "camera_names": sorted(observations[0]["rgb"].keys()),
         "eval_result": eval_result,
         "eval_error": eval_error,
+        "evaluation_skipped": args.skip_evaluation,
         "steps": audit_steps,
     }
     with (output / "audit_summary.json").open("w", encoding="utf-8") as stream:
@@ -378,7 +439,7 @@ def main() -> int:
     env.close()
     print(
         f"[debug-smoke] completed_steps={len(audit_steps)} "
-        f"eval_status={'ok' if eval_error is None else 'error'}",
+        f"eval_status={'skipped' if args.skip_evaluation else ('ok' if eval_error is None else 'error')}",
         flush=True,
     )
     return (

@@ -9,6 +9,7 @@ keeps the simulator/receiver FIFO boundary intact while removing the manual
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import subprocess
 import time
@@ -23,6 +24,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--horizon", type=int, default=6)
     parser.add_argument("--step-m", type=float, default=1.0)
     parser.add_argument("--timeout-s", type=float, default=900.0)
+    parser.add_argument("--control-hold-steps", type=int, default=1)
+    parser.add_argument(
+        "--sparsedrive-native-output",
+        type=Path,
+        help="Replay frozen native SparseDrive plans for interface qualification.",
+    )
+    parser.add_argument("--sparsedrive-start-index", type=int, default=0)
     parser.add_argument(
         "--python",
         default="/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
@@ -89,6 +97,8 @@ def main() -> int:
 
     if args.max_steps < 1:
         raise ValueError("--max-steps must be at least 1")
+    if args.control_hold_steps < 1:
+        raise ValueError("--control-hold-steps must be at least 1")
     if output.exists():
         raise FileExistsError(f"Refusing to overwrite existing output: {output}")
     if not scenario.is_file():
@@ -108,21 +118,48 @@ def main() -> int:
         str(args.max_steps),
         "--control-convention",
         "corrected",
+        "--control-hold-steps",
+        str(args.control_hold_steps),
         "--output",
         str(output),
     ]
-    writer_cmd = [
-        str(python),
-        str(repo_root / "scripts" / "hugsim_plan_pipe_writer.py"),
-        "--output",
-        str(output),
-        "--horizon",
-        str(args.horizon),
-        "--step-m",
-        str(args.step_m),
-        "--max-steps",
-        str(args.max_steps),
-    ]
+    requested_plans = math.ceil(args.max_steps / args.control_hold_steps)
+    if args.sparsedrive_native_output is not None:
+        native_output = args.sparsedrive_native_output.expanduser().resolve()
+        if not native_output.is_file():
+            raise FileNotFoundError(
+                f"Missing SparseDrive native output: {native_output}"
+            )
+        runner_cmd.extend(("--strict-action-bounds", "--skip-evaluation"))
+        writer_cmd = [
+            str(python),
+            str(
+                repo_root
+                / "scripts"
+                / "hugsim_sparsedrive_plan_replay_writer.py"
+            ),
+            "--output",
+            str(output),
+            "--native-output",
+            str(native_output),
+            "--start-index",
+            str(args.sparsedrive_start_index),
+            "--max-plans",
+            str(requested_plans),
+        ]
+    else:
+        writer_cmd = [
+            str(python),
+            str(repo_root / "scripts" / "hugsim_plan_pipe_writer.py"),
+            "--output",
+            str(output),
+            "--horizon",
+            str(args.horizon),
+            "--step-m",
+            str(args.step_m),
+            "--max-steps",
+            str(requested_plans),
+        ]
 
     with runner_log.open("w", encoding="utf-8") as runner_stream:
         runner = subprocess.Popen(

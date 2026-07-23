@@ -1,0 +1,15 @@
+# Plan-to-loop capability start state matching the retained no-actor source at t=1.5 s.
+mode: sparsedrive_plan_interface_001
+plan_list: []
+load_HD_map: false
+start_euler:
+- 0.0
+- 0.0
+- 0.0
+start_ab:
+- 0.0
+- 2.5512562577463793
+start_velo: 1.9156862119544134
+start_steer: 0.0
+scene_name: scene-0383
+iteration: 30000
