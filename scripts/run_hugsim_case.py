@@ -101,6 +101,7 @@ def main() -> int:
         raise ValueError("--control-hold-steps must be at least 1")
     if output.exists():
         raise FileExistsError(f"Refusing to overwrite existing output: {output}")
+    output.parent.mkdir(parents=True, exist_ok=True)
     if not scenario.is_file():
         raise FileNotFoundError(f"Missing scenario file: {scenario}")
     if not python.is_file():
