@@ -113,25 +113,47 @@ def wait_for_pipes(
     raise TimeoutError(f"Timed out waiting for FIFOs in {output}")
 
 
-def run_and_log(
+def run_writer_with_runner_monitor(
     command: list[str],
     env: dict[str, str],
     log_path: Path,
+    runner: subprocess.Popen[str],
+    *,
+    runner_exit_grace_s: float = 10.0,
 ) -> int:
     with log_path.open("w", encoding="utf-8") as log:
-        process = subprocess.Popen(
+        writer = subprocess.Popen(
             command,
-            stdout=subprocess.PIPE,
+            stdout=log,
             stderr=subprocess.STDOUT,
             text=True,
             env=env,
         )
-        assert process.stdout is not None
-        for line in process.stdout:
-            print(line, end="", flush=True)
-            log.write(line)
-            log.flush()
-        return process.wait()
+        runner_exit_seen_at: float | None = None
+        while True:
+            writer_code = writer.poll()
+            if writer_code is not None:
+                return writer_code
+            runner_code = runner.poll()
+            if runner_code is None:
+                runner_exit_seen_at = None
+            elif runner_exit_seen_at is None:
+                runner_exit_seen_at = time.monotonic()
+            elif (
+                time.monotonic() - runner_exit_seen_at
+                >= runner_exit_grace_s
+            ):
+                writer.terminate()
+                try:
+                    writer.wait(timeout=10)
+                except subprocess.TimeoutExpired:
+                    writer.kill()
+                    writer.wait()
+                raise RuntimeError(
+                    "HUGSIM runner exited while the receiver was still "
+                    f"waiting; runner code={runner_code}"
+                )
+            time.sleep(0.25)
 
 
 def main() -> int:
@@ -305,7 +327,12 @@ def main() -> int:
             raise TimeoutError("Timed out waiting for HUGSIM runner readiness")
 
         wait_for_pipes(output, runner, args.timeout_s)
-        writer_code = run_and_log(writer_cmd, writer_env, writer_log)
+        writer_code = run_writer_with_runner_monitor(
+            writer_cmd,
+            writer_env,
+            writer_log,
+            runner,
+        )
         if writer_code != 0:
             runner.terminate()
             runner.wait(timeout=10)
