@@ -49,7 +49,7 @@ World / independent reference
 | Task | Center-path risk proxy | 自定义加权函数 | confidence、中心重叠、图像底部位置和框大小的组合 | 当前受控场景的排序诊断 | 校准风险概率、物理 TTC、制动必要性 | 冻结构念与权重；独立任务标签；真实—仿真等效性界限 |
 | Task | Cross-receiver rank agreement / Spearman | 自定义跨接收方统计 | 两个接收方对少量场景的排序一致性 | 不同输入通道是否给出相同干预方向 | 两者都正确；真实—仿真一致；规划一致 | 独立真实参考、更多预先规定条件、置信区间 |
 | Task / robustness | Designed-counterfactual conclusion stability | 已获资格的物理/因果约束、不同失败模式接收方与参数敏感性分析 | 任务关系、关键目标排序或动作结论是否在声明的不确定性范围内保持稳定 | 无精确现实对应物场景的有边界因果一致性、压力测试适用性和模型稳健性 | 该未来是唯一现实结果；直接 real-sim 等效；未覆盖范围内的安全性 | 指标/接收方外部资格证据、合理不确定性范围、依赖性审计和下游任务边界 |
-| Planning | 候选轨迹分数与最终 ego 轨迹 | SparseDrive-S Stage2 已选定、尚未接入；VAD-Tiny 仅作后续架构复核 | 冻结 AD 的原生开环规划输出 | 已完成模型与输出构念的接入前资格审计；尚无 HUGSIM 规划结果 | 显式关键目标身份、校准风险概率、制动/转向控制或规划一致性结论 | 先通过六相机、虚拟 LiDAR/ego 参考帧、时序、10-D ego status、未来轨迹条件标签与状态重置合同；再做预注册反事实方向实验，之后补真实数据或第二架构证据 |
+| Planning | 候选轨迹分数与最终 ego 轨迹 | 冻结 SparseDrive-S Stage2；已在四帧 HUGSIM RGB 上严格加载并输出原生张量；VAD-Tiny 仅作后续架构复核 | 冻结 AD 的原生开环规划输出 | 只支持运行可达、输出形状/有限值和状态重置；尚无可解释的 HUGSIM 规划方向证据 | 显式关键目标身份、校准风险概率、制动/转向控制、规划一致性或 HUGSIM 可信结论 | 先完成虚拟 LiDAR/ego 参考帧、10-D ego status 与等时序 warm-up 资格；再做预注册反事实方向实验，之后补匹配真实数据或第二架构证据 |
 | Control / outcome | brake、steer、干预时间、碰撞和任务结果 | 目标 AD/controller，尚未接入 | 控制行为和闭环结果 | 尚未形成当前证据 | 真实车辆闭环可信性 | 匹配闭环参照或受控场地、车辆动力学、已获资格的任务边界和不确定性范围 |
 
 ## 4. 指标自身的审计门槛
@@ -194,7 +194,7 @@ down-weighted。标注只查看 HUGSIM RGB，虽然独立于 HUGSIM semantic/dep
 
 | 工具或参考 | 直接测量的构念 | 外部效度与 HUGSIM 依赖 | 下一实验用途 | 当前最强允许主张 | 最小资格缺口 |
 |---|---|---|---|---|---|
-| Source / exact-pairing gate | 源数据可用性、身份、位姿、时间和输入一一配对 | 依赖不可变 source identity、哈希和独立真实观测，不依赖 HUGSIM 质量结果 | 直接 real-sim 分支的强制 gate；当前 blocked | 当前只有 metadata 候选，尚无 real-sim pair | 原始六相机 RGB、nuScenes token、ASAP 映射和 checkpoint split provenance |
+| Source / exact-pairing gate | 源数据可用性、身份、位姿、时间和输入一一配对 | 依赖不可变 source identity、哈希和独立真实观测，不依赖 HUGSIM 质量结果 | 直接 real-sim 分支的强制 gate；当前由官方 sample 部分解锁 | 已恢复 3 个时间戳、18 张真实 RGB 并完成同位姿渲染对照；只形成 down-weighted 图像锚点 | nuScenes token、ASAP 映射、物理/优化位姿区分、checkpoint split provenance 和同一冻结 AD 的 matched 输出 |
 | Run identity / complete-future horizon gate | 运行同一性、计划/状态前缀和评分未来时域是否完整 | 使用直接日志、哈希、时间索引和独立重算；读取 HUGSIM 记录但不以其评分结论自证 | 所有后续实验的强制有效性 gate | 某段证据可复现、严格配对且未被尾窗填充污染 | 无法单独提供现实性或任务正确性 |
 | 独立重算的二维 footprint、净距和相对关系 | 给定 box 下的碰撞/正净距、中心线穿越、near/far 和 lateral ordering | 算法基于欧氏/刚体几何，独立于 HUGSIM scorer；输入 box 仍来自 HUGSIM | 可作为 designed counterfactual 的干预有效性约束 | 在仿真器声明状态成立的前提下，干预具有指定几何关系 | 独立测量状态、行为动力学范围和与 AD 决策相关的 margin |
 | HUGSIM ego/actor state 与 NC/TTC/PDMS | 仿真器声明状态及其内部 AD-performance score | 完全依赖 HUGSIM 状态、地图、计划与 scorer；已审出尾窗填充和 TTC 构念边界 | 内部状态/评分诊断，不作现实裁判 | 完整未来时域内的 HUGSIM 内部状态和二值 planned-path TTC surrogate | 独立状态/结果、物理 TTC 或受控场地对照 |
@@ -207,14 +207,16 @@ down-weighted。标注只查看 HUGSIM RGB，虽然独立于 HUGSIM semantic/dep
 
 资格判断的直接依据为：
 
-- source/pairing：`docs/runs/hugsim_source_anchor_gate_001.md`；
+- source/pairing：`docs/runs/hugsim_source_anchor_gate_001.md`、
+  `docs/runs/hugsim_official_sample_matched_pose_001.md`；
 - horizon、几何与 scorer：`docs/runs/hugsim_horizon_factorial_001.md`、
   `docs/runs/hugsim_near_cut_in_001.md`；
 - sensor/proxy/nuisance：`docs/runs/hugsim_normal_scene_sensor_audit_001.md`、
   `docs/runs/hugsim_camera_detector_001.md`；
 - receiver 与依赖关系：`docs/runs/hugsim_sparse4d_receiver_baseline_001.md`、
   `docs/runs/hugsim_sparse4d_cross_scene_001.md`、
-  `docs/runs/hugsim_receiver_agreement_001.md`；
+  `docs/runs/hugsim_receiver_agreement_001.md`、
+  `docs/runs/hugsim_sparsedrive_runtime_smoke_001.md`；
 - 人眼固定样本：`docs/runs/hugsim_sparse4d_normal_scene_annotation_001.md`。
 
 ### 资格结论

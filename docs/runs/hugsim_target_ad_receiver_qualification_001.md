@@ -9,6 +9,13 @@ pre-integration selection gate for one bounded role: consume the six-camera
 stream and produce a native open-loop ego planning trajectory. This does not
 qualify SparseDrive as truth and does not yet produce HUGSIM planning evidence.
 
+Runtime update (2026-07-23): the official checkpoint now loads strictly and
+emits finite native outputs on a bounded four-frame HUGSIM sequence through a
+tracked PyTorch compatibility path. Reset reproducibility also passed. The
+remaining gate is the virtual-frame, 10-D ego-status and equal-warm-up input
+contract, not installation. See
+`docs/runs/hugsim_sparsedrive_runtime_smoke_001.md`.
+
 Do **not** make a full real-nuScenes ground-truth rerun of Sparse4Dv3 the next
 blocking task. Sparse4Dv3 remains a supporting detection/tracking probe. A
 small real-GT check becomes necessary only if a later claim depends on its

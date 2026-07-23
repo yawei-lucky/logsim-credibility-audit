@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — SparseDrive Adapter Qualification
+## Immediate Direction — SparseDrive Input-Contract Qualification
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -56,12 +56,23 @@ the supporting receiver retained the aggregate closure hierarchy, with one
 small early pairwise reversal and several within-trace non-closing steps. See
 `docs/runs/hugsim_cf_risk_causality_001.md`.
 
-The target-receiver route decision is complete. SparseDrive-S Stage2 is the
-first integration candidate because it natively outputs planning scores,
-candidate trajectories, a final ego plan and agent-motion predictions from the
-nuScenes six-camera contract. VAD-Tiny is retained only as a later independent
-architecture check. See
-`docs/runs/hugsim_target_ad_receiver_qualification_001.md`.
+The target-receiver route decision is complete. SparseDrive-S Stage2 is now the
+active first target because it natively outputs planning scores, candidate
+trajectories, a final ego plan and agent-motion predictions from the nuScenes
+six-camera contract. Its official checkpoint has passed a bounded local
+runtime gate on four HUGSIM frames: strict load, finite native outputs and
+reset reproducibility passed. This is engineering qualification only; the
+planning result is not yet interpretable. See
+`docs/runs/hugsim_target_ad_receiver_qualification_001.md` and
+`docs/runs/hugsim_sparsedrive_runtime_smoke_001.md`.
+
+The official HUGSIM sample has also supplied a partial factual anchor: real
+six-camera images for three `scene-0383` timestamps were compared with
+exact-pose renders. The current checkpoint metadata produced better pixel
+agreement than the older sample metadata in 17/18 camera cases. This remains
+`down-weighted` image evidence because source/checkpoint release pairing,
+physical pose provenance and AD-task equivalence are unresolved. See
+`docs/runs/hugsim_official_sample_matched_pose_001.md`.
 
 A full real-nuScenes GT rerun of Sparse4Dv3 is not the next blocker. It becomes
 necessary only if a later claim uses Sparse4Dv3 absolute position, velocity,
@@ -71,22 +82,21 @@ real-world fitness claim. It cannot by itself qualify HUGSIM.
 
 ## Current Deliverable
 
-Do not add another Sparse4Dv3 curve or compare more target models. Implement
-the smallest **SparseDrive-S Stage2 adapter/runtime qualification gate** before
-interpreting any planning response:
+Do not add another Sparse4Dv3 curve or compare more target models. Source,
+checkpoint, fallback runtime, six-camera order, 2 Hz sampling, native-output
+preservation and reset have passed the narrow smoke gate. Finish only the
+remaining **SparseDrive input-contract gate**:
 
-1. first map and unit-check six-camera order/projection, the virtual
-   LiDAR/ego reference frame, 2 Hz timestamps, global transforms, the
-   future-trajectory-derived straight conditioning label, the required 10-D
-   `ego_status`, and a clean temporal reset for every independent run;
-2. only after that data-contract gate, pin source, config and checkpoint hashes
-   in an isolated environment;
-3. exclude HUGSIM semantic/depth and preserve the model's native planning and
-   agent-motion outputs without a custom risk proxy;
-4. run one bounded deterministic smoke sequence and check only contract,
-   shapes, finite outputs and reset reproducibility;
-5. preregister the slow/nominal/fast planning-direction test after this gate
-   passes.
+1. freeze and independently check the provisional virtual LiDAR/ego axes,
+   origin, units, projection matrices and global transforms;
+2. record which 10-D `ego_status` elements are observed, derived or unavailable,
+   then test whether reasonable unavailable-component alternatives reverse the
+   prospective planning direction;
+3. freeze the command label and require equal temporal warm-up plus independent
+   reset for every paired condition;
+4. preregister one slow/nominal/fast planning-direction test, including
+   unavailable-output, mode-switch and reversal rules;
+5. only then run that bounded paired experiment.
 
 The subsequent experiment should connect the retained dynamic conflict
 direction to an actual downstream output:
@@ -246,11 +256,11 @@ branch.
 
 ## Explicitly Deferred
 
-- Do not interpret a target planning result before the SparseDrive input,
-  runtime and reset contract passes the current qualification gate.
+- Do not interpret a target planning result before the remaining SparseDrive
+  virtual-frame, ego-status and equal-warm-up input contract passes.
 - Do not add another receiver or more HUGSIM scenes merely to obtain curves.
-- Do not install VAD, UniAD, SparseDriveV2 or another full AD stack while the
-  selected SparseDrive-S Stage2 gate is unresolved.
+- Do not integrate VAD, UniAD, SparseDriveV2 or another full AD stack while the
+  selected SparseDrive-S Stage2 input contract is unresolved.
 - Do not define final numerical credibility thresholds or the final four-layer
   metric yet.
 - Do not claim general HUGSIM or AD-test-domain credibility from current pilots.

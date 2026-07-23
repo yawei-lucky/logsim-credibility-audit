@@ -1,0 +1,122 @@
+diff --git a/projects/mmdet3d_plugin/models/attention.py b/projects/mmdet3d_plugin/models/attention.py
+index 121f15b..fd73e9e 100644
+--- a/projects/mmdet3d_plugin/models/attention.py
++++ b/projects/mmdet3d_plugin/models/attention.py
+@@ -15,13 +15,32 @@ import torch.utils.checkpoint as cp
+ 
+ 
+ from einops import rearrange
++FLASH_ATTN_AVAILABLE = True
+ try:
+     from flash_attn.flash_attn_interface import flash_attn_unpadded_kvpacked_func
+     print('Use flash_attn_unpadded_kvpacked_func')
+-except:
+-    from flash_attn.flash_attn_interface import  flash_attn_varlen_kvpacked_func as flash_attn_unpadded_kvpacked_func
+-    print('Use flash_attn_varlen_kvpacked_func')
+-from flash_attn.bert_padding import unpad_input, pad_input, index_first_axis
++except ImportError:
++    try:
++        from flash_attn.flash_attn_interface import flash_attn_varlen_kvpacked_func as flash_attn_unpadded_kvpacked_func
++        print('Use flash_attn_varlen_kvpacked_func')
++    except ImportError:
++        FLASH_ATTN_AVAILABLE = False
++        flash_attn_unpadded_kvpacked_func = None
++if FLASH_ATTN_AVAILABLE:
++    from flash_attn.bert_padding import unpad_input, pad_input, index_first_axis
++
++
++class TorchMHA(nn.MultiheadAttention):
++    """Checkpoint-compatible fallback for environments without flash-attn."""
++
++    def forward(self, q, k, v, key_padding_mask=None):
++        return super().forward(
++            q,
++            k,
++            v,
++            key_padding_mask=key_padding_mask,
++            need_weights=False,
++        )
+ 
+ 
+ def _in_projection_packed(q, k, v, w, b = None):
+@@ -186,14 +205,23 @@ class MultiheadFlashAttention(BaseModule):
+         self.embed_dims = embed_dims
+         self.num_heads = num_heads
+         self.batch_first = True
+-        self.attn = FlashMHA(
+-            embed_dim=embed_dims, 
+-            num_heads=num_heads, 
+-            attention_dropout=attn_drop, 
+-            dtype=torch.float16, 
+-            device='cuda',
+-            **kwargs
+-        )
++        if FLASH_ATTN_AVAILABLE:
++            self.attn = FlashMHA(
++                embed_dim=embed_dims,
++                num_heads=num_heads,
++                attention_dropout=attn_drop,
++                dtype=torch.float16,
++                device='cuda',
++                **kwargs
++            )
++        else:
++            self.attn = TorchMHA(
++                embed_dim=embed_dims,
++                num_heads=num_heads,
++                dropout=attn_drop,
++                batch_first=True,
++                **kwargs
++            )
+ 
+         self.proj_drop = nn.Dropout(proj_drop)
+         self.dropout_layer = build_dropout(
+diff --git a/projects/mmdet3d_plugin/models/motion/instance_queue.py b/projects/mmdet3d_plugin/models/motion/instance_queue.py
+index 1905d77..af83892 100644
+--- a/projects/mmdet3d_plugin/models/motion/instance_queue.py
++++ b/projects/mmdet3d_plugin/models/motion/instance_queue.py
+@@ -164,8 +164,15 @@ class InstanceQueue(nn.Module):
+         batch_size,
+     ):
+         ## ego instance init
+-        feature_maps_inv = feature_maps_format(feature_maps, inverse=True)
+-        feature_map = feature_maps_inv[0][-1][:, 0]
++        if (
++            isinstance(feature_maps, (list, tuple))
++            and len(feature_maps) == 3
++            and getattr(feature_maps[1], "ndim", None) == 3
++        ):
++            feature_maps_inv = feature_maps_format(feature_maps, inverse=True)
++            feature_map = feature_maps_inv[0][-1][:, 0]
++        else:
++            feature_map = feature_maps[-1][:, 0]
+         ego_feature = self.ego_feature_encoder(feature_map)
+         ego_feature = ego_feature.unsqueeze(1).squeeze(-1).squeeze(-1)
+ 
+diff --git a/projects/mmdet3d_plugin/ops/__init__.py b/projects/mmdet3d_plugin/ops/__init__.py
+index cf23848..2d99f5c 100644
+--- a/projects/mmdet3d_plugin/ops/__init__.py
++++ b/projects/mmdet3d_plugin/ops/__init__.py
+@@ -1,6 +1,9 @@
+ import torch
+ 
+-from .deformable_aggregation import DeformableAggregationFunction
++try:
++    from .deformable_aggregation import DeformableAggregationFunction
++except ImportError:
++    DeformableAggregationFunction = None
+ 
+ 
+ def deformable_aggregation_function(
+@@ -10,6 +13,11 @@ def deformable_aggregation_function(
+     sampling_location,
+     weights,
+ ):
++    if DeformableAggregationFunction is None:
++        raise RuntimeError(
++            "deformable_aggregation_ext is unavailable; set "
++            "use_deformable_func=False to use the PyTorch fallback"
++        )
+     return DeformableAggregationFunction.apply(
+         feature_maps,
+         spatial_shape,
