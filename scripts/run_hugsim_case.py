@@ -25,12 +25,49 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--step-m", type=float, default=1.0)
     parser.add_argument("--timeout-s", type=float, default=900.0)
     parser.add_argument("--control-hold-steps", type=int, default=1)
-    parser.add_argument(
+    writer_group = parser.add_mutually_exclusive_group()
+    writer_group.add_argument(
         "--sparsedrive-native-output",
         type=Path,
         help="Replay frozen native SparseDrive plans for interface qualification.",
     )
+    writer_group.add_argument(
+        "--sparsedrive-live-source-run",
+        type=Path,
+        help="Run SparseDrive live after exact recorded-history pre-warm.",
+    )
     parser.add_argument("--sparsedrive-start-index", type=int, default=0)
+    parser.add_argument(
+        "--sparsedrive-reference-native-output",
+        type=Path,
+        help="Qualified offline native output used to check the first live plan.",
+    )
+    parser.add_argument(
+        "--writer-python",
+        default="/home/yawei/miniforge3/envs/sparse4d-audit/bin/python",
+    )
+    parser.add_argument("--sparsedrive-root", default="/home/yawei/SparseDrive")
+    parser.add_argument(
+        "--sparsedrive-checkpoint",
+        default=(
+            "/home/yawei/logsim-credibility-audit/artifacts/"
+            "sparsedrive_receiver/official-v1.0/sparsedrive_stage2.pth"
+        ),
+    )
+    parser.add_argument(
+        "--sparsedrive-runtime-deps",
+        default=(
+            "/home/yawei/logsim-credibility-audit/artifacts/"
+            "sparsedrive_receiver/runtime-deps-v1"
+        ),
+    )
+    parser.add_argument(
+        "--sparsedrive-anchor-dir",
+        default=(
+            "/home/yawei/logsim-credibility-audit/artifacts/"
+            "sparsedrive_receiver/official-v1.0/anchors"
+        ),
+    )
     parser.add_argument(
         "--python",
         default="/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
@@ -94,6 +131,7 @@ def main() -> int:
     scenario = args.scenario.expanduser().resolve()
     output = args.output.expanduser().resolve()
     python = Path(args.python).expanduser().resolve()
+    writer_python = Path(args.writer_python).expanduser().resolve()
 
     if args.max_steps < 1:
         raise ValueError("--max-steps must be at least 1")
@@ -108,6 +146,7 @@ def main() -> int:
         raise FileNotFoundError(f"Missing HUGSIM Python interpreter: {python}")
 
     env = runtime_env()
+    writer_env = env.copy()
     runner_log = output.with_name(output.name + ".runner.log")
     writer_log = output.with_name(output.name + ".writer.log")
     runner_cmd = [
@@ -147,6 +186,47 @@ def main() -> int:
             str(args.sparsedrive_start_index),
             "--max-plans",
             str(requested_plans),
+        ]
+    elif args.sparsedrive_live_source_run is not None:
+        source_run = args.sparsedrive_live_source_run.expanduser().resolve()
+        reference_native = (
+            args.sparsedrive_reference_native_output.expanduser().resolve()
+            if args.sparsedrive_reference_native_output is not None
+            else None
+        )
+        if not source_run.is_dir():
+            raise FileNotFoundError(f"Missing live source run: {source_run}")
+        if reference_native is None or not reference_native.is_file():
+            raise FileNotFoundError(
+                "A valid --sparsedrive-reference-native-output is required"
+            )
+        if not writer_python.is_file():
+            raise FileNotFoundError(f"Missing writer Python: {writer_python}")
+        runner_cmd.extend(("--strict-action-bounds", "--skip-evaluation"))
+        sparse_root = str(Path(args.sparsedrive_root).expanduser().resolve())
+        writer_env["PYTHONPATH"] = (
+            f"{sparse_root}:{repo_root / 'scripts'}:"
+            f"{writer_env.get('PYTHONPATH', '')}"
+        )
+        writer_cmd = [
+            str(writer_python),
+            str(repo_root / "scripts" / "hugsim_sparsedrive_live_writer.py"),
+            "--output",
+            str(output),
+            "--source-run",
+            str(source_run),
+            "--reference-native-output",
+            str(reference_native),
+            "--max-plans",
+            str(requested_plans),
+            "--sparsedrive-root",
+            sparse_root,
+            "--checkpoint",
+            str(Path(args.sparsedrive_checkpoint).expanduser().resolve()),
+            "--runtime-deps",
+            str(Path(args.sparsedrive_runtime_deps).expanduser().resolve()),
+            "--anchor-dir",
+            str(Path(args.sparsedrive_anchor_dir).expanduser().resolve()),
         ]
     else:
         writer_cmd = [
@@ -191,7 +271,7 @@ def main() -> int:
             raise TimeoutError("Timed out waiting for HUGSIM runner readiness")
 
         wait_for_pipes(output, runner, args.timeout_s)
-        writer_code = run_and_log(writer_cmd, env, writer_log)
+        writer_code = run_and_log(writer_cmd, writer_env, writer_log)
         if writer_code != 0:
             runner.terminate()
             runner.wait(timeout=10)
