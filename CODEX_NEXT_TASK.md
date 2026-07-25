@@ -236,6 +236,19 @@ support evidence, not sensor equivalence. The static control retains
 person-like residual structure, so it is not a qualified actor-free world.
 See `docs/runs/hugsim_source_dynamic_visibility_001.md`.
 
+The preregistered target-AD consequence bridge is also complete. One fully
+warmed natural-actor endpoint compared real RGB, factual HUGSIM RGB and the
+same HUGSIM render with its native dynamic path omitted, with two independent
+resets per condition. The native dynamic caused a SparseDrive plan ADE of
+about `0.0947 m`, far beyond the `8.04e-7 m` endpoint repeat envelope, while
+all runs retained planning mode `3`. However, real–factual plan ADE was
+`0.0816 m`, larger than real–static `0.0624 m`; the preregistered claim that
+adding the native dynamic moves the task output toward real was `rejected`.
+This is useful negative evidence: correct camera membership and overlapping
+pixel support did not imply closer target-AD response. Static actor-like
+leakage remains a confound, so the result does not isolate renderer error. See
+`docs/runs/sparsedrive_natural_actor_bridge_001.md`.
+
 No externally qualified acceptance threshold exists, so this is not yet a
 factual equivalence pass or failure. The earlier CF-R scale is only a
 cross-experiment diagnostic: its timeline and intervention differ.
@@ -266,20 +279,22 @@ The prospective maneuver-conditioned refinement is complete:
 See `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md` and the first-stage
 bundle in `docs/runs/hugsim_first_stage_evidence_closure_001.md`.
 
-The next bounded work is no longer another same-scene overlap curve:
+The next bounded work is no longer another same-scene overlap or receiver
+curve:
 
 1. treat factual domain difference as `D_domain(context)`, not a universal
    scalar threshold;
-2. build one minimum valid receiver history ending at a source-supported
-   natural-actor timestamp;
-3. preregister a three-way real RGB / factual HUGSIM / static-control HUGSIM
-   receiver comparison and ask whether the native dynamic moves task output
-   toward the real-source output;
+2. retain the natural-actor bridge as paired positive/negative evidence rather
+   than selecting nearby frames to reverse its result;
+3. before calling dynamic removal an actor-free counterfactual, require a
+   leakage-bounded control or a source object/scene with clean static–dynamic
+   separation; if current data cannot provide it, record the generality branch
+   as unavailable rather than forcing it;
 4. require complete future actor states, ego footprint and valid-horizon
    coverage before reintroducing path-conflict or dynamic-risk measures;
-5. preserve static actor leakage as a confound, retain second-source-scene
-   evidence as a later generality requirement, and add a second heterogeneous
-   receiver only if a key result is demonstrably SparseDrive-dependent.
+5. retain second-source-scene evidence as a later generality requirement, and
+   add a second heterogeneous receiver only if a key result is demonstrably
+   SparseDrive-dependent.
 
 The exact source-pair gate and receiver qualification requirements continue to
 apply. A second receiver may test model dependence, but it cannot substitute

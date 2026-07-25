@@ -1,0 +1,97 @@
+{
+  "experiment_id": "sparsedrive_natural_actor_bridge_001",
+  "date": "2026-07-25",
+  "purpose": "Test whether the native HUGSIM dynamic contribution changes a fixed target AD beyond reset sensitivity and moves its planning output toward the matched real-source response. This is a one-window receiver-consequence bridge, not a sensor-equivalence or AD-correctness test.",
+  "selection": {
+    "scene": "scene-0383",
+    "source_frame_indices": [
+      26,
+      32,
+      38,
+      44
+    ],
+    "frame_stride": 6,
+    "receiver_rate_hz_approximate": 2.0,
+    "evaluated_endpoint_frame": 44,
+    "selection_basis": [
+      "four frames are the minimum history used by the frozen SparseDrive adapter",
+      "the frame spacing is approximately 0.5 seconds in official source metadata",
+      "frame 44 has prior source-side dynamic support in CAM_FRONT_LEFT",
+      "the receiver outputs for this three-way comparison were not inspected before freezing this record"
+    ],
+    "split_boundary": "Only the endpoint is reused from the prior reader-declared source-support audit. The three preceding receiver warm-up frames are not claimed to form an independently held-out four-frame test sequence."
+  },
+  "conditions": {
+    "real": "official HUGSIM sample source RGB at frames 26, 32, 38 and 44",
+    "factual": "HUGSIM exact-source-pose RGB with the released native dynamic enabled at every selected frame",
+    "static_control": "the same HUGSIM exact-source-pose RGB with each selected frame's dynamics dictionary cleared",
+    "native_dynamic_id": "d793362732e547249b1a05af84d09967",
+    "static_leakage_boundary": "Prior inspection found person-like residual content in the static reconstruction. Static control therefore means native-dynamic-path omitted, not actor-free."
+  },
+  "held_fixed": [
+    "source timestamps and camera order",
+    "source camera intrinsics and relative poses",
+    "provisional model-LiDAR to CAM_FRONT calibration",
+    "pose-derived ego state",
+    "source-derived command and future ego-motion reference",
+    "SparseDrive checkpoint, config, adapter and temporal reset procedure"
+  ],
+  "receiver": {
+    "role": "fixed target AD whose response is compared; not simulator truth",
+    "source_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+    "source_working_diff_sha256": "541f5a5a561745bff64962ba8ffe679d657f578acef3193e3550f205f06a1e3d",
+    "config_sha256": "812414bb981eadca1365654575eeb799c91252de756a1d5b573e0a284cc88f11",
+    "checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+    "adapter_sha256": "446669552992fdb9e501d06ccbe14741ff783f4e94c3f3a26108c6dd5251dbef",
+    "repeat_design": "Each condition is run twice after an independent temporal reset. Cross-condition distances use all four 2-by-2 reset pairings."
+  },
+  "renderer": {
+    "source_metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+    "scene_checkpoint_sha256": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+    "dynamic_checkpoint_sha256": "462a1d4579b94447e2a2951d6ffc80f0b6cf26a6968ff78025d41cb92ad924a6",
+    "config_sha256": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+    "renderer_adapter_sha256": "a9a5fa7962d343be49d0a4c74c1dd909fff23461d5c96c055dab3a3a2d8838c6"
+  },
+  "measurements": {
+    "primary_output": "SparseDrive native final planning trajectory at fully warmed frame 44",
+    "primary_distance": "six-waypoint plan ADE in metres",
+    "secondary_descriptive": [
+      "plan FDE in metres",
+      "signed final right and forward differences",
+      "selected planning mode",
+      "planning-score maximum absolute difference",
+      "fixed-mode candidate differences if mode selection changes"
+    ],
+    "repeat_envelope": "maximum within-condition endpoint plan ADE across real, factual and static-control independent resets",
+    "native_effect": "factual-versus-static plan ADE over all four reset pairings",
+    "real_gap_factual": "real-versus-factual plan ADE over all four reset pairings",
+    "real_gap_static": "real-versus-static plan ADE over all four reset pairings"
+  },
+  "decision_rules": [
+    {
+      "claim": "The native dynamic contribution causes a receiver response beyond reset sensitivity.",
+      "accepted": "minimum factual-static ADE across reset pairings is greater than the maximum within-condition repeat ADE",
+      "rejected": "maximum factual-static ADE does not exceed the maximum within-condition repeat ADE",
+      "down-weighted": "the two ranges overlap"
+    },
+    {
+      "claim": "Adding the native dynamic moves the receiver plan toward the real-source plan.",
+      "accepted": "maximum real-factual ADE is strictly below minimum real-static ADE",
+      "rejected": "maximum real-static ADE is strictly below minimum real-factual ADE",
+      "down-weighted": "the real-factual and real-static ADE ranges overlap"
+    },
+    {
+      "claim": "The endpoint result is not a planning-mode-selection artifact.",
+      "accepted": "the selected mode is identical across real, factual and static control for both resets",
+      "down-weighted": "mode changes but fixed-mode decomposition preserves the primary direction",
+      "rejected": "mode changes and fixed-mode decomposition contradicts or cannot support the primary direction"
+    }
+  ],
+  "strongest_allowed_claim": "For this one natural-actor history and frozen SparseDrive receiver, enabling the native HUGSIM dynamic path does or does not create a repeat-resolved planning response in the direction of the matched real-source response.",
+  "claims_to_reject": [
+    "SparseDrive is a correct driving policy or a source of ground truth.",
+    "The static control is an actor-free world.",
+    "A plan moving toward the real-input plan proves photometric, semantic, geometric or sensor equivalence.",
+    "One endpoint establishes general HUGSIM credibility, closed-loop safety or receiver-independent validity."
+  ]
+}
