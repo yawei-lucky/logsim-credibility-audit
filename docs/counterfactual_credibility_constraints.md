@@ -88,6 +88,12 @@
 以 3/5 成立、2/5 反转拒绝了无条件的终点纵向单调主张，详见
 `docs/runs/sparsedrive_same_window_counterfactual_001.md`。
 
+后续原生候选分解进一步区分了两种反转：frame 48 的六个固定模式都减少前进，
+但模式选择改变使最终轨迹反转；frame 54 在模式不变时六个固定模式都小幅反转。
+因此候选模式分解可保留为诊断工具，而“当前 actor 盒到未来规划线的静态净距”
+因缺少未来 actor 时间对齐而不能作为动态风险指标。详见
+`docs/runs/sparsedrive_maneuver_conditioned_risk_001.md`。
+
 ## 5. 每条规律的最小描述格式
 
 进入具体实验前，每条被选择的规律只需回答八件事：

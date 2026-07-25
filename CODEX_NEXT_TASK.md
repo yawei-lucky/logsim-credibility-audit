@@ -14,7 +14,7 @@ Durable questions:
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
 
-## Immediate Direction — Reality Bridge and SparseDrive Real Qualification
+## Immediate Direction — Minimal External-Validity Upgrade
 
 The first simulator-internal causal-law and indicator pilot is closed. Its
 scope and remaining boundaries are recorded in
@@ -120,7 +120,9 @@ Reality Bridge source-availability gate                       complete, partial 
   -> SparseDrive-REAL-QUAL-001 on real data only              complete, down-weighted
   -> matched factual real/sim SparseDrive comparison          pilot complete, down-weighted
   -> same-window counterfactual effect vs domain/repeat       complete, down-weighted
-  -> maneuver-conditioned risk indicator refinement          next
+  -> maneuver-conditioned risk indicator refinement          complete, down-weighted
+  -> first-stage evidence closure                            complete
+  -> minimal external-validity upgrade                       next
 ```
 
 ### Reality Bridge 001
@@ -224,16 +226,33 @@ both farther left and farther forward; raw forward endpoint is therefore not a
 maneuver-independent risk indicator. See
 `docs/runs/sparsedrive_same_window_counterfactual_001.md`.
 
-The next bounded work is:
+The prospective maneuver-conditioned refinement is complete:
 
-1. do not render another scene, add an actor level or install another receiver;
-2. use the existing native candidate plans/scores and actor geometry to
-   distinguish longitudinal following from a maneuver switch at the two
-   reversals;
-3. formulate a prospective maneuver-conditioned indicator combining
-   route-relative progress, actor clearance/path conflict and mode identity;
-4. retain the original 3/5 result as `rejected`; the refinement must not
-   retroactively turn it into a pass.
+1. native candidate/score decomposition exactly separated fixed-mode response
+   from mode-selection contribution;
+2. frame `48` is a selection confound: all six fixed modes reduced progress,
+   while selecting a different mode reversed the final endpoint;
+3. frame `54` is a genuine local fixed-mode reversal: mode identity stayed
+   fixed and all six candidates moved slightly farther forward;
+4. current-static actor clearance is `rejected` as a dynamic-risk indicator
+   because it lacks time-aligned future actor motion and saturated at zero in
+   `4/5` strong frames;
+5. the original `3/5` result remains `rejected`.
+
+See `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md` and the first-stage
+bundle in `docs/runs/hugsim_first_stage_evidence_closure_001.md`.
+
+The next bounded work is no longer another internal curve:
+
+1. stop tuning the current five-frame result;
+2. select a small number of high-value matched real–sim slices with the same
+   six-camera/pose/time contract;
+3. add an independent reference only for the task variable needed by the
+   intended claim and preregister the AD-response comparison and boundary;
+4. require complete future actor states, ego footprint and valid-horizon
+   coverage before reintroducing path-conflict or dynamic-risk measures;
+5. add a second heterogeneous receiver only if a key result is demonstrably
+   SparseDrive-dependent.
 
 The exact source-pair gate and receiver qualification requirements continue to
 apply. A second receiver may test model dependence, but it cannot substitute
