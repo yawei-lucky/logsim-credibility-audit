@@ -63,6 +63,15 @@ def select_camera_records(
     return records
 
 
+def records_without_dynamics(
+    records: dict[str, dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    return {
+        camera: {**record, "dynamics": {}}
+        for camera, record in records.items()
+    }
+
+
 def image_metrics(real: np.ndarray, rendered: np.ndarray) -> dict[str, float]:
     real_float = np.asarray(real, dtype=np.float64) / 255.0
     rendered_float = np.asarray(rendered, dtype=np.float64) / 255.0
@@ -150,6 +159,17 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
         metadata_by_label[label] = metadata
         records_by_label[label] = select_camera_records(
             metadata, args.frame_index
+        )
+    omitted_dynamic_labels = set(args.omit_dynamics)
+    unknown_omissions = omitted_dynamic_labels - set(records_by_label)
+    if unknown_omissions:
+        raise ValueError(
+            "--omit-dynamics labels are not declared by --metadata: "
+            f"{sorted(unknown_omissions)}"
+        )
+    for label in omitted_dynamic_labels:
+        records_by_label[label] = records_without_dynamics(
+            records_by_label[label]
         )
 
     reference_label = next(iter(records_by_label))
@@ -290,6 +310,7 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
         variants[label] = {
             "metadata_path": str(metadata_paths[label]),
             "metadata_sha256": sha256_file(metadata_paths[label]),
+            "native_dynamics_omitted": label in omitted_dynamic_labels,
             "camera_results": camera_results,
             "mean_metrics": {
                 "mae": float(
@@ -400,6 +421,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-dir", type=Path, required=True)
     parser.add_argument("--real-root", type=Path, required=True)
     parser.add_argument("--metadata", action="append", required=True)
+    parser.add_argument(
+        "--omit-dynamics",
+        action="append",
+        default=[],
+        metavar="LABEL",
+        help=(
+            "Render a declared metadata label with its selected frame dynamics "
+            "dictionary cleared. Pass the same metadata under factual and "
+            "control labels to isolate native dynamic support."
+        ),
+    )
     parser.add_argument(
         "--dynamic-checkpoint",
         action="append",

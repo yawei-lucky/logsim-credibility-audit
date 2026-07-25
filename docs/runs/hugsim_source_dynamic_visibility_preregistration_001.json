@@ -1,0 +1,75 @@
+{
+  "experiment_id": "hugsim_source_dynamic_visibility_001",
+  "date": "2026-07-25",
+  "purpose": "Test whether a native HUGSIM dynamic object's rendered camera membership and image support correspond to source-side dynamic support on two reader-declared held-out factual timestamps. This is a sensor-information pilot, not an AD or real-sensor equivalence test.",
+  "availability_gate": {
+    "second_source_scene": "unavailable",
+    "reason": "Local scene-0041 and scene-0138 archives contain reconstruction checkpoints and metadata but no source RGB. The official 2.38 GB sample-data ZIP contains source observations only for scene-0383.",
+    "selected_alternative": "source-side dynamic masks and RGB for scene-0383, which are upstream of and independent from the HUGSIM renderer but share metadata and preprocessing provenance with reconstruction"
+  },
+  "selection": {
+    "scene": "scene-0383",
+    "source_metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",
+    "source_metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+    "frame_indices": [
+      44,
+      49
+    ],
+    "selection_basis": [
+      "all six camera records at each timestamp satisfy the released dataset-reader test rule idx modulo 30 >= 24",
+      "source metadata projects the native dynamic center into CAM_FRONT_LEFT at frame 44",
+      "source metadata projects the native dynamic across CAM_FRONT_LEFT and CAM_BACK_LEFT at frame 49, providing a multi-camera boundary case"
+    ],
+    "selection_independence": "The exact frame-44 and frame-49 source RGB, source masks and HUGSIM renders were not inspected before freezing this record. Selection used only source metadata geometry and the released reader split rule.",
+    "native_dynamic_id": "d793362732e547249b1a05af84d09967"
+  },
+  "reference_provenance": {
+    "source_dynamic_mask_definition": "stored mask false pixels are the intersection of source semantic vehicle-class pixels and the source-metadata projected native dynamic box",
+    "independence": "the mask is computed from real source imagery by upstream semantic preprocessing and source geometry, not from HUGSIM rendered RGB",
+    "shared_dependency": "the source geometry and mask were inputs to reconstruction; the mask is therefore a partial external reference, not independent real-world ground truth",
+    "held_out_boundary": "reader-declared test membership is checked; checkpoint split provenance remains incomplete, so this is not claimed as a fully independent unseen benchmark"
+  },
+  "render_control": {
+    "factual": "source-init pose with the released native dynamic checkpoint",
+    "static_control": "the identical source-init pose, intrinsics, scene checkpoint and renderer with only the frame dynamics dictionary omitted",
+    "isolated_construct": "pixel support caused by the native dynamic render path"
+  },
+  "measurements": {
+    "continuous_primary": [
+      "fraction of factual-minus-static RGB difference energy inside the exact source dynamic mask",
+      "fraction of difference energy inside a 16-pixel dilation of the source dynamic mask",
+      "difference-energy weighted centroid error to the source-mask centroid",
+      "camera membership of nonempty source mask and nontrivial rendered dynamic support"
+    ],
+    "threshold_sensitivity": {
+      "pixel_delta": "mean absolute factual-minus-static RGB difference in 8-bit intensity units",
+      "thresholds": [
+        4,
+        8,
+        16,
+        32
+      ],
+      "reported": [
+        "IoU",
+        "source-mask recall",
+        "render-support precision"
+      ],
+      "interpretation": "No single threshold is a pass boundary; the family checks conclusion sensitivity."
+    },
+    "negative_control": "cameras with an empty source dynamic mask should be reported separately rather than pooled as successful overlap"
+  },
+  "decision_rules": [
+    "A zero source mask makes that camera unsupported by this reference, not a HUGSIM failure.",
+    "Zero rendered difference energy in every source-supported camera rejects the minimal native-dynamic observation path.",
+    "Nonzero overlap qualifies only bounded source-to-render camera/support retention.",
+    "No numerical overlap value will be promoted to a real-sensor equivalence threshold.",
+    "Source mask, semantic preprocessing, source geometry and HUGSIM output must not be treated as mutually independent votes."
+  ],
+  "strongest_allowed_claim": "For the selected source timestamps, HUGSIM's native dynamic render path does or does not preserve source-side camera membership and overlapping image support under the declared partial-reference construction.",
+  "claims_to_reject": [
+    "The source dynamic mask is real-world ground truth.",
+    "Overlap proves photometric, semantic, depth or sensor equivalence.",
+    "Overlap proves that SparseDrive or another AD receives sufficient task information.",
+    "Two timestamps establish general HUGSIM credibility or AD safety."
+  ]
+}

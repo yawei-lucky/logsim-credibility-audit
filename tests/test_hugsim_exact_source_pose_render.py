@@ -12,6 +12,7 @@ from render_hugsim_exact_source_pose import (  # noqa: E402
     CAMERAS,
     image_metrics,
     parse_checkpoint_specs,
+    records_without_dynamics,
     select_camera_records,
 )
 
@@ -61,6 +62,18 @@ class HugsimExactSourcePoseRenderTest(unittest.TestCase):
         ]
         with self.assertRaisesRegex(ValueError, "not a six-camera group"):
             select_camera_records({"frames": frames}, 4)
+
+    def test_static_control_clears_dynamics_without_mutating_source(self):
+        records = {
+            "CAM_FRONT": {
+                "timestamp": 1.0,
+                "dynamics": {"actor": identity(4)},
+            }
+        }
+        control = records_without_dynamics(records)
+
+        self.assertEqual(control["CAM_FRONT"]["dynamics"], {})
+        self.assertIn("actor", records["CAM_FRONT"]["dynamics"])
 
     def test_image_metrics_detect_identity_and_error(self):
         real = np.zeros((8, 8, 3), dtype=np.uint8)

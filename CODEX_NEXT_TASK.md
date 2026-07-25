@@ -122,7 +122,7 @@ Reality Bridge source-availability gate                       complete, partial 
   -> same-window counterfactual effect vs domain/repeat       complete, down-weighted
   -> maneuver-conditioned risk indicator refinement          complete, down-weighted
   -> first-stage evidence closure                            complete
-  -> minimal external-validity upgrade                       two-window pilot complete, down-weighted
+  -> minimal external-validity upgrade                       source-support pilot complete, down-weighted
 ```
 
 ### Reality Bridge 001
@@ -221,6 +221,21 @@ context variation in the observed receiver domain difference, not an
 equivalence failure or threshold. See
 `docs/runs/sparsedrive_real_sim_turn_window_001.md`.
 
+The next source-availability check found that local `scene-0041` and
+`scene-0138` contain reconstruction assets but no source RGB; the official
+sample archive provides source observations only for `scene-0383`. They cannot
+serve as second matched anchors.
+
+A bounded alternative source-support pilot is complete. On two
+reader-declared test timestamps, the source dynamic mask and isolated HUGSIM
+native-dynamic contribution agreed on all `12/12` camera–frame memberships.
+Across three supported views, `75.0%–80.5%` of dynamic difference energy fell
+inside the exact source mask and `95.3%–95.8%` inside a 16 px dilation;
+centroid error was `2.33–9.13 px`. This is narrow positive source-to-render
+support evidence, not sensor equivalence. The static control retains
+person-like residual structure, so it is not a qualified actor-free world.
+See `docs/runs/hugsim_source_dynamic_visibility_001.md`.
+
 No externally qualified acceptance threshold exists, so this is not yet a
 factual equivalence pass or failure. The earlier CF-R scale is only a
 cross-experiment diagnostic: its timeline and intervention differ.
@@ -251,18 +266,20 @@ The prospective maneuver-conditioned refinement is complete:
 See `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md` and the first-stage
 bundle in `docs/runs/hugsim_first_stage_evidence_closure_001.md`.
 
-The next bounded work is no longer another same-scene window:
+The next bounded work is no longer another same-scene overlap curve:
 
 1. treat factual domain difference as `D_domain(context)`, not a universal
    scalar threshold;
-2. seek one second source scene or independent actor/visibility reference with
-   the same six-camera/pose/time contract;
-3. preregister the task consequence and context-conditioned comparison before
-   interpreting another counterfactual response;
+2. build one minimum valid receiver history ending at a source-supported
+   natural-actor timestamp;
+3. preregister a three-way real RGB / factual HUGSIM / static-control HUGSIM
+   receiver comparison and ask whether the native dynamic moves task output
+   toward the real-source output;
 4. require complete future actor states, ego footprint and valid-horizon
    coverage before reintroducing path-conflict or dynamic-risk measures;
-5. add a second heterogeneous receiver only if a key result is demonstrably
-   SparseDrive-dependent.
+5. preserve static actor leakage as a confound, retain second-source-scene
+   evidence as a later generality requirement, and add a second heterogeneous
+   receiver only if a key result is demonstrably SparseDrive-dependent.
 
 The exact source-pair gate and receiver qualification requirements continue to
 apply. A second receiver may test model dependence, but it cannot substitute
