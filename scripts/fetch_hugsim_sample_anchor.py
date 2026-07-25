@@ -13,9 +13,12 @@ import binascii
 import hashlib
 import json
 import os
+import re
 import shutil
 import struct
 import tempfile
+import time
+import urllib.error
 import urllib.request
 import zlib
 from dataclasses import asdict, dataclass
@@ -37,43 +40,66 @@ class RangeReader(Protocol):
 
 
 class HttpRangeReader:
-    def __init__(self, url: str, timeout_s: int = 60):
+    def __init__(self, url: str, timeout_s: int = 60, retries: int = 4):
         self.url = url
         self.timeout_s = timeout_s
-        request = urllib.request.Request(url, method="HEAD")
-        with urllib.request.urlopen(request, timeout=timeout_s) as response:
-            size = response.headers.get("Content-Length")
-            if size is None:
-                raise RuntimeError("remote server did not provide Content-Length")
-            self.size = int(size)
-            self.final_url = response.geturl()
-            self.etag = response.headers.get("ETag")
+        self.retries = retries
+        if retries < 0:
+            raise ValueError("retries must be non-negative")
+        for attempt in range(retries + 1):
+            try:
+                request = urllib.request.Request(url, method="HEAD")
+                with urllib.request.urlopen(request, timeout=timeout_s) as response:
+                    size = response.headers.get("Content-Length")
+                    if size is None:
+                        raise RuntimeError(
+                            "remote server did not provide Content-Length"
+                        )
+                    self.size = int(size)
+                    self.final_url = response.geturl()
+                    self.etag = response.headers.get("ETag")
+                break
+            except (OSError, urllib.error.URLError, RuntimeError):
+                if attempt >= retries:
+                    raise
+                time.sleep(min(2**attempt, 8))
 
     def read_range(self, start: int, end: int) -> bytes:
         if start < 0 or end < start or end >= self.size:
             raise ValueError(f"invalid byte range {start}-{end} for size {self.size}")
-        request = urllib.request.Request(
-            self.url, headers={"Range": f"bytes={start}-{end}"}
-        )
-        with urllib.request.urlopen(request, timeout=self.timeout_s) as response:
-            if response.status != 206:
-                raise RuntimeError(
-                    f"server ignored range request {start}-{end}: "
-                    f"HTTP {response.status}"
-                )
-            content_range = response.headers.get("Content-Range")
-            expected = f"bytes {start}-{end}/{self.size}"
-            if content_range != expected:
-                raise RuntimeError(
-                    f"unexpected Content-Range {content_range!r}, expected {expected!r}"
-                )
-            payload = response.read()
         expected_size = end - start + 1
-        if len(payload) != expected_size:
-            raise RuntimeError(
-                f"short range read: got {len(payload)}, expected {expected_size}"
-            )
-        return payload
+        expected_range = f"bytes {start}-{end}/{self.size}"
+        for attempt in range(self.retries + 1):
+            try:
+                request = urllib.request.Request(
+                    self.url, headers={"Range": f"bytes={start}-{end}"}
+                )
+                with urllib.request.urlopen(
+                    request, timeout=self.timeout_s
+                ) as response:
+                    if response.status != 206:
+                        raise RuntimeError(
+                            f"server ignored range request {start}-{end}: "
+                            f"HTTP {response.status}"
+                        )
+                    content_range = response.headers.get("Content-Range")
+                    if content_range != expected_range:
+                        raise RuntimeError(
+                            f"unexpected Content-Range {content_range!r}, "
+                            f"expected {expected_range!r}"
+                        )
+                    payload = response.read()
+                if len(payload) != expected_size:
+                    raise RuntimeError(
+                        f"short range read: got {len(payload)}, "
+                        f"expected {expected_size}"
+                    )
+                return payload
+            except (OSError, urllib.error.URLError, RuntimeError):
+                if attempt >= self.retries:
+                    raise
+                time.sleep(min(2**attempt, 8))
+        raise AssertionError("unreachable retry loop")
 
 
 class BytesRangeReader:
@@ -227,6 +253,34 @@ def safe_relative_member(name: str, strip_prefix: str) -> Path:
     return Path(*member.parts)
 
 
+def image_grid_members(
+    prefix: str,
+    cameras: list[str],
+    frame_indices: list[int],
+    extension: str = "jpg",
+) -> list[str]:
+    root = PurePosixPath(prefix)
+    if root.is_absolute() or ".." in root.parts or not root.parts:
+        raise ValueError("image-grid prefix must be one safe relative path")
+    if not cameras or not frame_indices:
+        raise ValueError("image grid requires cameras and frame indices")
+    if any(not re.fullmatch(r"[A-Za-z0-9_-]+", camera) for camera in cameras):
+        raise ValueError("camera names must be alphanumeric with '_' or '-'")
+    if any(index < 0 for index in frame_indices):
+        raise ValueError("frame indices must be non-negative")
+    if not re.fullmatch(r"[A-Za-z0-9]+", extension):
+        raise ValueError("image extension must be alphanumeric")
+    if len(cameras) != len(set(cameras)) or len(frame_indices) != len(
+        set(frame_indices)
+    ):
+        raise ValueError("image-grid cameras and frame indices must be unique")
+    return [
+        f"{root.as_posix()}/{camera}/{frame_index:05d}.{extension}"
+        for frame_index in frame_indices
+        for camera in cameras
+    ]
+
+
 def fetch_members(
     reader: RangeReader,
     member_names: list[str],
@@ -295,20 +349,54 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--url", required=True)
     parser.add_argument("--output", type=Path, required=True)
-    parser.add_argument("--member", action="append", required=True, dest="members")
+    parser.add_argument("--member", action="append", default=[], dest="members")
+    parser.add_argument("--image-grid-prefix")
+    parser.add_argument("--camera", action="append", default=[], dest="cameras")
+    parser.add_argument(
+        "--frame-index",
+        action="append",
+        type=int,
+        default=[],
+        dest="frame_indices",
+    )
+    parser.add_argument("--image-extension", default="jpg")
     parser.add_argument("--strip-prefix", default="")
     parser.add_argument("--provider-sha256")
     parser.add_argument("--tail-bytes", type=int, default=1024 * 1024)
     parser.add_argument("--timeout-seconds", type=int, default=60)
+    parser.add_argument("--retries", type=int, default=4)
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
-    reader = HttpRangeReader(args.url, timeout_s=args.timeout_seconds)
+    members = list(args.members)
+    grid_requested = bool(
+        args.image_grid_prefix or args.cameras or args.frame_indices
+    )
+    if grid_requested:
+        if not args.image_grid_prefix:
+            raise ValueError("--image-grid-prefix is required for an image grid")
+        members.extend(
+            image_grid_members(
+                args.image_grid_prefix,
+                args.cameras,
+                args.frame_indices,
+                args.image_extension,
+            )
+        )
+    if not members:
+        raise ValueError("at least one --member or image-grid member is required")
+    if len(members) != len(set(members)):
+        raise ValueError("requested ZIP members must be unique")
+    reader = HttpRangeReader(
+        args.url,
+        timeout_s=args.timeout_seconds,
+        retries=args.retries,
+    )
     manifest = fetch_members(
         reader=reader,
-        member_names=args.members,
+        member_names=members,
         output=args.output.resolve(),
         strip_prefix=args.strip_prefix,
         archive_url=args.url,

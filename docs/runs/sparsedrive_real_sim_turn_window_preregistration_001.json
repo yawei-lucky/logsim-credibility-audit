@@ -1,0 +1,75 @@
+{
+  "experiment_id": "sparsedrive_real_sim_turn_window_001",
+  "date": "2026-07-25",
+  "purpose": "Add one non-overlapping matched real-HUGSIM turning window under the existing frozen SparseDrive input contract. This characterizes task-level domain variation; it is not an equivalence pass/fail test.",
+  "selection": {
+    "scene": "scene-0383",
+    "source_metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",
+    "source_metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+    "frame_indices": [
+      60,
+      66,
+      72,
+      78,
+      84,
+      90,
+      96,
+      102
+    ],
+    "fully_warmed_frame_indices": [
+      78,
+      84,
+      90,
+      96,
+      102
+    ],
+    "selection_basis": "Earliest eight-frame 2 Hz window after the prior window ending at frame 54 for which all five fully warmed source-derived commands are left and the real camera-rig pose changes heading by more than 30 degrees across the window.",
+    "observed_real_pose_heading_change_deg": 41.8,
+    "prior_window_heading_change_deg": 6.5,
+    "selection_independence": "Uses only the already identified real-source camera-rig poses and future route; no HUGSIM render, SparseDrive output or domain-difference result from this window was inspected."
+  },
+  "held_fixed": [
+    "official sample archive and scene identity",
+    "source timestamps, six-camera intrinsics and declared camera poses",
+    "CAM_BACK crop/pad rule",
+    "SparseDrive-S Stage2 checkpoint, config and local adapter",
+    "receiver reset, temporal warm-up and camera order",
+    "pose-derived ego state, source-derived command and recorded future-path reference"
+  ],
+  "changed_relative_to_prior_matched_window": [
+    "non-overlapping source timestamps",
+    "real route geometry changes from near-straight/turn-entry to sustained left turn"
+  ],
+  "measurements": {
+    "primary": [
+      "fully warmed real-versus-HUGSIM native plan ADE and endpoint distance",
+      "signed final forward and lateral differences",
+      "native selected-mode agreement",
+      "real-side and simulation-side reset-repeat envelopes"
+    ],
+    "reality_reference_diagnostic": [
+      "real-input plan ADE/FDE to the recorded camera-rig future path",
+      "HUGSIM-input plan ADE/FDE to the same recorded camera-rig future path"
+    ],
+    "rendering_descriptive_only": [
+      "per-camera and per-frame PSNR",
+      "SSIM",
+      "MAE"
+    ]
+  },
+  "interpretation_rules": [
+    "Only fully warmed frames may characterize matched AD-response domain difference.",
+    "A domain difference above repeat noise establishes a measurable receiver response difference, not a credibility failure.",
+    "No real-sim equivalence acceptance threshold will be invented from this window.",
+    "Recorded human/ego motion is a reality-derived descriptive reference, not the unique correct plan.",
+    "If selected mode differs between real and simulation, raw forward difference is reported with mode identity and is not interpreted as a maneuver-independent risk value.",
+    "Pixel similarity is not used as a substitute for task-output similarity.",
+    "The prior straight/turn-entry and new turning windows remain two windows from one reconstruction, not evidence of cross-scene generality."
+  ],
+  "strongest_allowed_claim": "A second, motion-distinct matched factual real-HUGSIM SparseDrive response distribution was measured under the same receiver contract.",
+  "claims_to_reject": [
+    "The two windows establish a universal real-sim equivalence threshold.",
+    "A lower trajectory error to the recorded ego path proves that the corresponding input domain is more realistic.",
+    "The result proves SparseDrive correct, HUGSIM credible in general, or an AD system safe."
+  ]
+}

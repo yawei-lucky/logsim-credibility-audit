@@ -195,13 +195,14 @@ down-weighted。标注只查看 HUGSIM RGB，虽然独立于 HUGSIM semantic/dep
 
 | 工具或参考 | 直接测量的构念 | 外部效度与 HUGSIM 依赖 | 下一实验用途 | 当前最强允许主张 | 最小资格缺口 |
 |---|---|---|---|---|---|
-| Source / exact-pairing gate | 源数据可用性、身份、位姿、时间和输入一一配对 | 依赖不可变 source identity、哈希和独立真实观测，不依赖 HUGSIM 质量结果 | 直接 real-sim 分支的强制 gate；当前由官方 sample 部分解锁 | 已恢复 3 个时间戳、18 张真实 RGB 并完成同位姿渲染对照；只形成 down-weighted 图像锚点 | nuScenes token、ASAP 映射、物理/优化位姿区分、checkpoint split provenance 和同一冻结 AD 的 matched 输出 |
+| Source / exact-pairing gate | 源数据可用性、身份、位姿、时间和输入一一配对 | 依赖不可变 source identity、哈希和独立真实观测，不依赖 HUGSIM 质量结果 | 直接 real-sim 分支的强制 gate；当前由官方 sample 部分解锁 | 已恢复同一 scene 的两个 8 帧六相机窗口并完成同位姿渲染和同一冻结 AD 的 matched 输出；仍为 down-weighted factual anchor | nuScenes token、ASAP 映射、物理/优化位姿区分、checkpoint split provenance、第二 source scene 和任务参考 |
 | Run identity / complete-future horizon gate | 运行同一性、计划/状态前缀和评分未来时域是否完整 | 使用直接日志、哈希、时间索引和独立重算；读取 HUGSIM 记录但不以其评分结论自证 | 所有后续实验的强制有效性 gate | 某段证据可复现、严格配对且未被尾窗填充污染 | 无法单独提供现实性或任务正确性 |
 | 独立重算的二维 footprint、净距和相对关系 | 给定 box 下的碰撞/正净距、中心线穿越、near/far 和 lateral ordering | 算法基于欧氏/刚体几何，独立于 HUGSIM scorer；输入 box 仍来自 HUGSIM | 可作为 designed counterfactual 的干预有效性约束 | 在仿真器声明状态成立的前提下，干预具有指定几何关系 | 独立测量状态、行为动力学范围和与 AD 决策相关的 margin |
 | HUGSIM ego/actor state 与 NC/TTC/PDMS | 仿真器声明状态及其内部 AD-performance score | 完全依赖 HUGSIM 状态、地图、计划与 scorer；已审出尾窗填充和 TTC 构念边界 | 内部状态/评分诊断，不作现实裁判 | 完整未来时域内的 HUGSIM 内部状态和二值 planned-path TTC surrogate | 独立状态/结果、物理 TTC 或受控场地对照 |
 | HUGSIM RGB / semantic / depth 与边界共变 | 渲染像素、声明语义/深度和跨模态内部对齐 | 三种模态共享 HUGSIM renderer，无独立现实参考 | 仅作可见性、错位和 artifact 定位 | 模态是否在 HUGSIM 内部共同变化 | 匹配或独立 RGB、depth/lidar、语义标注和误差范围 |
 | COCO detector 与 center-path risk proxy | 通用 2D 类别响应及人工加权图像风险 | detector 有外部 COCO 训练基础，但非驾驶域；risk proxy 未校准且已被 nuisance 主导 | nuisance 诊断；不进入下一反事实裁决 | 背景/重建内容能否诱发通用检测响应 | 驾驶域真实数据、独立任务标签和 risk/action calibration |
 | 冻结 Sparse4Dv3 序数关系响应 | 六相机 RGB 下的车辆存在、near/far、same/adjacent 和短时跟踪 | 官方 real-nuScenes-trained receiver，不读取 HUGSIM semantic/depth；真实 benchmark 能力为官方报告，尚未在本项目独立复核，HUGSIM 标定/域差仍存在 | 可作为一个 supporting receiver probe，限序数方向 | 在已测 receiver contract 中，HUGSIM RGB 能驱动该接收方产生预期关系方向 | matched/独立 3D 参考、第二个不同失败模式接收方、task margin 和 receiver uncertainty |
+| Maneuver-conditioned factual `D_domain` | 同一冻结 SparseDrive 在配对真实/HUGSIM RGB 下的原生规划差异、方向和模式 | 真实 RGB 与记录轨迹来自 source side；不使用 HUGSIM semantic/depth/scorer，但依赖单一接收方和部分 source provenance | 同 context 反事实前的局部任务域差诊断，不作全局阈值 | 两个同 scene 窗口、10 个 warmed 时刻均测得超出 repeat 的差异；转弯窗口 mean ADE/FDE 为前窗 `1.96×/2.17×` | 第二 source scene、独立任务变量、外部 task margin、必要时异构接收方 |
 | 固定人眼可见性标注 | 检测响应在渲染 RGB 中是否有可见目标支撑 | 人工判断独立于 HUGSIM semantic/depth/state，但仍只观察 HUGSIM RGB，且仅一次小样本复核 | 固定样本 nuisance 审计，不作现实语义真值 | 14 个固定响应中 7 个有可见支撑、7 个为 nuisance | 真实或独立场景标注、完整目标清单、多复核者和 recall 设计 |
 | Cross-receiver agreement | 不同输出构造的干预排序方向是否一致 | 当前接收方共享 HUGSIM 输入，部分还依赖 HUGSIM semantic/depth，误差相关性未量化 | 内部收敛诊断，不作多数投票 | 当前少量条件中的 effect-direction convergence | 各接收方真实数据资格、依赖性审计、独立参考和不确定性 |
 | Task acceptance boundary / uncertainty envelope | 哪些误差会改变关键目标、风险排序或动作 | 当前没有冻结的外部任务 margin，也没有合理参数/模型不确定性范围 | 当前不可用；是 designed counterfactual 分支的阻塞缺口 | 不能给出任务适用性通过结论 | 外部可辩护的任务构念、margin、参数范围和结论稳定性规则 |

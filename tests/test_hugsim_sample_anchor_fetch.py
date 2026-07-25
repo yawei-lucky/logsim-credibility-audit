@@ -14,6 +14,7 @@ from fetch_hugsim_sample_anchor import (  # noqa: E402
     ZipMember,
     extract_member,
     fetch_members,
+    image_grid_members,
     load_central_directory,
     safe_relative_member,
 )
@@ -30,6 +31,25 @@ def build_zip() -> bytes:
 
 
 class HugsimSampleAnchorFetchTest(unittest.TestCase):
+    def test_image_grid_members_are_frame_major_and_validated(self):
+        self.assertEqual(
+            image_grid_members(
+                "data/scene-0383/images",
+                ["CAM_FRONT", "CAM_BACK"],
+                [60, 66],
+            ),
+            [
+                "data/scene-0383/images/CAM_FRONT/00060.jpg",
+                "data/scene-0383/images/CAM_BACK/00060.jpg",
+                "data/scene-0383/images/CAM_FRONT/00066.jpg",
+                "data/scene-0383/images/CAM_BACK/00066.jpg",
+            ],
+        )
+        with self.assertRaises(ValueError):
+            image_grid_members("../images", ["CAM_FRONT"], [60])
+        with self.assertRaises(ValueError):
+            image_grid_members("images", ["CAM/FRONT"], [60])
+
     def test_reads_directory_and_validates_member(self):
         reader = BytesRangeReader(build_zip())
         members = load_central_directory(reader)

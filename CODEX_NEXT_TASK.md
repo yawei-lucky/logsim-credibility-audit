@@ -122,7 +122,7 @@ Reality Bridge source-availability gate                       complete, partial 
   -> same-window counterfactual effect vs domain/repeat       complete, down-weighted
   -> maneuver-conditioned risk indicator refinement          complete, down-weighted
   -> first-stage evidence closure                            complete
-  -> minimal external-validity upgrade                       next
+  -> minimal external-validity upgrade                       two-window pilot complete, down-weighted
 ```
 
 ### Reality Bridge 001
@@ -212,6 +212,15 @@ same. Pixel SSIM decreased across the window while planning discrepancy did
 not change monotonically, so pixel similarity is not a task-equivalence
 surrogate. See `docs/runs/sparsedrive_real_sim_factual_001.md`.
 
+A preregistered, non-overlapping turning window now adds five fully warmed
+matched timestamps. Its mean real-sim plan ADE/FDE was `0.360 m / 0.754 m`,
+respectively `1.96× / 2.17×` the prior window. All five simulation-side plans
+shifted farther forward and left while retaining the real-side selected mode.
+Warmed mean SSIM was nearly unchanged between windows. This establishes
+context variation in the observed receiver domain difference, not an
+equivalence failure or threshold. See
+`docs/runs/sparsedrive_real_sim_turn_window_001.md`.
+
 No externally qualified acceptance threshold exists, so this is not yet a
 factual equivalence pass or failure. The earlier CF-R scale is only a
 cross-experiment diagnostic: its timeline and intervention differ.
@@ -242,13 +251,14 @@ The prospective maneuver-conditioned refinement is complete:
 See `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md` and the first-stage
 bundle in `docs/runs/hugsim_first_stage_evidence_closure_001.md`.
 
-The next bounded work is no longer another internal curve:
+The next bounded work is no longer another same-scene window:
 
-1. stop tuning the current five-frame result;
-2. select a small number of high-value matched real–sim slices with the same
-   six-camera/pose/time contract;
-3. add an independent reference only for the task variable needed by the
-   intended claim and preregister the AD-response comparison and boundary;
+1. treat factual domain difference as `D_domain(context)`, not a universal
+   scalar threshold;
+2. seek one second source scene or independent actor/visibility reference with
+   the same six-camera/pose/time contract;
+3. preregister the task consequence and context-conditioned comparison before
+   interpreting another counterfactual response;
 4. require complete future actor states, ego footprint and valid-horizon
    coverage before reintroducing path-conflict or dynamic-risk measures;
 5. add a second heterogeneous receiver only if a key result is demonstrably
