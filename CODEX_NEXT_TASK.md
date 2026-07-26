@@ -331,20 +331,36 @@ experiment validates relative closure and clearance-increasing response, but
 not behavior near a safety-critical boundary. See
 `docs/runs/hugsim_cf_r_external_following_boundary_001.md`.
 
-The next bounded route is a boundary-derived experiment design, not another
-arbitrary actor-speed level:
+The preregistered boundary-derived pilot is now complete and overall
+`down-weighted`:
 
-1. preserve the existing far-boundary runs as the normal-response control;
-2. hold scene, receiver, actor asset, speed, horizon and loop contract fixed;
-3. solve actor initial longitudinal placement for three design points:
-   above-boundary, at/near-boundary and below-boundary under the same external
-   comparator;
-4. preregister the exact bumper-gap targets, complete-future gate and expected
-   partial order before rendering or running SparseDrive;
-5. run only after geometric feasibility confirms that the actor remains
-   visible, same-lane, ahead and inside reconstruction support;
-6. interpret the result as boundary-response coverage, not UN R157 compliance
-   or real-world safety.
+1. above/near/below common-reference endpoint gaps were exactly `4/2/1 m`,
+   so the selected external boundary was covered;
+2. all conditions selected SparseDrive mode `3`, while their 3 s forward
+   endpoints followed the expected strict order:
+   `below 1.369 < near 1.658 < above 3.253 m`;
+3. the complete clearance-gain metric was `rejected`: near/below almost stop,
+   and successive-point heading inference turns centimetre-scale final motion
+   into unstable `17°/24°` headings that invalidate the last same-lane gate;
+4. strict closed-loop completion was `rejected` in all three conditions:
+   requested steer rate reached `0.356–0.400 rad/s` versus HUGSIM's declared
+   `0.261799 rad/s` limit;
+5. no command was clipped and partial final states at unequal stopping times
+   were not compared.
+
+See `docs/runs/hugsim_cf_r_boundary_response_001.md`.
+
+Do not redesign the stimuli or add another receiver. The next bounded route is
+contract qualification:
+
+1. preregister a near-zero-speed planned-heading convention with an explicit
+   vehicle-motion basis; test it first on frozen synthetic controls, then rerun
+   the same complete-clearance audit;
+2. choose and preregister the target vehicle actuation contract: retain strict
+   rejection, use physically justified saturation, or qualify a
+   feasibility-aware trajectory tracker;
+3. only after both gates pass, rerun the unchanged `4/2/1 m` conditions with
+   two resets and compare condition effects with repeat sensitivity.
 
 Keep factual domain difference as `D_domain(context)`, not a universal scalar
 threshold. A matched real/source segment with independent 3D/trajectory
