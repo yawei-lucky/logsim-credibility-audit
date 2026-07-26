@@ -312,23 +312,45 @@ The narrow simulator-internal stimulus and response constructs are `accepted`.
 They are not physical TTC, calibrated risk or realistic response magnitude.
 See `docs/runs/hugsim_cf_r_future_conflict_001.md`.
 
-This closes the current internal CF-R risk-instrument branch. The next
-high-value route is external qualification rather than another actor-speed
-level:
+The first external-boundary comparison is now complete. UN R157 Amendment 3,
+clause 5.2.3.3, was used as an external M1/N1 same-lane minimum-following
+distance comparator, not as universal safety truth:
 
-1. keep factual domain difference as `D_domain(context)`, not a universal
-   scalar threshold;
-2. choose one minimal independent reference for either the actor/ego state
-   geometry or the target-AD response magnitude in a comparable following
-   context;
-3. prefer a matched real/source segment with independent 3D/trajectory
-   support; if unavailable, define a bounded external behavior range and mark
-   it statistical rather than direct equivalence;
-4. rerun the new complete-future instrument only after that reference defines
-   what numerical error or response range is acceptable;
-5. retain a second source scene as a later generality requirement, and add a
-   heterogeneous receiver only if a key conclusion is demonstrably
-   SparseDrive-dependent.
+1. all `120/120` common-path and SparseDrive planned samples were same-lane,
+   actor-ahead and inside the published speed range;
+2. maximum planned speed was `1.975 m/s`, so the low-speed comparator was
+   `2 m`;
+3. every sampled gap exceeded it, with minimum margin `6.789 m` and minimum
+   gap/boundary ratio `4.39×`;
+4. boundary coverage is `rejected`: no sample reached or crossed the external
+   comparator;
+5. the external audit is therefore `down-weighted`.
+
+This changes the interpretation, not the recorded CF-R result. The current
+experiment validates relative closure and clearance-increasing response, but
+not behavior near a safety-critical boundary. See
+`docs/runs/hugsim_cf_r_external_following_boundary_001.md`.
+
+The next bounded route is a boundary-derived experiment design, not another
+arbitrary actor-speed level:
+
+1. preserve the existing far-boundary runs as the normal-response control;
+2. hold scene, receiver, actor asset, speed, horizon and loop contract fixed;
+3. solve actor initial longitudinal placement for three design points:
+   above-boundary, at/near-boundary and below-boundary under the same external
+   comparator;
+4. preregister the exact bumper-gap targets, complete-future gate and expected
+   partial order before rendering or running SparseDrive;
+5. run only after geometric feasibility confirms that the actor remains
+   visible, same-lane, ahead and inside reconstruction support;
+6. interpret the result as boundary-response coverage, not UN R157 compliance
+   or real-world safety.
+
+Keep factual domain difference as `D_domain(context)`, not a universal scalar
+threshold. A matched real/source segment with independent 3D/trajectory
+support remains the stronger later upgrade for response realism. Retain a
+second source scene as a later generality requirement, and add a heterogeneous
+receiver only if a key conclusion is demonstrably SparseDrive-dependent.
 
 The exact source-pair gate and receiver qualification requirements continue to
 apply. A second receiver may test model dependence, but it cannot substitute
@@ -519,6 +541,9 @@ sweep only when the user asks for it or a phase is being finalized.
 - The qualified CF-R future-conflict tool uses independently recomputed
   time-aligned footprint clearance, but its box inputs still come from HUGSIM;
   internal acceptance does not qualify state truth or response realism.
+- The UN R157 comparison is an external engineering boundary, not a universal
+  risk threshold or a compliance result; current CF-R samples remain entirely
+  on its non-boundary side.
 - Common-renderer RGB/semantic/depth agreement is not real-sensor correctness.
 - A deterministic plan writer enables the simulator loop; it is not an AD
   agent.

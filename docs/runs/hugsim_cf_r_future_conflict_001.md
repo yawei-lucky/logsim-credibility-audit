@@ -120,6 +120,16 @@ This removes two earlier ambiguities:
 It still uses HUGSIM's declared ego and actor boxes. Independent geometry and
 real response magnitude remain external-validity requirements.
 
+## External-boundary follow-up
+
+The subsequent UN R157 M1/N1 following-distance comparison found that all
+`120/120` complete-future samples were applicable but remained above the
+external comparator. The closest margin was still `6.789 m`, or `4.39×` the
+boundary distance. Therefore “mitigation” here means a clearance-increasing
+response to stronger relative closure; it does not establish behavior at a
+safety-critical boundary. See
+`docs/runs/hugsim_cf_r_external_following_boundary_001.md`.
+
 ## Inspectable artifacts
 
 ```text
