@@ -94,6 +94,14 @@
 因缺少未来 actor 时间对齐而不能作为动态风险指标。详见
 `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md`。
 
+后续 CF-R complete-future audit 已把风险构念拆成两部分：在共同匀速 ego
+路径下检查干预造成的动态净距偏序，再检查 SparseDrive 自身规划相对该路径增加
+多少净距。只有前 `4/9` 个规划时刻具有完整 3 s actor 未来，后五个时刻被排除。
+该工具在一个场景的强弱冲突双重复中通过，说明它能测到 HUGSIM 声明状态内的
+刺激和响应方向；由于 ego/actor box 仍来自 HUGSIM，它不提供物理 TTC、现实
+状态真值或响应幅度资格。详见
+`docs/runs/hugsim_cf_r_future_conflict_001.md`。
+
 ## 5. 每条规律的最小描述格式
 
 进入具体实验前，每条被选择的规律只需回答八件事：

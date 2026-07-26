@@ -130,3 +130,10 @@ experiment needs either a leakage-bounded static control or another source
 scene/object with clean static–dynamic separation. If existing data cannot
 supply that control, retain this result as negative method evidence and defer
 the generality upgrade rather than forcing another same-scene curve.
+
+The follow-up qualification is now complete:
+`docs/runs/sparsedrive_static_control_qualification_001.md`. SparseDrive
+retained a rank-2 pedestrian output at nearly the same declared locus in both
+factual and static conditions, so the current static input is `rejected` as a
+selected-actor-absence control. Current paired assets do not provide a clean
+same-pose replacement.

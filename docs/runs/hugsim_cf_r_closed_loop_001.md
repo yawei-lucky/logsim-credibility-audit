@@ -113,3 +113,14 @@ counterfactual condition effect > closed-loop repeat sensitivity
 
 It does not show whether either response is the response a real vehicle should
 have produced.
+
+## Complete-future follow-up
+
+The later preregistered conflict-instrument audit matched every plan waypoint
+to an exact future actor box and excluded the incomplete `3.5–5.5 s` plan
+tail. At the shared `1.5 s` handoff, a common constant-speed ego path preserved
+the designed conflict order by `4.750 m`. SparseDrive's own plan added about
+`1.351 m` clearance in the strong condition and `0.696 m` in the weak
+condition, with the `0.655 m` response difference exceeding the
+`0.000004312 m` reset range. See
+`docs/runs/hugsim_cf_r_future_conflict_001.md`.

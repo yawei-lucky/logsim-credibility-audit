@@ -249,6 +249,18 @@ pixel support did not imply closer target-AD response. Static actor-like
 leakage remains a confound, so the result does not isolate renderer error. See
 `docs/runs/sparsedrive_natural_actor_bridge_001.md`.
 
+The static-control qualification is complete. SparseDrive retained a rank-2
+pedestrian output in both factual and static inputs near the declared actor
+locus. Across resets, the factual/static pedestrian centers differed by only
+about `0.0486 m` and their scores by `0.000509`, while the final plans differed
+by `0.0947 m` ADE. The current static input is therefore `rejected` as a
+selected-actor-absence control: the native dynamic render path was removed,
+but the target AD did not receive a clean target disappearance. The paired
+scene has only one native identity and no same-pose actor-free source
+background; other local scenes lack source RGB. This branch is unavailable
+with current assets rather than a target for frame selection or tuning. See
+`docs/runs/sparsedrive_static_control_qualification_001.md`.
+
 No externally qualified acceptance threshold exists, so this is not yet a
 factual equivalence pass or failure. The earlier CF-R scale is only a
 cross-experiment diagnostic: its timeline and intervention differ.
@@ -279,21 +291,43 @@ The prospective maneuver-conditioned refinement is complete:
 See `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md` and the first-stage
 bundle in `docs/runs/hugsim_first_stage_evidence_closure_001.md`.
 
-The next bounded work is no longer another same-scene overlap or receiver
-curve:
+The natural-source branch is now closed at its current evidence boundary.
 
-1. treat factual domain difference as `D_domain(context)`, not a universal
+The complete-future dynamic-conflict instrument is also complete. Only the
+first `4/9` SparseDrive plans in each CF-R closed-loop run had exact actor
+states for all six future waypoints; the `3.5–5.5 s` tail was excluded rather
+than filled. At the shared handoff:
+
+1. a held-common constant-speed ego path gave `8.789 m` strong-condition and
+   `13.539 m` weak-condition minimum footprint clearance, preserving the
+   designed conflict order by `4.750 m`;
+2. all four SparseDrive plans selected mode `3` and increased the corresponding
+   margin by about `1.351 m` in the strong condition and `0.696 m` in the weak
+   condition;
+3. the `0.655 m` mitigation-response difference exceeded the maximum
+   same-condition reset range of `0.000004312 m`;
+4. no complete-horizon plan reached zero footprint clearance.
+
+The narrow simulator-internal stimulus and response constructs are `accepted`.
+They are not physical TTC, calibrated risk or realistic response magnitude.
+See `docs/runs/hugsim_cf_r_future_conflict_001.md`.
+
+This closes the current internal CF-R risk-instrument branch. The next
+high-value route is external qualification rather than another actor-speed
+level:
+
+1. keep factual domain difference as `D_domain(context)`, not a universal
    scalar threshold;
-2. retain the natural-actor bridge as paired positive/negative evidence rather
-   than selecting nearby frames to reverse its result;
-3. before calling dynamic removal an actor-free counterfactual, require a
-   leakage-bounded control or a source object/scene with clean static–dynamic
-   separation; if current data cannot provide it, record the generality branch
-   as unavailable rather than forcing it;
-4. require complete future actor states, ego footprint and valid-horizon
-   coverage before reintroducing path-conflict or dynamic-risk measures;
-5. retain second-source-scene evidence as a later generality requirement, and
-   add a second heterogeneous receiver only if a key result is demonstrably
+2. choose one minimal independent reference for either the actor/ego state
+   geometry or the target-AD response magnitude in a comparable following
+   context;
+3. prefer a matched real/source segment with independent 3D/trajectory
+   support; if unavailable, define a bounded external behavior range and mark
+   it statistical rather than direct equivalence;
+4. rerun the new complete-future instrument only after that reference defines
+   what numerical error or response range is acceptable;
+5. retain a second source scene as a later generality requirement, and add a
+   heterogeneous receiver only if a key conclusion is demonstrably
    SparseDrive-dependent.
 
 The exact source-pair gate and receiver qualification requirements continue to
@@ -482,6 +516,9 @@ sweep only when the user asks for it or a phase is being finalized.
 - A `rejected` claim remains useful negative or diagnostic evidence.
 - HUGSIM TTC is an internal binary planned-path surrogate, not physical TTC.
 - Do not accept tail-window NC/TTC without complete future actor states.
+- The qualified CF-R future-conflict tool uses independently recomputed
+  time-aligned footprint clearance, but its box inputs still come from HUGSIM;
+  internal acceptance does not qualify state truth or response realism.
 - Common-renderer RGB/semantic/depth agreement is not real-sensor correctness.
 - A deterministic plan writer enables the simulator loop; it is not an AD
   agent.
