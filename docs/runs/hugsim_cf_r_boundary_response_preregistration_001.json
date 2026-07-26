@@ -1,0 +1,111 @@
+{
+  "audit_id": "hugsim_cf_r_boundary_response_001",
+  "date": "2026-07-26",
+  "status": "preregistered_not_run",
+  "purpose": "test whether the qualified complete-future instrument and one frozen target AD distinguish designed conditions above, at and below an external same-lane following-distance comparator",
+  "implementation_base_commit": "adf6ddd313328b6db684b8b9d81caaa7dee5f97f",
+  "external_comparator": {
+    "name": "UN Regulation No. 157 Amendment 3 M1/N1 low-speed minimum-following-distance comparator",
+    "clause": "5.2.3.3",
+    "role": "external engineering design boundary, not universal safety truth or a compliance test",
+    "planned_ego_speed_range_mps": [
+      0.0,
+      2.0
+    ],
+    "boundary_m": 2.0
+  },
+  "derivation": {
+    "frozen_source": "artifacts/sparsedrive_cf_r_future_conflict/analysis-run003/cf_r_future_conflict_audit.json",
+    "frozen_source_sha256": "8684173ad73916187bd9d4a2857e082ca71024099c39ffe79ead4ebe335acc7c",
+    "reference_condition": "existing slow actor at 0.5 m/s and initial forward centre 18.0 m",
+    "reference_common_path_gap_at_plan_1.5_horizon_3.0_m": 8.788595968365703,
+    "rule": "translate the actor's initial forward centre by target_gap - 8.788595968365703 m; keep actor asset, speed, yaw, lateral position, ego source trajectory and all receiver/loop settings fixed"
+  },
+  "conditions": {
+    "above": {
+      "target_common_path_gap_m": 4.0,
+      "target_margin_m": 2.0,
+      "actor_initial_forward_m": 13.211404031634297,
+      "config": "configs/hugsim/scenarios/scene-0383-boundary-above-001.yaml",
+      "config_sha256": "d27395d99a9bd13c88dfabaf59c049e8e794c1d8489fb4762057be57331e55b1",
+      "source_output": "artifacts/sparsedrive_cf_r_boundary/source-above-run001",
+      "receiver_label": "above",
+      "closed_loop_output": "artifacts/sparsedrive_cf_r_boundary/above-run001"
+    },
+    "near": {
+      "target_common_path_gap_m": 2.0,
+      "target_margin_m": 0.0,
+      "actor_initial_forward_m": 11.211404031634297,
+      "config": "configs/hugsim/scenarios/scene-0383-boundary-near-001.yaml",
+      "config_sha256": "543ebb71022ff2f57ab8ea74c0e6d569f1137a431e87ba756bea739ea2083f79",
+      "source_output": "artifacts/sparsedrive_cf_r_boundary/source-near-run001",
+      "receiver_label": "near",
+      "closed_loop_output": "artifacts/sparsedrive_cf_r_boundary/near-run001"
+    },
+    "below": {
+      "target_common_path_gap_m": 1.0,
+      "target_margin_m": -1.0,
+      "actor_initial_forward_m": 10.211404031634297,
+      "config": "configs/hugsim/scenarios/scene-0383-boundary-below-001.yaml",
+      "config_sha256": "ebd9f4c06ce7cec5a4d02dadc5a26bca7d4f45ab22e85e3338bbb9fa7a22b3d6",
+      "source_output": "artifacts/sparsedrive_cf_r_boundary/source-below-run001",
+      "receiver_label": "below",
+      "closed_loop_output": "artifacts/sparsedrive_cf_r_boundary/below-run001"
+    }
+  },
+  "held_fixed": [
+    "scene-0383 reconstruction, camera rig and renderer checkpoint",
+    "lead actor asset 2024_07_05_15_57_10, ConstantPlanner, 0.5 m/s speed, yaw and lateral position",
+    "recorded ego plan-writer history through the 1.5 s handoff",
+    "SparseDrive Stage2 source, checkpoint, anchors, camera order, calibration, straight command and temporal reset",
+    "2 Hz planning cadence, two 0.25 s HUGSIM steps per control and 4.5 s live horizon",
+    "complete-future exclusion of every plan without exact actor states for all six future waypoints"
+  ],
+  "runtime_provenance": {
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "sparsedrive_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+    "sparsedrive_checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+    "run_hugsim_case_sha256": "c3d6756d1700ac9cbd835460da45aece159af0642e5eb4c85f310848986ddb89",
+    "run_sparsedrive_receiver_sha256": "6cc984ebd34f15c0a6e6d5f6e3d42d4515d980cd159b8ff01243c87ae4a3b32a"
+  },
+  "pre_run_feasibility_gate": {
+    "state_geometry": "under the translated frozen reference states, actor remains ahead with positive longitudinal gap and positive lateral footprint overlap through the common 3 s future",
+    "camera_geometry": "at source indices 0, 2, 4 and 6 the CAM_FRONT projected actor centre is inside the image and at least four projected 3D-box corners have positive depth and lie inside the image",
+    "known_limit": "the near and below actors approach the lower image edge during early warm-up; partial box cropping is allowed but must be reported",
+    "decision": "all three conditions must pass before target-AD execution"
+  },
+  "measurement_contract": {
+    "common_reference": "from the exact t=1.5 s handoff ego state, propagate the common ego centre at the measured handoff speed and heading for six 0.5 s steps; match each step to the exact future actor box",
+    "target_ad_plan": "use SparseDrive's native selected six-waypoint plan and exact future actor boxes at every plan timestamp with a complete 3 s future",
+    "gap": "longitudinal bumper-to-bumper footprint gap along the planned ego heading, gated by actor-ahead and positive lateral footprint overlap",
+    "margin": "gap minus the 2 m low-speed external comparator",
+    "response_gain": "target-AD minimum gap minus common-reference minimum gap at the shared t=1.5 s handoff",
+    "direct_outcomes": "final ego longitudinal progress, final ego speed and final oriented-footprint clearance",
+    "tail_rule": "no repeated actor box, padding or interpolation is allowed"
+  },
+  "preregistered_relations": {
+    "stimulus": "at the common-path t=1.5 s plus 3.0 s endpoint: below gap < near gap < above gap, with below margin < 0, near margin within absolute 0.05 m of 0, and above margin > 0",
+    "planned_response": "at the shared handoff, clearance response gain should satisfy below >= near >= above; ties are reported rather than upgraded",
+    "direct_outcome": "final longitudinal progress and final speed should satisfy below <= near <= above; planning-mode changes are reported and do not silently redefine the longitudinal comparison",
+    "coverage": "applicable common-reference samples must include both positive and non-positive external margins"
+  },
+  "decision_rules": {
+    "stimulus_accepted": "all input and feasibility gates pass, the exact target gaps are within 0.05 m, and both sides of the external comparator are covered",
+    "target_response_accepted": "stimulus is accepted and both preregistered target-AD response orders hold strictly or with equality only where explicitly allowed",
+    "target_response_down_weighted": "stimulus is accepted and aggregate response direction is preserved, but an order ties/reverses, a mode switch changes comparability, or only one reset is available",
+    "target_response_rejected": "stimulus fails, the aggregate target-AD direction reverses, or a weak-condition-only adverse outcome occurs",
+    "external_validity": "always down-weighted in this pilot because no matched real response or independently qualified response-magnitude range is available"
+  },
+  "sample_size": {
+    "initial_pilot": "one independent reset per above/near/below condition",
+    "replication_upgrade": "a positive pilot requires a second reset per condition before condition effects are compared with repeat sensitivity"
+  },
+  "strongest_allowed_claim": "within this one scene, fixed target AD and designed initial-position range, the qualified complete-future instrument and direct closed-loop outcomes do or do not distinguish conditions on both sides of one external engineering comparator",
+  "forbidden_claims": [
+    "the 2 m boundary is universally safe or unsafe",
+    "the response magnitude matches a real vehicle",
+    "SparseDrive or HUGSIM complies with UN R157",
+    "the experiment proves collision probability, physical TTC or general simulator credibility",
+    "a one-reset pilot establishes repeat-robust boundary response"
+  ]
+}
