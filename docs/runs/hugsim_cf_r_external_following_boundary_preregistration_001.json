@@ -1,0 +1,84 @@
+{
+  "audit_id": "hugsim_cf_r_external_following_boundary_001",
+  "date": "2026-07-26",
+  "status": "retrospective_fixed_run_external_formula_frozen_before_full_calculation",
+  "purpose": "test whether the existing CF-R complete-future samples reach an externally specified same-lane minimum-following-distance boundary",
+  "input": {
+    "path": "artifacts/sparsedrive_cf_r_future_conflict/analysis-run003/cf_r_future_conflict_audit.json",
+    "sha256": "8684173ad73916187bd9d4a2857e082ca71024099c39ffe79ead4ebe335acc7c"
+  },
+  "external_reference": {
+    "name": "UN Regulation No. 157, minimum following distance for M1/N1 ALKS",
+    "document": "E/ECE/TRANS/505/Rev.3/Add.156/Amend.3",
+    "clause": "5.2.3.3",
+    "url": "https://unece.org/sites/default/files/2023-02/R157am3e.pdf",
+    "formula": "d_min = v_ALKS * t_front; for speed values between table rows use linear interpolation; below 2 m/s d_min is never less than 2 m for M1/N1",
+    "speed_mps": [
+      2.0,
+      2.78,
+      5.56,
+      8.33,
+      11.11,
+      13.89,
+      16.67
+    ],
+    "minimum_time_gap_s": [
+      1.0,
+      1.1,
+      1.2,
+      1.3,
+      1.4,
+      1.5,
+      1.6
+    ],
+    "minimum_distance_m": [
+      2.0,
+      3.1,
+      6.7,
+      10.8,
+      15.6,
+      20.8,
+      26.7
+    ],
+    "role": "external regulatory engineering comparator, not universal physical truth, collision probability or a complete compliance test"
+  },
+  "samples": {
+    "common_reference": "all six horizons at the shared t=1.5 s boundary in each of four runs",
+    "target_ad_plan": "all six horizons for each of the four complete-future plan timestamps in each of four runs",
+    "excluded": "the already rejected 3.5–5.5 s tail and every state not present in the fixed complete-future audit"
+  },
+  "measurement_contract": {
+    "planned_ego_speed": "Euclidean displacement of consecutive planned ego-box centres divided by 0.5 s, beginning at the plan-time ego centre",
+    "longitudinal_bumper_gap": "minimum lead-actor footprint projection minus maximum ego-footprint projection along each planned ego heading",
+    "same_lane_gate": "ego and actor footprint projection intervals overlap on the planned ego lateral axis and actor remains longitudinally ahead",
+    "heading_gate": "absolute wrapped ego-actor yaw difference is reported; no universal rejection tolerance is introduced post hoc",
+    "regulatory_margin": "longitudinal bumper gap minus UN R157 minimum following distance at the planned ego speed",
+    "coverage": "number of applicable points, positive-margin points, non-positive-margin points and minimum observed margin",
+    "no_substitution": "oriented Euclidean clearance is retained as a cross-check but is not substituted for the regulation's longitudinal distance"
+  },
+  "claims_and_decisions": {
+    "formula_applicability": {
+      "accepted": "every checked point is same-lane, actor-ahead and within the published speed table range",
+      "down-weighted": "a strict subset is applicable and is reported separately",
+      "rejected": "no checked point satisfies the applicability gate"
+    },
+    "minimum_distance_relation": {
+      "accepted": "every applicable sampled point has a strictly positive regulatory margin",
+      "down-weighted": "at least one point is non-positive but no complete boundary transition can be established",
+      "rejected": "the specific claim that every sampled point exceeds the comparator is false"
+    },
+    "boundary_coverage": {
+      "accepted": "the fixed samples include at least one strictly positive and at least one non-positive margin",
+      "rejected": "all applicable samples lie on only one side of the boundary"
+    },
+    "overall": "accepted only if the comparator is applicable and the fixed experiment spans its boundary; down-weighted if the comparator is applicable but the experiment remains one-sided; rejected if the comparator is inapplicable"
+  },
+  "strongest_allowed_claim": "for the sampled same-lane planned states, the current CF-R gaps do or do not exceed this external M1/N1 ALKS minimum-following-distance comparator, and the experiment does or does not cover both sides of that boundary",
+  "forbidden_claims": [
+    "the scenario or AD is safe in reality",
+    "SparseDrive or HUGSIM complies with UN R157",
+    "the UN R157 following distance is a universal criticality threshold",
+    "the observed response magnitude is thereby realistic",
+    "general HUGSIM or SparseDrive credibility"
+  ]
+}
