@@ -1,0 +1,135 @@
+{
+  "audit_id": "hugsim_cf_r_future_conflict_001",
+  "date": "2026-07-26",
+  "status": "retrospective_fixed_runs_prospective_formulas_not_analyzed",
+  "purpose": "qualify a complete-future, maneuver-conditioned footprint-conflict instrument on the already completed replicated CF-R closed-loop runs",
+  "evidence_design": {
+    "type": "retrospective fixed-data audit with formulas and decisions frozen before their values are calculated",
+    "independence_boundary": "this is not a fresh confirmatory experiment because the underlying runs and prior endpoint summaries have already been inspected; the future-clearance values and mitigation-gain decisions have not been calculated",
+    "simulator_dependency": "ego and actor boxes come from HUGSIM state logs; clearance, temporal matching and decisions are recomputed outside the HUGSIM scorer",
+    "receiver_role": "SparseDrive is the target AD whose plan response is measured, not an absolute risk oracle"
+  },
+  "inputs": {
+    "slow": [
+      {
+        "run": "artifacts/sparsedrive_cf_r_closed_loop/slow-run001",
+        "audit_summary_sha256": "2b721936f0a4d9f3fe0bbae0c401ff11011bc066d070a14604df9396d2aa5107",
+        "sparsedrive_live_summary_sha256": "d665998fcb61dd4fa8a702e4561d1c4b897647ab317bb6453aeecd7090f3cf6c"
+      },
+      {
+        "run": "artifacts/sparsedrive_cf_r_closed_loop/slow-run002",
+        "audit_summary_sha256": "07525bb7b5f2acccc09ef45321ab09d0f74529d521437a18f4319adb8e4ec36b",
+        "sparsedrive_live_summary_sha256": "4f0e9146bcee654ca2d211320a03d25ea851e10a7dcf746270f1f1e61ef3945d"
+      }
+    ],
+    "fast": [
+      {
+        "run": "artifacts/sparsedrive_cf_r_closed_loop/fast-run001",
+        "audit_summary_sha256": "a68e86ae3f8a2072df7776085d8289eeb97ee823349a4efd68d13787065da99d",
+        "sparsedrive_live_summary_sha256": "8d27e0e4446d14a284989cbd3ce8eeb8a6c6bcfa2f1133848e3fed7594bf146d"
+      },
+      {
+        "run": "artifacts/sparsedrive_cf_r_closed_loop/fast-run002",
+        "audit_summary_sha256": "f1daff56dfcfea23e48dd41f05e31924e2775092d7c80614bc47cbbdb38fb0fd",
+        "sparsedrive_live_summary_sha256": "cd0637284196d03c9ef918b17d93bc1930d82e5258b4e088ec39b9e4ac8bc0ab"
+      }
+    ]
+  },
+  "validity_gate": {
+    "receiver_plan_timestamps_s": [
+      1.5,
+      2.0,
+      2.5,
+      3.0
+    ],
+    "excluded_incomplete_plan_timestamps_s": [
+      3.5,
+      4.0,
+      4.5,
+      5.0,
+      5.5
+    ],
+    "waypoint_horizons_s": [
+      0.5,
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0
+    ],
+    "requirements": [
+      "each included receiver plan has exactly six finite [right, forward] waypoints at 0.5 s spacing",
+      "one ego box and exactly one actor box exist at the plan timestamp",
+      "one actor box exists at every exact plan-time plus waypoint-horizon timestamp",
+      "duplicate logged states at the same timestamp agree numerically",
+      "all four runs share the same timestamp grid and each input hash matches",
+      "the t=1.5 s ego state and constant-speed reference path agree across conditions and resets",
+      "no state is repeated, interpolated, extrapolated or tail-filled"
+    ],
+    "failure_rule": "if any requirement fails, the affected construct is rejected and no future-conflict value from an incomplete plan is used"
+  },
+  "coordinate_and_footprint_contract": {
+    "state_box": "[world_x, world_y, world_z, width, length, height, yaw]",
+    "plan_axes": "SparseDrive/HUGSIM plan-pipe [right, forward] metres relative to the plan-time ego state",
+    "world_mapping": "world_xy = ego_center_xy + [cos(yaw), sin(yaw)] * plan_forward + [sin(yaw), -cos(yaw)] * plan_right",
+    "future_ego_yaw": "heading of each mapped waypoint segment, beginning with the segment from the plan-time origin; carry the preceding heading only for an exactly zero-length segment",
+    "ego_dimensions": "plan-time HUGSIM ego-box width and length, held fixed across the six predicted waypoints",
+    "actor_dimensions_and_pose": "exact HUGSIM actor box at the matching future timestamp",
+    "clearance": "Euclidean distance in metres between oriented two-dimensional ego and actor footprint polygons; zero means touching or overlap",
+    "scope_note": "this audits the same plan-pipe vehicle-centre convention that drove the loop; it does not independently validate HUGSIM box truth or SparseDrive vehicle-shape semantics"
+  },
+  "constructs": {
+    "common_path_stimulus_conflict": {
+      "evaluation_time_s": 1.5,
+      "reference_path": "straight constant-heading continuation at the common handoff HUGSIM ego speed, sampled at the six waypoint horizons",
+      "metrics": [
+        "minimum future footprint clearance in metres",
+        "earliest time of minimum clearance in seconds",
+        "zero-clearance path-conflict indicator"
+      ],
+      "expected_relation": "slow minimum clearance < fast minimum clearance in each paired reset",
+      "interpretation": "tests whether the designed actor-speed intervention has the expected dynamic geometric conflict order while the ego path is held common; it is not an AD-response measure"
+    },
+    "target_ad_mitigation": {
+      "evaluation_time_s": 1.5,
+      "own_plan": "the six native SparseDrive final-planning waypoints from that run",
+      "mitigation_gain_formula": "own-plan minimum future clearance minus common-reference-path minimum future clearance",
+      "same_maneuver_gate": "the selected native planning mode at t=1.5 s must be the same across all conditions and resets",
+      "expected_relations": [
+        "mitigation gain > 0 in every run",
+        "slow mitigation gain > fast mitigation gain in each paired reset"
+      ],
+      "interpretation": "tests whether the target AD plan increases residual geometric margin relative to the same non-reactive continuation and reacts more strongly to the stronger conflict"
+    },
+    "complete_horizon_diagnostics": {
+      "evaluation_times_s": [
+        1.5,
+        2.0,
+        2.5,
+        3.0
+      ],
+      "reported_only": [
+        "own-plan minimum future clearance",
+        "earliest time of minimum clearance",
+        "zero-clearance path-conflict indicator"
+      ],
+      "decision_boundary": "after t=1.5 s the closed-loop ego states have diverged, so cross-condition clearance order is descriptive and is not used as a causal acceptance criterion"
+    }
+  },
+  "replication_and_decisions": {
+    "pairing": "slow-run001 versus fast-run001 and slow-run002 versus fast-run002",
+    "repeat_sensitivity": "the minimum paired condition effect must exceed the maximum same-condition range across the two resets",
+    "accepted": "the complete-future gate passes; the common-path conflict order passes both pairings and exceeds repeat sensitivity; the same-maneuver gate passes; every mitigation gain is positive; and the stronger-conflict mitigation gain exceeds the weaker-conflict gain in both pairings and beyond repeat sensitivity",
+    "down-weighted": "the complete-future gate and common-path conflict order pass, but the mitigation construct is tied, repeat-sensitive, or maneuver-confounded without an opposite safety response",
+    "rejected": "the complete-future gate fails, the common-path conflict order ties or reverses in any pairing, or the SparseDrive own plan reduces future clearance relative to the common path in any run",
+    "zero_clearance_rule": "absence of a zero-clearance event is not a failure; the primary construct is continuous footprint clearance"
+  },
+  "strongest_allowed_claim": "within the valid 3 s prefix of this one HUGSIM scene and two actor-speed conditions, the independently recomputed dynamic footprint instrument does or does not preserve the designed conflict order under a common ego path, and the frozen SparseDrive plan does or does not add a directionally stronger clearance response beyond reset sensitivity",
+  "forbidden_claims": [
+    "physical TTC, collision probability or calibrated risk",
+    "the response magnitude is realistic",
+    "HUGSIM boxes or dynamics match reality",
+    "SparseDrive is a correct or safe driving policy",
+    "general HUGSIM, SparseDrive or closed-loop safety credibility"
+  ]
+}
