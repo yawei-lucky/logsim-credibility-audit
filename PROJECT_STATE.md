@@ -1,693 +1,163 @@
-# Research Commander — LogSim Credibility Audit 状态总结
+# LogSim Credibility Audit — Current State Index
 
-## 1. 项目定位
+Last updated: 2026-08-25
 
-本项目研究 **日志驱动型反事实闭环仿真可信验证**。
+## 1. Project question
 
-研究对象不是普通 open-loop planning benchmark，也不是 motion-only simulation 或纯 CARLA 合成仿真，而是：
+This project develops a credibility-validation method for log-driven,
+counterfactual closed-loop simulators used to test automated driving systems.
 
-真实驾驶日志  
-→ 可反事实修改  
-→ 传感器级观测生成  
-→ sensor-input E2E agent / 自动驾驶模型  
-→ 输出轨迹或控制  
-→ 闭环状态更新  
-→ 连续 rollout  
-→ 评估自动驾驶系统表现
+The durable questions are:
 
-核心问题不是“仿真器能不能生成好看的图像”，而是：
+> Does a simulator provide task-relevant information that is consistent enough
+> with reality to produce credible perception, decision, planning, control, and
+> closed-loop outcomes?
 
-> 这些仿真器生成的闭环测试结果是否可信，是否足以支撑端到端自动驾驶模型的评估结论？
+> Does the same fixed AD receiver form sufficiently similar task relations and
+> behavior on real input and corresponding simulated input?
 
-长期指导方针：
+Credibility is argued through an evidence network, not visual realism, a
+simulator's privileged semantic/depth output, one AD trajectory, or one global
+score. Future synthesis is organized around log reproduction, sensor
+consistency, task-level consistency, and closed-loop outcome credibility; these
+are not current HUGSIM scoring stages.
 
-> HUGSIM 提供给智驾系统的任务相关信息，是否与现实一致到足以产生可信的感知、决策和闭环结果？
+## 2. Current experimental carrier
 
-> 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
+HUGSIM is the first experimental carrier, not the final research target. It is
+a real-log reconstruction-driven neural simulator that renders six-camera
+observations, supports designed counterfactual actors, and updates an ego state
+in a closed loop.
 
-接收方可以是 AD 模型/系统，也可以是 human-in-the-loop 驾驶员。两类证据
-互补，但不能无条件互相替代；验证应匹配仿真器预期服务的接收方和测试用途。
+SparseDrive-S Stage2 is the current target AD receiver. It is the system under
+test, not an independent truth source. Sparse4Dv3 remains a limited supporting
+receiver for vehicle-presence and ordinal-relation probes.
 
-本项目中的“日志驱动”采用广义定义：
-
-> 以真实道路采集序列为基础，重建或构造可交互环境，并在其上生成反事实闭环过程；不要求简单回放原始日志。
-
-据此，HUGSIM 是基于真实驾驶数据序列重建、支持反事实编辑的闭环神经仿真器，属于当前研究范围。
-
----
-
-## 2. 当前阶段定位
-
-当前第一阶段审计对象是：
-
-**HUGSIM 这一类真实日志重建型闭环仿真器**
-
-HUGSIM 是当前实验载体，不是本项目的最终目标。
-
-当前阶段已经用 HUGSIM 搭建并验证了最小闭环证据链，正在用严格配对的反事实实验发展闭环仿真可信验证方法。
-
-当前 HUGSIM 实验的定位是：
-
-> HUGSIM relation-level counterfactual credibility audit
-
-也就是说，当前实验不是为了证明 HUGSIM 本身可信，也不是为了复现完整 benchmark，而是检验风险事件是否能被传感器、状态、几何、时间和负对照共同归因：
+Current narrow setup:
 
 ```text
-scenario / scene source
-→ sensor-level observation
-→ planner output
-→ control action
-→ ego / actor state update
-→ closed-loop rollout
-→ metric event
-→ paired counterfactual / negative control
-→ credibility judgment basis
+scene-0383 reconstruction
+→ six HUGSIM RGB cameras
+→ fixed SparseDrive
+→ corrected plan/controller coordinate boundary
+→ explicit actuation contract
+→ HUGSIM kinematic state update
 ```
 
-OmniDreams / Cosmos 暂时后移，作为未来生成式世界模型闭环仿真的对照与扩展方向。
-
----
-
-## 3. 当前工作流程
-
-当前采用四步测试与证据处理路线：
-
-### Step 1 — Source Availability Gate
-
-先判断论文、代码、模型、数据、runtime、评估脚本是否公开可查。
-
-### Step 2 — Closed-loop Evidence Completeness
-
-判断一次闭环仿真是否产生了完整证据链，包括 observation、planner output、action、ego / actor state update、metrics 和输出文件。
-
-### Step 3 — Segment-level Evidence Judgment
-
-对单个 closed-loop segment 做 evidence qualification：
-
-- accepted；
-- down-weighted；
-- rejected。
-
-这里的 accepted / down-weighted / rejected 是当前阶段的证据处理方式，可用于场景筛选和证据质量管理；它不是项目总目标，也不是最终数值指标。
-
-判定以具体主张为单位。`rejected` 不等于实验无效：原行为主张可以被拒绝，
-同时由同一实验支持一个 `accepted` 的仿真器或指标诊断发现。每条拒绝主张
-必须记录是否实际测试、拒绝依据和证据引用；未测试与超范围不构成能力失败。
-
-### Step 4 — Future Credibility Metric
-
-在积累多个 run 和多个 segment 后，再定义量化的 simulator credibility metric。
-
-当前不急于提出最终数值指标。先保证证据链和判定规则成立。
-
-长期的可信评价指标计划沿四层证据链研究：
-
-```text
-日志复现
-→ 传感器一致性
-→ 任务级一致性
-→ 闭环结果可信性
-```
-
-这四层是未来指标的证据组织思路，不是当前项目阶段，也不用于现在给 HUGSIM 逐层打分。当前工作仍是测试、对照、证据积累和因果归因，尚未进入指标设计。
-
----
-
-## 4. 主线研究问题
-
-### RQ1
-
-HUGSIM 如何证明自己的仿真结果可信？
-
-### RQ2
-
-HUGSIM 的指标是在验证仿真器可信性，还是只是在验证自动驾驶模型表现？
-
-### RQ3
-
-HUGSIM 是否能发现低可信反事实样本、3DGS 重建 artifact、遮挡错误、深度错误、几何关系不一致、时序关系不一致？
-
-### RQ4
-
-NeuroNCAP / UniSim / AdvSim / OmniDreams 的自证指标，能否迁移到 HUGSIM 上？
-
-### RQ5
-
-是否仍然需要一个 credibility audit layer，用来判断闭环测试证据应被 accepted、down-weighted、rejected？
-
----
-
-## 5. 当前理论判断
-
-真实日志驱动反事实闭环仿真是必要方向，但它不是天然可信。
-
-端到端自动驾驶 / sensor-input E2E agent 的趋势使评估问题从 motion-level planning 推进到 sensor-to-action closed-loop evaluation。
-
-3DGS-based reconstruction simulator 比 NeRF-based simulator 更接近当前实时可运行路线，但实时渲染和视觉逼真度不等于可信闭环评估。
-
-因此，本项目的关键判断是：
-
-> sensor-level closed-loop evaluation 变得不可回避；  
-> counterfactual simulation 使 credibility audit 变得不可回避；  
-> 3DGS / NeRF / world model 都必须接受 source availability 与 relation-level consistency 审计。
-
-下一阶段新增的战略判断是：并非每个反事实场景都必须从匹配真实日志起步。
-场景级 factual anchor 是直接 real-sim 等效性的重要证据路径，但人工设计的危险、
-罕见或不存在精确现实对应物的反事实可以独立推进。不可取消的是框架级外部效度：
-用于判断反事实的指标、接收方、物理/因果约束和不确定性范围，必须在某处通过
-独立现实证据、受控测量、可检验规律或已知真实数据行为获得资格，不能由 HUGSIM
-输出自我证明。
-
-因此验证采用两级结构：先验证“尺子”是否有资格，再用它评价反事实；最终通过
-因果约束、多接收方且考虑依赖关系的交叉验证、不确定性敏感性和下游结果稳定性，
-形成限定任务/ODD/接收方/干预范围的可信主张。四层可信证据链仍保留，但内部是
-交叉证据网络，而不是从上一层到下一层的单线自证。
-
----
-
-## 6. 当前已完成事项
-
-已完成：
-
-- HUGSIM Source Availability Gate；
-- HUGSIM pipeline / closed-loop mechanism 第一轮抽取；
-- HUGSIM smoke-test plan；
-- HUGSIM accepted / down-weighted / rejected 证据规则；
-- 本地预检脚本 `scripts/check_hugsim_smoke_prereqs.py`；
-- deterministic plan-pipe writer `scripts/hugsim_plan_pipe_writer.py`；
-- 第一份 HUGSIM run report；
-- 第一份 run report 的 Research Commander review；
-- HUGSIM CUDA / pixi 环境问题定位与 runbook；
-- HUGSIM 已 clone 到 `/home/yawei/HUGSIM`；
-- Pixi 环境已使用 PyTorch 2.4.1+cu121 / CUDA 12.1 安装成功；
-- 在 GPU 可见的非沙箱环境中验证了 CUDA tensor，以及 `gsplat`、`tinycudann`、`pytorch3d`、`hugsim_env` 导入；
-- 已确认首选最小场景 `scene-0383.zip` 可单独下载，约 628 MB；
-- 已确认 `scene-0383-easy-00.yaml` 的 `plan_list` 为空，第一轮无需下载完整 3DRealCar 车辆库；
-- 已下载并校验 `scene-0383.zip`，SHA-256 为 `cbd99a927316f7f795904c59350b7fced4b8f32a14506891720962e3e30e7f15`；
-- 已创建本地 smoke-test base config 与 bounded debug runner；
-- 已跑通 3 个 deterministic closed-loop steps，覆盖 observation FIFO、plan FIFO、trajectory-to-control、ego update、连续渲染和评分；
-- 已生成 `data.pkl`、`video.mp4`、`infos.pkl`、`eval.json`、`ground.ply`、`scene.ply`、完整 observation pickle 与 audit summary；
-- 已生成第一条真实 audit record，判定为 `down-weighted`。
-- 已发现 released `traj2control` 的坐标/航向不一致会把直行计划解释成约 90° 航向目标；
-- 已实现不修改 HUGSIM 源码的 corrected control adapter，并增加 4 个回归测试；
-- 已完成无车、横向0.0米静止车辆、横向3.5米静止车辆三组严格配对的5秒/20步实验；
-- 三组 ego state 与 control action 最大差异均为 0；
-- 无车和横向3.5米组 NC/TTC/PDMS 均为1.0；
-- 已修复评分轨迹与评分帧前后时刻错位，并增加回归测试；
-- 对齐重跑后，横向0.0米组 TTC 从2.75秒失败、NC 从3.75秒失败，PDMS 为0.557；
-- 已完成 RGB / semantic / depth 像素级反事实比较和时序风险可视化；
-- 横向0.0米车辆最终语义掩码有97.4%被 RGB 差异支持、100%被深度差异支持；
-- 第三方复核后完整片段调整为 `down-weighted`，内部几何和严格配对子结论保留为 `accepted`；
-- 已明确未来可信评价指标计划采用四层证据链，但当前尚未进入指标设计或逐层评分阶段。
-- 已按用户明确调整完成 6 秒/24 步多车强干预实验：一辆前方慢车和一辆右侧斜向切入车；
-- 多车组与无车组 ego state、action 最大差异均为 0；
-- 该 6 秒 run 的 raw 输出显示 TTC 从 4.75 秒、NC 从 5.75 秒失败；
-- 多车组 PDMS 为 0.798、HDScore 为 0.148，无车组分别为 1.0 和 0.185；
-- 已生成多车前视三联视频、五时刻跨模态图、俯视轨迹和风险时间线；
-- 独立证据审查发现 6 秒多车 run 的 TTC/NC 失败全部位于缺少 2.5 秒
-  未来 actor 历史的尾窗，评分器用末帧 actor box 填充未来；
-- 将完全相同的 state/action/plan 前缀延长到 9 秒后，旧 TTC/NC 失败全部
-  消失，旧内部风险时序结论已改为 `rejected`；
-- 已完成无车、仅前车、仅远距切入、前车+远距切入四组 9 秒
-  actor-removal 实验，完整时域窗口内四组 NC/TTC/PDMS 均为 1；
-- 已完成一次执行前固定参数、无事后调参的近距汇入：3.917 秒过中心线，
-  5.5 秒二维有向 footprint 净距 0.730 米，无实际碰撞；
-- 近距组在完整未来窗口内 NC=1、TTC=0.115、PDMS=0.368，23 个 TTC
-  失败全部命中 actor0 且无尾部填充；
-- 已增加 fail-closed 配对/时域分析、writer 同值 `Done` 握手、严格
-  runner 成功状态、claim/diagnostic 双层语义校验、AD readiness 与
-  matched-pose manifest，并累计 58 个回归测试；
-- 已由实验设计、证据和可复现性三个 task-local 独立 Codex reviewer
-  角色复核 rejected 语义，明确区分被拒绝的主张与被接受的系统/指标
-  诊断发现；这不是外部人类第三方评审记录；
-- 运行级技术问题继续保留用于复现和结果有效性检查，但不作为理论框架的
-  核心研究发现；HUGSIM TTC 的构念边界仍需在后续指标解释中明确。
-- 已建立真实日志 Source Anchor Gate：`scene-0383` 的发布元数据包含180个
-  时刻、六相机1080条标定/位姿记录和36个按当前 reader 规则推导的
-  测试候选，但本地缺少全部真实 RGB、原始 nuScenes token 与 ASAP
-  `interp_12Hz_trainval` 映射；
-- 已确认现有闭环相机模板与重建源相机并非严格匹配，不能将当前 rollout
-  当作 matched-pose real-sim 对照；
-- 已形成 matched receiver 计划；当前用户明确先聚焦 AD，因此 human-in-the-
-  loop 作为后续补充证据暂缓；
-- 已新增 AD receiver readiness inventory，清点本机全部 HUGSIM scene 资产：
-  该次清点时只有 `scene-0383`，真实 RGB 为 0/1080，source identity 不完整，
-  因此尚不能建立同一 AD receiver 的 real-vs-sim 输入对比。后续增加的两个
-  重建场景包同样没有补齐真实 RGB / source identity。
-- 已新增 matched-pose manifest：为 `scene-0383` 第一 reader-derived test
-  candidate `frame00004` / `t=0.333595s` 固定六相机 exact metadata K、
-  `camtoworld`、resolution、native dynamic ID 和 camera-only receiver
-  contract；由于真实 RGB 与 source identity 缺失，gate 仍为
-  `blocked_source_anchor`。
-- 已新增 AD receiver proxy stress test：生成远距同车道、近距同车道、相邻车道
-  和多车合流四组新的 HUGSIM rollout，并用冻结的
-  `simulator_internal_task_receiver_proxy_v0` 分析 CAM_FRONT 语义/深度中的
-  车辆面积、中心路径占用、深度和 hazard proxy；
-- 三个代理接收方因果方向检查为 `accepted`：近距同车道强于远距同车道、
-  同车道强于相邻车道、多车合流强于远距控制；
-- 该结果整体为 `down-weighted`，因为它不是真实 AD agent、不是 real-sim
-  matched comparison，也不证明全局 HUGSIM 可信性；
-- 一个过近同车道边界样本在 2.5 秒 runtime collision 后终止，保留为
-  负面/边界证据，不纳入等长代理接收方主对比。
-- 已新增 frozen camera detector stress test：使用 torchvision
-  Faster R-CNN MobileNetV3 COCO 权重，只输入 CAM_FRONT RGB，对同五组 HUGSIM
-  rollout 输出 boxes、confidence、简单跟踪连续性和 image-plane risk ranking；
-- 检测器同样支持三个方向检查：近距同车道强于远距同车道、同车道近车强于
-  相邻车道近车、多车合流强于远距控制；
-- 同时发现 no-actor baseline 在 4/37 帧仍有背景/边缘道路对象检测，因此
-  真实接收方看到的“无注入 actor”并不是干净的零风险输入；
-- 该结果整体仍为 `down-weighted`，因为它是通用 COCO 单前视检测器，不是
-  完整 AD stack、规划/控制、real-sim matched comparison 或全局 HUGSIM
-  可信性证据。
-- 已新增 cross-receiver task-response agreement：对同五组 rollout 对齐
-  semantic/depth proxy 与 RGB detector 的中心路径任务信号；
-- 两个接收方在近距/远距、同车道/相邻车道、多车合流三个方向上全部一致，
-  run-level 中心路径排序 Spearman=1.0；
-- no-actor 背景/边缘检测差异被保留为边界发现；整体仍为 `down-weighted`，
-  因为这仍是 HUGSIM 内部接收方一致性，不是 real-sim 或完整 AD 行为证据。
-
-第一份 run report 的结论是：
-
-```text
-not enough closed-loop evidence
-```
-
-原因是它只完成了环境层面的排障，没有生成 closed-loop segment。
-
-第二份 run report 已完成：
-
-```text
-env.reset
-→ obs_pipe
-→ plan_pipe
-→ env.step
-→ output files
-→ segment-level credibility judgment: down-weighted
-```
-
-第三份 counterfactual report 已完成：
-
-```text
-corrected no-actor baseline
-→ lateral-0.0-m actor treatment
-→ lateral-3.5-m position control
-→ synchronized RGB / semantic / depth attribution
-→ relation-level credibility judgment: down-weighted
-```
-
-其中 `accepted` 子结论只支持：
-
-> 三组 ego state 和 action 严格一致，并且 HUGSIM 内部几何评分器对横向0.0米和3.5米两个精确位置产生不同响应。
-
-完整片段因视觉域差异、缺少真实日志参考帧和真实 AD agent 而为 `down-weighted`。它不支持真实碰撞、AD agent 表现或 HUGSIM 全局可信结论。
-
-第四份 multi-actor report 已完成：
-
-```text
-6-second no-actor baseline
-→ lead vehicle + scripted right-side cut-in
-→ synchronized RGB / semantic / depth and actor-state evidence
-→ TTC failure at 4.75 s and NC failure at 5.75 s
-→ actual runtime collision: false
-→ multi-actor credibility judgment: down-weighted
-```
-
-第四份报告的 raw 输出保留，但动态风险解释已纠正。旧失败全部发生在
-3.5 秒后的 horizon-invalid 尾窗；相同前缀延长后均不失败。因此只保留
-严格配对、多实例渲染和状态连续性，旧 NC/TTC 风险主张为 `rejected`。
-
-第五份 rollout-horizon / factorial report 已完成：
-
-```text
-6-second run with incomplete future actor history
-→ exact-prefix 9-second extension
-→ 2×2 actor-removal controls
-→ all valid-window metrics equal 1
-→ finite-rollout tail artifact: accepted
-```
-
-第六份 near-distance cut-in report 已完成：
-
-```text
-pre-specified single-shot treatment
-→ centerline crossing at 3.917 s
-→ 0.730 m positive 2D footprint clearance
-→ horizon-valid TTC=0.115, NC=1
-→ 23 actor0-specific failures, no padding
-→ overall down-weighted; narrow internal TTC response accepted
-```
-
-两辆 actor 仍复用同一个本地 3DRealCar 资产；切入仍是无地图约束的
-`ConstantPlanner` 直线轨迹；deterministic writer 不响应车辆。因此新结果
-证明的是内部渲染/几何/评分响应，不是交通行为真实性或 AD agent 能力。
-
-第七份 AD receiver readiness report 已完成：
-
-```text
-local HUGSIM scene inventory
-→ scene-0383 only at that audit time
-→ 0/1080 real RGB files available
-→ source sample/sample_data identity incomplete
-→ AD real-sim input comparison gate: blocked
-```
-
-这一轮没有生成新的 HUGSIM 场景或 rollout。它新验证的是：当前本机资产
-还不能支撑“同一个 AD 模型面对真实数据和对应仿真数据”的核心对比试验。
-当时据此提出先补齐真实源图像、不可变 source identity 和 ASAP 映射，再做
-exact metadata pose render 与冻结 AD receiver 对比。该结论继续适用于“直接
-matched real-sim 等效性”分支，但已不再作为所有人工反事实实验的普遍顺序门槛。
-
-第八份 matched-pose manifest report 已完成：
-
-```text
-scene-0383 frame00004 selected
-→ first reader-derived test candidate at t=0.333595s
-→ six exact metadata intrinsics and camtoworld matrices recorded
-→ native dynamic actor must be preserved
-→ receiver contract: camera_only_rgb_single_frame_v0
-→ pairing gate: blocked_source_anchor
-```
-
-这一轮没有生成新的 HUGSIM 场景、rollout 或渲染图。它新验证的是：即使暂时
-没有真实 RGB，也已经能把后续 exact-pose render 和 AD receiver 输入对比的
-第一组配对清单固定下来；但它不支持 pairing integrity pass、receiver
-equivalence 或 AD 行为结论。
-
-第九份 AD receiver proxy stress test report 已完成：
-
-```text
-far-front / close-front / adjacent-lane / multicar-merge new rollouts
-→ frozen simulator_internal_task_receiver_proxy_v0
-→ CAM_FRONT semantic/depth task features
-→ distance, lane-relation, multicar causal direction checks accepted
-→ overall down-weighted; not a real AD-agent response
-```
-
-这一轮生成了新的 HUGSIM 场景、rollout、视频和可视化。它新验证的是：在真实
-源 RGB 和真实 AD 权重缺失时，仍可先把 HUGSIM 的反事实输出转成固定接收方
-任务信号，并检查干预方向是否合理。结果见：
-
-```text
-docs/runs/hugsim_ad_receiver_proxy_001.md
-artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_response.png
-artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_front_contact_sheet.png
-artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_front_grid.mp4
-artifacts/hugsim_ad_receiver_proxy/scene-0383-ad-receiver-proxy-run001/ad_receiver_proxy_summary.json
-```
-
-第十份 frozen camera detector stress test report 已完成：
-
-```text
-same five HUGSIM rollouts
-→ frozen torchvision Faster R-CNN MobileNetV3 COCO detector
-→ CAM_FRONT RGB only
-→ boxes / confidence / image-plane tracking / risk ranking
-→ distance, lane-relation, multicar causal direction checks accepted
-→ no-actor background/native detections accepted as boundary finding
-→ overall down-weighted; not a full AD stack or real-sim comparison
-```
-
-这一轮新验证的是：不用 HUGSIM 语义/深度，只用 RGB 和一个冻结通用检测器，
-仍能得到与任务变量方向一致的感知响应。结果见：
-
-```text
-docs/runs/hugsim_camera_detector_001.md
-artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_response.png
-artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_front_contact_sheet.png
-artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_front_grid.mp4
-artifacts/hugsim_camera_detector/scene-0383-camera-detector-run001/camera_detector_summary.json
-```
-
-第十一份 cross-receiver task-response agreement report 已完成：
-
-```text
-semantic/depth proxy result
-→ RGB detector result
-→ align center-path task signal
-→ distance / lane-relation / multicar direction agreement accepted
-→ run-level center-path Spearman = 1.0
-→ no-actor background-detection boundary retained
-→ overall down-weighted; simulator-internal receiver agreement only
-```
-
-这一轮新验证的是：不同接收方构造在同一组 HUGSIM 反事实输入上，对任务相关
-中心路径变量给出了相同方向排序。结果见：
-
-```text
-docs/runs/hugsim_receiver_agreement_001.md
-artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement.png
-artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement_summary.json
-artifacts/hugsim_receiver_agreement/scene-0383-receiver-agreement-run002/receiver_agreement_by_run.csv
-```
-
-本轮又完成了补充场景收集 run001：从官方公开 nuScenes 场景资产中选择并校验
-`scene-0041` 和 `scene-0138`，分别完成 36 步正常六相机
-RGB/semantic/depth rollout。视觉复核将前者归为信号十字路口载体，后者归为
-弯道学校区域、路侧目标与遮挡载体；后者当前不能称为多车交互场景。详见
-`docs/runs/hugsim_scene_collection_001.md`。
-
-随后完成正常场景 sensor/receiver metric audit run001。两个场景的六相机数组、
-基本标定代数约束和深度数值有效性均 accepted；RGB/semantic/depth 边界共变
-只保留为 down-weighted 内部诊断。`scene-0138` 的六相机语义边界—深度断层
-均值为 0.461，明显低于 `scene-0041` 的 0.756，且左前相机最低为 0.162。
-冻结 RGB detector 进一步发现 `scene-0041` 的 center-path risk 峰值来自自车
-车头/底部模糊区域的假汽车检测，`scene-0138` 两次汽车检测也落在路侧区域；
-因此现有 risk proxy 的跨场景稳健性主张 rejected。详见
-`docs/runs/hugsim_normal_scene_sensor_audit_001.md`。
-
-随后完成首个驾驶域 3D receiver baseline run001。冻结官方 Sparse4Dv3 R50
-nuScenes 权重，只输入 HUGSIM 六相机 RGB、内参与外参，明确不读取 HUGSIM
-semantic/depth，也不在 HUGSIM 上微调。正式实验覆盖 scene-0383 no-actor、
-front-far、front-near、adjacent-near 和两个补充正常场景。车辆注入敏感性、
-near/far 纵向关系和 same/adjacent 横向关系均 accepted；绝对 actor XY 一致性
-down-weighted，中位误差分别为 2.56、4.24 和 3.80 米。该结果只支持 bounded
-task-response / relation-direction evidence，不支持 real-sim equivalence、规划控制
-或 HUGSIM 整体有效性。详见：
-
-```text
-docs/runs/hugsim_sparse4d_receiver_baseline_001.md
-docs/runs/hugsim_sparse4d_receiver_baseline_001_audit.json
-artifacts/sparse4d_receiver_baseline/baseline-and-response-run001/analysis-run002
-```
-
-随后完成 Sparse4Dv3 cross-scene / task-envelope audit 001。`scene-0041`、
-`scene-0138` 与 scene-0383 no-actor 的阈值稳定性、类别分布和时序轨迹已统一
-汇总；受控 near/far 排序为 6/6、车道关系为 43/44，far/near/adjacent dominant
-track fraction 为 100%/83%/100%。当前证据明确定位为 task-level receiver-
-consistency candidate，不是 sensor consistency。它可以支持粗粒度 presence、
-relation、ordering 和 short tracking，但近车纵向偏差约占设定中位距离的 81%，
-邻车横向偏差约占 4 米设定偏移的 65%，不能支持面向规划的米制定位。
-
-在跨场景汇总冻结后又完成 box-bias diagnostic：Sparse4Dv3 3D 框回投注入车辆
-语义差分区域的中位 2D IoU 为 0.69/0.74/0.82，中心像素误差为
-3.1/17.5/9.2 px，同时接收方估计的车体尺寸更大。这接受了内部 pixel-space
-alignment，scale-depth/domain-shift 解释保持 down-weighted；没有把 HUGSIM
-semantic 或标定升级为现实真值。详见：
-
-```text
-docs/simulator_credibility_indicator_convergence.md
-docs/runs/hugsim_sparse4d_cross_scene_001.md
-docs/runs/hugsim_sparse4d_cross_scene_001_audit.json
-artifacts/sparse4d_receiver_baseline/cross-scene-summary-run003
-artifacts/sparse4d_receiver_baseline/box-bias-diagnostic-run001
-```
-
-随后完成正常场景 Sparse4Dv3 人眼可见性标注审计 001。事先冻结两个正常场景
-首/中/末帧、score >= 0.2 的全部输出，共 14 个；其中 7 个有渲染 RGB 中的可见
-目标支撑，7 个落在路缘、植被、相机边界或重建拖影上。固定样本身份和 7/14
-计数 accepted，“固定样本中所有输出都有可见目标支撑”的具体主张 rejected，
-作为仿真器有效性证据仍 down-weighted。该样本以检测结果为条件，不能测量
-漏检、recall 或 ODD precision。详见：
-
-```text
-docs/runs/hugsim_sparse4d_normal_scene_annotation_001.md
-docs/runs/hugsim_sparse4d_normal_scene_annotations_001.json
-artifacts/sparse4d_receiver_baseline/normal-scene-annotation-run003
-```
-
-随后完成验证工具资格审计 001，使用已有证据逐项检查 construct、外部效度、
-HUGSIM 依赖、适用范围和最强允许主张。当前只保留两类有限用途候选：
-时域有效性 + 独立二维几何/因果约束套件，以及冻结 Sparse4Dv3 的序数关系响应。
-前者可确认干预在仿真声明状态下成立，后者可作为一个 real-data-trained receiver
-probe；二者均不能单独或共同证明 HUGSIM 是可信 AD 测试域。当前最小缺口是
-task acceptance boundary 和 uncertainty envelope。完整资格表见
-`docs/hugsim_metric_evidence_map.md` 第 11 节。
-
----
-
-## 7. 当前遗留问题
-
-当前仍未完成：
-
-- 在直接 matched real-sim 等效性分支中，获取 `scene-0383` 对应的授权
-  nuScenes 原始相机数据和 ASAP 12Hz映射，建立第一组严格 matched-pose
-  factual anchor；
-- 在 source-anchor-ready 后，渲染 exact metadata pose，并接入同一个冻结
-  camera-only AD receiver 做 real-vs-sim 感知、风险排序、规划/控制方向对比；
-- 审计 Sparse4Dv3 绝对 XY 偏差来自标定/坐标适配、HUGSIM 渲染还是接收方
-  domain shift；当前还不能唯一归因；
-- 为正常场景可见性结果增加独立现实参考和更完整帧/目标标注，才能从固定
-  detection-conditioned 小样本升级为 precision/recall evidence；
-- 为 critical-object identity / risk ordering 建立外部可辩护的 task
-  acceptance boundary、uncertainty envelope 和结论稳定性规则；
-- 使用不同车辆身份和地图约束控制器验证更可信的汇入、遮挡与 risk-decreasing counterfactual；
-- 跨场景验证当前 relation-level 结果；
-- 把 horizon-valid gate 推广到其它 HUGSIM 运行和评分事件；
-- 发布可从 fresh clone 下载的紧凑证据包；
-- 在多场景、多关系证据成熟前，仍不定义最终 credibility metric。
-
----
-
-## 8. 当前文件结构
-
-核心文件：
-
-- `README.md`
-- `PROJECT_STATE.md`
-- `SOURCE_AVAILABILITY_GATE.md`
-- `docs/hugsim_audit.md`
-- `docs/research_guiding_principles.md`
-- `docs/hugsim_matched_receiver_validation_plan.md`
-- `docs/hugsim_metric_evidence_map.md`
-- `docs/simulator_credibility_indicator_convergence.md`
-- `docs/hugsim_smoke_test_plan.md`
-- `docs/hugsim_credibility_decision_rules.md`
-- `docs/hugsim_cuda_pixi_runbook.md`
-- `docs/runs/hugsim_smoke_test_001.md`
-- `docs/runs/hugsim_smoke_test_001_review.md`
-- `docs/runs/hugsim_smoke_test_002.md`
-- `docs/runs/hugsim_smoke_test_002_audit.json`
-- `docs/runs/hugsim_counterfactual_001.md`
-- `docs/runs/hugsim_counterfactual_001_audit.json`
-- `docs/runs/hugsim_multicar_cut_in_001.md`
-- `docs/runs/hugsim_multicar_cut_in_001_audit.json`
-- `docs/runs/hugsim_horizon_factorial_001.md`
-- `docs/runs/hugsim_horizon_factorial_001_audit.json`
-- `docs/runs/hugsim_near_cut_in_001.md`
-- `docs/runs/hugsim_near_cut_in_001_audit.json`
-- `docs/runs/hugsim_source_anchor_gate_001.md`
-- `docs/runs/hugsim_source_anchor_gate_001.json`
-- `docs/runs/hugsim_ad_receiver_readiness_001.md`
-- `docs/runs/hugsim_ad_receiver_readiness_001.json`
-- `docs/runs/hugsim_matched_pose_manifest_001.md`
-- `docs/runs/hugsim_matched_pose_manifest_001.json`
-- `docs/runs/hugsim_sparse4d_receiver_baseline_001.md`
-- `docs/runs/hugsim_sparse4d_receiver_baseline_001_audit.json`
-- `docs/runs/hugsim_sparse4d_cross_scene_001.md`
-- `docs/runs/hugsim_sparse4d_cross_scene_001_audit.json`
-- `CODEX_NEXT_TASK.md`
-
-辅助文件：
-
-- `docs/runnable_target_selection.md`
-- `docs/comparison_notes.md`
-- `docs/literature_matrix.md`
-- `docs/codex_workflow.md`
-- `docs/future/omnidreams_audit.md`
-- `scripts/check_hugsim_smoke_prereqs.py`
-- `scripts/hugsim_plan_pipe_writer.py`
-- `scripts/run_hugsim_debug_smoke.py`
-- `scripts/hugsim_control_adapter.py`
-- `scripts/validate_hugsim_audit_semantics.py`
-- `scripts/audit_hugsim_source_anchor.py`
-- `scripts/analyze_hugsim_counterfactual.py`
-- `scripts/analyze_hugsim_multicar.py`
-- `scripts/analyze_hugsim_horizon_factorial.py`
-- `scripts/analyze_hugsim_near_cutin.py`
-- `configs/hugsim/scenarios/scene-0383-adjacent-static-00.yaml`
-- `configs/hugsim/scenarios/scene-0383-multicar-cut-in-00.yaml`
-- `configs/hugsim/scenarios/scene-0383-lead-only-00.yaml`
-- `configs/hugsim/scenarios/scene-0383-cut-in-only-00.yaml`
-- `configs/hugsim/scenarios/scene-0383-near-cut-in-00.yaml`
-- `configs/hugsim/nuscenes_smoke_base.yaml`
-
----
-
-## 9. 需要重点审计的可信性缺口
-
-重点不是 photorealism，而是 task-relevant relational consistency。
-
-需要关注：
-
-- front / rear / left / right 是否稳定；
-- same-lane / adjacent-lane / off-road 是否正确；
-- approaching / receding 是否可信；
-- occluding / occluded-by 是否一致；
-- actor scale / orientation 是否稳定；
-- extrapolated views 是否出现 lane / drivable area artifact；
-- risk-increasing / risk-decreasing 是否由传感器、几何、地图、时序证据支持；
-- collision / near-miss 是模型真实失败，还是仿真 artifact；
-- 高风险关系是否有足够证据支撑。
-
----
-
-## 10. 长期工作流
-
-不依赖单个超长聊天窗口。
-
-推荐结构：
-
-ChatGPT Project / Custom GPT  
-+ `PROJECT_STATE.md`  
-+ GitHub / Codex 仓库  
-+ 文献矩阵  
-+ 最小文档集合
-
-聊天窗口负责研究判断，长期记忆落到项目文件中。
-
-每轮讨论结束，应更新：
-
-- 当前研究判断；
-- 主线问题；
-- 支线问题；
-- 暂缓问题；
-- 下一步最小行动。
-
----
-
-## 11. 当前下一步最小行动
-
-本轮已把接收方从 semantic/depth proxy 和通用 RGB detector 推进到冻结
-Sparse4Dv3 六相机驾驶域 3D receiver。车辆注入敏感性和关系方向成立，但绝对
-XY 位置仍有 2.56--4.24 米中位误差。由于真实源 RGB / source identity 仍缺失，
-核心 matched real-sim AD 对比仍 blocked。semantic/depth 是待验证的 HUGSIM
-输出，不是独立真值。
-
-源数据处理采用轻量规则：已知相关目录为 `/home/yawei/HUGSIM`、
-`/home/yawei/HUGSIM_assets` 和本仓库 `artifacts/`。本地现有
-`scene-0383`、`scene-0041` 和 `scene-0138` 三个重建场景包，包含模型、动态
-物体、地面参数、配置和 metadata，但仍没有对应原始六相机 RGB 或完整 source
-identity；因此不再把 source recovery 当成本阶段主阻塞点。若后续出现新目录，
-只做一次普通清点；没有真实 RGB / source identity 就继续指标审计和有边界的
-场景证据收集。
-
-验证工具战略资格审计已经完成。直接 matched real-sim 分支仍被 source gate
-阻断。critical-object identity / risk ordering 的任务构念和定性 acceptance rule
-已经完成资格审计：采用 actor 与候选走廊的 footprint 冲突、首次冲突先后和最小
-正净距形成偏序；若合理变化下排序反转则保留 unresolved，不以加权分数覆盖。
-外部依据和完整边界见 `docs/hugsim_metric_evidence_map.md` 第 12 节。
-
-数值 uncertainty envelope 尚未获资格，因为当前没有独立 3D/标定真值、目标
-AD/ODD 运动合同、matched-real 渲染扰动分布或第二个独立接收方。设计范围内的
-ordinal metamorphic audit 001 已预注册：固定 `scene-0383`、一个 actor、无 actor
-基线和纵向×横向 2×2 矩阵，并冻结期望偏序、stop rule、输入哈希与允许主张。
-遮挡因没有无混杂操纵明确排除。所有级别都标为 test-design coverage，不冒充
-现实分布。
-
-该矩阵已在预注册提交后严格运行一次并停止。五个条件均完成 36/36 steps，四条
-独立几何偏序在 26 个完整未来时域帧全部成立；Sparse4Dv3 四条关系无反转，其中
-两条 13/13 accepted，另两条因 `adjacent_near@6.5s` 同一个 association 缺失为
-12/13 down-weighted。整体 segment 为 down-weighted；完整 receiver availability
-主张 rejected，但没有任何方向关系被结果反转。报告见
-`docs/runs/hugsim_ordinal_metamorphic_001.md`。
-
-下一步不再增加 HUGSIM 条件，也不围绕缺失帧调参。先用官方/原始真实 nuScenes
-证据审计 Sparse4Dv3 这一现有尺子的外部效度：它能支持什么检测/跟踪构念、场景
-范围和误差/稳定性边界。若公开 benchmark 不能转化为本任务的 per-scenario
-acceptance boundary，就冻结所需的最小真实标注或第二接收方证据，再决定下一条
-实验分支。
-
-不自行扩展到完整 benchmark 或最终可信指标；AD 侧先做 bounded camera-only
-receiver 对比，不直接安装或运行完整 AD stack。
-
-不要同时展开 OmniDreams / Cosmos。
+## 3. Validated capabilities
+
+- HUGSIM's bounded loop, FIFO exchange, six-camera rendering, state logging,
+  deterministic source replay, and artifact manifests are operational; see
+  `docs/runs/hugsim_smoke_test_002.md`.
+- Counterfactual geometry, motion, visibility, risk, and interaction laws have
+  a falsifiable constraint skeleton; see
+  `docs/counterfactual_credibility_constraints.md`.
+- Complete-future gates reject tail-filled actor futures before NC/TTC claims;
+  see `docs/runs/hugsim_horizon_factorial_001.md`.
+- SparseDrive consumes fresh six-camera feedback and produces fresh native
+  plans across a live loop; see `docs/runs/hugsim_sparsedrive_live_loop_001.md`.
+- The raw control boundary now has explicit `strict_audit` and
+  `bounded_projection` modes with per-step raw/applied records; see
+  `docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md`.
+- The action semantics are source-confirmed as longitudinal acceleration in
+  `[-2,2] m/s²` and steering-angle rate in
+  `[-0.261799,0.261799] rad/s`; see the same actuation report.
+
+## 4. Strongest positive evidence
+
+- Frozen ordinal counterfactuals preserved four independent geometric
+  near/far and same/adjacent directions with no available receiver reversal;
+  see `docs/runs/hugsim_ordinal_metamorphic_001.md`.
+- A complete-future CF-R instrument separated stronger and weaker lead-actor
+  conflict and measured a SparseDrive clearance response beyond local repeat;
+  see `docs/runs/hugsim_cf_r_future_conflict_001.md`.
+- Earlier strong/weak closed-loop pairs preserved progress, speed, and
+  footprint-clearance direction beyond two-reset variation, narrowly within
+  one scene and contract; see `docs/runs/hugsim_cf_r_closed_loop_001.md`.
+- Partial matched real/exact-pose HUGSIM windows produced measurable local
+  SparseDrive domain differences beyond repeat, but remain down-weighted by
+  provenance and scope; see
+  `docs/runs/sparsedrive_real_sim_factual_001.md`.
+- Actuation Contract 001 accepted strict fail-closed mechanics and six complete
+  bounded executions without applying an out-of-box action; see
+  `docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md`.
+
+These are bounded positive findings. None establishes general real-world
+fitness or simulator credibility.
+
+## 5. Strongest negative evidence
+
+- Repeating a final actor box into an unavailable future created false NC/TTC
+  risk events that disappeared when the same prefix was extended; see
+  `docs/runs/hugsim_horizon_factorial_001.md`.
+- RGB support does not qualify metadata boxes or a simple Gaussian-centre
+  envelope as exact spatial truth; see
+  `docs/runs/hugsim_interaction_observation_indicators_003.md`.
+- The original 4/2/1 m boundary loop was infeasible because iLQR requested
+  `0.356–0.400 rad/s` against HUGSIM's `0.261799 rad/s` limit; see
+  `docs/runs/hugsim_cf_r_boundary_response_001.md`.
+- Explicit bounded projection completed that loop but both resets reversed the
+  planned near/below progress and speed order; near ended at
+  `-0.270/-0.337 m/s`; see
+  `docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md`.
+- HUGSIM's released kinematic update allows the forward-driving ego speed to
+  cross zero without an explicit gear or state-admissibility contract; this is
+  accepted as a diagnostic finding, while the resulting response claim is
+  rejected; see the same actuation report.
+
+## 6. Current evidence boundary
+
+Current evidence can support claims only for a named task, scene range,
+receiver, intervention, contract, and measured uncertainty/repeat range.
+
+It cannot currently support:
+
+- HUGSIM-wide credibility or an AD safety claim;
+- real sensor equivalence from common-renderer RGB/semantic/depth agreement;
+- physical TTC or collision probability from HUGSIM's internal scorer;
+- absolute 3D truth from HUGSIM state or one camera-only receiver;
+- real-vehicle response magnitude from bounded action projection;
+- near-stop oriented-box clearance while heading semantics are unqualified;
+- “no simulated danger” as evidence that an AD system is safe.
+
+Strict infeasibility and bounded execution are separate claims: successful
+bounded execution does not rewrite the raw SparseDrive–iLQR command as
+feasible.
+
+## 7. Current blocker
+
+The action interface is qualified, but the downstream vehicle-state transition
+is not. The released update can integrate an in-range braking command through
+zero into negative speed without an explicit reverse gear, forward-only clamp,
+or qualified near-stop heading convention.
+
+Until this is resolved, the 4/2/1 m bounded-loop reversal cannot be interpreted
+as a credible risk response, and complete-horizon clearance remains rejected.
+
+## 8. Next single milestone
+
+Run **Vehicle-State Transition Qualification 001** as defined in
+`CODEX_NEXT_TASK.md`:
+
+1. establish signed-speed, reverse, zero-speed, and heading semantics from
+   authoritative source/model intent;
+2. preregister frozen synthetic transition controls;
+3. qualify or reject a minimal state contract without adding a tracker;
+4. only then decide whether the unchanged 4/2/1 m loop merits a corrective
+   two-reset rerun.
+
+Do not add scenes, receivers, actor conditions, or a final credibility score in
+this milestone.
+
+## 9. Sources of truth
+
+Read only what the current work needs:
+
+1. current task: `CODEX_NEXT_TASK.md`;
+2. durable principles: `docs/research_guiding_principles.md`;
+3. counterfactual laws: `docs/counterfactual_credibility_constraints.md`;
+4. metric qualification: `docs/hugsim_metric_evidence_map.md`;
+5. decisions: `docs/hugsim_credibility_decision_rules.md`;
+6. latest run: `docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md`;
+7. detailed history: the relevant file under `docs/runs/` and Git history;
+8. runtime operations: `docs/hugsim_cuda_pixi_runbook.md`.

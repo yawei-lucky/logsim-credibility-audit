@@ -1,0 +1,166 @@
+{
+  "audit_id": "hugsim_sparsedrive_actuation_contract_qualification_001",
+  "date": "2026-08-25",
+  "preregistration_commit": "3813016308db79e4615593fad33592a2971a0ce5",
+  "full_local_audit": {
+    "path": "artifacts/sparsedrive_actuation_contract_001/analysis-run002/actuation_contract_audit.json",
+    "sha256": "610e4c0a3ec4e436d06b0698b2034e2964fc062c84c203ce1f256e272dab2f4a"
+  },
+  "summary_plot": {
+    "path": "artifacts/sparsedrive_actuation_contract_001/analysis-run002/actuation_contract_summary.png",
+    "sha256": "9834d85c4b4171fc2fe8d7e3f81309aa0f669d3ada185b162757c1ead4fbf272"
+  },
+  "action_contract": {
+    "acc_bounds_mps2": [-2.0, 2.0],
+    "steer_rate_bounds_radps": [-0.2617993877991494, 0.2617993877991494]
+  },
+  "strict_regression": {
+    "decision": "accepted",
+    "completed_steps": 8,
+    "rejected_attempted_step": 8,
+    "raw_control": {
+      "acc": 0.20151098764632833,
+      "steer_rate": 0.4
+    },
+    "applied_control": null,
+    "output_sha256": {
+      "audit_summary": "ea242ada183b8b0431246a0d305436b7956c42e9e4cdc9b31de7c8578074a555",
+      "receiver_summary": "f8caf0fbeaa9600756fb966095036228401d5fc2aafa33e12f06f6d467a9317f",
+      "video": "68182c46dfb5ecd65b631ff8b309d066580986e787fc6e793a5ccb639a708ae6",
+      "runner_log": "a32c0ec1ca393288e5c13f93098b466c0ac4120454aae38011c6d99a9f516409",
+      "writer_log": "c08c87170c24f759a90624e2ee677fb2f882de31cf66a74eb19c08c2718c68bd"
+    }
+  },
+  "bounded_runs": {
+    "below-reset1": {
+      "final_progress_m": 1.573707471001299,
+      "final_speed_mps": 0.047165884673482456,
+      "saturated_steps": 4,
+      "saturation_fraction": 0.2222222222222222,
+      "first_saturation_live_s": 1.5,
+      "maximum_projection_residual_l2": 0.13820061220085061,
+      "cumulative_projection_residual_l2": 0.5528024488034025,
+      "planning_modes": [3, 5, 1, 1, 1, 1, 1, 1, 1],
+      "collision": false,
+      "terminated": false,
+      "output_sha256": {
+        "audit_summary": "d1c27b570064ea5d9706624ea632dd364679eacadac6752edeb762fa08b1ad81",
+        "receiver_summary": "b61b7fd82ff9bccf11e7af4fb563522e709904772ad30a7297830682f7743368",
+        "receiver_native": "d779e3d7b83a03ef32ed2ebb7fb22d0bab2c62cdd6c3ccfffbeb824e41e5e15d",
+        "video": "7101be9aa74a6b9a9ef239ebf599341ccf49c9154f156e24c2b40deaf565cf01"
+      }
+    },
+    "below-reset2": {
+      "final_progress_m": 1.5722128207887422,
+      "final_speed_mps": 0.06438838278400386,
+      "saturated_steps": 4,
+      "saturation_fraction": 0.2222222222222222,
+      "first_saturation_live_s": 1.5,
+      "maximum_projection_residual_l2": 0.13820061220085061,
+      "cumulative_projection_residual_l2": 0.5528024488034023,
+      "planning_modes": [3, 5, 1, 1, 1, 1, 1, 1, 1],
+      "collision": false,
+      "terminated": false,
+      "output_sha256": {
+        "audit_summary": "fc26f19b7d7a991ed32e3960e28f27bcdae84b20d81b1005a87d2acddb7abeab",
+        "receiver_summary": "729ab1c58c917d15195e2b30caeb0ae0db7b0ef59e6ca733852571cfffcfd345",
+        "receiver_native": "0e8da043d403ee15e3b4e3c087ee576f429417ddbd53efafc86ccea66f6ddb32",
+        "video": "87c65850ab6d282c39d06b6ba1262afb98c2ebeb8a0d6d26f0ac9e362a0b1449"
+      }
+    },
+    "near-reset1": {
+      "final_progress_m": 1.2209503480714563,
+      "final_speed_mps": -0.2701783442214476,
+      "saturated_steps": 6,
+      "saturation_fraction": 0.3333333333333333,
+      "first_saturation_live_s": 3.0,
+      "maximum_projection_residual_l2": 0.13820061220085061,
+      "cumulative_projection_residual_l2": 0.7421032315273917,
+      "planning_modes": [3, 5, 1, 1, 1, 1, 1, 1, 1],
+      "collision": false,
+      "terminated": false,
+      "output_sha256": {
+        "audit_summary": "7fc2d9c81ad8a90541ac205ea6153548fc9478ccd24d5953695f79be3e88fbf0",
+        "receiver_summary": "a781eb6579f69c8bda26ac5ab58766e8651ffea71e3ffe0b55a01c02231a499d",
+        "receiver_native": "7ad3e9728db6b337ad270fa547e6b64b8bad74c6d8c64cc1fb353811752ab123",
+        "video": "9ca556d66dbd5cf1051668a2979a2b6973ab1fff39bfbfa05fba53b837cfdc90"
+      }
+    },
+    "near-reset2": {
+      "final_progress_m": 1.051750470226163,
+      "final_speed_mps": -0.3374448715886169,
+      "saturated_steps": 6,
+      "saturation_fraction": 0.3333333333333333,
+      "first_saturation_live_s": 3.0,
+      "maximum_projection_residual_l2": 0.13820061220085061,
+      "cumulative_projection_residual_l2": 0.5671183365175411,
+      "planning_modes": [3, 5, 1, 1, 1, 1, 1, 1, 1],
+      "collision": false,
+      "terminated": false,
+      "output_sha256": {
+        "audit_summary": "a2ee083d75db3a9ab7b567acc9cee523b9ace9fc073ed2c6cdbd63c54b286431",
+        "receiver_summary": "df7ada0f42bd6485ba5681d21469891520f9367f68c4a6ee8fa3c9e68e2947df",
+        "receiver_native": "9e4f4e600b74a01e0798ad586a743d1397efbb5dfae30f9e6ee7f7496dbf7d58",
+        "video": "a445e0aa154f0293ac50cddcb055960fa9221b0d3edbda5a5814499e8495cef2"
+      }
+    },
+    "above-reset1": {
+      "final_progress_m": 2.0792040441853805,
+      "final_speed_mps": 0.04568837010634818,
+      "saturated_steps": 2,
+      "saturation_fraction": 0.1111111111111111,
+      "first_saturation_live_s": 2.0,
+      "maximum_projection_residual_l2": 0.13820061220085061,
+      "cumulative_projection_residual_l2": 0.27640122440170123,
+      "planning_modes": [3, 3, 5, 5, 1, 1, 1, 1, 1],
+      "collision": false,
+      "terminated": false,
+      "output_sha256": {
+        "audit_summary": "b322c301e03b6f65bbf040f6ffdf4760e8741ace1b2bfba078994943b51e9eb9",
+        "receiver_summary": "3fed4e7b7f40ee43358fe045ff0566dd597ac5ecfc68105e34ff9990c3b3efd2",
+        "receiver_native": "7b3c4db8d11a179f42cd7590363224a9b3cf07c6ea29e8c7b317f0aa81b45b9b",
+        "video": "dcf478e836891cc9caf9d3e7230e2f068e8bd199a164b7c1110be8aa630b50f9"
+      }
+    },
+    "above-reset2": {
+      "final_progress_m": 2.0294713254696193,
+      "final_speed_mps": 0.007336139566658711,
+      "saturated_steps": 4,
+      "saturation_fraction": 0.2222222222222222,
+      "first_saturation_live_s": 2.0,
+      "maximum_projection_residual_l2": 0.13820061220085061,
+      "cumulative_projection_residual_l2": 0.5528024488034025,
+      "planning_modes": [3, 3, 5, 5, 1, 1, 1, 1, 1],
+      "collision": false,
+      "terminated": false,
+      "output_sha256": {
+        "audit_summary": "996d4f1ca2d0d9f793c361bbda830b237b09be1f27b7fc797b7780d95a7df96c",
+        "receiver_summary": "f7bc1654f093120c254a1a0bd5c2eac62d02e70c1a7cbbdf68542c9287d746ec",
+        "receiver_native": "479c4949b606360b13db224264eee339ea271289c5f0110dbc2477dc23ed2af5",
+        "video": "f7a9736a1efd0f2a2b694669288fefa47af12d603b0cce2f360c6502cdca51dd"
+      }
+    }
+  },
+  "response_decisions": {
+    "progress": {
+      "expected": "below <= near <= above",
+      "maximum_same_condition_repeat_range_m": 0.16919987784529322,
+      "minimum_adjacent_condition_effect_m": -0.5204623505625792,
+      "decision": "rejected"
+    },
+    "final_speed": {
+      "expected": "below <= near <= above",
+      "maximum_same_condition_repeat_range_mps": 0.06726652736716932,
+      "minimum_adjacent_condition_effect_mps": -0.40183325437262074,
+      "decision": "rejected"
+    }
+  },
+  "evidence_decisions": {
+    "strict_contract_regression": "accepted",
+    "bounded_contract_execution": "accepted",
+    "projection_burden_measurement": "accepted",
+    "bounded_internal_direction_and_repeat": "rejected",
+    "near_stop_clearance_or_physical_collision": "rejected",
+    "real_world_closed_loop_credibility": "rejected"
+  }
+}

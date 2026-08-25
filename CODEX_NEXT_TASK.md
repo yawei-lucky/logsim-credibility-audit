@@ -1,565 +1,125 @@
-# Codex Next Task — Counterfactual Credibility Constraints
+# Codex Next Task — Vehicle-State Transition Qualification 001
 
-> Current phase only. Historical results remain in `PROJECT_STATE.md` and
-> `docs/runs/`; do not reconstruct all history before routine work.
+> This is the only current milestone. Read older run files only when a result
+> is directly reused.
 
 ## Objective
 
-Develop a credibility-validation method for log-driven world simulators.
-HUGSIM is the first experimental carrier, not the result to prove.
+Qualify the vehicle-state transition immediately downstream of the now-audited
+HUGSIM–SparseDrive actuation contract. Determine whether the current
+forward-driving loop permits reverse motion, how zero speed is represented,
+and which heading is valid for near-stop footprint geometry.
 
-Durable questions:
+HUGSIM remains the first experimental carrier, not the research result to
+prove. The durable question remains whether task-relevant simulator input and
+evolution are equivalent enough to reality to produce credible AD perception,
+planning, control, and closed-loop consequences.
 
-> HUGSIM 提供给智驾系统的任务相关信息，是否与现实一致到足以产生可信的感知、决策和闭环结果？
+## Why this is next
 
-> 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
+Actuation Contract Qualification 001 is closed:
 
-## Immediate Direction — Minimal External-Validity Upgrade
+- `strict_audit` fail-closed behavior: `accepted`;
+- six `bounded_projection` executions: `accepted` mechanically;
+- final progress/speed order `below <= near <= above`: `rejected` in both
+  resets because `near < below`;
+- near final speed: `-0.270/-0.337 m/s`;
+- real-world closed-loop credibility: `rejected`.
 
-The first simulator-internal causal-law and indicator pilot is closed. Its
-scope and remaining boundaries are recorded in
-`docs/runs/counterfactual_indicator_phase_001_closure.md`.
+The bounded actions were all inside HUGSIM's declared box, yet the released
+state update allowed the ego to cross zero and move backward. Therefore action
+admissibility cannot qualify state admissibility or near-stop geometry.
 
-Sparse4Dv3 R50 has passed a bounded supporting-receiver qualification gate for
-vehicle presence, longitudinal/lateral ordinal relations, and short temporal
-identity. It is not qualified as absolute 3D truth, a risk model, or a
-planning/control judge. See
-`docs/runs/hugsim_supporting_receiver_qualification_001.md`.
-
-The current framework is:
-
-```text
-docs/counterfactual_credibility_constraints.md
-```
-
-It organizes five complementary families:
-
-1. geometry and projection;
-2. motion and dynamics;
-3. visibility and sensor observability;
-4. risk causality;
-5. multi-actor interaction.
-
-For each selected law, state the intervention, held-fixed conditions, expected
-relationship, whether it is a hard constraint / conditional monotonic relation
-/ statistical regularity, where it is observed, what falsifies it, its
-qualification basis and source independence, and the strongest allowed claim.
-Keep each falsifiable relation atomic; do not combine a hard constraint and a
-statistical range into one pass/fail decision.
-
-The purpose is a revisable research skeleton, not an exhaustive standard.
-Leave numerical tolerances and behavior ranges open when they lack a defensible
-basis.
-
-CF-R 001 is complete and overall `down-weighted`. State order passed 26/26;
-the supporting receiver retained the aggregate closure hierarchy, with one
-small early pairwise reversal and several within-trace non-closing steps. See
-`docs/runs/hugsim_cf_risk_causality_001.md`.
-
-The target-receiver route and first planning-direction experiment are complete.
-SparseDrive-S Stage2 passed the bounded runtime, calibration, reset, warm-up
-and ego-status sensitivity gates. CF-R-PLAN-001 then produced the
-preregistered strict order at all ten fully warmed timestamps: stronger lead
-actor closure caused less 3 s longitudinal progress, with no tie, reversal or
-planning-mode switch. The narrow planning-direction claim is `accepted`;
-realistic response magnitude and closed-loop safety remain unqualified. See
-`docs/runs/hugsim_sparsedrive_ego_status_sensitivity_001.md` and
-`docs/runs/hugsim_cf_r_plan_001.md`.
-
-The frozen plan-to-loop capability gate is also complete. One fully warmed
-native plan crossed the audited FIFO and corrected iLQR boundary unchanged,
-with one 0.5 s control held over exactly two 0.25 s environment steps. Two
-independent resets were byte-identical. This qualifies only the interface: the
-replay writer did not infer from returned observations. See
-`docs/runs/hugsim_sparsedrive_plan_to_loop_001.md`.
-
-The subsequent no-actor live feedback gate is complete. SparseDrive consumed
-four newly returned observations and produced four fresh plans in each of two
-independent two-second runs. Interface and live-feedback capability are
-`accepted`. Exact numerical closed-loop reset reproducibility is `rejected`:
-maximum plan difference grew from about `1e-5 m` at handoff to `0.032 m` at the
-fourth update, while planning mode, action signs and no-event outcome remained
-stable. See `docs/runs/hugsim_sparsedrive_live_loop_001.md`.
-
-The replicated CF-R closed-loop experiment is also complete. Stronger
-lead-actor closure produced less final ego progress, lower final speed and
-smaller independently recomputed footprint clearance in both paired resets.
-For all three constructs, the minimum condition effect exceeded the maximum
-same-condition repeat variation. The bounded simulator-internal causal-response
-claim is `accepted`; response magnitude and real-world fitness remain
-unqualified. See `docs/runs/hugsim_cf_r_closed_loop_001.md`.
-
-The official HUGSIM sample has also supplied a partial factual anchor: real
-six-camera images for three `scene-0383` timestamps were compared with
-exact-pose renders. The current checkpoint metadata produced better pixel
-agreement than the older sample metadata in 17/18 camera cases. This remains
-`down-weighted` image evidence because source/checkpoint release pairing,
-physical pose provenance and AD-task equivalence are unresolved. See
-`docs/runs/hugsim_official_sample_matched_pose_001.md`.
-
-A full real-nuScenes GT rerun of Sparse4Dv3 is not the next blocker. It becomes
-necessary only if a later claim uses Sparse4Dv3 absolute position, velocity,
-identity error or outputs as a downstream module input, or uses its ordinal
-response to set an externally valid acceptance boundary, uncertainty range or
-real-world fitness claim. It cannot by itself qualify HUGSIM.
-
-## Current Deliverable
-
-Do not add another actor-speed level, normal run or target model merely to
-extend the accepted internal curve. Close the result around the reusable
-indicator:
+Primary result:
 
 ```text
-counterfactual condition effect > closed-loop repeat sensitivity
+docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md
 ```
 
-The fixed next route is:
-
-```text
-Reality Bridge source-availability gate                       complete, partial provenance
-  -> SparseDrive-REAL-QUAL-001 on real data only              complete, down-weighted
-  -> matched factual real/sim SparseDrive comparison          pilot complete, down-weighted
-  -> same-window counterfactual effect vs domain/repeat       complete, down-weighted
-  -> maneuver-conditioned risk indicator refinement          complete, down-weighted
-  -> first-stage evidence closure                            complete
-  -> minimal external-validity upgrade                       source-support pilot complete, down-weighted
-```
-
-### Reality Bridge 001
-
-Use the smallest continuous real source slice that can support both sides of
-the same SparseDrive input contract:
-
-1. require synchronized six-camera RGB, camera calibration, ego pose and
-   scalar/vector ego state, at least four 2 Hz receiver frames, and recorded
-   future ego trajectory for the chosen evaluation timestamps;
-2. first inventory the existing HUGSIM official sample and extracted members;
-   do not start a broad nuScenes download before this availability gate;
-3. render the same factual timestamps with the paired HUGSIM reconstruction
-   and freeze one explicit `CAM_BACK` crop/pad rule;
-4. preserve source identity, pose provenance and release-pairing limitations.
-
-The official archive now supplies frames `12, 18, 24, 30` as a continuous 2 Hz
-real six-camera input window. Source camera-rig poses provide ego-motion and a
-descriptive future-path reference. Exact nuScenes sample tokens, CAN bus,
-steering and the scene-specific original `LIDAR_TOP`/`CAM_FRONT` calibration
-remain absent; preserve those limitations rather than starting a broad data
-download. See `docs/runs/sparsedrive_real_source_qualification_001.md`.
-
-### SparseDrive-REAL-QUAL-001
-
-SparseDrive has two distinct roles:
-
-- as the target AD, it is the system whose real-versus-sim response is being
-  compared and does not need to be perfect;
-- as a measurement instrument used to interpret position, planning quality or
-  risk, its local adapter and error range require real-data qualification.
-
-The bounded real-data run with the unchanged official checkpoint is complete:
-
-1. real RGB produced finite non-degenerate native output;
-2. repeated plans differed by at most `1.05e-5 m`;
-3. the fully warmed plan had `0.706 m` ADE and `1.630 m` endpoint error against
-   recorded camera-rig motion, as a diagnostic rather than a benchmark score;
-4. camera swap, time reversal and calibration shift all changed the plan far
-   beyond reset variation;
-5. the corruptions did not uniformly worsen trajectory error, demonstrating
-   that single-slice imitation error is not a qualified correctness judge.
-
-This is enough to use SparseDrive as the target AD in a paired comparison. It
-does not qualify SparseDrive as an absolute measurement instrument or prove it
-is a correct driving policy.
-
-A corrective adapter audit reordered source/model `[right, forward, up]`
-velocity and acceleration into SparseDrive's CAN-bus
-`[forward, left, up]` contract. The corrected baseline changed by only
-`9.54e-6 m`: released Stage2 inference uses supplied `ego_status` as a
-training target, while its live queue caches network-predicted status. The
-corrected run003 supersedes run002 for future adapters; prior paired factual
-numbers remain unchanged within repeat noise.
-
-The subsequent visual-necessity audit found:
-
-- constant six-camera RGB changed the warmed endpoint by `1.405 m`;
-- repeating the first RGB frame changed it by `0.158 m`;
-- supplied forward-speed `±2 m/s` had no effect beyond repeat, consistent with
-  the released inference graph;
-- freezing temporal ego-pose history collapsed the endpoint by `9.802 m` and
-  changed the planning mode.
-
-Thus complete RGB neglect is `rejected`, while correct visual semantics and
-absence of shortcut learning remain unqualified. A plausible trajectory can
-still be produced after RGB content is removed, so plan plausibility is not a
-semantic-validity metric. See
-`docs/runs/sparsedrive_visual_necessity_002.md`.
-
-### Factual equivalence before counterfactual upgrade
-
-The first matched factual run is complete. The same reset SparseDrive consumed
-real and HUGSIM RGB with ego state, command, source pose, calibration and
-future reference held fixed:
-
-```text
-D_domain = factual SparseDrive output difference between real and simulation
-E_CF     = SparseDrive response change between simulated factual and
-           simulated counterfactual conditions
-```
-
-At the only fully warmed timestamp, `D_domain` was `0.358 m` plan ADE and
-`0.639 m` endpoint difference; the simulation-side plan was `0.639 m` shorter
-longitudinally, lateral difference was `0.015 m`, and planning mode stayed the
-same. Pixel SSIM decreased across the window while planning discrepancy did
-not change monotonically, so pixel similarity is not a task-equivalence
-surrogate. See `docs/runs/sparsedrive_real_sim_factual_001.md`.
-
-A preregistered, non-overlapping turning window now adds five fully warmed
-matched timestamps. Its mean real-sim plan ADE/FDE was `0.360 m / 0.754 m`,
-respectively `1.96× / 2.17×` the prior window. All five simulation-side plans
-shifted farther forward and left while retaining the real-side selected mode.
-Warmed mean SSIM was nearly unchanged between windows. This establishes
-context variation in the observed receiver domain difference, not an
-equivalence failure or threshold. See
-`docs/runs/sparsedrive_real_sim_turn_window_001.md`.
-
-The next source-availability check found that local `scene-0041` and
-`scene-0138` contain reconstruction assets but no source RGB; the official
-sample archive provides source observations only for `scene-0383`. They cannot
-serve as second matched anchors.
-
-A bounded alternative source-support pilot is complete. On two
-reader-declared test timestamps, the source dynamic mask and isolated HUGSIM
-native-dynamic contribution agreed on all `12/12` camera–frame memberships.
-Across three supported views, `75.0%–80.5%` of dynamic difference energy fell
-inside the exact source mask and `95.3%–95.8%` inside a 16 px dilation;
-centroid error was `2.33–9.13 px`. This is narrow positive source-to-render
-support evidence, not sensor equivalence. The static control retains
-person-like residual structure, so it is not a qualified actor-free world.
-See `docs/runs/hugsim_source_dynamic_visibility_001.md`.
-
-The preregistered target-AD consequence bridge is also complete. One fully
-warmed natural-actor endpoint compared real RGB, factual HUGSIM RGB and the
-same HUGSIM render with its native dynamic path omitted, with two independent
-resets per condition. The native dynamic caused a SparseDrive plan ADE of
-about `0.0947 m`, far beyond the `8.04e-7 m` endpoint repeat envelope, while
-all runs retained planning mode `3`. However, real–factual plan ADE was
-`0.0816 m`, larger than real–static `0.0624 m`; the preregistered claim that
-adding the native dynamic moves the task output toward real was `rejected`.
-This is useful negative evidence: correct camera membership and overlapping
-pixel support did not imply closer target-AD response. Static actor-like
-leakage remains a confound, so the result does not isolate renderer error. See
-`docs/runs/sparsedrive_natural_actor_bridge_001.md`.
-
-The static-control qualification is complete. SparseDrive retained a rank-2
-pedestrian output in both factual and static inputs near the declared actor
-locus. Across resets, the factual/static pedestrian centers differed by only
-about `0.0486 m` and their scores by `0.000509`, while the final plans differed
-by `0.0947 m` ADE. The current static input is therefore `rejected` as a
-selected-actor-absence control: the native dynamic render path was removed,
-but the target AD did not receive a clean target disappearance. The paired
-scene has only one native identity and no same-pose actor-free source
-background; other local scenes lack source RGB. This branch is unavailable
-with current assets rather than a target for frame selection or tuning. See
-`docs/runs/sparsedrive_static_control_qualification_001.md`.
-
-No externally qualified acceptance threshold exists, so this is not yet a
-factual equivalence pass or failure. The earlier CF-R scale is only a
-cross-experiment diagnostic: its timeline and intervention differ.
-
-The same-window comparison is complete. Five fully warmed timestamps produced
-an empirical factual forward-domain range with maximum absolute discrepancy
-`0.639 m`. The 5 m actor caused metre-scale SparseDrive effects beyond both
-repeat and the observed factual-domain discrepancy, but the preregistered
-strong-less-forward-than-weak direction held at only 3/5 timestamps and is
-`rejected`. At frame 48 the strong condition changed planning mode and moved
-both farther left and farther forward; raw forward endpoint is therefore not a
-maneuver-independent risk indicator. See
-`docs/runs/sparsedrive_same_window_counterfactual_001.md`.
-
-The prospective maneuver-conditioned refinement is complete:
-
-1. native candidate/score decomposition exactly separated fixed-mode response
-   from mode-selection contribution;
-2. frame `48` is a selection confound: all six fixed modes reduced progress,
-   while selecting a different mode reversed the final endpoint;
-3. frame `54` is a genuine local fixed-mode reversal: mode identity stayed
-   fixed and all six candidates moved slightly farther forward;
-4. current-static actor clearance is `rejected` as a dynamic-risk indicator
-   because it lacks time-aligned future actor motion and saturated at zero in
-   `4/5` strong frames;
-5. the original `3/5` result remains `rejected`.
-
-See `docs/runs/sparsedrive_maneuver_conditioned_risk_001.md` and the first-stage
-bundle in `docs/runs/hugsim_first_stage_evidence_closure_001.md`.
-
-The natural-source branch is now closed at its current evidence boundary.
-
-The complete-future dynamic-conflict instrument is also complete. Only the
-first `4/9` SparseDrive plans in each CF-R closed-loop run had exact actor
-states for all six future waypoints; the `3.5–5.5 s` tail was excluded rather
-than filled. At the shared handoff:
-
-1. a held-common constant-speed ego path gave `8.789 m` strong-condition and
-   `13.539 m` weak-condition minimum footprint clearance, preserving the
-   designed conflict order by `4.750 m`;
-2. all four SparseDrive plans selected mode `3` and increased the corresponding
-   margin by about `1.351 m` in the strong condition and `0.696 m` in the weak
-   condition;
-3. the `0.655 m` mitigation-response difference exceeded the maximum
-   same-condition reset range of `0.000004312 m`;
-4. no complete-horizon plan reached zero footprint clearance.
-
-The narrow simulator-internal stimulus and response constructs are `accepted`.
-They are not physical TTC, calibrated risk or realistic response magnitude.
-See `docs/runs/hugsim_cf_r_future_conflict_001.md`.
-
-The first external-boundary comparison is now complete. UN R157 Amendment 3,
-clause 5.2.3.3, was used as an external M1/N1 same-lane minimum-following
-distance comparator, not as universal safety truth:
-
-1. all `120/120` common-path and SparseDrive planned samples were same-lane,
-   actor-ahead and inside the published speed range;
-2. maximum planned speed was `1.975 m/s`, so the low-speed comparator was
-   `2 m`;
-3. every sampled gap exceeded it, with minimum margin `6.789 m` and minimum
-   gap/boundary ratio `4.39×`;
-4. boundary coverage is `rejected`: no sample reached or crossed the external
-   comparator;
-5. the external audit is therefore `down-weighted`.
-
-This changes the interpretation, not the recorded CF-R result. The current
-experiment validates relative closure and clearance-increasing response, but
-not behavior near a safety-critical boundary. See
-`docs/runs/hugsim_cf_r_external_following_boundary_001.md`.
-
-The preregistered boundary-derived pilot is now complete and overall
-`down-weighted`:
-
-1. above/near/below common-reference endpoint gaps were exactly `4/2/1 m`,
-   so the selected external boundary was covered;
-2. all conditions selected SparseDrive mode `3`, while their 3 s forward
-   endpoints followed the expected strict order:
-   `below 1.369 < near 1.658 < above 3.253 m`;
-3. the complete clearance-gain metric was `rejected`: near/below almost stop,
-   and successive-point heading inference turns centimetre-scale final motion
-   into unstable `17°/24°` headings that invalidate the last same-lane gate;
-4. strict closed-loop completion was `rejected` in all three conditions:
-   requested steer rate reached `0.356–0.400 rad/s` versus HUGSIM's declared
-   `0.261799 rad/s` limit;
-5. no command was clipped and partial final states at unequal stopping times
-   were not compared.
-
-See `docs/runs/hugsim_cf_r_boundary_response_001.md`.
-
-Do not redesign the stimuli or add another receiver. The next bounded route is
-contract qualification:
-
-1. preregister a near-zero-speed planned-heading convention with an explicit
-   vehicle-motion basis; test it first on frozen synthetic controls, then rerun
-   the same complete-clearance audit;
-2. choose and preregister the target vehicle actuation contract: retain strict
-   rejection, use physically justified saturation, or qualify a
-   feasibility-aware trajectory tracker;
-3. only after both gates pass, rerun the unchanged `4/2/1 m` conditions with
-   two resets and compare condition effects with repeat sensitivity.
-
-Keep factual domain difference as `D_domain(context)`, not a universal scalar
-threshold. A matched real/source segment with independent 3D/trajectory
-support remains the stronger later upgrade for response realism. Retain a
-second source scene as a later generality requirement, and add a heterogeneous
-receiver only if a key conclusion is demonstrably SparseDrive-dependent.
-
-The exact source-pair gate and receiver qualification requirements continue to
-apply. A second receiver may test model dependence, but it cannot substitute
-for the reality bridge or show that either receiver matches reality.
-
-## Completed Basis
-
-CF-I-CAP-001 confirmed narrow internal stimulus-response paths in IDM and
-AttackPlanner, including an AttackPlanner response under inputs reachable from
-the scene loop. ConstantPlanner and UnicyclePlanner do not consume live vehicle
-state, so their independent trajectories are not interaction. The released
-scene-level gate is nevertheless rejected: ego prediction indices use
-`dt=0.25 s`, AttackPlanner candidate indices use `2/19≈0.1053 s`, and
-indexwise costs compare mismatched future times. See
-`docs/runs/hugsim_interaction_capability_001.md`.
-
-The research output is an audited indicator, not a repaired HUGSIM result.
-CF-I-STATE-001 has now validated four state-level indicators against frozen
-known controls:
-
-- `CF-I-T1` indexed-time alignment;
-- `CF-I-T2` causal response onset;
-- `CF-I-T3` post-stimulus response existence;
-- `CF-I-T4` world-time state continuity.
-
-All four control-discrimination claims are narrowly `accepted`. The released
-grid was correctly rejected by T1/T4; a one-step-early response was rejected by
-T2; independent ConstantPlanner motion was rejected as interaction by T3. See
-`docs/runs/hugsim_interaction_state_indicators_001.md`.
-
-CF-I-LOOP-001 has now transported the same four decisions into HUGSIM's actual
-`planner.plan_traj` loop. The aligned controls passed; the released timing,
-one-step-early cause, and ConstantPlanner controls retained their expected
-negative decisions. All four transport claims are narrowly `accepted`, while
-overall evidence remains `down-weighted`. See
-`docs/runs/hugsim_interaction_planner_loop_indicators_001.md`.
-
-The exact AttackPlanner traces changed relative to the direct state harness.
-A bounded replay isolated HUGSIM's float32 state writeback as the cause: a
-cast-matched direct replay reproduced the actual loop traces exactly, while the
-four indicator decisions were unchanged. Treat this as a precision-sensitivity
-boundary; only the decisions, not exact trajectories, transported robustly.
-
-CF-I-OBS-001 then exposed a paired-control defect: HUGSIM `Camera` instances
-share a mutable default dynamics dictionary, so the actor persisted into the
-nominal no-actor render. This is retained as negative method evidence, not
-misreported as a HUGSIM visual failure.
-
-The frozen corrective repeat CF-I-OBS-002 accepted state-to-transform fidelity,
-six-camera membership, and causal observation onset. It rejected spatial
-localization: RGB support inside the projected `wlh.json` box plus 16 pixels
-fell from about `0.98` to `0.48` as the actor approached. Asset inspection found
-that the high-opacity Gaussian envelope is larger than the declared dimensions
-and vertically offset from the transform origin. See
-`docs/runs/hugsim_interaction_observation_indicators_002.md`.
-
-CF-I-OBS-003 completed the planned localization split without relaxing the
-threshold. The Gaussian asset envelope improved minimum close-range RGB support
-coverage from about `0.48` to `0.66`, but still failed the frozen `0.90` gate.
-Metadata geometry therefore contributes to the mismatch but is not the only
-explanation; a centre-only Gaussian envelope also does not qualify as precise
-spatial truth. See
-`docs/runs/hugsim_interaction_observation_indicators_003.md`.
-
-The first internal CF-I round is now closed with positive evidence, negative
-evidence, and explicit boundaries. Do not add more CF-I scenes or tune opacity,
-quantiles, dilation, or thresholds merely to turn O3 green.
-
-The bounded supporting-receiver gate and CF-R transport experiment are now
-complete. Their unresolved spatial-ground-truth and receiver-jitter boundaries
-must be carried into every later association, distance, risk, or action claim.
-
-This experiment may support only an adversarial ego-response capability claim.
-It must not be generalized to realistic merging, yielding, or traffic-agent
-behavior. IDM remains a later option if a qualified route becomes available.
-
-Do not relabel independent ConstantPlanner trajectories as credible interaction,
-and do not add a receiver or more scenes merely to produce curves.
-
-After the matrix is ready, execute in this order:
-
-```text
-world state and causal timing
-  -> projection, visibility, and multi-camera observation
-  -> supporting receiver response
-  -> target AD / planning / control
-  -> closed-loop result
-```
-
-Simulator-internal mechanism checks may run before external qualification, but
-their claims must remain internal. Before claiming bounded real-world
-robustness, qualify the relevant law, range, and receiver with source-independent
-evidence. Exact matched real–sim data remain specific to the direct-equivalence
-branch.
-
-## Existing Evidence to Retain
-
-- The ordinal near/far and same/adjacent experiment is an early method pilot.
-- CF-M 001 accepted the narrow ConstantPlanner constant-speed state and
-  controlled relative-motion relations: 108/108 transitions and all 110
-  accumulated relation-check timestamps passed with zero reversal/tie. These
-  are checks, not independent statistical samples. Overall evidence remains
-  `down-weighted` because the state source is HUGSIM and the actor is scripted.
-  See `docs/runs/hugsim_motion_metamorphic_001.md`.
-- CF-O 001 rejected its camera-space measurement chain after diagnosing an
-  inverted stored-height convention; this is method evidence, not a HUGSIM
-  visibility failure.
-- CF-O 002 accepted the narrow controlled-geometry and extreme two-level target
-  RGB-support direction checks across all 37 frames. Overall evidence remains
-  `down-weighted`: it is a corrective repeat using HUGSIM-produced state,
-  calibration, and RGB, not a continuous visibility law or independent reality
-  anchor. See `docs/runs/hugsim_occlusion_metamorphic_002.md`.
-- CF-I-CAP-001 accepted narrow internal IDM and AttackPlanner response
-  diagnostics, including a reachable AttackPlanner input and aligned-grid
-  control. It rejected the released scene loop as temporally qualified
-  interaction because its compared futures use `0.25 s` and about `0.1053 s`
-  index steps. Overall evidence is `down-weighted`; independent ConstantPlanner
-  trajectories remain rejected as interaction evidence.
-- CF-I-STATE-001 validated T1--T4 on preregistered state-level controls. It
-  accepted their narrow control discrimination and preserved the released
-  time-grid and ConstantPlanner cases as negative evidence. Overall evidence is
-  still `down-weighted`: the direct controller harness is not a rendered scene
-  or realistic behavior.
-- CF-I-LOOP-001 reproduced all four frozen control decisions inside the actual
-  `planner.plan_traj` loop. It also found that exact AttackPlanner traces are
-  sensitive to the loop's float32 state writeback, while the indicator
-  decisions remained stable. This qualifies only pre-render planner-loop
-  indicator transport; rendering and realism remain untested.
-- CF-I-OBS-001 rejected its paired RGB measurement after diagnosing shared
-  mutable camera dynamics that retained the actor in the no-actor control.
-  CF-I-OBS-002 corrected only that contamination: state transform, camera
-  membership, and causal onset were accepted, while projected metadata-box
-  localization remained rejected and worsened with proximity. This is bounded
-  internal state-to-observation evidence, not real-sensor equivalence.
-- CF-I-OBS-003 projected a frozen opacity-qualified Gaussian centre envelope.
-  It improved minimum localization coverage from about `0.48` to `0.66` but
-  remained below the `0.90` gate. Both metadata-box and simple asset-envelope
-  spatial-truth claims remain rejected; first-round CF-I is closed without
-  further tuning.
-- Independently recomputed planar geometry verifies only HUGSIM-declared state,
-  not real-world state.
-- Sparse4Dv3 is a provisional supporting receiver probe, not truth.
-- HUGSIM RGB/semantic/depth and NC/TTC/PDMS are internal evidence and
-  diagnostics, not independent reality references.
-- Direct matched real–sim work remains a later, stronger path when source data
-  are available; it is not a prerequisite for defining designed-counterfactual
-  laws.
-
-## Explicitly Deferred
-
-- Do not interpret the accepted target-planning direction as realistic response
-  magnitude, control action or closed-loop safety.
-- Do not add another receiver or more HUGSIM scenes merely to obtain curves.
-- Do not integrate VAD, UniAD, SparseDriveV2 or another full AD stack before
-  deciding whether an architecture cross-check is needed for a specific claim.
-- Do not define final numerical credibility thresholds or the final four-layer
-  metric yet.
-- Do not claim general HUGSIM or AD-test-domain credibility from current pilots.
-
-## Read Only as Needed
+## Single gate
+
+Create a bounded, preregistered **state-transition contract audit** before any
+new 4/2/1 m live rerun.
+
+First establish from source and model intent:
+
+1. whether `ego_velo` is signed longitudinal speed or forward-only speed;
+2. whether reverse motion is an intentional supported mode with a gear state;
+3. whether the released update must clamp at zero for this scenario contract;
+4. how pose/yaw and steering evolve at zero or negative speed;
+5. which heading, if any, is admissible for oriented-footprint clearance when
+   motion is near zero.
+
+If the intended semantics cannot be established, finish with
+`blocked_state_transition_semantics`; do not invent a clamp or heading rule.
+
+## Bounded work
+
+Use frozen synthetic state/control sequences before a live rerun. At minimum,
+cover:
+
+- positive speed under braking without crossing zero;
+- braking that mathematically crosses zero;
+- exactly zero speed;
+- negative speed only if an explicit reverse contract is supported;
+- straight and non-zero steering cases;
+- repeat and timestep consistency.
+
+For each case record raw state, raw action, next state, qualified admissible
+state, any projection or rejection, and the reason. Keep action-contract and
+state-contract decisions separate.
+
+Do not yet:
+
+- add a new scene, actor condition, receiver, or AD model;
+- implement a feasibility-aware trajectory tracker;
+- tune the existing 4/2/1 m stimuli;
+- use HUGSIM NC/TTC/PDMS as a state-truth judge;
+- claim a real-vehicle response or repair the rejected closed-loop result.
+
+## Decision after the gate
+
+- If signed reverse is explicitly supported and task-valid, qualify its gear,
+  heading, and clearance semantics before interpreting the existing reversal.
+- If the scenario is forward-only and a zero-speed boundary is independently
+  justified, preregister a minimal state projection and rerun the unchanged
+  4/2/1 m conditions twice.
+- If neither contract can be justified, retain the current bounded loop as
+  negative evidence and move to an execution model with qualified dynamics;
+  do not patch HUGSIM merely to obtain the expected order.
+
+## Required outputs
+
+- source-backed state-semantics audit;
+- preregistration before any corrective experiment;
+- isolated implementation and direct tests if a contract is justified;
+- machine-readable synthetic-control audit and concise plot/table;
+- evidence decisions using only `accepted`, `down-weighted`, `rejected`;
+- update this file to the next single gate only after the milestone closes.
+
+## Sources to read
 
 Start with:
 
 ```text
-docs/counterfactual_credibility_constraints.md
-docs/research_guiding_principles.md
+docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md
+scripts/hugsim_control_adapter.py
+/home/yawei/HUGSIM/sim/hugsim_env/envs/hug_sim.py
+/home/yawei/HUGSIM/configs/sim/kinematic.yaml
 ```
 
-Use `docs/hugsim_metric_evidence_map.md` when mapping tools or prior evidence.
-Open individual run records only when their result is directly reused. Read
-runtime, source-anchor, matched-pairing, or decision-rule documents only when
-the task reaches those concerns.
+Use only as needed:
 
-## Proportional Review Rule
+```text
+docs/counterfactual_credibility_constraints.md
+docs/hugsim_metric_evidence_map.md
+docs/hugsim_credibility_decision_rules.md
+```
 
-For ordinary iterations, check whether the overall direction, causal logic,
-claim boundary, and immediate deliverable are coherent. Do not reconcile every
-historical document or close every uncertainty. Perform a broad consistency
-sweep only when the user asks for it or a phase is being finalized.
+## Stable guardrails
 
-## Stable Guardrails
-
-- Use only `accepted`, `down-weighted`, and `rejected` for segment-level
-  evidence judgments.
-- A `rejected` claim remains useful negative or diagnostic evidence.
-- HUGSIM TTC is an internal binary planned-path surrogate, not physical TTC.
-- Do not accept tail-window NC/TTC without complete future actor states.
-- The qualified CF-R future-conflict tool uses independently recomputed
-  time-aligned footprint clearance, but its box inputs still come from HUGSIM;
-  internal acceptance does not qualify state truth or response realism.
-- The UN R157 comparison is an external engineering boundary, not a universal
-  risk threshold or a compliance result; current CF-R samples remain entirely
-  on its non-boundary side.
-- Common-renderer RGB/semantic/depth agreement is not real-sensor correctness.
-- A deterministic plan writer enables the simulator loop; it is not an AD
-  agent.
+- A `rejected` claim is useful negative evidence, not an experiment failure.
+- HUGSIM-declared state is not independent reality truth.
+- Bounded projection does not make the raw plan feasible or physically real.
+- Near-zero heading and complete-clearance claims remain unqualified.
+- Do not define a general HUGSIM credibility score from this milestone.
