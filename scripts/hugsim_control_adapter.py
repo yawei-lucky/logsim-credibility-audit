@@ -17,6 +17,200 @@ from typing import Any
 import numpy as np
 
 
+ACTUATION_CONTRACT_MODES = ("strict_audit", "bounded_projection")
+ACTUATION_CONTROL_KEYS = ("acc", "steer_rate")
+HUGSIM_ACTION_SEMANTICS = {
+    "acc": "longitudinal_acceleration_mps2",
+    "steer_rate": "steering_angle_rate_radps",
+}
+
+
+def hugsim_action_bounds(
+    action_space: Any,
+    *,
+    semantic_contract: Mapping[str, str] | None,
+) -> dict[str, dict[str, float]]:
+    """Extract a qualified scalar box from HUGSIM's declared action space.
+
+    Bounds alone are not enough: the caller must explicitly confirm the two
+    command semantics. This makes an unknown or renamed interface fail closed.
+    """
+    if dict(semantic_contract or {}) != HUGSIM_ACTION_SEMANTICS:
+        raise ValueError("HUGSIM actuation semantics are missing or unconfirmed")
+
+    bounds: dict[str, dict[str, float]] = {}
+    for name in ACTUATION_CONTROL_KEYS:
+        try:
+            space = action_space[name]
+            low_values = np.asarray(space.low, dtype=np.float64).reshape(-1)
+            high_values = np.asarray(space.high, dtype=np.float64).reshape(-1)
+        except (KeyError, TypeError, AttributeError) as exc:
+            raise ValueError(f"Missing HUGSIM action bound for {name}") from exc
+        if low_values.size != 1 or high_values.size != 1:
+            raise ValueError(f"HUGSIM action bound for {name} is not scalar")
+        low = float(low_values[0])
+        high = float(high_values[0])
+        if not np.isfinite([low, high]).all() or low > high:
+            raise ValueError(f"Invalid HUGSIM action bounds for {name}")
+        bounds[name] = {"low": low, "high": high}
+    return bounds
+
+
+def _audit_scalar(value: Any) -> float | str:
+    try:
+        scalar = float(value)
+    except (TypeError, ValueError):
+        return repr(value)
+    if np.isnan(scalar):
+        return "nan"
+    if np.isposinf(scalar):
+        return "inf"
+    if np.isneginf(scalar):
+        return "-inf"
+    return scalar
+
+
+def evaluate_actuation_contract(
+    raw_control: Mapping[str, Any],
+    *,
+    bounds: Mapping[str, Mapping[str, float]] | None,
+    contract_mode: str,
+    semantic_contract: Mapping[str, str] | None,
+) -> dict[str, Any]:
+    """Audit a raw command and, when allowed, return the environment command.
+
+    ``strict_audit`` rejects the complete command if either component is out
+    of range. ``bounded_projection`` uses the Euclidean projection onto the
+    confirmed axis-aligned box, which is component-wise clipping. Invalid
+    values, bounds, or semantics reject in both modes.
+    """
+    record: dict[str, Any] = {
+        "contract_mode": contract_mode,
+        "semantic_contract": dict(semantic_contract or {}),
+        "raw_control": {
+            name: _audit_scalar(raw_control.get(name))
+            for name in ACTUATION_CONTROL_KEYS
+        },
+        "applied_control": None,
+        "bounds": None,
+        "violation_mask": None,
+        "violation_amount": None,
+        "projection_residual": None,
+        "projection_residual_l2": None,
+        "saturation_active": None,
+        "decision": "rejected_invalid_contract",
+        "reason": None,
+    }
+    if contract_mode not in ACTUATION_CONTRACT_MODES:
+        record["reason"] = f"unknown contract mode: {contract_mode}"
+        return record
+    if dict(semantic_contract or {}) != HUGSIM_ACTION_SEMANTICS:
+        record["reason"] = "actuation semantics are missing or unconfirmed"
+        return record
+    if bounds is None:
+        record["reason"] = "qualified action bounds are missing"
+        return record
+
+    normalized_bounds: dict[str, dict[str, float]] = {}
+    numeric_raw: dict[str, float] = {}
+    for name in ACTUATION_CONTROL_KEYS:
+        if name not in raw_control:
+            record["reason"] = f"raw control is missing {name}"
+            return record
+        try:
+            raw = float(raw_control[name])
+            low = float(bounds[name]["low"])
+            high = float(bounds[name]["high"])
+        except (KeyError, TypeError, ValueError) as exc:
+            record["reason"] = f"invalid value or bound for {name}: {exc}"
+            return record
+        if not np.isfinite([raw, low, high]).all() or low > high:
+            record["reason"] = f"non-finite value or invalid bounds for {name}"
+            return record
+        numeric_raw[name] = raw
+        normalized_bounds[name] = {"low": low, "high": high}
+
+    violation_amount = {
+        name: max(
+            normalized_bounds[name]["low"] - numeric_raw[name],
+            numeric_raw[name] - normalized_bounds[name]["high"],
+            0.0,
+        )
+        for name in ACTUATION_CONTROL_KEYS
+    }
+    violation_mask = {
+        name: amount > 0.0 for name, amount in violation_amount.items()
+    }
+    saturation_active = any(violation_mask.values())
+    record.update(
+        {
+            "bounds": normalized_bounds,
+            "violation_mask": violation_mask,
+            "violation_amount": violation_amount,
+            "saturation_active": saturation_active,
+        }
+    )
+
+    if contract_mode == "strict_audit" and saturation_active:
+        record.update(
+            {
+                "decision": "rejected_out_of_bounds",
+                "reason": "raw control is outside the qualified action box",
+            }
+        )
+        return record
+
+    applied = {
+        name: float(
+            np.clip(
+                numeric_raw[name],
+                normalized_bounds[name]["low"],
+                normalized_bounds[name]["high"],
+            )
+        )
+        for name in ACTUATION_CONTROL_KEYS
+    }
+    residual = {
+        name: applied[name] - numeric_raw[name]
+        for name in ACTUATION_CONTROL_KEYS
+    }
+    record.update(
+        {
+            "applied_control": applied,
+            "projection_residual": residual,
+            "projection_residual_l2": float(
+                np.linalg.norm([residual[name] for name in ACTUATION_CONTROL_KEYS])
+            ),
+            "decision": (
+                "accepted_projected" if saturation_active else "accepted_unchanged"
+            ),
+            "reason": None,
+        }
+    )
+    return record
+
+
+def execute_actuation_contract(
+    raw_control: Mapping[str, Any],
+    *,
+    bounds: Mapping[str, Mapping[str, float]] | None,
+    contract_mode: str,
+    semantic_contract: Mapping[str, str] | None,
+    environment_step: Callable[[dict[str, float]], Any],
+) -> tuple[dict[str, Any], Any | None]:
+    """Evaluate the contract and call the environment only when qualified."""
+    record = evaluate_actuation_contract(
+        raw_control,
+        bounds=bounds,
+        contract_mode=contract_mode,
+        semantic_contract=semantic_contract,
+    )
+    applied = record["applied_control"]
+    if applied is None:
+        return record, None
+    return record, environment_step(dict(applied))
+
+
 def sparsedrive_plan_to_hugsim_lidar_plan(
     final_planning: np.ndarray,
     *,

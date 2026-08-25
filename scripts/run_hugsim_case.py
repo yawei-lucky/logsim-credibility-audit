@@ -26,6 +26,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--step-m", type=float, default=1.0)
     parser.add_argument("--timeout-s", type=float, default=900.0)
     parser.add_argument("--control-hold-steps", type=int, default=1)
+    parser.add_argument(
+        "--actuation-contract",
+        choices=("strict_audit", "bounded_projection"),
+        default="strict_audit",
+        help="Qualified contract used between raw controller output and HUGSIM.",
+    )
     writer_group = parser.add_mutually_exclusive_group()
     writer_group.add_argument(
         "--sparsedrive-native-output",
@@ -206,6 +212,8 @@ def main() -> int:
         str(args.control_hold_steps),
         "--output",
         str(output),
+        "--actuation-contract",
+        args.actuation_contract,
     ]
     requested_plans = math.ceil(args.max_steps / args.control_hold_steps)
     if args.sparsedrive_native_output is not None:
@@ -214,7 +222,7 @@ def main() -> int:
             raise FileNotFoundError(
                 f"Missing SparseDrive native output: {native_output}"
             )
-        runner_cmd.extend(("--strict-action-bounds", "--skip-evaluation"))
+        runner_cmd.append("--skip-evaluation")
         writer_cmd = [
             str(python),
             str(
@@ -258,7 +266,7 @@ def main() -> int:
             )
         if not writer_python.is_file():
             raise FileNotFoundError(f"Missing writer Python: {writer_python}")
-        runner_cmd.extend(("--strict-action-bounds", "--skip-evaluation"))
+        runner_cmd.append("--skip-evaluation")
         if warm_start_source_run is not None:
             runner_cmd.extend(
                 (
@@ -346,9 +354,20 @@ def main() -> int:
             runner_log=runner_stream,
         )
         if writer_code != 0:
-            runner.terminate()
-            runner.wait(timeout=10)
-            return writer_code
+            # A strict contract rejection intentionally ends the receiver
+            # before the runner finishes serializing its machine-readable
+            # failure evidence. Give that bounded finalization time instead
+            # of killing the runner and losing the audit record.
+            try:
+                remaining, _ = runner.communicate(timeout=120)
+            except subprocess.TimeoutExpired:
+                runner.terminate()
+                remaining, _ = runner.communicate(timeout=10)
+            if remaining:
+                print(remaining, end="", flush=True)
+                runner_stream.write(remaining)
+                runner_stream.flush()
+            return runner.returncode if runner.returncode else writer_code
 
         for line in runner.stdout:
             print(line, end="", flush=True)

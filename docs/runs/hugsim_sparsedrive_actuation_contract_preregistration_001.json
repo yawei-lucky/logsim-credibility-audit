@@ -1,0 +1,246 @@
+{
+  "audit_id": "hugsim_sparsedrive_actuation_contract_qualification_001",
+  "date": "2026-08-25",
+  "status": "preregistered_not_run",
+  "purpose": "qualify the raw-controller-to-HUGSIM actuation boundary before interpreting the existing above/near/below SparseDrive closed loop",
+  "implementation_base_commit": "e1b31ddcfbfea5769d2702042ecb9b936c7ef9e9",
+  "contract_structure": {
+    "strict_audit": "retain the raw command; if either component is outside the confirmed HUGSIM action box, reject the whole command and do not call env.step",
+    "bounded_projection": "retain the raw command; apply the Euclidean projection onto the confirmed axis-aligned HUGSIM action box; call env.step only with the applied command",
+    "prohibited_in_this_audit": [
+      "silent clipping without a raw-command record",
+      "a feasibility-aware trajectory tracker",
+      "near-zero-speed heading repair",
+      "post-hoc projection-burden acceptance thresholds"
+    ]
+  },
+  "confirmed_action_interface": {
+    "semantics": {
+      "acc": "longitudinal_acceleration_mps2",
+      "steer_rate": "steering_angle_rate_radps"
+    },
+    "bounds": {
+      "acc": {
+        "low": -2.0,
+        "high": 2.0,
+        "unit": "m/s^2"
+      },
+      "steer_rate": {
+        "low": -0.2617993877991494,
+        "high": 0.2617993877991494,
+        "unit": "rad/s"
+      }
+    },
+    "projection": "componentwise clipping, equivalent to argmin ||u_applied-u_raw||_2 over the confirmed axis-aligned box",
+    "evidence": [
+      {
+        "path": "/home/yawei/HUGSIM/sim/hugsim_env/envs/hug_sim.py",
+        "sha256": "c42ef368852754bdec76c81254b72dcda45eccef058dce015ea549c0b17c7d12",
+        "role": "declares the Dict action space, converts steer bounds from degrees to radians, and applies acc and steer_rate in env.step"
+      },
+      {
+        "path": "/home/yawei/HUGSIM/configs/sim/kinematic.yaml",
+        "sha256": "fc987ae8da2412ecca8e10b9e49daf2da366795151e970b139c3426ea9966c96",
+        "role": "declares min/max acceleration, steering rate magnitude, and 0.25 s environment timestep"
+      },
+      {
+        "path": "/home/yawei/HUGSIM/sim/ilqr/lqr.py",
+        "sha256": "b32755c32de510e09ac726f5c77731d5f490df6a412e50a4d369d70bdef45faf",
+        "role": "maps the controller output to accel_cmd and steering_rate_cmd"
+      },
+      {
+        "path": "/home/yawei/HUGSIM/sim/ilqr/lqr_solver.py",
+        "sha256": "0141d73d0ac38386184e63ce384d2e3cd341130943065b416bdacf4281e57c47",
+        "role": "shows the controller's wider internal limits, including +/-0.4 rad/s steering rate"
+      }
+    ]
+  },
+  "implementation": {
+    "control_adapter_sha256": "93c535a28cefd98d55af9b5dcdcc8ca7fc0abbbfe716882bc181c4a1dd12cab5",
+    "runner_sha256": "5088c5f0a91b47091a8160748ce7df065c62474d21c5d5d705f7c444af759112",
+    "case_wrapper_sha256": "15f500599689d679d0b933308bf62d12f246d9be2d154752d10ed2e3990edef0",
+    "analysis_script_sha256": "0077f2d8fb10d45c3db61baea0d3aa15a6ea684f5130d5ee4ae2959b1509c462"
+  },
+  "runtime_provenance": {
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_worktree_known_untracked_file": "pixi.toml.smoke-backup",
+    "sparsedrive_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+    "sparsedrive_checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+    "sparsedrive_runtime_note": "the previously qualified local PyTorch fallback remains in the SparseDrive worktree and is recorded by every receiver manifest"
+  },
+  "held_fixed": [
+    "scene-0383 reconstruction, camera rig, renderer checkpoint and target actor asset",
+    "above/near/below 4/2/1 m designed common-path boundary configurations",
+    "ConstantPlanner actor speed 0.5 m/s, yaw, lateral position and all non-longitudinal actor settings",
+    "six-step recorded source warm start through the 1.5 s SparseDrive handoff",
+    "SparseDrive Stage2 source, checkpoint, anchors, camera order, calibration, straight command and temporal reset",
+    "corrected coordinate convention, 2 Hz planning cadence, two 0.25 s HUGSIM steps per control and 4.5 s live horizon",
+    "HUGSIM internal NC/TTC/PDMS evaluation remains skipped"
+  ],
+  "warm_start": {
+    "environment_steps": 6,
+    "handoff_timestamp_s": 1.5,
+    "state_atol": 1e-8,
+    "rgb_max_abs_difference": 0
+  },
+  "live_loop": {
+    "environment_steps": 18,
+    "control_hold_steps": 2,
+    "plan_updates": 9,
+    "environment_timestep_s": 0.25,
+    "planning_timestep_s": 0.5,
+    "live_horizon_s": 4.5
+  },
+  "strict_regression": {
+    "condition": "above",
+    "output": "artifacts/sparsedrive_actuation_contract_001/strict-above-reset1",
+    "expected": "the first out-of-bounds raw command is recorded, applied_control is null, completed environment steps stop before that attempt, and the process returns non-zero"
+  },
+  "bounded_runs": {
+    "above": [
+      {
+        "reset": 1,
+        "output": "artifacts/sparsedrive_actuation_contract_001/bounded-above-reset1",
+        "config": "configs/hugsim/scenarios/scene-0383-boundary-above-001.yaml",
+        "config_sha256": "d27395d99a9bd13c88dfabaf59c049e8e794c1d8489fb4762057be57331e55b1",
+        "source_run": "artifacts/sparsedrive_cf_r_boundary/source-above-run001",
+        "source_input_sha256": {
+          "observations.pkl": "645f12f89182bc31faa6e338770004642e372157f5cf0f38d63ad09f668ee4ed",
+          "infos.pkl": "c1157c67ce6313e44ad81986699479d134d707ce9bfff2cf2af0dc6925442734",
+          "audit_steps.pkl": "4629ac6ee0ebbb23d21be21fea168687af53f99f4ba8a628e502384fcafc390a"
+        },
+        "reference_native": "artifacts/sparsedrive_cf_r_boundary/receiver-run001/above_native_outputs.pt",
+        "reference_native_sha256": "725700cb414e2c7bed2cb149e9229b3514bea951c70485d7a055606858dac715"
+      },
+      {
+        "reset": 2,
+        "output": "artifacts/sparsedrive_actuation_contract_001/bounded-above-reset2",
+        "config": "configs/hugsim/scenarios/scene-0383-boundary-above-001.yaml",
+        "config_sha256": "d27395d99a9bd13c88dfabaf59c049e8e794c1d8489fb4762057be57331e55b1",
+        "source_run": "artifacts/sparsedrive_cf_r_boundary/source-above-run001",
+        "source_input_sha256": {
+          "observations.pkl": "645f12f89182bc31faa6e338770004642e372157f5cf0f38d63ad09f668ee4ed",
+          "infos.pkl": "c1157c67ce6313e44ad81986699479d134d707ce9bfff2cf2af0dc6925442734",
+          "audit_steps.pkl": "4629ac6ee0ebbb23d21be21fea168687af53f99f4ba8a628e502384fcafc390a"
+        },
+        "reference_native": "artifacts/sparsedrive_cf_r_boundary/receiver-run001/above_native_outputs.pt",
+        "reference_native_sha256": "725700cb414e2c7bed2cb149e9229b3514bea951c70485d7a055606858dac715"
+      }
+    ],
+    "near": [
+      {
+        "reset": 1,
+        "output": "artifacts/sparsedrive_actuation_contract_001/bounded-near-reset1",
+        "config": "configs/hugsim/scenarios/scene-0383-boundary-near-001.yaml",
+        "config_sha256": "543ebb71022ff2f57ab8ea74c0e6d569f1137a431e87ba756bea739ea2083f79",
+        "source_run": "artifacts/sparsedrive_cf_r_boundary/source-near-run001",
+        "source_input_sha256": {
+          "observations.pkl": "0f10f48a8ddf9b3b2f4bb3625215e60e34579f8bc9b97d0313a419c844b7a3be",
+          "infos.pkl": "d54c13e13dcb74bbd46974b5f9a511f5c96ce147f1a86a96497a6fac19076234",
+          "audit_steps.pkl": "0792bed563f9aa2d7bb91195457f8cbdeee9ad3f601fcc56b2d40b3252f6d4ca"
+        },
+        "reference_native": "artifacts/sparsedrive_cf_r_boundary/receiver-run001/near_native_outputs.pt",
+        "reference_native_sha256": "b9268e167c725bd4f2887539da604fc9411f1adb436688e83699eb334249a51e"
+      },
+      {
+        "reset": 2,
+        "output": "artifacts/sparsedrive_actuation_contract_001/bounded-near-reset2",
+        "config": "configs/hugsim/scenarios/scene-0383-boundary-near-001.yaml",
+        "config_sha256": "543ebb71022ff2f57ab8ea74c0e6d569f1137a431e87ba756bea739ea2083f79",
+        "source_run": "artifacts/sparsedrive_cf_r_boundary/source-near-run001",
+        "source_input_sha256": {
+          "observations.pkl": "0f10f48a8ddf9b3b2f4bb3625215e60e34579f8bc9b97d0313a419c844b7a3be",
+          "infos.pkl": "d54c13e13dcb74bbd46974b5f9a511f5c96ce147f1a86a96497a6fac19076234",
+          "audit_steps.pkl": "0792bed563f9aa2d7bb91195457f8cbdeee9ad3f601fcc56b2d40b3252f6d4ca"
+        },
+        "reference_native": "artifacts/sparsedrive_cf_r_boundary/receiver-run001/near_native_outputs.pt",
+        "reference_native_sha256": "b9268e167c725bd4f2887539da604fc9411f1adb436688e83699eb334249a51e"
+      }
+    ],
+    "below": [
+      {
+        "reset": 1,
+        "output": "artifacts/sparsedrive_actuation_contract_001/bounded-below-reset1",
+        "config": "configs/hugsim/scenarios/scene-0383-boundary-below-001.yaml",
+        "config_sha256": "ebd9f4c06ce7cec5a4d02dadc5a26bca7d4f45ab22e85e3338bbb9fa7a22b3d6",
+        "source_run": "artifacts/sparsedrive_cf_r_boundary/source-below-run001",
+        "source_input_sha256": {
+          "observations.pkl": "a2cd67d641850e11d4167db7a7f7cc81fdc431876218339db0fc8a14eda4ece3",
+          "infos.pkl": "1de65172145f2a47d6eaf9f20c7e3ebaed29b32f4dfcb9b8b3fe12f9eef72463",
+          "audit_steps.pkl": "57a34697e0bba710e97aae04090c1484d49b77caf729cb16e9948a1b6fd839cb"
+        },
+        "reference_native": "artifacts/sparsedrive_cf_r_boundary/receiver-run001/below_native_outputs.pt",
+        "reference_native_sha256": "792f20fed65ab7696589fc550ac75ed12d1cad782f138c7ac3927ab6105aaf4c"
+      },
+      {
+        "reset": 2,
+        "output": "artifacts/sparsedrive_actuation_contract_001/bounded-below-reset2",
+        "config": "configs/hugsim/scenarios/scene-0383-boundary-below-001.yaml",
+        "config_sha256": "ebd9f4c06ce7cec5a4d02dadc5a26bca7d4f45ab22e85e3338bbb9fa7a22b3d6",
+        "source_run": "artifacts/sparsedrive_cf_r_boundary/source-below-run001",
+        "source_input_sha256": {
+          "observations.pkl": "a2cd67d641850e11d4167db7a7f7cc81fdc431876218339db0fc8a14eda4ece3",
+          "infos.pkl": "1de65172145f2a47d6eaf9f20c7e3ebaed29b32f4dfcb9b8b3fe12f9eef72463",
+          "audit_steps.pkl": "57a34697e0bba710e97aae04090c1484d49b77caf729cb16e9948a1b6fd839cb"
+        },
+        "reference_native": "artifacts/sparsedrive_cf_r_boundary/receiver-run001/below_native_outputs.pt",
+        "reference_native_sha256": "792f20fed65ab7696589fc550ac75ed12d1cad782f138c7ac3927ab6105aaf4c"
+      }
+    ]
+  },
+  "measurements": {
+    "contract_mechanics": [
+      "raw and applied action at every attempted step",
+      "qualified bounds and component violation mask/amount",
+      "projection residual and saturation-active flag",
+      "strict rejection step and proof that no applied command exists"
+    ],
+    "execution_integrity": [
+      "completed environment steps and receiver plans",
+      "warm-start state/RGB equality",
+      "first live plan equality to the frozen reset reference",
+      "fallback, padding or plan repetition"
+    ],
+    "projection_burden_diagnostic": [
+      "saturated-step count and fraction",
+      "first saturation time",
+      "maximum component violation",
+      "maximum L2 raw-to-applied residual"
+    ],
+    "direct_outcomes": [
+      "final ego longitudinal progress from the handoff frame",
+      "final ego speed",
+      "native SparseDrive planning-mode sequence",
+      "observed HUGSIM collision flag as an unqualified diagnostic"
+    ]
+  },
+  "preregistered_relations": {
+    "progress": "for each independent reset, below <= near <= above",
+    "speed": "for each independent reset, below <= near <= above",
+    "repeat_comparison": "the minimum paired adjacent-condition effect is compared with the maximum same-condition two-reset range; equality does not count as exceeding repeat",
+    "planning_modes": "report the complete selected mode sequence; do not silently compare longitudinal values across a mode switch as if the mode were unchanged",
+    "projection_burden": "report only; no after-the-fact pass/fail threshold"
+  },
+  "decision_rules": {
+    "strict_contract_regression_accepted": "the out-of-range command is retained, applied_control is null and env.step is not called for the rejected attempt",
+    "bounded_contract_execution_accepted": "all six fresh runs complete exactly 18 steps, every step has raw/applied audit data, all applied controls are inside the confirmed box, and warm-start/receiver gates pass",
+    "direct_outcome_accepted": "both resets preserve below <= near <= above and the minimum adjacent-condition effect is strictly greater than the maximum same-condition repeat range",
+    "direct_outcome_down_weighted": "both resets preserve the order but the effect does not exceed repeat range",
+    "direct_outcome_rejected": "the expected order reverses in either reset",
+    "near_stop_clearance_or_physical_collision": "always rejected in this audit because the near-zero-speed heading ambiguity is deliberately not repaired",
+    "real_world_closed_loop_credibility": "always rejected because there is no matched real closed-loop outcome or independently qualified response magnitude"
+  },
+  "sample_size": {
+    "strict_regression": "one fresh above-condition process reset",
+    "bounded_projection": "two independent fresh HUGSIM and SparseDrive process resets per condition, six runs total"
+  },
+  "strongest_allowed_claim": "within scene-0383, one fixed SparseDrive model, the frozen above/near/below initial-position design and the confirmed HUGSIM box action contract, bounded projection does or does not preserve the preregistered final-progress and final-speed order beyond two-reset repeat range",
+  "forbidden_claims": [
+    "bounded projection is a physically faithful vehicle actuator or tracker",
+    "the projection burden is acceptable by an externally justified threshold",
+    "near-stop oriented-box clearance or the HUGSIM collision flag establishes a physical collision",
+    "the response magnitude matches a real vehicle",
+    "SparseDrive, HUGSIM or the combined loop is generally credible or safe",
+    "passing this audit repairs the previously rejected strict closed-loop claim"
+  ]
+}

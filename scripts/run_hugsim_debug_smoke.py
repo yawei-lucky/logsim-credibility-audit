@@ -62,7 +62,16 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--strict-action-bounds",
         action="store_true",
-        help="Fail instead of passing an out-of-range control to HUGSIM.",
+        help="Deprecated alias for --actuation-contract strict_audit.",
+    )
+    parser.add_argument(
+        "--actuation-contract",
+        choices=("strict_audit", "bounded_projection"),
+        default="strict_audit",
+        help=(
+            "strict_audit fails closed on any out-of-bounds raw command; "
+            "bounded_projection applies only its box projection."
+        ),
     )
     parser.add_argument(
         "--skip-evaluation",
@@ -336,18 +345,6 @@ def build_scoring_frame(
     }
 
 
-def require_action_in_bounds(action: dict[str, float], action_space: Any) -> None:
-    for name, value in action.items():
-        space = action_space[name]
-        scalar = float(value)
-        low = float(np.asarray(space.low).reshape(-1)[0])
-        high = float(np.asarray(space.high).reshape(-1)[0])
-        if not low <= scalar <= high:
-            raise ValueError(
-                f"{name}={scalar} is outside HUGSIM action bounds [{low}, {high}]"
-            )
-
-
 def main() -> int:
     args = parse_args()
     if args.max_steps < 1:
@@ -395,7 +392,12 @@ def main() -> int:
         traj_transform_to_global,
     )
 
-    from hugsim_control_adapter import corrected_traj2control
+    from hugsim_control_adapter import (
+        HUGSIM_ACTION_SEMANTICS,
+        corrected_traj2control,
+        execute_actuation_contract,
+        hugsim_action_bounds,
+    )
 
     scenario_config = OmegaConf.load(scenario_path)
     base_config = OmegaConf.load(base_path)
@@ -430,6 +432,10 @@ def main() -> int:
     print(f"[debug-smoke] creating environment from {local_model_path}", flush=True)
     env = gymnasium.make("hugsim_env/HUGSim-v0", cfg=cfg, output=str(output))
     obs, info = env.reset()
+    qualified_action_bounds = hugsim_action_bounds(
+        env.action_space,
+        semantic_contract=HUGSIM_ACTION_SEMANTICS,
+    )
     warm_start = {"enabled": False}
     if warm_start_source_run is not None:
         obs, info, warm_start = replay_source_warm_start(
@@ -464,8 +470,10 @@ def main() -> int:
     terminated = False
     truncated = False
     plan_traj: np.ndarray | None = None
-    action: dict[str, float] | None = None
+    raw_action: dict[str, float] | None = None
     plan_update_id = -1
+    contract_attempts: list[dict[str, Any]] = []
+    contract_failure: dict[str, Any] | None = None
 
     for step_id in range(args.max_steps):
         info_before = info
@@ -487,12 +495,38 @@ def main() -> int:
                 )
             else:
                 acc, steer_rate = upstream_traj2control(plan_traj, info_before)
-            action = {"acc": float(acc), "steer_rate": float(steer_rate)}
-            if args.strict_action_bounds:
-                require_action_in_bounds(action, env.action_space)
-        if plan_traj is None or action is None:
+            raw_action = {"acc": float(acc), "steer_rate": float(steer_rate)}
+        if plan_traj is None or raw_action is None:
             raise RuntimeError("control hold interval started without a plan")
-        obs, reward, terminated, truncated, info = env.step(action)
+        contract_record, step_result = execute_actuation_contract(
+            raw_action,
+            bounds=qualified_action_bounds,
+            contract_mode=args.actuation_contract,
+            semantic_contract=HUGSIM_ACTION_SEMANTICS,
+            environment_step=env.step,
+        )
+        contract_record.update(
+            {
+                "attempted_step_id": step_id,
+                "timestamp_before_s": float(info_before["timestamp"]),
+                "plan_updated": plan_updated,
+                "plan_update_id": plan_update_id,
+                "control_hold_substep": step_id % args.control_hold_steps,
+            }
+        )
+        contract_attempts.append(contract_record)
+        if step_result is None:
+            contract_failure = contract_record
+            print(
+                "[debug-smoke] actuation rejected before env.step "
+                f"step={step_id} decision={contract_record['decision']} "
+                f"raw={contract_record['raw_control']} "
+                f"bounds={contract_record['bounds']}",
+                flush=True,
+            )
+            break
+        action = dict(contract_record["applied_control"])
+        obs, reward, terminated, truncated, info = step_result
 
         frame = build_scoring_frame(plan_traj, info, traj_transform_to_global)
         save_data["frames"].append(frame)
@@ -506,7 +540,9 @@ def main() -> int:
                 "control_hold_substep": step_id % args.control_hold_steps,
                 "info_before": info_before,
                 "plan_traj": plan_traj,
+                "raw_action": raw_action,
                 "action": action,
+                "actuation_contract": contract_record,
                 "reward": reward,
                 "terminated": terminated,
                 "truncated": truncated,
@@ -517,7 +553,11 @@ def main() -> int:
             f"[debug-smoke] step={step_id} plan_update={plan_updated} "
             f"timestamp={info['timestamp']} "
             f"rc={info['rc']:.6f} collision={info['collision']} "
-            f"acc={float(acc):.6f} steer_rate={float(steer_rate):.6f}",
+            f"raw_acc={raw_action['acc']:.6f} "
+            f"raw_steer_rate={raw_action['steer_rate']:.6f} "
+            f"applied_acc={action['acc']:.6f} "
+            f"applied_steer_rate={action['steer_rate']:.6f} "
+            f"saturated={contract_record['saturation_active']}",
             flush=True,
         )
         if terminated or truncated:
@@ -557,9 +597,13 @@ def main() -> int:
 
     summary = {
         "run_status": (
-            "complete"
-            if len(audit_steps) == args.max_steps and eval_error is None
-            else "incomplete"
+            "rejected_actuation_contract"
+            if contract_failure is not None
+            else (
+                "complete"
+                if len(audit_steps) == args.max_steps and eval_error is None
+                else "incomplete"
+            )
         ),
         "scenario_id": f"{cfg.scenario.scene_name}-{cfg.scenario.mode}",
         "hugsim_commit": git_commit(hugsim_root),
@@ -595,7 +639,28 @@ def main() -> int:
         "plan_updates_consumed": sum(
             bool(step["plan_updated"]) for step in audit_steps
         ),
-        "strict_action_bounds": args.strict_action_bounds,
+        "strict_action_bounds": args.actuation_contract == "strict_audit",
+        "actuation_contract": {
+            "mode": args.actuation_contract,
+            "semantics": HUGSIM_ACTION_SEMANTICS,
+            "qualified_bounds": qualified_action_bounds,
+            "qualification_basis": {
+                "environment_action_space": (
+                    "/home/yawei/HUGSIM/sim/hugsim_env/envs/hug_sim.py"
+                ),
+                "environment_step": (
+                    "/home/yawei/HUGSIM/sim/hugsim_env/envs/hug_sim.py"
+                ),
+                "kinematic_config": str(kinematic_path),
+            },
+            "attempts": contract_attempts,
+            "failure": contract_failure,
+            "saturation_attempts": sum(
+                bool(item["saturation_active"])
+                for item in contract_attempts
+                if item["saturation_active"] is not None
+            ),
+        },
         "control_convention": args.control_convention,
         "terminated": terminated,
         "truncated": truncated,
