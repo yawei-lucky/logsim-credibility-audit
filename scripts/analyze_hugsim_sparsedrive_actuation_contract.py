@@ -69,7 +69,7 @@ def verify_preregistration(
         raise ValueError("preregistration differs from committed bytes")
     script_relative = "scripts/analyze_hugsim_sparsedrive_actuation_contract.py"
     observed = hashlib.sha256(git_blob(repo, resolved, script_relative)).hexdigest()
-    if observed != preregistration["analysis_script_sha256"]:
+    if observed != preregistration["implementation"]["analysis_script_sha256"]:
         raise ValueError("analysis script differs from preregistered hash")
     return resolved
 
@@ -481,6 +481,17 @@ def main() -> int:
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     analysis = analyze(preregistration, repo, commit)
+    analysis["analysis_implementation"] = {
+        "preregistered_script_sha256": preregistration["implementation"][
+            "analysis_script_sha256"
+        ],
+        "executed_script_sha256": sha256(Path(__file__).resolve()),
+        "erratum": (
+            "the executed script changes only the preregistration hash field "
+            "lookup from the JSON root to implementation.analysis_script_sha256; "
+            "measurements and decision rules are unchanged"
+        ),
+    }
     audit_path = output / "actuation_contract_audit.json"
     audit_path.write_text(json.dumps(analysis, indent=2), encoding="utf-8")
     save_plot(analysis, output)
