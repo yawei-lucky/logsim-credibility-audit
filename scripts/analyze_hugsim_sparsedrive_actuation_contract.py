@@ -174,6 +174,9 @@ def validate_bounded_run(
         or warm["maximum_rgb_difference"] != 0
     ):
         failures.append("warm-start replay gate failed")
+    for name, expected_hash in spec["source_input_sha256"].items():
+        if warm["source_input_sha256"].get(name) != expected_hash:
+            failures.append(f"warm-start source hash differs: {name}")
     if writer["status"] != "complete":
         failures.append("receiver incomplete")
     if writer["plans_sent"] != preregistration["live_loop"]["plan_updates"]:
@@ -198,6 +201,8 @@ def summarize_run(
     audit: dict[str, Any],
     writer: dict[str, Any],
     path: Path,
+    condition: str,
+    reset: int,
 ) -> dict[str, Any]:
     first = audit["steps"][0]["info_before"]
     final = audit["steps"][-1]["info_after"]
@@ -207,8 +212,26 @@ def summarize_run(
         name: max(float(item["violation_amount"][name]) for item in attempts)
         for name in ("acc", "steer_rate")
     }
+    artifact_paths = {
+        "audit_summary": path / "audit_summary.json",
+        "receiver_summary": path / "sparsedrive_live_summary.json",
+        "receiver_native_output": path / "sparsedrive_live_native_outputs.pt",
+        "video": path / "video.mp4",
+        "runner_log": path.with_name(path.name + ".runner.log"),
+        "writer_log": path.with_name(path.name + ".writer.log"),
+    }
     return {
+        "reset_identity": {
+            "condition": condition,
+            "independent_process_reset": reset,
+            "audit_repo_commit": audit["audit_repo"]["commit"],
+        },
         "output": str(path),
+        "world_time": {
+            "start_s": float(first["timestamp"]),
+            "end_s": float(final["timestamp"]),
+            "elapsed_s": float(final["timestamp"] - first["timestamp"]),
+        },
         "final_ego_progress_m": longitudinal_progress(
             first["ego_box"], final["ego_box"]
         ),
@@ -225,10 +248,19 @@ def summarize_run(
         "maximum_projection_residual_l2": max(
             float(item["projection_residual_l2"]) for item in attempts
         ),
+        "cumulative_projection_residual_l2": sum(
+            float(item["projection_residual_l2"]) for item in attempts
+        ),
         "planning_mode_sequence": planning_modes(writer),
         "fallback_or_plan_repetition": bool(writer["padding_or_repetition_used"]),
         "run_status": audit["run_status"],
         "receiver_status": writer["status"],
+        "terminated": bool(audit["terminated"]),
+        "truncated": bool(audit["truncated"]),
+        "output_sha256": {
+            name: sha256(artifact_path)
+            for name, artifact_path in artifact_paths.items()
+        },
     }
 
 
@@ -285,7 +317,7 @@ def analyze(
             key = f"{condition}-reset{reset}"
             failures[key] = run_failures
             path = repo / preregistration["bounded_runs"][condition][reset - 1]["output"]
-            row = summarize_run(audit, writer, path)
+            row = summarize_run(audit, writer, path, condition, reset)
             runs[condition].append(row)
             mechanics_rows.append(
                 {
@@ -340,6 +372,7 @@ def analyze(
                         "first_saturation_elapsed_s",
                         "maximum_violation_amount",
                         "maximum_projection_residual_l2",
+                        "cumulative_projection_residual_l2",
                     )
                 }
                 for condition in CONDITIONS
@@ -445,8 +478,8 @@ def save_report(analysis: dict[str, Any], output: Path) -> Path:
             "",
             "## Per-run values",
             "",
-            "| condition | reset | progress (m) | final speed (m/s) | saturated steps | saturation fraction |",
-            "|---|---:|---:|---:|---:|---:|",
+            "| condition | reset | progress (m) | final speed (m/s) | saturated steps | fraction | cumulative residual L2 |",
+            "|---|---:|---:|---:|---:|---:|---:|",
         ]
     )
     for condition in CONDITIONS:
@@ -454,7 +487,8 @@ def save_report(analysis: dict[str, Any], output: Path) -> Path:
             lines.append(
                 f"| {condition} | {reset} | {row['final_ego_progress_m']:.6f} | "
                 f"{row['final_ego_speed_mps']:.6f} | {row['saturation_step_count']} | "
-                f"{row['saturation_fraction']:.3f} |"
+                f"{row['saturation_fraction']:.3f} | "
+                f"{row['cumulative_projection_residual_l2']:.6f} |"
             )
     lines.extend(
         [
@@ -487,9 +521,9 @@ def main() -> int:
         ],
         "executed_script_sha256": sha256(Path(__file__).resolve()),
         "erratum": (
-            "the executed script changes only the preregistration hash field "
-            "lookup from the JSON root to implementation.analysis_script_sha256; "
-            "measurements and decision rules are unchanged"
+            "the executed script corrects the preregistration hash field lookup "
+            "and completes preregistered provenance and projection-burden "
+            "reporting fields; measurements and decision rules are unchanged"
         ),
     }
     audit_path = output / "actuation_contract_audit.json"
