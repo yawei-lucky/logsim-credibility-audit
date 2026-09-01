@@ -13,7 +13,7 @@ result that it will later judge.
 Primary method records:
 
 ```text
-docs/world_simulator_credibility_method_001.md
+CREDIBILITY_VALIDATION_METHOD.md
 docs/runs/credibility_method_qualification_001.md
 docs/runs/credibility_method_qualification_001.json
 ```

@@ -2,7 +2,7 @@
 
 日期：2026-09-01
 
-方法合同：`docs/world_simulator_credibility_method_001.md`
+方法合同：`CREDIBILITY_VALIDATION_METHOD.md`
 
 机器记录：`docs/runs/credibility_method_qualification_001.json`
 

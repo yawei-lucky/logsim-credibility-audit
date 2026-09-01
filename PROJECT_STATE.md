@@ -159,7 +159,7 @@ Read only what the current work needs:
 1. current task: `CODEX_NEXT_TASK.md`;
 2. durable principles: `docs/research_guiding_principles.md`;
 3. counterfactual laws: `docs/counterfactual_credibility_constraints.md`;
-4. current method: `docs/world_simulator_credibility_method_001.md`;
+4. current method: `CREDIBILITY_VALIDATION_METHOD.md`;
 5. method qualification: `docs/runs/credibility_method_qualification_001.md`;
 6. metric qualification: `docs/hugsim_metric_evidence_map.md`;
 7. decisions: `docs/hugsim_credibility_decision_rules.md`;

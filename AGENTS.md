@@ -102,13 +102,16 @@ Start from the current task and load other sources only when they are relevant.
 Routine work should not reread the full project archive on every turn.
 
 1. Always start with `CODEX_NEXT_TASK.md`.
-2. Use `docs/research_guiding_principles.md` for durable research direction.
-3. Use `docs/counterfactual_credibility_constraints.md` for the current
+2. Use `CREDIBILITY_VALIDATION_METHOD.md` for the project-level credibility
+   claim contract, evidence network, mathematical decisions, and method
+   qualification boundary.
+3. Use `docs/research_guiding_principles.md` for durable research direction.
+4. Use `docs/counterfactual_credibility_constraints.md` for the current
    counterfactual-validity phase.
-4. Consult `docs/hugsim_metric_evidence_map.md` and
+5. Consult `docs/hugsim_metric_evidence_map.md` and
    `docs/hugsim_credibility_decision_rules.md` when designing or judging an
    experiment.
-5. Consult `PROJECT_STATE.md`, older plans, run records, and `README.md` only
+6. Consult `PROJECT_STATE.md`, older plans, run records, and `README.md` only
    when their history or interface is needed.
 6. Use `docs/hugsim_cuda_pixi_runbook.md` for runtime or GPU work.
 

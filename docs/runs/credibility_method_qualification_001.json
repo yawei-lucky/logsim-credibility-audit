@@ -2,7 +2,7 @@
   "schema_version": "0.1",
   "audit_id": "credibility_method_qualification_001",
   "date": "2026-09-01",
-  "method_contract": "docs/world_simulator_credibility_method_001.md",
+  "method_contract": "CREDIBILITY_VALIDATION_METHOD.md",
   "purpose": "Retrospectively test whether the bounded, non-compensatory credibility method distinguishes narrow positive evidence, known failures, ambiguity, and scope excess without rescoring historical experiments.",
   "sampling_boundary": {
     "selection": "purposeful retrospective challenge set",
