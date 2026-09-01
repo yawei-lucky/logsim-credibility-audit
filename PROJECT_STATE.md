@@ -1,6 +1,6 @@
 # LogSim Credibility Audit — Current State Index
 
-Last updated: 2026-08-25
+Last updated: 2026-09-01
 
 ## 1. Project question
 
@@ -126,28 +126,31 @@ feasible.
 
 ## 7. Current blocker
 
-The action interface is qualified, but the downstream vehicle-state transition
-is not. The released update can integrate an in-range braking command through
-zero into negative speed without an explicit reverse gear, forward-only clamp,
-or qualified near-stop heading convention.
+Credibility Method Qualification 001 has now separated the bounded claim,
+hard gates, factual domain difference, counterfactual effect, uncertainty and
+outcome evidence without a compensating total score. It correctly retained the
+repository's known narrow positives, known failures and cross-layer
+contradictions, so it is usable as a diagnostic framework.
 
-Until this is resolved, the 4/2/1 m bounded-loop reversal cannot be interpreted
-as a credible risk response, and complete-horizon clearance remains rejected.
+The method remains overall `down-weighted`: its challenge set was selected
+retrospectively, and no source-independent task acceptance boundary or
+prospective challenge has been qualified. The vehicle-state transition also
+remains unqualified, but it is now treated as a future experiment-specific
+execution gate rather than the research question itself.
 
 ## 8. Next single milestone
 
-Run **Vehicle-State Transition Qualification 001** as defined in
-`CODEX_NEXT_TASK.md`:
+Run **Task-Boundary Qualification 001** as defined in `CODEX_NEXT_TASK.md`:
 
-1. establish signed-speed, reverse, zero-speed, and heading semantics from
-   authoritative source/model intent;
-2. preregister frozen synthetic transition controls;
-3. qualify or reject a minimal state contract without adding a tracker;
-4. only then decide whether the unchanged 4/2/1 m loop merits a corrective
-   two-reset rerun.
+1. freeze one bounded claim card for critical-object/conflict ordering and its
+   planning or maneuver consequence;
+2. obtain an independent task/decision boundary or explicitly retain a
+   qualitative ordinal boundary;
+3. declare required `G/F/Q/U/O` evidence and uncertainty axes;
+4. select one prospective challenge not used to construct Method 001.
 
-Do not add scenes, receivers, actor conditions, or a final credibility score in
-this milestone.
+Do not run another scene, change the receiver, implement a vehicle model, or
+derive a pass threshold from current HUGSIM outputs in this milestone.
 
 ## 9. Sources of truth
 
@@ -156,8 +159,9 @@ Read only what the current work needs:
 1. current task: `CODEX_NEXT_TASK.md`;
 2. durable principles: `docs/research_guiding_principles.md`;
 3. counterfactual laws: `docs/counterfactual_credibility_constraints.md`;
-4. metric qualification: `docs/hugsim_metric_evidence_map.md`;
-5. decisions: `docs/hugsim_credibility_decision_rules.md`;
-6. latest run: `docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md`;
-7. detailed history: the relevant file under `docs/runs/` and Git history;
-8. runtime operations: `docs/hugsim_cuda_pixi_runbook.md`.
+4. current method: `docs/world_simulator_credibility_method_001.md`;
+5. method qualification: `docs/runs/credibility_method_qualification_001.md`;
+6. metric qualification: `docs/hugsim_metric_evidence_map.md`;
+7. decisions: `docs/hugsim_credibility_decision_rules.md`;
+8. detailed history: the relevant file under `docs/runs/` and Git history;
+9. runtime operations: `docs/hugsim_cuda_pixi_runbook.md`.

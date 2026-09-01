@@ -1,0 +1,223 @@
+{
+  "schema_version": "0.1",
+  "audit_id": "credibility_method_qualification_001",
+  "date": "2026-09-01",
+  "method_contract": "docs/world_simulator_credibility_method_001.md",
+  "purpose": "Retrospectively test whether the bounded, non-compensatory credibility method distinguishes narrow positive evidence, known failures, ambiguity, and scope excess without rescoring historical experiments.",
+  "sampling_boundary": {
+    "selection": "purposeful retrospective challenge set",
+    "independent_random_sample": false,
+    "held_out": false,
+    "allowed_interpretation": "logic qualification and known-failure discrimination",
+    "forbidden_interpretation": "statistical sensitivity, specificity, accuracy, or prospective generalization"
+  },
+  "current_claim_card": {
+    "simulator": "pinned HUGSIM and recorded adapters",
+    "task": "preserve vehicle-conflict ordering and planning-response direction",
+    "scope": "audited daytime urban six-camera slices and designed vehicle-conflict interventions",
+    "receiver": "pinned SparseDrive Stage2",
+    "interventions": "vehicle distance, lateral relation, occlusion, or speed with declared held-fixed variables",
+    "outputs": [
+      "intervention state",
+      "visible support",
+      "risk partial order",
+      "planning mode and trajectory",
+      "bounded closed-loop state"
+    ],
+    "qualified_uncertainty": "local same-pipeline repeat observations only",
+    "task_acceptance_boundary": "unqualified",
+    "independent_references": "partial real-RGB and factual AD anchors; no qualified state truth or real closed-loop consequence boundary",
+    "required_evidence": "must be selected prospectively from G/F/Q/U/O for each named claim"
+  },
+  "decision_logic": {
+    "labels": [
+      "accepted",
+      "down-weighted",
+      "rejected"
+    ],
+    "evidence_vector": [
+      "G_hard_gates",
+      "F_factual_equivalence",
+      "Q_counterfactual_effect",
+      "U_uncertainty_and_robustness",
+      "O_task_or_closed_loop_outcome"
+    ],
+    "non_compensatory": true,
+    "aggregate_score": false,
+    "rule": {
+      "any_required_rejected": "rejected",
+      "all_required_accepted": "accepted",
+      "no_required_rejected_but_any_down_weighted": "down-weighted"
+    }
+  },
+  "challenge_cases": [
+    {
+      "id": "P1_CF_M",
+      "role": "narrow_positive",
+      "evidence_ref": "docs/runs/hugsim_motion_metamorphic_001.md",
+      "verified_observation": "108 transitions; maximum integration residuals 5.46e-9, 1.09e-8, and 1.64e-8 m versus a 1e-5 m gate; travel order 36/36 and gap/clearance orders 37/37.",
+      "historical_decisions": {
+        "internal_constant_motion_relations": "accepted",
+        "overall_segment": "down-weighted"
+      },
+      "method_requirement": "accept the narrow internal relation without upgrading to real vehicle dynamics",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "P2_CF_O_CORRECTED",
+      "role": "narrow_positive",
+      "evidence_ref": "docs/runs/hugsim_occlusion_metamorphic_002.md",
+      "verified_observation": "Run001/run002 maximum RGB and ego-state differences were both zero; the obvious partial-versus-strong visibility endpoint held in 37/37 frames with zero reversals and zero unavailable frames.",
+      "historical_decisions": {
+        "geometry_and_endpoint_direction": "accepted",
+        "overall_segment": "down-weighted"
+      },
+      "method_requirement": "accept the corrected endpoint direction while withholding continuous-occlusion and real-sensor claims",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "P3_ORDINAL",
+      "role": "positive_with_missingness",
+      "evidence_ref": "docs/runs/hugsim_ordinal_metamorphic_001.md",
+      "verified_observation": "All four independent geometry relations held at 26/26 valid timestamps; two receiver relations were complete at 13/13 and two had one unavailable comparison at 6.5 s, with zero observed reversals.",
+      "historical_decisions": {
+        "two_complete_relations": "accepted",
+        "two_incomplete_relations": "down-weighted",
+        "all_timestamps_available": "rejected"
+      },
+      "method_requirement": "retain missingness and relation-level decisions without imputation or an aggregate pass",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "N1_PROJECTION_SIGN",
+      "role": "known_negative",
+      "evidence_ref": "docs/runs/hugsim_occlusion_metamorphic_001.md",
+      "verified_observation": "The actor produced 1641-3883 RGB-difference pixels per frame, while the wrong-sign projected mask overlapped none of them in 37/37 frames.",
+      "historical_decisions": {
+        "projection_measurement": "rejected",
+        "rgb_visibility_claim": "rejected",
+        "analyzer_coordinate_diagnostic": "accepted"
+      },
+      "method_requirement": "fail closed on an invalid measurement chain and avoid assigning the analyzer defect to simulator visibility capability",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "N2_HORIZON_PADDING",
+      "role": "known_negative",
+      "evidence_ref": "docs/runs/hugsim_horizon_factorial_001.md",
+      "verified_observation": "The 6 s rollout was horizon-valid only through 3.5 s; first TTC and NC failures occurred at 4.75 and 5.75 s; an extended rollout preserved the exact prefix and made those same checks pass with complete future states.",
+      "historical_decisions": {
+        "old_dynamic_risk_claim": "rejected",
+        "tail_padding_diagnostic": "accepted"
+      },
+      "method_requirement": "reject a risk claim manufactured by incomplete future history while accepting the isolated diagnostic",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "N3_ACTUATION_STATE",
+      "role": "known_negative_and_layer_separation",
+      "evidence_ref": "docs/runs/hugsim_sparsedrive_actuation_contract_qualification_001.md",
+      "verified_observation": "Six bounded runs completed 18/18 steps with every applied action inside the declared box, but near-minus-below progress was -0.352757 and -0.520462 m and near final speed was -0.270178 and -0.337445 m/s.",
+      "historical_decisions": {
+        "bounded_execution_mechanics": "accepted",
+        "response_order": "rejected",
+        "action_admissibility_implies_state_admissibility": "rejected"
+      },
+      "method_requirement": "prevent a valid action interface from compensating for an unqualified state transition or failed outcome relation",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "A1_FACTUAL_DOMAIN",
+      "role": "ambiguous_external_boundary",
+      "evidence_ref": "docs/runs/sparsedrive_real_sim_factual_001.md",
+      "verified_observation": "At the fully warmed frame, real-sim plan ADE was 0.358 m and endpoint difference was 0.639 m versus a paired repeat envelope of 9.54e-6 m; no externally qualified task equivalence bound exists.",
+      "historical_decisions": {
+        "domain_difference_measured": "accepted",
+        "real_world_equivalence": "down-weighted",
+        "pixel_agreement_implies_task_equivalence": "rejected"
+      },
+      "method_requirement": "report a measurable domain gap without inventing an equivalence threshold",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "A2_RESPONSE_DIRECTION",
+      "role": "ambiguous_effect",
+      "evidence_ref": "docs/runs/sparsedrive_same_window_counterfactual_001.md",
+      "verified_observation": "Median strong-minus-weak forward response was -1.484 m versus a 0.000204 m repeat envelope, but the preregistered direction held at only 3/5 warmed timestamps, with +1.249 m and +0.091 m reversals.",
+      "historical_decisions": {
+        "receiver_response_beyond_repeat": "accepted",
+        "unconditional_forward_progress_order": "rejected",
+        "real_world_effect_magnitude": "down-weighted"
+      },
+      "method_requirement": "separate response detectability, response direction, and external magnitude validity",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "A3_MANEUVER_DECOMPOSITION",
+      "role": "ambiguous_mechanism",
+      "evidence_ref": "docs/runs/sparsedrive_maneuver_conditioned_risk_001.md",
+      "verified_observation": "Frame 48's +1.249 m selected response decomposed into -0.366 m fixed-mode response plus +1.615 m selection contribution; at frame 54 the mode was unchanged and all six fixed modes reversed by +0.046 to +0.228 m.",
+      "historical_decisions": {
+        "candidate_mode_decomposition": "accepted",
+        "route_progress_as_general_risk": "down-weighted",
+        "original_unconditional_order": "rejected"
+      },
+      "method_requirement": "distinguish a mode-selection confound from a within-mode reversal without rescoring the original result",
+      "method_decision": "accepted"
+    },
+    {
+      "id": "A4_PIXEL_TASK",
+      "role": "cross_layer_contradiction",
+      "evidence_ref": "docs/runs/sparsedrive_natural_actor_bridge_001.md",
+      "verified_observation": "Factual-static plan ADE was 0.094668-0.094669 m versus 8.04e-7 m repeat, but real-factual ADE was 0.081572-0.081573 m and exceeded real-static ADE of 0.062376 m; the static input was later rejected as an actor-absence control.",
+      "historical_decisions": {
+        "dynamic_path_causes_ad_response": "accepted",
+        "dynamic_path_moves_plan_toward_real": "rejected",
+        "pixel_support_sufficient_for_task_equivalence": "rejected",
+        "overall_segment": "down-weighted"
+      },
+      "method_requirement": "retain pixel-positive/task-negative evidence and reject an unqualified negative control",
+      "method_decision": "accepted"
+    }
+  ],
+  "qualification_dimensions": [
+    {
+      "id": "MQ_ERROR_SENSITIVITY",
+      "decision": "accepted",
+      "basis": "Known coordinate, horizon, and action-to-state failures are rejected without discarding their diagnostic findings."
+    },
+    {
+      "id": "MQ_NARROW_POSITIVE_RECOGNITION",
+      "decision": "accepted",
+      "basis": "The method retains bounded motion, visibility, and ordinal positive controls without upgrading them to source-independent truth."
+    },
+    {
+      "id": "MQ_LAYER_AND_CONSTRUCT_SEPARATION",
+      "decision": "accepted",
+      "basis": "Response versus direction, pixel versus task, and interface versus state conclusions remain separately judged."
+    },
+    {
+      "id": "MQ_MISSINGNESS_AND_AMBIGUITY",
+      "decision": "accepted",
+      "basis": "Missing receiver associations and confirmed reversals are not imputed, averaged away, or retrospectively relabeled."
+    },
+    {
+      "id": "MQ_LOCAL_STABILITY",
+      "decision": "down-weighted",
+      "basis": "Same-pipeline repeats are usable local numerical references, but no qualified cross-scene uncertainty set exists."
+    },
+    {
+      "id": "MQ_EXTERNAL_EQUIVALENCE_CALIBRATION",
+      "decision": "rejected",
+      "basis": "The strong claim is unsupported because task acceptance bounds and real consequence references are not qualified."
+    },
+    {
+      "id": "MQ_PROSPECTIVE_GENERALIZATION",
+      "decision": "rejected",
+      "basis": "The retrospective challenge set is not held out and cannot establish coverage of unknown failure mechanisms."
+    }
+  ],
+  "overall_decision": "down-weighted",
+  "strongest_allowed_statement": "The first method version can organize and falsify bounded claims against the repository's known positive, negative, and ambiguous cases, but it is not yet externally calibrated to certify a simulator as a real-world AD test domain.",
+  "next_gate": "Freeze one externally defensible task or decision boundary and one prospective challenge before running another closed-loop experiment."
+}
