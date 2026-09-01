@@ -1,0 +1,160 @@
+{
+  "schema_version": "0.1",
+  "audit_id": "intersection_task_boundary_qualification_001",
+  "date": "2026-09-01",
+  "purpose": "Freeze one source-independent ordinal task boundary and one prospective intersection challenge before observing a new HUGSIM receiver result.",
+  "claim_card": {
+    "S": {
+      "simulator": "HUGSIM",
+      "commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+      "scene": "scene-0041",
+      "scene_archive_sha256": "8d066a3594ad5dc0f43944cff7ec1a5aa364011792236551e4802c483d0550fe"
+    },
+    "T": "preserve the ordinal relation of turn-completion opposing-path conflict and transport it into a fixed target AD's conflict-mitigating planning response",
+    "Omega": "scene-0041 daylight single-intersection reference-pose slice, one scripted opposing-path actor, one command context, complete 3 s plan future",
+    "A": {
+      "receiver": "SparseDrive-S Stage2",
+      "source_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+      "checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+      "role": "target AD under test, not truth"
+    },
+    "I": "change only the same actor's arrival phase at one frozen conflict region; hold actor asset, dimensions, path, pose convention, camera poses, ego history, command, timestamp origin, and rendering configuration fixed",
+    "Y": [
+      "signed conflict-region occupancy separation on one common ego path",
+      "change in signed occupancy separation under each native SparseDrive plan",
+      "selected planning mode and fixed-mode decomposition"
+    ],
+    "Theta": "independent resets and a preregistered small grid of arrival-phase and lateral-position perturbations; not a qualified real distribution",
+    "epsilon": {
+      "geometric_boundary_s": 0.0,
+      "meaning": "zero temporal overlap of footprint occupancy in the frozen conflict region",
+      "numerical_detectability": "local reset and time-discretization envelope only",
+      "real_safety_margin": "unqualified"
+    },
+    "R": "source-independent interval/set relation and external conflict construct; HUGSIM state remains the geometric input, so computational but not full source independence",
+    "Req": [
+      "G",
+      "Q",
+      "U",
+      "O_plan"
+    ]
+  },
+  "boundary": {
+    "name": "signed conflict-region occupancy separation",
+    "formula": "c=max(t_e_in,t_a_in)-min(t_e_out,t_a_out)",
+    "interpretation": {
+      "c_gt_0": "temporally separated occupancy",
+      "c_eq_0": "occupancy intervals touch",
+      "c_lt_0": "occupancy intervals overlap",
+      "ordinal_direction": "smaller c is stronger designed conflict when held-fixed conditions pass"
+    },
+    "independence": "the zero set-overlap boundary is not inferred from HUGSIM scores, SparseDrive output, repeat error, or a desired pass result",
+    "not_a_claim": [
+      "real-world safe time gap",
+      "collision probability",
+      "standard PET with a negative extension"
+    ],
+    "domain_conditions": "both actors have one continuous, non-empty conflict-region occupancy interval that is not censored by the analysis horizon",
+    "branches_to_freeze_before_use": [
+      "plan spatially avoids the conflict region",
+      "plan enters only after the 3 s horizon",
+      "multiple entries or exits",
+      "occupancy interval censored by a window boundary"
+    ]
+  },
+  "prospective_challenge": {
+    "scene": "scene-0041",
+    "selection_status": "selected before new actor rendering or SparseDrive inference",
+    "new_mechanism": "intersection, route curvature, and turn-completion opposing-path conflict rather than another same-lane lead-vehicle condition",
+    "preferred_ego_contract": "fixed replay of released metadata camera poses and timestamps",
+    "forbidden_baseline_interpretation": "the existing 9 s straight rollout is not the released left-turn route",
+    "placement_setup": {
+      "excluded_from_formal_judgment": true,
+      "candidate_forward_band_m": [
+        28.0,
+        32.0
+      ],
+      "purpose": "freeze visible, ground-supported actor placement and coordinate sign before preregistration",
+      "independent_lane_truth": "unavailable"
+    }
+  },
+  "verified_scene_facts": {
+    "reference_route_length_m": 110.08192,
+    "reference_net_heading_change_deg": -86.24572,
+    "first_command_transition": {
+      "arc_length_m": 9.97875,
+      "from": 2,
+      "to": 1
+    },
+    "second_command_transition": {
+      "arc_length_m": 39.58463,
+      "from": 1,
+      "to": 2
+    },
+    "existing_normal_rollout": {
+      "duration_s": 9.0,
+      "forward_progress_m": 17.50994,
+      "yaw_change_deg": 0.0,
+      "injected_actor_count": 0,
+      "command_switch_time_s": 5.25
+    },
+    "hd_map_available": false,
+    "source_rgb_available": false
+  },
+  "actor_contract": {
+    "asset": "2024_07_05_15_57_10",
+    "dimensions_wlh_m": [
+      1.625116202235222,
+      3.576178205013275,
+      1.1745154559612274
+    ],
+    "gs_sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
+    "controller": "explicit constant-velocity transforms at released metadata timestamps",
+    "behavior_claim": "scripted straight continuous motion only",
+    "reset_phase_note": "not applicable to the preferred exact-pose metadata path; the env ConstantPlanner fallback would advance one 0.25 s step before timestamp zero and must not share this phase contract"
+  },
+  "evidence_decisions": [
+    {
+      "claim": "zero occupancy-overlap is a source-independent geometric decision boundary",
+      "decision": "accepted",
+      "basis": "set and interval intersection, not simulator or receiver output"
+    },
+    {
+      "claim": "scene-0041 is a prospective new-mechanism ordinal challenge after an excluded placement setup",
+      "decision": "accepted",
+      "basis": "not used in Method Qualification 001 challenge results and no opposing-path actor receiver output has been observed"
+    },
+    {
+      "claim": "SparseDrive response can be judged by unconditional forward progress",
+      "decision": "rejected",
+      "basis": "intersection conflict may be mitigated by waiting, earlier passage, or spatial avoidance"
+    },
+    {
+      "claim": "SparseDrive ranks the injected actor as its critical object",
+      "decision": "rejected",
+      "basis": "the qualified interface has no calibrated critical-object identity or risk ranking"
+    },
+    {
+      "claim": "the zero occupancy boundary is a real-world safety threshold",
+      "decision": "rejected",
+      "basis": "no qualified real safety margin, probability, or consequence boundary"
+    },
+    {
+      "claim": "a conflict-mitigating SparseDrive response would have externally valid magnitude",
+      "decision": "down-weighted",
+      "basis": "only ordinal direction and local numerical detectability are currently qualified"
+    }
+  ],
+  "gate_outcome": "passed_for_ordinal_prospective_test_only",
+  "overall_decision": "down-weighted",
+  "strongest_future_statement_if_all_preregistered_checks_pass": "Within the declared scene-0041 reference-pose window, common path and artificial arrival-phase grid, HUGSIM state preserved the preregistered opposing-path occupancy order and the fixed SparseDrive receiver produced a visible, locally distinguishable and directionally interpretable conflict-mitigation response.",
+  "forbidden_conclusions": [
+    "real-world safety threshold or collision probability",
+    "SparseDrive internal critical-object ranking",
+    "response-magnitude realism",
+    "matched real-sim equivalence",
+    "closed-loop safety",
+    "general HUGSIM credibility"
+  ],
+  "next_gate": "run an excluded reference-pose geometry placement setup, freeze one conflict region and path without inspecting SparseDrive output, then preregister separated, boundary, and overlap arrival phases"
+}

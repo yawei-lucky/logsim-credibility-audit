@@ -11,6 +11,7 @@ sys.path.insert(0, str(REPO_ROOT / "scripts"))
 from render_hugsim_exact_source_pose import (  # noqa: E402
     CAMERAS,
     image_metrics,
+    load_reference_inputs,
     parse_checkpoint_specs,
     records_without_dynamics,
     select_camera_records,
@@ -86,6 +87,22 @@ class HugsimExactSourcePoseRenderTest(unittest.TestCase):
         self.assertEqual(different["mae"], 1)
         self.assertEqual(different["mse"], 1)
         self.assertEqual(different["psnr_db"], 0)
+
+    def test_render_only_reference_is_explicit_zero_placeholder(self):
+        records = {
+            camera: {
+                "rgb_path": f"./images/{camera}/00004.jpg",
+                "width": 8,
+                "height": 6,
+            }
+            for camera in CAMERAS
+        }
+        images, paths = load_reference_inputs(records, None)
+
+        self.assertEqual(set(images), set(CAMERAS))
+        self.assertTrue(all(image.shape == (6, 8, 3) for image in images.values()))
+        self.assertTrue(all(not image.any() for image in images.values()))
+        self.assertTrue(all(path is None for path in paths.values()))
 
 
 if __name__ == "__main__":

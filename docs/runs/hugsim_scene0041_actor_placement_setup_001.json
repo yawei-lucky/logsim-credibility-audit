@@ -1,0 +1,165 @@
+{
+  "schema_version": "0.1",
+  "audit_id": "hugsim_scene0041_actor_placement_setup_001",
+  "date": "2026-09-01",
+  "formal_evidence_eligible": false,
+  "purpose": "Identify one internally supported static actor corridor candidate and approximate conflict centre without inspecting SparseDrive output.",
+  "inputs": {
+    "scene": "scene-0041",
+    "scene_archive_sha256": "8d066a3594ad5dc0f43944cff7ec1a5aa364011792236551e4802c483d0550fe",
+    "metadata": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0041/meta_data.json",
+    "actor_asset": "2024_07_05_15_57_10",
+    "actor_dimensions_wlh_m": [
+      1.625116202235222,
+      3.576178205013275,
+      1.1745154559612274
+    ],
+    "actor_checkpoint_sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
+    "source_rgb_available": false
+  },
+  "broad_scan": {
+    "frame_indices": [
+      36,
+      42,
+      48
+    ],
+    "fixed_world_z_m": 30.0,
+    "fixed_heading_deg": 90.0,
+    "candidates_world_x_m": {
+      "left": -8.0,
+      "center": -2.0,
+      "right": 4.0
+    },
+    "manifest": "artifacts/hugsim_scene0041_intersection_setup/placement-metadata-run001/actor_placement_setup_manifest.json",
+    "render_reports": [
+      "artifacts/hugsim_scene0041_intersection_setup/render-frame036-run001/exact_pose_render.json",
+      "artifacts/hugsim_scene0041_intersection_setup/render-frame042-run001/exact_pose_render.json",
+      "artifacts/hugsim_scene0041_intersection_setup/render-frame048-run001/exact_pose_render.json"
+    ]
+  },
+  "narrow_scan": {
+    "frame_indices": [
+      54,
+      60
+    ],
+    "fixed_world_z_m": 30.0,
+    "fixed_heading_deg": 90.0,
+    "candidates_world_x_m": {
+      "before": -16.0,
+      "conflict": -12.5,
+      "after": -9.0
+    },
+    "manifest": "artifacts/hugsim_scene0041_intersection_setup/placement-metadata-run002/actor_placement_setup_manifest.json",
+    "provenance_manifest": "artifacts/hugsim_scene0041_intersection_setup/placement-metadata-run003/actor_placement_setup_manifest.json",
+    "provenance_manifest_reproduces_run002_metadata_hashes": true,
+    "render_reports": [
+      "artifacts/hugsim_scene0041_intersection_setup/render-frame054-run001/exact_pose_render.json",
+      "artifacts/hugsim_scene0041_intersection_setup/render-frame060-run001/exact_pose_render.json"
+    ]
+  },
+  "reference_ego_model_poses": [
+    {
+      "frame": 60,
+      "timestamp_s": 5.04907488822937,
+      "world_x_m": -8.873704,
+      "world_z_m": 28.575156
+    },
+    {
+      "frame": 63,
+      "timestamp_s": 5.274687051773071,
+      "world_x_m": -10.412987,
+      "world_z_m": 29.377226
+    },
+    {
+      "frame": 66,
+      "timestamp_s": 5.500298976898193,
+      "world_x_m": -11.738885,
+      "world_z_m": 29.773272
+    },
+    {
+      "frame": 69,
+      "timestamp_s": 5.750524997711182,
+      "world_x_m": -13.547138,
+      "world_z_m": 30.373607
+    }
+  ],
+  "frozen_setup_result": {
+    "actor_corridor_candidate_world_z_m": 30.0,
+    "actor_heading_deg_from_world_positive_z": 90.0,
+    "actor_forward_world_axis": "+x",
+    "approximate_conflict_centre_world_xz_m": [
+      -12.5,
+      30.0
+    ],
+    "mechanism_label": "turn-completion opposing-path near-head-on conflict candidate",
+    "nearest_reference_path_relation": {
+      "nearest_frame_index": 68,
+      "nearest_timestamp_s": 5.667116165161133,
+      "centre_distance_m": 0.2793322476155054,
+      "ego_tangent_heading_deg": -71.48845448438314,
+      "actor_heading_deg": 90.0,
+      "absolute_heading_difference_deg": 161.48845448438317
+    },
+    "precise_conflict_region_rule": "candidate only: intersection of the reference ego footprint swept corridor and actor footprint swept corridor; polygon, interpolation, yaw source, error and exceptional branches remain unqualified",
+    "ego_contract": "released metadata reference model path and time",
+    "formal_command_context": 1,
+    "actor_behavior_claim": "static transform setup only; constant-speed future is not yet qualified"
+  },
+  "software_checks": {
+    "command": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python -m unittest tests.test_hugsim_exact_source_pose_render tests.test_hugsim_actor_placement_metadata tests.test_hugsim_lead_counterfactual_metadata",
+    "tests_run": 14,
+    "tests_passed": 14,
+    "result": "accepted"
+  },
+  "decisions": [
+    {
+      "claim": "render-only mode does not report source-image comparison metrics",
+      "decision": "accepted",
+      "basis": "real_reference_available is false and all image metrics are null; contract tests pass"
+    },
+    {
+      "claim": "the static corridor candidate has enough internal ground and visible RGB support for a dynamic qualification attempt",
+      "decision": "accepted",
+      "basis": "five exact-pose contact sheets and camera-specific hash changes agree with expected viewing direction"
+    },
+    {
+      "claim": "the approximate conflict centre is near the reference ego path",
+      "decision": "accepted",
+      "basis": "nearest source-model pose is 0.279 m away at frame 68"
+    },
+    {
+      "claim": "the corridor represents crossing traffic",
+      "decision": "rejected",
+      "basis": "ego and actor headings differ by 161.49 degrees; the mechanism is opposing-path near-head-on"
+    },
+    {
+      "claim": "static placement qualifies dynamic continuity, phase and future-state completeness",
+      "decision": "rejected",
+      "basis": "no dynamic metadata trajectory has been generated or audited"
+    },
+    {
+      "claim": "actor box or model projection is qualified against rendered RGB",
+      "decision": "rejected",
+      "basis": "no projection overlay or alignment error is recorded yet"
+    },
+    {
+      "claim": "the path is an independently verified legal lane and traffic direction",
+      "decision": "rejected",
+      "basis": "no local HD map or independent lane annotation"
+    },
+    {
+      "claim": "this excluded setup is formal simulator-credibility evidence",
+      "decision": "rejected",
+      "basis": "the setup was used to choose placement and is ineligible by preregistered role"
+    },
+    {
+      "claim": "the actor render is source-sensor equivalent",
+      "decision": "rejected",
+      "basis": "scene-0041 source RGB is unavailable"
+    }
+  ],
+  "static_candidate_gate": "accepted",
+  "formal_dynamic_experiment_gate": "rejected",
+  "overall_decision": "down-weighted",
+  "next_gate": "qualify dynamic timestamped transforms and actor projection alignment, then freeze the swept-corridor conflict region and exceptional branches before preregistration or SparseDrive"
+}

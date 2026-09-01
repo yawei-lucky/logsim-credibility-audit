@@ -97,6 +97,42 @@ def image_metrics(real: np.ndarray, rendered: np.ndarray) -> dict[str, float]:
     return result
 
 
+def load_reference_inputs(
+    records: dict[str, dict[str, Any]],
+    real_root: Path | None,
+) -> tuple[dict[str, np.ndarray], dict[str, Path | None]]:
+    """Load source RGB or make explicit render-only camera placeholders.
+
+    HUGSIM's ``Camera`` object requires an image tensor even though scene
+    rendering does not use source RGB as an input.  A zero placeholder is
+    therefore permitted only when ``real_root`` is absent, and callers must
+    not compute or report real-versus-render metrics in that mode.
+    """
+
+    import imageio.v2 as imageio
+
+    images: dict[str, np.ndarray] = {}
+    paths: dict[str, Path | None] = {}
+    for camera, frame in records.items():
+        declared_shape = (int(frame["height"]), int(frame["width"]))
+        if real_root is None:
+            images[camera] = np.zeros((*declared_shape, 3), dtype=np.uint8)
+            paths[camera] = None
+            continue
+        path = real_root / frame["rgb_path"].removeprefix("./")
+        image = imageio.imread(path)
+        if image.ndim != 3 or image.shape[2] < 3:
+            raise ValueError(f"invalid RGB image: {path}")
+        image = image[:, :, :3]
+        if image.shape[:2] != declared_shape:
+            raise ValueError(
+                f"{camera} image shape {image.shape[:2]} != {declared_shape}"
+            )
+        images[camera] = image
+        paths[camera] = path
+    return images, paths
+
+
 def parse_metadata_specs(specs: list[str]) -> dict[str, Path]:
     parsed = {}
     for spec in specs:
@@ -140,8 +176,8 @@ def git_commit(repo: Path) -> str | None:
 
 
 def render_variants(args: argparse.Namespace) -> dict[str, Any]:
-    import imageio.v2 as imageio
     import matplotlib.pyplot as plt
+    import imageio.v2 as imageio
     import torch
     from omegaconf import OmegaConf
 
@@ -229,21 +265,11 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
 
     bg_color = [1.0, 1.0, 1.0] if cfg.model.white_background else [0.0, 0.0, 0.0]
     background = torch.tensor(bg_color, dtype=torch.float32, device="cuda")
-    real_images = {}
-    real_paths = {}
-    for camera, frame in reference_records.items():
-        path = args.real_root / frame["rgb_path"].removeprefix("./")
-        image = imageio.imread(path)
-        if image.ndim != 3 or image.shape[2] < 3:
-            raise ValueError(f"invalid RGB image: {path}")
-        image = image[:, :, :3]
-        declared_shape = (int(frame["height"]), int(frame["width"]))
-        if image.shape[:2] != declared_shape:
-            raise ValueError(
-                f"{camera} image shape {image.shape[:2]} != {declared_shape}"
-            )
-        real_images[camera] = image
-        real_paths[camera] = path
+    real_images, real_paths = load_reference_inputs(
+        reference_records,
+        args.real_root,
+    )
+    has_real_reference = args.real_root is not None
 
     variants = {}
     render_arrays: dict[str, dict[str, np.ndarray]] = {}
@@ -293,26 +319,41 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
             render_arrays[label][camera] = rendered
             render_path = variant_dir / f"{camera}.png"
             imageio.imwrite(render_path, rendered)
-            camera_results[camera] = {
+            camera_result = {
                 "render_path": str(render_path),
                 "render_sha256": sha256_file(render_path),
-                "real_path": str(real_paths[camera]),
-                "real_sha256": sha256_file(real_paths[camera]),
                 "width": int(frame["width"]),
                 "height": int(frame["height"]),
                 "timestamp_s": float(frame["timestamp"]),
                 "native_dynamic_ids": sorted(frame.get("dynamics", {})),
-                "metrics": image_metrics(real_image, rendered),
+                "real_reference_available": has_real_reference,
             }
-        finite_psnr = [
-            result["metrics"]["psnr_db"] for result in camera_results.values()
-        ]
-        variants[label] = {
-            "metadata_path": str(metadata_paths[label]),
-            "metadata_sha256": sha256_file(metadata_paths[label]),
-            "native_dynamics_omitted": label in omitted_dynamic_labels,
-            "camera_results": camera_results,
-            "mean_metrics": {
+            if has_real_reference:
+                real_path = real_paths[camera]
+                assert real_path is not None
+                camera_result.update(
+                    {
+                        "real_path": str(real_path),
+                        "real_sha256": sha256_file(real_path),
+                        "metrics": image_metrics(real_image, rendered),
+                    }
+                )
+            else:
+                camera_result.update(
+                    {
+                        "real_path": None,
+                        "real_sha256": None,
+                        "metrics": None,
+                    }
+                )
+            camera_results[camera] = camera_result
+        mean_metrics = None
+        if has_real_reference:
+            finite_psnr = [
+                result["metrics"]["psnr_db"]
+                for result in camera_results.values()
+            ]
+            mean_metrics = {
                 "mae": float(
                     np.mean(
                         [result["metrics"]["mae"] for result in camera_results.values()]
@@ -338,27 +379,49 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
                     for result in camera_results.values()
                 )
                 else None,
-            },
+            }
+        variants[label] = {
+            "metadata_path": str(metadata_paths[label]),
+            "metadata_sha256": sha256_file(metadata_paths[label]),
+            "native_dynamics_omitted": label in omitted_dynamic_labels,
+            "camera_results": camera_results,
+            "mean_metrics": mean_metrics,
         }
 
+    reference_columns = 1 if has_real_reference else 0
     figure, axes = plt.subplots(
         len(CAMERAS),
-        1 + len(render_arrays),
-        figsize=(5.2 * (1 + len(render_arrays)), 2.6 * len(CAMERAS)),
+        reference_columns + len(render_arrays),
+        figsize=(
+            5.2 * (reference_columns + len(render_arrays)),
+            2.6 * len(CAMERAS),
+        ),
         squeeze=False,
     )
     labels = list(render_arrays)
     for row, camera in enumerate(CAMERAS):
-        axes[row, 0].imshow(real_images[camera])
-        axes[row, 0].set_title(f"{camera} — official sample RGB")
-        axes[row, 0].axis("off")
-        for column, label in enumerate(labels, start=1):
+        if has_real_reference:
+            axes[row, 0].imshow(real_images[camera])
+            axes[row, 0].set_title(f"{camera} — source RGB")
+            axes[row, 0].axis("off")
+        for offset, label in enumerate(labels):
+            column = reference_columns + offset
             axes[row, column].imshow(render_arrays[label][camera])
-            score = variants[label]["camera_results"][camera]["metrics"]["psnr_db"]
-            axes[row, column].set_title(f"{label} render — PSNR {score:.2f} dB")
+            if has_real_reference:
+                score = variants[label]["camera_results"][camera]["metrics"][
+                    "psnr_db"
+                ]
+                title = f"{label} render — PSNR {score:.2f} dB"
+            else:
+                title = f"{camera} — {label} render"
+            axes[row, column].set_title(title)
             axes[row, column].axis("off")
     figure.tight_layout()
-    comparison_path = output / "real_vs_pose_variants.png"
+    comparison_path = output / (
+        "real_vs_pose_variants.png"
+        if has_real_reference
+        else "pose_variants_render_only.png"
+    )
     figure.savefig(comparison_path, dpi=140)
     plt.close(figure)
 
@@ -392,7 +455,8 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
             },
         },
         "source": {
-            "real_root": str(args.real_root),
+            "real_reference_available": has_real_reference,
+            "real_root": str(args.real_root) if args.real_root else None,
             "archive_manifest": str(manifest_path) if manifest_path else None,
             "archive_manifest_sha256": (
                 sha256_file(manifest_path) if manifest_path else None
@@ -403,6 +467,12 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
         "comparison_path": str(comparison_path),
         "comparison_sha256": sha256_file(comparison_path),
         "claim_boundary": (
+            "This render-only run anchors camera pose, intrinsics and timestamp "
+            "to released metadata but has no source RGB reference; it cannot "
+            "support image-error, matched real-sim, sensor-equivalence or AD-"
+            "equivalence claims."
+            if not has_real_reference
+            else
             "This run compares current-checkpoint rendering error under declared "
             "pose metadata variants. It does not by itself establish original "
             "nuScenes token provenance, sensor equivalence, or AD equivalence."
@@ -419,7 +489,16 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--hugsim-repo", type=Path, required=True)
     parser.add_argument("--model-dir", type=Path, required=True)
-    parser.add_argument("--real-root", type=Path, required=True)
+    reference_group = parser.add_mutually_exclusive_group(required=True)
+    reference_group.add_argument("--real-root", type=Path)
+    reference_group.add_argument(
+        "--no-real-reference",
+        action="store_true",
+        help=(
+            "Render from metadata without reading source RGB. This mode emits "
+            "no image-error metrics and cannot support matched real-sim claims."
+        ),
+    )
     parser.add_argument("--metadata", action="append", required=True)
     parser.add_argument(
         "--omit-dynamics",
@@ -452,7 +531,8 @@ def main() -> int:
     args = parse_args()
     args.hugsim_repo = args.hugsim_repo.resolve()
     args.model_dir = args.model_dir.resolve()
-    args.real_root = args.real_root.resolve()
+    if args.real_root is not None:
+        args.real_root = args.real_root.resolve()
     result = render_variants(args)
     print(json.dumps(result, indent=2, sort_keys=True, allow_nan=False))
     return 0
