@@ -1,0 +1,118 @@
+{
+  "schema_version": "0.1",
+  "experiment_id": "hugsim_scene0041_opposing_path_001",
+  "date_frozen": "2026-09-05",
+  "status": "frozen_before_formal stimulus rendering and SparseDrive inference",
+  "purpose": "Test whether one fixed camera-only planning receiver preserves and directionally mitigates a preregistered separated-boundary-overlap ordering for a designed opposing-path actor in scene-0041.",
+  "claim_boundary": "At most this experiment can support a scene-, receiver-, path-, asset- and phase-grid-specific task-response claim. It cannot establish lane legality, real-world safety margins, actor behaviour realism, matched real-sim equivalence, collision probability, closed-loop safety or general HUGSIM credibility.",
+  "simulator": {
+    "name": "HUGSIM",
+    "source_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "scene": "scene-0041",
+    "source_metadata_sha256": "c7392594723a4ca193929fa8e474d67fceeb737fbca3785d69fbd46c8fb4b4e4",
+    "source_rgb_available": false,
+    "mode": "open-loop exact released metadata camera poses"
+  },
+  "receiver": {
+    "name": "SparseDrive-S Stage2",
+    "role": "fixed target AD receiver, not simulator truth",
+    "source_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+    "checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+    "history_source_frames": [30, 36, 42, 48],
+    "evaluation_source_frame": 48,
+    "history_spacing": "released timestamps, approximately 0.5 s",
+    "planning_horizon_s": 3.0,
+    "command": 1,
+    "replicates_per_condition": 2
+  },
+  "intervention": {
+    "actor_id": "audit_opposing_actor",
+    "actor_checkpoint_sha256": "3d8b314a9c2ae521464f3973edb4122958f8b580e4168bd6047fc0186094d006",
+    "actor_dimensions_wlh_m": [
+      1.625116202235222,
+      3.576178205013275,
+      1.1745154559612274
+    ],
+    "corridor_world": {
+      "z_m": 30.0,
+      "heading_deg_from_positive_z": 90.0,
+      "speed_mps": 4.0,
+      "conflict_centre_xz_m": [-12.5, 30.0]
+    },
+    "changed_across_conditions": "actor arrival timestamp at the fixed conflict centre only",
+    "held_fixed": [
+      "actor asset, dimensions, speed, heading, height offset and spatial corridor",
+      "all 180 released timestamps and six-camera intrinsics and poses",
+      "background checkpoint and native scene dynamics",
+      "receiver weights, history frames, command, ego state and planning horizon"
+    ]
+  },
+  "conditions": {
+    "separated": {
+      "arrival_timestamp_s": 2.827116165161133,
+      "metadata_sha256": "93e037c0b4f1aa76176b82e70b36bf07f8730093f63ea565de7e5807f404510d",
+      "actor_occupancy_interval_s": [0.11, 4.3],
+      "expected_signed_occupancy_gap_s": 0.5
+    },
+    "boundary": {
+      "arrival_timestamp_s": 3.327116165161133,
+      "metadata_sha256": "1c87f371ad45ca850b24e85183b212b627ceac27cca2879609f6bd54cf74a4f0",
+      "actor_occupancy_interval_s": [0.61, 4.8],
+      "expected_signed_occupancy_gap_s": 0.0
+    },
+    "overlap": {
+      "arrival_timestamp_s": 4.327116165161133,
+      "metadata_sha256": "4df83314fda3193e38272bbcf412e855de76f74e2bf59f5c56486a54a2f97081",
+      "actor_occupancy_interval_s": [1.61, 5.8],
+      "expected_signed_occupancy_gap_s": -1.0
+    }
+  },
+  "qualified_instruments": {
+    "dynamic_metadata_manifest_sha256": "507a2a09f09c53a4338eb4b80cda035e51c5992f056fe3b3f40d885678d40e9c",
+    "dynamic_generator_sha256": "f2099a0ed82c6df936dbf65c921072b1b60308658b449ddecdcc9827940e4321",
+    "projection_analyzer_sha256": "badfc9d64b871107bcd4a4c8a10ce0662baf35fd43be40024ead0fc6bae75a55",
+    "conflict_analyzer_sha256": "973e6cf1f52f900f6470849ea07df86c4b7645e2d38f202379b0b5f58ba7cde9",
+    "conflict_region_geojson_sha256": "dad32a3816de5a9243d71417cf692cb85e2443ef5d653e94ac0f9c6abfb69b29",
+    "ego_occupancy_interval_s": [4.8, 6.97],
+    "finite_c_numerical_error_bound_s": 0.02,
+    "footprint_limit": "ego dimensions are HUGSIM internal defaults and actor dimensions are the pinned RealCar asset; neither is independent real-world geometry truth"
+  },
+  "formal_input_gate": {
+    "render_frames": [30, 36, 42, 48],
+    "render_variants": ["factual", "separated", "boundary", "overlap"],
+    "minimum_visible_cameras_per_condition_at_evaluation_frame": 1,
+    "projection_rgb_difference_threshold_8bit": 5,
+    "minimum_rgb_difference_pixels": 40,
+    "minimum_difference_support_coverage": 0.85,
+    "maximum_projection_bbox_centroid_error_px": 24.0,
+    "failure_rule": "If any condition has no visible support at frame 48, materially mismatched projection, changed held-fixed camera inputs, incomplete actor states or a failed geometry order, stop before SparseDrive inference."
+  },
+  "geometry_acceptance": {
+    "required_order": "c_separated > c_boundary > c_overlap",
+    "expected_values_s": [0.5, 0.0, -1.0],
+    "absolute_tolerance_s": 0.02,
+    "special_branches": {
+      "spatial_avoidance": "categorical result with c=null",
+      "entry_only_after_3s_horizon": "categorical result with c=null unless an explicit longer future qualifies it",
+      "multiple_entries": "rejected for finite c; c=null",
+      "window_censoring": "rejected for finite c; c=null"
+    }
+  },
+  "receiver_outcomes": {
+    "primary": "For the selected native plan, recompute conflict-region occupancy relative to the same actor future and report conflict mitigation relative to the fixed released ego reference path.",
+    "secondary": [
+      "selected planning mode and score margin",
+      "all six fixed-mode trajectories without behavioural names",
+      "final longitudinal and lateral displacement",
+      "whether the plan spatially avoids C or has a complete single occupancy interval"
+    ],
+    "directional_expectation": "The overlap condition should not receive less conflict mitigation than boundary, and boundary should not receive less than separated, unless a documented planning-mode change supplies an alternative conflict-reducing explanation.",
+    "discriminability": "A claimed response must exceed the larger of the two-reset local repeat envelope and the 0.02 s geometry discretization bound.",
+    "no_critical_object_claim": "SparseDrive does not expose a qualified critical-object identity; no internal risk-ranking claim will be made."
+  },
+  "evidence_labels_if_completed": {
+    "dynamic_and_projection_transport": "accepted only for gross simulator-internal contract checks",
+    "task_response": "at most down-weighted because no matched real reference or externally qualified response magnitude exists",
+    "real_world_safety_or_general_simulator_credibility": "rejected"
+  }
+}
