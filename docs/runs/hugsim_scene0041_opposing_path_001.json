@@ -1,0 +1,153 @@
+{
+  "schema_version": "0.1",
+  "experiment_id": "hugsim_scene0041_opposing_path_001",
+  "date": "2026-09-05",
+  "preregistration": "docs/runs/hugsim_scene0041_opposing_path_preregistration_001.json",
+  "preregistration_commit": "c9dba9c",
+  "scene": "scene-0041",
+  "receiver": "SparseDrive-S Stage2",
+  "design": {
+    "actor_speed_mps": 4.0,
+    "actor_heading_deg_from_positive_z": 90.0,
+    "conflict_centre_world_xz_m": [-12.5, 30.0],
+    "history_frames": [30, 36, 42, 48],
+    "evaluation_frame": 48,
+    "receiver_command_one_hot_right_left_straight": [0, 1, 0],
+    "conditions": {
+      "separated": {"arrival_timestamp_s": 2.827116165161133, "public_reference_c_s": 0.5},
+      "boundary": {"arrival_timestamp_s": 3.327116165161133, "public_reference_c_s": 0.0},
+      "overlap": {"arrival_timestamp_s": 4.327116165161133, "public_reference_c_s": -1.0}
+    },
+    "finite_c_numerical_error_bound_s": 0.02
+  },
+  "dynamic_contract": {
+    "frames": 180,
+    "duration_s": 14.816182613372803,
+    "maximum_timestamp_step_s": 0.09160614013671875,
+    "maximum_horizontal_speed_error_mps": 0.0,
+    "maximum_step_residual_m": 3.53637187295361e-15,
+    "all_conditions_passed": true,
+    "manifest": "artifacts/hugsim_scene0041_opposing_path_dynamic/dynamic-metadata-run004/dynamic_contract_manifest.json",
+    "manifest_sha256": "507a2a09f09c53a4338eb4b80cda035e51c5992f056fe3b3f40d885678d40e9c"
+  },
+  "formal_input_gate": {
+    "passed": true,
+    "render_report_sha256": {
+      "frame_30": "8e9c8b7f012e3ce3357fa01f2cd7e44a363e43fcecc395f8a3b6147d1cb41fde",
+      "frame_36": "fca6e6e9617088808b5136ddadbc30e7fdb1e9e631dfa884e612542010aa222a",
+      "frame_42": "63c384f3fb1a3a936aefacb644ab80572717798422159a7c4069ee1ad9f7c833",
+      "frame_48": "8852f7b542dbb903e7cac736671ff28eff70d0ca1f3c75e39008343f0b801ddc"
+    },
+    "projection_at_frame_48": {
+      "separated": {
+        "visible_cameras": ["CAM_FRONT"],
+        "minimum_difference_support_coverage": 1.0,
+        "maximum_bbox_centroid_error_px": 2.5495097567963922
+      },
+      "boundary": {
+        "visible_cameras": ["CAM_FRONT"],
+        "minimum_difference_support_coverage": 1.0,
+        "maximum_bbox_centroid_error_px": 0.7071067811865476
+      },
+      "overlap": {
+        "visible_cameras": ["CAM_FRONT", "CAM_FRONT_LEFT"],
+        "minimum_difference_support_coverage": 1.0,
+        "maximum_bbox_centroid_error_px": 0.7071067811865476
+      }
+    }
+  },
+  "receiver_result": {
+    "held_fixed_timestamp_pose_ego_status_and_command": true,
+    "same_selected_mode_across_conditions": true,
+    "selected_mode_index": 2,
+    "repeat_envelope_m": 0.000030517578125,
+    "pairwise_maximum_absolute_plan_difference_m": {
+      "separated_vs_boundary": 0.23439407348632812,
+      "boundary_vs_overlap": 1.117995262145996
+    },
+    "all_pairwise_differences_exceed_repeat_envelope": true,
+    "final_forward_progress_m": {
+      "separated": 11.364144325256348,
+      "boundary": 11.167792320251465,
+      "overlap": 12.285787582397461
+    },
+    "raw_forward_order_expected": false,
+    "plan_occupancy": {
+      "separated": {"category": "censored_right", "observed_interval_count": 2, "finite_c": null},
+      "boundary": {"category": "censored_right", "observed_interval_count": 1, "finite_c": null},
+      "overlap": {"category": "censored_right", "observed_interval_count": 2, "finite_c": null}
+    },
+    "finite_conflict_mitigation_order_available": false,
+    "receiver_report": "artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-sequences-run001/sparsedrive_exact_render_sequence.json",
+    "receiver_report_sha256": "3d21ef61cfabd7df0d973be617448f29b5dbb01c3e28f1f86902c959983b9d12",
+    "response_report": "artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-response-run002/sparsedrive_opposing_path_response.json",
+    "response_report_sha256": "9ae93e8831092b02d4c87bd06a85364af59ad008911632065bdce5750c12f42b"
+  },
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "credibility": {
+    "decision": "down-weighted",
+    "reason": "The intervention and receiver-response contracts pass, but the preregistered finite conflict verdict fails closed because the selected plans are horizon-censored and sometimes have multiple occupancy intervals.",
+    "claim_decisions": {
+    "declared_phase_intervention_preserves_the_preregistered_public_geometry_order": "accepted",
+    "declared_actor_transform_reaches_its_own_hugsim_rgb_rasterization": "accepted",
+    "sparsedrive_output_changes_are_distinguishable_from_local_repeat_noise": "accepted",
+    "selected_plan_conflict_mitigation_order_is_available_from_finite_c": "rejected",
+    "raw_final_forward_progress_obeys_the_expected_risk_order": "rejected",
+    "bounded_task_response_evidence": "down-weighted",
+    "real_world_safety_or_general_hugsim_credibility": "rejected"
+    },
+    "rejected_claim_contexts": {
+    "selected_plan_conflict_mitigation_order_is_available_from_finite_c": {
+      "tested": true,
+      "rejection_basis": "invalidated_by_diagnostic",
+      "reason": "All selected 3 s plans remain in C at the right horizon boundary; separated and overlap also contain two observed occupancy intervals. The preregistered fail-closed rule therefore returns c=null.",
+      "evidence_refs": ["artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-response-run002/sparsedrive_opposing_path_response.json"],
+      "diagnostic_finding": "planning_horizon_conflict_region_mismatch"
+    },
+    "raw_final_forward_progress_obeys_the_expected_risk_order": {
+      "tested": true,
+      "rejection_basis": "contradicted_by_evidence",
+      "reason": "Overlap advances 12.286 m while boundary advances 11.168 m under the same selected mode; raw progress is auxiliary and cannot replace finite c.",
+      "evidence_refs": ["artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-response-run002/sparsedrive_opposing_path_response.json"],
+      "diagnostic_finding": "auxiliary_progress_nonmonotonic"
+    },
+    "real_world_safety_or_general_hugsim_credibility": {
+      "tested": false,
+      "rejection_basis": "scope_exceeds_evidence",
+      "reason": "The experiment has no matched real source RGB, independent lane truth, externally qualified footprint truth or real outcome reference.",
+      "evidence_refs": ["docs/runs/hugsim_scene0041_opposing_path_preregistration_001.json"],
+      "diagnostic_finding": null
+    }
+    }
+  },
+  "diagnostic_findings": {
+    "receiver_response_detectable": {
+      "component": "agent",
+      "expected": "Preregistered input changes should produce plan changes larger than reset variation if they reach the receiver.",
+      "observed": "Adjacent-condition plan differences are 0.234 m and 1.118 m versus a 0.0000305 m repeat envelope.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The rendered phase intervention reaches this fixed SparseDrive receiver and produces a distinguishable response; response correctness is not established.",
+      "evidence_refs": ["artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-sequences-run001/sparsedrive_exact_render_sequence.json"]
+    },
+    "planning_horizon_conflict_region_mismatch": {
+      "component": "metric_implementation",
+      "expected": "The finite-c verdict requires one complete, uncensored occupancy interval for each planned path.",
+      "observed": "All three plans are right-censored at 3 s; two conditions also show multiple observed intervals.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "This elongated near-opposing C is incompatible with a finite-c verdict from SparseDrive's fixed 3 s horizon; the tool correctly fails closed.",
+      "evidence_refs": ["artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-response-run002/sparsedrive_opposing_path_response.json"]
+    },
+    "auxiliary_progress_nonmonotonic": {
+      "component": "agent",
+      "expected": "Under the same planning mode, stronger public conflict should not be interpreted as more conservative solely from an assumed progress ordering.",
+      "observed": "Boundary has the least final progress; overlap advances 1.118 m farther than boundary.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "The response is not captured by a simple slowing proxy, but the unavailable primary conflict verdict prevents attribution to an AD defect or simulator defect.",
+      "evidence_refs": ["artifacts/hugsim_scene0041_opposing_path_dynamic/sparsedrive-response-run002/sparsedrive_opposing_path_response.json"]
+    }
+  },
+  "strongest_allowed_claim": "Within the preregistered scene-0041 phase grid, HUGSIM preserves the designed public-path occupancy order and transports it consistently into RGB; fixed SparseDrive produces repeat-distinguishable but non-monotonic planning changes. The fixed 3 s plan horizon cannot support the preregistered finite conflict-mitigation verdict for this elongated near-opposing conflict region."
+}

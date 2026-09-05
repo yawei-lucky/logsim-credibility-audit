@@ -1,61 +1,33 @@
-# Codex Next Task — opposing-path dynamic-contract qualification 001
+# Codex Next Task — compact-conflict task compatibility 002
 
-> 这是当前唯一里程碑。静态 placement 只通过到“可渲染走廊候选”；在动态 future、
-> projection 和冲突区规则通过前，不预注册正式响应实验、不运行 SparseDrive。
+> 当前唯一里程碑：先找到一个与SparseDrive固定3秒输出时域相容的紧凑交叉冲突，
+> 不修改或重判已完成的scene-0041对向路径实验。
 
-## 已确认与已纠正
+## 已完成
 
-- `docs/runs/intersection_task_boundary_qualification_001.md` 已冻结有符号占用时间
-  净距的几何零边界；
-- `docs/runs/hugsim_scene0041_actor_placement_setup_001.md` 找到 world `z=30 m`
-  的铺装/可渲染静态走廊候选；
-- 候选点 `(-12.5,30) m` 距 source-model path 最近点 `0.279 m`；
-- ego 局部 heading `-71.49°`，actor heading `+90°`，差 `161.49°`；
-- 因而机制已从错误的“横穿交通”纠正为**左转末段对向/近似正碰路径冲突**；
-- placement 未查看 SparseDrive，但也没有资格化动态 future 或 box–RGB 对齐。
+- `hugsim_scene0041_opposing_path_001` 已完成预注册动态、正式六相机渲染、投影检查、
+  SparseDrive双重复和冲突区分析；
+- 公共路径刺激为 `c=+0.50/0.00/-1.00 s`，几何与RGB传输通过；
+- SparseDrive相邻条件计划差异 `0.234 m`、`1.118 m`，超过重复上限
+  `3.0518e-5 m`；
+- 但三条3秒计划均在冲突区右端截断，两个条件还有多次进出，有限 `c` 主指标不合格；
+- 原实验整体保留为 `down-weighted`，不得通过改公式、延长预测或删掉异常区间来翻案。
 
-## 当前目标
+## 下一步
 
-只补正式预注册真正需要的两个执行资格和一个指标定义：
+只做一个不看AD输出的geometry-only feasibility gate：
 
-1. **动态合同**：在 released metadata timestamps 上生成显式恒速 actor transforms，
-   核验速度、方向、时间连续性、完整 future 和只有到达相位发生变化；
-2. **projection 合同**：把 actor model/box 投影到六相机 RGB，保存 overlay、可见相机、
-   投影区域与 actor-only RGB 差分的对齐记录；
-3. **冲突区合同**：冻结 `C` polygon、ego/actor footprint 与 yaw 来源、轨迹插值、
-   时间离散误差，以及以下特殊分支：
-   - plan 空间避开 `C`；
-   - 只在 3 s 时域后进入；
-   - 多次进入/离开；
-   - 占用区间被窗口截断。
+1. 优先在现有scene-0041中寻找交叉角更大、RGB有道路支撑的actor走廊；
+2. 若scene-0041没有合格横向道路，再从现有HUGSIM场景中选一个路口，不扩大数据下载；
+3. 冻结自车参考路径、actor路径、footprint和局部冲突区；
+4. 接受条件：公共路径和候选3秒计划代理都只有一个完整、未截断占用区间，且在
+   `0.005/0.01/0.02 s`离散网格下类别不反转；
+5. 只找到合格几何后，才预注册新三档相位、渲染和SparseDrive实验。
 
-## 最小执行顺序
+## 保持边界
 
-1. 先写 CPU generator/analyzer 与最小测试；
-2. 生成一个 geometry-only dynamic dry run，不运行 SparseDrive；
-3. 只渲染少量早于极近距裁切的 source frames，检查 projection；frame `60` 的
-   `conflict/after` 不作为 AD 有效输入；
-4. 独立审核动态、projection 和 `C` 定义；
-5. 三项均通过后，才由几何反推 separated / boundary / overlap 到达相位并冻结
-   正式预注册；
-6. 正式刺激渲染通过后，下一里程碑才运行 SparseDrive。
-
-## 必须保持
-
-- ego 使用 released metadata 参考路径/时间，不复用旧 9 s 直行 rollout；
-- 正式评估处于 source command `1` 共同上下文，prehistory 单独记录；
-- actor 资产、尺寸、world `z=30 m` 候选走廊、heading `+90°` 和速度固定，只允许
-  到达相位变化；
-- explicit metadata transform 与普通 env `ConstantPlanner` reset 合同不可混用；
-- source native dynamics 原样保留，audit actor 不覆盖 native ID；
-- 不使用 HUGSIM TTC/PDMS、raw forward endpoint 或 SparseDrive 输出反调刺激；
-- `c=0` 是占用集合边界，不是现实安全阈值。
-
-## 停止条件
-
-若动态 transform 不连续、projection 与 RGB 明显错位、`C` 对小离散变化不稳定，
-或 special branch 无法 fail closed，则停止并保留负面证据，不运行 SparseDrive。
-
-后续即使通过，也只形成“对向路径序数刺激”的内部/任务接收方证据；不得声称现实
-安全、车道/路权真实性、响应幅度真实性、matched real–sim、闭环安全或 HUGSIM
-普遍可信。
+- 不把HUGSIM语义、深度、TTC或SparseDrive当真值；
+- 不因画面更近就把条件叫作更危险，条件仍由未来占用关系定义；
+- 不把`c=0`解释为现实安全阈值；
+- 没有紧凑合格几何就记录负面结果并停止，不强行跑AD；
+- 下一实验最多支持场景、接收方、路径和人工相位网格内的有限任务证据。
