@@ -55,6 +55,9 @@ SparseDrive输出之前改为 `4 m/s`，并用完整180帧、14.816秒元数据�
 
 - `artifacts/hugsim_scene0041_opposing_path_dynamic/presentation-video-run001/scene0041_phase_explainer.mp4`
   （把四个正式输入采样停帧展示，并同步画出三档公共路径占用时间；没有插值中间画面）
+- `artifacts/hugsim_scene0041_opposing_path_dynamic/presentation-video-run003/scene0041_receiver_result.mp4`
+  （把四个正式前相机采样与同一坐标尺上的SparseDrive原生3秒规划同步展示；规划是预测输出，
+  不是已经执行的闭环轨迹）
 - `artifacts/hugsim_scene0041_opposing_path_dynamic/formal-render-frame048-run001/pose_variants_render_only.png`
 - `artifacts/hugsim_scene0041_opposing_path_dynamic/formal-projection-separated-frame048-run001/actor_projection_alignment.png`
 - `artifacts/hugsim_scene0041_opposing_path_dynamic/formal-projection-boundary-frame048-run001/actor_projection_alignment.png`
