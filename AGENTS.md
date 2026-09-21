@@ -36,12 +36,16 @@ their own scope.
 ## Project Direction
 
 - HUGSIM is the current experimental carrier, not the final research goal.
-- The long-term credibility metric is planned around a four-layer evidence
-  chain: log reproduction, sensor consistency, task-level consistency, and
-  closed-loop outcome credibility.
-- The four layers are a future metric-research structure. Do not use them as
-  current project stages or assign HUGSIM a per-layer score before metric
-  design begins.
+- The top-level research framework consists of three questions: predictive
+  structure consistency (including history, temporal dependence, and
+  uncertainty), action-effect consistency under interventions, and task-boundary
+  consistency. Use `CREDIBILITY_VALIDATION_METHOD.md` for their definitions.
+- The former four-layer evidence chain—log reproduction, sensor consistency,
+  task-level consistency, and closed-loop outcome credibility—is retained only
+  for evidence-source organization and experiment archiving, not as the
+  top-level research framework, sequential stages, or a per-layer scorecard.
+  Preserve existing experiments and judgments; the framework change does not
+  establish completeness or automatically upgrade evidence.
 - "Log-driven" means that the simulator constructs its environment from real
   road-driving capture sequences and generates counterfactual closed-loop
   evolution; exact log replay is not required.

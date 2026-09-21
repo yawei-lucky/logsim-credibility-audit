@@ -1,5 +1,10 @@
 # Codex Next Task — compact-conflict task compatibility 002
 
+> 研究主框架（2026-09-21 更新）：**预测结构一致性、动作效应一致性、任务边界一致性**。
+> 定义与证据资格要求见 [可信验证方法](CREDIBILITY_VALIDATION_METHOD.md)。
+> 原四层仅作证据来源和实验归档方式；本次框架替换不改判既有结果，
+> 也不改变下列具体实验待办或授权启动新实验。
+
 > 当前唯一里程碑：先找到一个与SparseDrive固定3秒输出时域相容的紧凑交叉冲突，
 > 不修改或重判已完成的scene-0041对向路径实验。
 

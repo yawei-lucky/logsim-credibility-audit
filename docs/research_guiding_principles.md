@@ -11,6 +11,24 @@ The target is not visual realism by itself. The target is whether a simulator
 preserves the information, causal relations, and closed-loop consequences that
 matter to a receiver performing a driving task.
 
+## Top-Level Research Framework — Three Consistency Questions
+
+As agreed on 2026-09-21, the research is organized around:
+
+1. **预测结构一致性**：在相同条件和历史下，未来任务相关演化是否一致？这里包括时间依赖和不确定性，不只是单帧或平均误差。
+2. **动作效应一致性**：改变动作或环境条件后，后果如何变化，这种关系是否一致？
+3. **任务边界一致性**：哪些条件下能完成任务、哪些条件下会失败，这些边界是否发生实质偏移？
+
+These replace the former four-layer evidence chain as the top-level framework.
+Log reproduction, sensor consistency, task-level consistency, and closed-loop
+outcome credibility remain only as evidence-source and experiment-archive
+categories. Existing experiments and judgments are retained with their
+original evidence boundaries; no retrospective relabeling is required.
+
+The three questions are related, not sequential stages or a proven-complete
+metric set. Their claim and qualification contract is defined in
+[`CREDIBILITY_VALIDATION_METHOD.md`](../CREDIBILITY_VALIDATION_METHOD.md).
+
 ## Comparative Validation Guideline
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
@@ -218,10 +236,11 @@ both paths
   -> credibility-validation framework and metrics
 ```
 
-The future four-layer evidence chain is therefore an organizational structure,
-not a serial self-proof. Each layer should form an evidence network with
-independence, external validity, causal constraints, and downstream
-consequences made explicit.
+Both paths serve the three top-level consistency questions. The former four
+layers are retained only for evidence-source organization and experiment
+archiving, not as a parallel research framework or serial self-proof. Evidence
+across these categories must make independence, external validity, causal
+constraints, and downstream consequences explicit.
 
 The eventual output should be a unified validation protocol for
 fitness-for-use. It may combine mandatory validity gates, dimension-specific
