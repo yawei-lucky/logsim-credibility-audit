@@ -1,0 +1,264 @@
+{
+  "experiment_id": "stopping_metric_blindspot_001",
+  "scope": "Synthetic reference-system instrument qualification; not HUGSIM or SparseDrive validation",
+  "model_class": "1D stationary obstacle, correct available observations, 2-frame confirmation, latching brake, constant deceleration",
+  "counts": {
+    "all_patterns": 495,
+    "design_patterns": 6,
+    "heldout_patterns": 489,
+    "normal_controls_outside_enumeration": 1,
+    "heldout_parameter_combinations": 16,
+    "heldout_cases": 7824,
+    "heldout_gap_verdicts": 23472
+  },
+  "panel_audit": {
+    "V0_marginal": {
+      "matched_patterns_including_reference": 495,
+      "hidden_boundary_difference_gt_tolerance": 411,
+      "opposite_outcome_at_design_gap": 68,
+      "compatible_boundary_interval_m": [
+        11.999999999999975,
+        19.999999999999954
+      ],
+      "remaining_boundary_diameter_m": 7.999999999999979,
+      "sound_outcome_given_only_panel": "unresolved"
+    },
+    "V1_longest_gap": {
+      "matched_patterns_including_reference": 126,
+      "hidden_boundary_difference_gt_tolerance": 91,
+      "opposite_outcome_at_design_gap": 21,
+      "compatible_boundary_interval_m": [
+        11.999999999999975,
+        19.999999999999954
+      ],
+      "remaining_boundary_diameter_m": 7.999999999999979,
+      "sound_outcome_given_only_panel": "unresolved"
+    },
+    "V2_confirmation": {
+      "matched_patterns_including_reference": 84,
+      "hidden_boundary_difference_gt_tolerance": 0,
+      "opposite_outcome_at_design_gap": 0,
+      "compatible_boundary_interval_m": [
+        12.999999999999975,
+        12.999999999999975
+      ],
+      "remaining_boundary_diameter_m": 0.0,
+      "sound_outcome_given_only_panel": "clear"
+    }
+  },
+  "heldout": {
+    "max_numeric_error_m": 5.258016244624741e-13,
+    "interval_coverage_count": 7824,
+    "verdict_counts": {
+      "clear": 6491,
+      "crossing": 6491,
+      "unresolved": 10490,
+      "wrong_resolved_verdicts": 0
+    },
+    "distribution": "finite designed grid, not a real-world probability sample"
+  },
+  "design_max_numeric_error_m": 4.618527782440651e-14,
+  "crosscheck_max_numeric_error_m": 1.2256862191861728e-13,
+  "actuation_scope_challenge": {
+    "confirmation_s": 0.2,
+    "assumed_boundary_m": 13.0,
+    "actual_numeric_boundary_m": 14.999999999999972,
+    "boundary_error_m": 1.9999999999999716,
+    "gap_m": 13.999999999999986,
+    "point_prediction": "clear",
+    "reference_outcome": "crossing",
+    "qualified_boundary_interval_m": [
+      13.0,
+      15.0
+    ],
+    "interval_verdict": "unresolved"
+  },
+  "limitations": [
+    "Not HUGSIM, SparseDrive, real camera, learned model, or physical collision dynamics",
+    "Marginal panel is a restricted abstraction, not the complete historical audit",
+    "Both reference implementations share synthetic model assumptions",
+    "Heldout means disjoint patterns/parameters within the same specified contract",
+    "No real-world frequency, general sensitivity, or universal completeness estimate"
+  ],
+  "numerical_verification_passed": true,
+  "evidence_snapshot_version": 1,
+  "hugsim_transfer_contract_audit": {
+    "scope": "Read-only check of one pre-existing run; not a new HUGSIM experiment",
+    "artifact_dir": "/home/yawei/logsim-credibility-audit/artifacts/sparsedrive_actuation_contract_001/bounded-near-reset1",
+    "completed_steps": 18,
+    "nonzero_steering_steps": 18,
+    "applied_acceleration_range_mps2": [-1.54824191879507, 0.05276337770656564],
+    "acceleration_action_bounds_mps2": [-2.0, 2.0],
+    "native_plan_records": 9,
+    "control_hold_steps": 2,
+    "scope_conclusion": "This recorded rollout does not satisfy the qualified 1D latching constant-braking contract",
+    "source_checksums": {
+      "audit_summary.json": "7fc2d9c81ad8a90541ac205ea6153548fc9478ccd24d5953695f79be3e88fbf0",
+      "sparsedrive_live_summary.json": "a781eb6579f69c8bda26ac5ab58766e8651ffea71e3ffe0b55a01c02231a499d",
+      "scripts/run_hugsim_debug_smoke.py": "5088c5f0a91b47091a8160748ce7df065c62474d21c5d5d705f7c444af759112",
+      "scripts/hugsim_sparsedrive_live_writer.py": "cd84315f09b820646bbee2d1fdd08d2558d1e39b82fefbe0a5aed499924fbdb2"
+    },
+    "wall_time_note": "The inspected runner waits for a returned plan before env.step; inference_seconds alone is not injected world-time latency"
+  },
+  "primary_artifact_dir": "/home/yawei/logsim-credibility-audit/artifacts/stopping_metric_blindspot_001/run002",
+  "heldout_mechanism": {
+    "scope": "held-out synthetic mechanism, not HUGSIM or real-world evidence",
+    "instrument_modified": false,
+    "cases": [
+      {
+        "ramp_s": 0.0,
+        "reference_boundary_m": 13.0,
+        "frozen_v2_boundary_m": 13.0,
+        "frozen_v2_outcome": "clear",
+        "reference_outcome": "clear",
+        "old_delay_interval_m": [
+          13.0,
+          15.0
+        ],
+        "old_interval_verdict": "unresolved",
+        "old_interval_contains_reference": true,
+        "integration_checks": [
+          {
+            "dt_s": 0.002,
+            "numeric_boundary_m": 13.000000000000208
+          },
+          {
+            "dt_s": 0.001,
+            "numeric_boundary_m": 12.999999999999554
+          },
+          {
+            "dt_s": 0.0005,
+            "numeric_boundary_m": 12.999999999999956
+          }
+        ],
+        "max_numeric_error_m": 4.4586556668946287e-13
+      },
+      {
+        "ramp_s": 0.6,
+        "reference_boundary_m": 15.925,
+        "frozen_v2_boundary_m": 13.0,
+        "frozen_v2_outcome": "clear",
+        "reference_outcome": "crossing",
+        "old_delay_interval_m": [
+          13.0,
+          15.0
+        ],
+        "old_interval_verdict": "unresolved",
+        "old_interval_contains_reference": false,
+        "integration_checks": [
+          {
+            "dt_s": 0.002,
+            "numeric_boundary_m": 15.924998333333471
+          },
+          {
+            "dt_s": 0.001,
+            "numeric_boundary_m": 15.924999583333324
+          },
+          {
+            "dt_s": 0.0005,
+            "numeric_boundary_m": 15.92499989583287
+          }
+        ],
+        "max_numeric_error_m": 1.6666665292319749e-06
+      }
+    ],
+    "numerical_verification_passed": true
+  },
+  "heldout_mechanism_artifact_dir": "/home/yawei/logsim-credibility-audit/artifacts/stopping_metric_scope_challenge_001/run001",
+  "source_manifest": {
+    "started_utc": "2026-09-21T12:39:37.669143+00:00",
+    "host": "stf-precision-3680",
+    "role": "synthetic_reference_metric_qualification",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "python_version": "3.11.10",
+    "command": [
+      "scripts/run_stopping_metric_blindspot.py",
+      "--output-dir",
+      "artifacts/stopping_metric_blindspot_001/run002"
+    ],
+    "config": "/home/yawei/logsim-credibility-audit/configs/stopping_metric_blindspot_001.json",
+    "output": "/home/yawei/logsim-credibility-audit/artifacts/stopping_metric_blindspot_001/run002",
+    "git_head": "ecf031cda2472c254265bf5ae071fd3dd198cef0",
+    "git_status": "?? configs/stopping_metric_blindspot_001.json\n?? docs/runs/stopping_metric_blindspot_preregistration_001.md\n?? scripts/run_stopping_metric_blindspot.py\n?? tests/test_stopping_metric_blindspot.py\n",
+    "source_sha256": "a56915b456984a6c6c6ae1c74704dceaa76e55336edd933d1a90704175e41df4",
+    "config_sha256": "3b44182a1f86b3f087a59a6167dd182a8a949f92e97e22405080d3e3ac245071",
+    "preregistration_sha256": "abba91f9d2ccbc0a3f46cfb2418359a7359fa91b523e275d7c9d5ecb6548ccc5"
+  },
+  "mechanism_manifest": {
+    "started_utc": "2026-09-21T12:46:51.100148+00:00",
+    "role": "synthetic mechanism challenge",
+    "command": [
+      "scripts/run_stopping_scope_challenge.py",
+      "--output-dir",
+      "artifacts/stopping_metric_scope_challenge_001/run001"
+    ],
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "config": {
+      "v_mps": 10.0,
+      "b_mps2": 5.0,
+      "confirmation_s": 0.2,
+      "delay_s": 0.1,
+      "gap_m": 14.0,
+      "ramps_s": [
+        0.0,
+        0.6
+      ],
+      "integration_steps_s": [
+        0.002,
+        0.001,
+        0.0005
+      ],
+      "tolerance_m": 0.0001
+    },
+    "instrument_sha256": "a56915b456984a6c6c6ae1c74704dceaa76e55336edd933d1a90704175e41df4",
+    "preregistration_sha256": "13f9850989ccbf09d21ed9e50079c14fa746c85ecc4964bc1f6f93e2a4e31e3c",
+    "source_sha256": "9e772adbb7cd5ddf94c97fe37f1e2b131530aa195a1b5237660e6fcdabf6ff58"
+  },
+  "artifact_checksums": {
+    "artifacts/stopping_metric_blindspot_001/run002/summary.json": "1d22b57a95b03ed25507160d7701ed3d13447eb4c4b533d7f5f7d2de0d4174d7",
+    "artifacts/stopping_metric_blindspot_001/run002/all_patterns.csv": "d98acf1c1519b3073250c37d402c86fdccbce52a0b42904704d3103ec07dab7c",
+    "artifacts/stopping_metric_blindspot_001/run002/heldout_cases.csv": "7590aa3050e602cc47269aa9283576f219c71a493ae35c634bac54fd1e1056ff",
+    "artifacts/stopping_metric_blindspot_001/run002/stopping_comparison.mp4": "f112d97796f0d76c70d3255f7658257dd60bf92a343ae5e94bdd7fee47eb29bd",
+    "artifacts/stopping_metric_scope_challenge_001/run001/summary.json": "b9393f35d5abdfc742b299b19e1d242084270a831d0a33e6e797702b596222de"
+  },
+  "claim_decisions": [
+    {
+      "id": "T1",
+      "claim": "Equal marginal availability limits boundary error to 0.5 m",
+      "decision": "rejected",
+      "decision_basis": "contradicted_by_evidence",
+      "diagnostic_id": "D1",
+      "diagnostic_decision": "accepted"
+    },
+    {
+      "id": "T2",
+      "claim": "Also matching longest missing run is sufficient",
+      "decision": "rejected",
+      "decision_basis": "contradicted_by_evidence",
+      "diagnostic_id": "D2",
+      "diagnostic_decision": "accepted"
+    },
+    {
+      "id": "T3",
+      "claim": "Confirmation and delay bounds constrain stopping boundary under the full frozen 1D constant-deceleration contract",
+      "decision": "accepted",
+      "decision_basis": "conditional derivation and finite same-contract holdout"
+    },
+    {
+      "id": "T4",
+      "claim": "The same tool can be directly used across actuation delay and brake buildup mechanisms",
+      "decision": "rejected",
+      "decision_basis": "contradicted_by_evidence",
+      "diagnostic_id": "D3",
+      "diagnostic_decision": "accepted"
+    },
+    {
+      "id": "external_transfer",
+      "claim": "Transfer to HUGSIM, SparseDrive, or real-world stopping",
+      "decision": "down-weighted",
+      "decision_basis": "scope_exceeds_evidence",
+      "tested": false
+    }
+  ]
+}

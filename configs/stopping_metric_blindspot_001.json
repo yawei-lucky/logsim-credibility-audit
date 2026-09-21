@@ -1,0 +1,42 @@
+{
+  "experiment_id": "stopping_metric_blindspot_001",
+  "scope": "Synthetic reference-system instrument qualification; not HUGSIM or SparseDrive validation",
+  "observation_dt_s": 0.1,
+  "observation_count": 12,
+  "missing_count": 4,
+  "confirmation_frames": 2,
+  "design": {
+    "speed_mps": 10.0,
+    "deceleration_mps2": 5.0,
+    "actuation_delay_s": 0.1,
+    "obstacle_gap_m": 15.5,
+    "reference_name": "dispersed",
+    "patterns": {
+      "dispersed": [0, 3, 6, 9],
+      "early_burst": [0, 1, 2, 3],
+      "alternating": [0, 2, 4, 6],
+      "late_burst": [8, 9, 10, 11],
+      "late_dispersed": [3, 5, 7, 9],
+      "middle_burst": [3, 4, 5, 6]
+    }
+  },
+  "heldout": {
+    "patterns": "all combinations of missing_count indices except all design patterns",
+    "speeds_mps": [6.0, 9.0, 12.0, 15.0],
+    "decelerations_mps2": [3.0, 6.0],
+    "actuation_delays_s": [0.0, 0.15],
+    "timestamp_error_bound_s": 0.025,
+    "boundary_offsets_m": [-0.5, 0.0, 0.5]
+  },
+  "actuation_scope_challenge": {
+    "assumed_delay_s": 0.1,
+    "actual_delay_s": 0.3,
+    "qualified_delay_interval_s": [0.1, 0.3]
+  },
+  "integration_dt_s": 0.01,
+  "integration_check_steps_s": [0.02, 0.01, 0.005],
+  "numerical_tolerance_m": 1e-7,
+  "illustrative_boundary_equivalence_tolerance_m": 0.5,
+  "tolerance_provenance": "Designed reference-task tolerance only; not externally calibrated for real AD",
+  "outcome_zero_tolerance_m": 1e-8
+}
