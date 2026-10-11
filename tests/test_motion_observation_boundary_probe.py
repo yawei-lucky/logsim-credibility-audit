@@ -101,6 +101,12 @@ class BoundaryProbeTests(unittest.TestCase):
                 is_front = depth + occ[2] < depth + points[0, 2]
                 self.assertEqual(is_front, condition["expected_occluded"])
                 np.testing.assert_allclose(occ_uv[0], marker_uv[0], atol=1e-12)
+                json.dumps(
+                    {
+                        "is_front": bool(is_front),
+                        "valid": bool(is_front == condition["expected_occluded"]),
+                    }
+                )
 
     def test_repeat_comparison_catches_hash_or_measurement_change(self):
         row = {

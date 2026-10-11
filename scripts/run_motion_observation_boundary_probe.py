@@ -326,7 +326,9 @@ def render_grid(probe, cfg, intrinsics, output, log):
             )
             alignment = float(np.linalg.norm(occ_uv[0] - marker_uv[0]))
             expected_front = condition["expected_occluded"]
-            is_front = center_depth + occluder[2] < center_depth + points[0, 2]
+            is_front = bool(
+                center_depth + occluder[2] < center_depth + points[0, 2]
+            )
             occlusion_geometry = {
                 "occluder_local_xyz_m": occluder.tolist(),
                 "target_camera_depth_m": float(center_depth + points[0, 2]),
@@ -334,7 +336,7 @@ def render_grid(probe, cfg, intrinsics, output, log):
                 "projection_alignment_px": alignment,
                 "expected_relation": "front" if expected_front else "behind",
                 "actual_relation": "front" if is_front else "behind",
-                "valid": alignment <= 1e-9 and is_front == expected_front,
+                "valid": bool(alignment <= 1e-9 and is_front == expected_front),
             }
             if not occlusion_geometry["valid"]:
                 raise ValueError("invalid occluder geometry")
