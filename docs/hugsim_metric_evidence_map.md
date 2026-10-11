@@ -387,3 +387,37 @@ uint8 差为 0。这个窄历史兼容性与成功轮次重复性诊断为 `acce
 重建现实性、真实—仿真等效、跨平台确定性或 AD 正确性。下一步只做冻结
 SparseDrive 的 current-sim 对 historical-sim 发布回归，以区分 renderer identity
 与 receiver/runtime 复现性；真实 RGB 不需要重复推理。
+
+## 16. 冻结 SparseDrive 接收方与全新进程回归 001
+
+[冻结接收方回归 001](runs/fixed_trajectory_receiver_regression_001.md)在 96 张与历史
+golden 逐字节相同的 RGB 上重跑相同 SparseDrive。historical↔current 的 32/32 个
+mode/command 相同，final plan 最大差 `2.003e-5 m`，16 行既有 `D_domain` 的最大
+重算差 `1.767e-5 m`，均低于预注册 `1e-4`。这些是两个冻结窗口内的数值发布
+回归证据，不是新的 real–sim 等效证据。
+
+完整 native 主门失败：最大 float 差 `66.6675`，22/32,032 个整数位置不同。
+事后按相同 instance ID 对齐可消除整数排名差异，但轨迹最大差仍为 `0.03824`，
+所以不能把失败全部解释成行排序。完整 native 数值复现主张为 `rejected`，整体
+为 `down-weighted`。
+
+[全新进程重复诊断 001](runs/fixed_trajectory_receiver_process_repeat_001.md)随后在冻结
+代码、资产、96 张输入和已记录执行字段下新增 run003。32/32 个 mode/command
+继续相同，final plan 最大差 `2.098e-5 m`；完整 native 仍有最大 float 差
+`66.6675` 和 24 个整数 mismatch。18 个 ID 排名位置与 6 个 label 位置不一致，均位于
+rank 80 以后，相关 score 不超过 `0.021525`；ID 对齐后轨迹最大差仍为
+`0.05235`。
+
+因此当前可接受的使用合同进一步收窄为：
+
+- 可在本机这两个冻结窗口上，用 selected mode、command 和 final plan 的
+  `1e-4 m` 容差作发布回归；
+- 不可把完整感知／运动 native tensor 当作逐元素确定的 golden；
+- 若后续任务依赖 detection、box 或 trajectory 中间量，必须为对应字段另建匹配
+  规则、任务容许误差和外部边界；
+- 该结果不资格化仿真现实性、感知准确性、AD 正确性或跨平台确定性。
+
+全新进程结果排除了“历史 release drift 是唯一来源”这一单独解释，但没有冻结
+全部系统状态，也未把触发源隔离到 CUDA、PyTorch、SparseDrive 或具体算子。
+继续堆同一输入的普通重复运行信息增益已低；下一证据应改变独立参考或任务边界，
+而不是事后放宽 native 阈值。

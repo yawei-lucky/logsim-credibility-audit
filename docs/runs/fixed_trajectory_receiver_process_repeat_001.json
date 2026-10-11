@@ -1,0 +1,158 @@
+{
+  "experiment_id": "fixed_trajectory_receiver_process_repeat_001",
+  "status": "completed_with_failed_full_native_gate",
+  "outcome_informed": true,
+  "preregistration_commit": "9e61dcbd476d0589ac23238347079d390ab1e5b0",
+  "execution_commit": "9e61dcbd476d0589ac23238347079d390ab1e5b0",
+  "design": {
+    "scene": "scene-0383",
+    "windows": {
+      "straight": [12, 18, 24, 30, 36, 42, 48, 54],
+      "turn": [60, 66, 72, 78, 84, 90, 96, 102]
+    },
+    "camera_count": 6,
+    "unique_rgb_count": 96,
+    "left_runs": [
+      "straight-current-run002",
+      "turn-current-run002"
+    ],
+    "right_runs": [
+      "straight-current-run003",
+      "turn-current-run003"
+    ],
+    "receiver_frame_forward_count": 32,
+    "plan_max_abs_tolerance_m": 0.0001,
+    "native_float_max_abs_tolerance": 0.0001,
+    "native_integer_exact_required": true
+  },
+  "provenance": {
+    "host": "stf-precision-3680",
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "driver": "580.95.05",
+    "python": "/home/yawei/miniforge3/envs/sparse4d-audit/bin/python",
+    "sparsedrive_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+    "primary_config_sha256": "9be30107f64d4a3b59431e5b782ea6d9ad4cbfac87cbd4fd68bf6e1f74157fdf",
+    "primary_regression_sha256": "bdc44a9bcd00d55c30abdba8d4d27d6bd055b93c658fc751ca884da909cb3388",
+    "primary_native_diagnostic_sha256": "948ca36d631370043ba23905cf79778f17a1ee724a42064fd829188e00a95c1c",
+    "comparison_script_sha256": "24d635de9761d0faaaaae6177714941d5675d4a137668f1df0c37a5d0b86bb1f",
+    "runner_script_sha256": "21631ca78d4581db7d37745929b111b749b95055d54cefe906fbca8865a49619",
+    "runtime_deps_file_count": 58,
+    "runtime_deps_tree_sha256": "0cc7ce0b5b530fc2460f23f40e86f3989376ba5a0af8903511e86828c97c0eee",
+    "audit_status_at_execution": ""
+  },
+  "execution": {
+    "started_utc": "2026-10-11T11:32:41.986030+00:00",
+    "finished_utc": "2026-10-11T11:32:57.946644+00:00",
+    "status": "complete",
+    "window_process_returncode_zero_count": 2,
+    "window_count": 2,
+    "all_inputs_unchanged": true,
+    "all_frozen_assets_unchanged": true
+  },
+  "results": {
+    "final_plan_process_repeat": {
+      "sequence_frames_compared": 32,
+      "selected_mode_and_command_equal": 32,
+      "input_contract_equal_except_image_path": 32,
+      "max_abs_final_plan_difference_m": 0.0000209808349609375,
+      "max_new_run_reset_repeat_difference_m": 0.00001430511474609375,
+      "passed": true
+    },
+    "full_native_process_repeat": {
+      "structure_dtype_and_shape_equal": true,
+      "all_floats_finite": true,
+      "float_element_count": 2007312,
+      "float_exact_count": 549995,
+      "float_changed_count": 1457317,
+      "max_abs_float_difference": 66.66753768920898,
+      "integer_element_count": 32032,
+      "integer_mismatch_count": 24,
+      "passed": false
+    },
+    "readonly_rank_diagnostic": {
+      "frame_variant_count": 32,
+      "all_instance_id_vectors_unique": true,
+      "all_left_right_instance_id_sets_equal": true,
+      "instance_id_rank_mismatch_count": 18,
+      "label_rank_mismatch_count": 6,
+      "minimum_mismatch_rank": 80,
+      "maximum_score_at_mismatched_rank": 0.02152418904006481,
+      "id_aligned_max_abs_box_difference": 0.0006356239318847656,
+      "id_aligned_max_abs_trajectory_difference": 0.05234718322753906,
+      "top_detection_count": 320,
+      "top_detection_label_equal_count": 320,
+      "top_detection_max_abs_score_difference": 0.00004267692565917969,
+      "top_detection_max_abs_box_difference": 0.00026410818099975586,
+      "changes_primary_decision": false
+    },
+    "all_checks_passed": false
+  },
+  "artifact_hashes": {
+    "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_execution_manifest.json": "434a88912568b57e57dde9e7897e972d780fc188d4eb0eaf216c278559c499d8",
+    "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001.json": "a0e2e039ae70cb422f99c80389ffc1c318c1ff5b1dffa86d86e3a7a809142835",
+    "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001_logs/straight.log": "6c403effc2d5f227d0a2f480c5e91ebb362add77b9d8ae658bc752b1a712e735",
+    "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001_logs/turn.log": "28a9e6423db9c4dfb0df8d7ed398c1ca89fd4a928c930d4f1b4402e55e460c2f",
+    "artifacts/fixed_trajectory_receiver_regression_001/receiver/straight-current-run003/sparsedrive_real_source_qualification.json": "04d309f36ac4cc84300efe9b35e86710b50382fc53549267f806a1d5106eaa51",
+    "artifacts/fixed_trajectory_receiver_regression_001/receiver/straight-current-run003/native_outputs.pt": "f1003aae55a40b6e29514f169c0360de7df9842461eab58dc6a21ffbaebade4b",
+    "artifacts/fixed_trajectory_receiver_regression_001/receiver/straight-current-run003/sparsedrive_real_source_qualification.png": "e90e3c4fa3e041a219feeed004f35b78920941f02fb5afe5b8b79743c1442aef",
+    "artifacts/fixed_trajectory_receiver_regression_001/receiver/turn-current-run003/sparsedrive_real_source_qualification.json": "b55e472335993e41979b49f6a9e8119033f6102409a2232de32a82cb9b1cc077",
+    "artifacts/fixed_trajectory_receiver_regression_001/receiver/turn-current-run003/native_outputs.pt": "975a3e19c085d0b72e20a601742f6d139d76fcb9dcb0576295d953ebf86f3ed3",
+    "artifacts/fixed_trajectory_receiver_regression_001/receiver/turn-current-run003/sparsedrive_real_source_qualification.png": "00a19f26822452fc90dd65c5cbaf19ea16efab115be965e9339eda7f4c15e882"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "frozen_assets_and_recorded_execution_contract": "accepted",
+      "fresh_process_final_plan_mode_and_command_reproducibility": "accepted",
+      "fresh_process_native_structure_dtype_shape_and_finiteness": "accepted",
+      "fresh_process_full_native_numeric_reproducibility": "rejected",
+      "native_variability_trigger_mechanism": "down-weighted"
+    },
+    "rejected_claim_contexts": {
+      "fresh_process_full_native_numeric_reproducibility": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "The preregistered 1e-4 full-native float gate and exact integer gate failed between fresh current processes: max float difference was 66.66753768920898 and 24 of 32032 integer elements differed.",
+        "diagnostic_finding": "fresh_process_native_variability",
+        "evidence_refs": [
+          "docs/runs/fixed_trajectory_receiver_process_repeat_001.md",
+          "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001.json"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "bounded_final_plan_process_stability": {
+      "component": "frozen SparseDrive selected mode, command and final planning output",
+      "expected": "With byte-identical RGB and frozen recorded assets, independent current processes remain within the preregistered 1e-4 m final-plan tolerance.",
+      "observed": "All 32 mode and command selections matched and the maximum final-plan coordinate difference was 2.09808349609375e-05 m.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The two frozen windows support a bounded final-plan regression contract on this host; this does not establish simulator fidelity.",
+      "evidence_refs": [
+        "docs/runs/fixed_trajectory_receiver_process_repeat_001.md",
+        "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001.json"
+      ]
+    },
+    "fresh_process_native_variability": {
+      "component": "SparseDrive full native perception, motion and planning state across fresh current processes",
+      "expected": "All native floats remain within 1e-4 and all native integers are exact under the frozen recorded execution contract.",
+      "observed": "Direct comparison reached 66.66753768920898 in trajs_3d with 24 integer mismatches. Exact-ID alignment removed rank integer mismatches but still left trajectory differences up to 0.05234718322753906.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "Historical release drift is not a sufficient sole explanation for the primary failure. The trigger component remains unresolved, and unrecorded runtime state is not excluded.",
+      "evidence_refs": [
+        "docs/runs/fixed_trajectory_receiver_process_repeat_001.md",
+        "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001.json"
+      ]
+    }
+  },
+  "limitations": [
+    "One scene, two eight-frame windows, one receiver and one host/GPU",
+    "The comparison freezes recorded assets and selected environment fields, not every system library, scheduler state or process variable",
+    "The ID-aligned and top-detection analyses are outcome-informed diagnostics and cannot replace the direct native gate",
+    "Top detections have no independent ground-truth matching and do not measure perception accuracy",
+    "The trigger component for fresh-process internal variability was not isolated",
+    "No new claim about simulator realism, real-sim equivalence, cross-platform determinism or AD correctness is supported"
+  ]
+}

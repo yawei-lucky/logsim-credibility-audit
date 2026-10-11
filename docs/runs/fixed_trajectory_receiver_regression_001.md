@@ -111,6 +111,15 @@ RGB 链路可以在既定 `1e-4 m` 数值阈值内复现旧的最终规划和已
 这正是 NuRec 类验证需要分层的原因：输入一致、任务输出一致和内部状态一致
 可以得到不同裁决，不能用最终轨迹的稳定性代替对中间机制的检查。
 
+## 后续全新进程诊断
+
+主结果冻结后又按独立预注册执行了
+[全新进程重复诊断 001](fixed_trajectory_receiver_process_repeat_001.md)。在当前代码、
+冻结资产和相同 96 张 RGB 下，run002↔run003 的 32/32 个 mode/command 相同，
+final plan 最大差 `2.098e-5 m`；但完整 native 最大 float 差仍为 `66.6675`，并有
+24 个 integer mismatch。它说明历史 release drift 不是主失败的充分单独解释；
+触发组件仍未隔离，主实验的 `rejected` 裁决不变。
+
 ## 产物
 
 ```text

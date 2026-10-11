@@ -1,4 +1,4 @@
-# Codex Next Task — 冻结 SparseDrive 发布回归
+# Codex Next Task — 从冻结回归转向外部任务边界
 
 > 顶层：**预测结构一致性、动作效应一致性、任务边界一致性**。
 > 当前重点：解释误差经什么过程传播，以及何时不可忽略；不以通过项数量背书。
@@ -6,9 +6,11 @@
 
 ## 最新已完成（2026-10-11）
 
-用户要求参考 NVIDIA／理想 NuRec 的验证做法继续实际实验。本轮继
-[HUGSIM 运动成像标靶实验 001](docs/runs/motion_observation_probe_001.md) 后，完成了
-[运动成像适用边界实验 001](docs/runs/motion_observation_boundary_001.md)。
+用户要求参考 NVIDIA／理想 NuRec 的验证做法继续实际实验。本轮已完成三组互相
+衔接的实验：运动成像适用边界、冻结轨迹渲染回归、冻结 SparseDrive 接收方回归，
+并在主回归失败后完成一个全新进程诊断。
+
+[运动成像适用边界实验 001](docs/runs/motion_observation_boundary_001.md)：
 
 - 750 个 CPU 资格图对最大宽度误差 0.027223 px，低于冻结的 0.5 px 预算。
 - 两背景、三深度中 36/36 个可见图对符合完整三维端点投影，最大残差
@@ -36,22 +38,38 @@
 - 窄 RGB 历史兼容性为 `accepted`，运行机制诊断和整体 segment 均为
   `down-weighted`；没有因此建立现实等效。
 
-## 下一项：NuRec 式冻结接收方回归
+[冻结轨迹 SparseDrive 接收方回归 001](docs/runs/fixed_trajectory_receiver_regression_001.md)
+及其[全新进程诊断](docs/runs/fixed_trajectory_receiver_process_repeat_001.md)：
 
-1. 把完整 `run002` 的 straight 与 turn 窗口分别无损装配为 receiver-ready 输入；
-   两段必须独立 reset，不能合为一条 16 帧历史。
-2. 保持 SparseDrive commit/working diff、Stage2 checkpoint、config、adapter、
-   calibration、相机顺序和预处理不变；每段运行 baseline 与 independent reset
-   repeat，共 32 次 frame forward。
-3. 逐帧比较 historical-sim 与 current-sim 的 selected mode、六个 final waypoints
-   和完整 native tensor 结构；final-plan 主门沿用已冻结 receiver tolerance
-   `1e-4 m`，整数输出必须精确相同，并报告相对本地 reset envelope 的幅度。
-4. 真实 RGB 不重跑；若接收方回归通过，复用已有 real report 检查旧的
-   `D_domain` 数值是否由当前 sim receiver 输出保持。该实验只裁决发布回归和
-   runtime 复现性，不新增现实等效证据。
+- 96 张输入与历史 golden 逐字节相同；historical↔current 的 32/32 个
+  mode/command 相同，final plan 最大差 `2.003e-5 m`；已有 `D_domain` 最大重算
+  差 `1.767e-5 m`。这些窄发布回归均低于冻结的 `1e-4 m` 门。
+- 完整 native historical↔current 主门失败：float 最大差 `66.6675`，22 个
+  integer mismatch；ID 对齐后轨迹差仍达 `0.03824`。
+- 在预注册 commit `9e61dcb` 后又执行 current run002↔run003 全新进程比较。
+  32/32 个 mode/command 仍相同，final plan 最大差 `2.098e-5 m`；完整 native
+  仍有最大 float 差 `66.6675` 和 24 个 integer mismatch，ID 对齐后轨迹差
+  `0.05235`。
+- 因而 final-plan 容差回归可在两个冻结窗口内 `accepted`；完整 native 逐元素
+  golden 主张为 `rejected`；内部变化触发机制和整体证据仍为 `down-weighted`。
+  全新进程结果说明历史 release drift 不是唯一充分解释，但没有定位具体组件。
 
-不把当前零散场景合成为“事件复现率”；仓库没有 NuRec 式同类真实事件簇和合格
-抽样分布。先完成上述固定窗口回归，再决定是否有信息增益继续接收方重跑。
+## 当前下一步
+
+停止增加同一输入的普通重复运行，也不事后放宽 native 阈值。下一项有信息增益的
+工作必须改变独立证据来源或资格化任务边界：
+
+1. 若目标是把仿真用于最终规划回归，先从目标 AD／ODD 或独立真实统计取得可辩护
+   的 plan/task margin，再检验 real–sim 差异是否会跨越该边界；当前 `1e-4 m`
+   只是数值回归容差，不是驾驶安全阈值。
+2. 若目标依赖检测、box 或 trajectory 中间量，预注册字段级匹配规则、任务容许
+   误差和低分输出处理，再用独立标注或 matched real reference 裁决；不能由
+   final-plan 稳定性替代。
+3. 若要做 NuRec 式事件复现率，需要同类真实事件簇、冻结事件定义和合格抽样
+   分母。当前零散场景不能合成为“复现率”。
+
+在这些外部输入出现前，最可靠的现有用途是两个窗口上的冻结 RGB identity 与
+SparseDrive final-plan 容差回归；它不是 HUGSIM 现实等效或整体可信的证明。
 
 ## 前序理论工作（2026-09-25）
 
