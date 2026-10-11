@@ -1,0 +1,243 @@
+{
+  "experiment_id": "motion_observation_boundary_001",
+  "status": "completed_with_retained_failed_attempts",
+  "preregistration_commit": "05560a81e470829be5db5a08f8c26dec3405c5f0",
+  "implementation_fix_commit": "a90107cd9563073d061da2641852703a157b8570",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "successful_runs": [
+    "artifacts/motion_observation_boundary_001/run002",
+    "artifacts/motion_observation_boundary_001/run004"
+  ],
+  "retained_failed_runs": {
+    "run001": "result JSON serialization failed after 108 renders; fixed without changing design or acceptance criteria",
+    "run003": "PyTorch/SymPy initialization failed before model load or rendering; ten short fresh-process optimizer imports then passed, so root cause remains unresolved"
+  },
+  "design": {
+    "camera": "CAM_FRONT",
+    "contexts": [
+      "isolated",
+      "scene0383_static"
+    ],
+    "center_depths_m": [
+      16.0,
+      24.0,
+      32.0
+    ],
+    "conditions": [
+      "equal_depth",
+      "left_marker_missing",
+      "yaw_45deg_center",
+      "yaw_plus45_offset3m",
+      "yaw_minus45_offset3m",
+      "depth_skew_12m",
+      "left_marker_occluder_behind",
+      "left_marker_occluder_front"
+    ],
+    "width_error_bound_px": 0.5
+  },
+  "results": {
+    "measurement_qualification": {
+      "case_count": 750,
+      "generic_case_count": 720,
+      "geometry_case_count": 30,
+      "max_abs_width_error_px": 0.027222598846890378,
+      "design_budget_px": 0.5,
+      "negative_controls_detected": {
+        "single_marker": true,
+        "three_markers": true,
+        "boundary_marker": true
+      },
+      "negative_control_failures": {
+        "single_marker": "expected exactly two visible markers, found 1",
+        "three_markers": "expected exactly two visible markers, found 3",
+        "boundary_marker": "marker touches image boundary"
+      },
+      "qualified": true,
+      "scope": "finite synthetic grid spanning the projected marker sizes in this experiment"
+    },
+    "pair_count": 48,
+    "rgb_render_count_per_successful_run": 108,
+    "visible_expected_count": 36,
+    "visible_measured_count": 36,
+    "max_transform_roundtrip_abs_m": 4.440892098500626e-16,
+    "full_prediction_within_budget_count": 36,
+    "max_abs_full_residual_px": 0.035442540408269,
+    "equal_geometry_simple_prediction_covered_count": 12,
+    "equal_geometry_expected_count": 12,
+    "boundary_simple_prediction_excluded_count": 24,
+    "boundary_expected_count": 24,
+    "oriented_common_depth_prediction_covered_count": 6,
+    "oriented_common_depth_expected_count": 6,
+    "unequal_depth_common_prediction_excluded_count": 18,
+    "unequal_depth_expected_count": 18,
+    "missing_unavailable_count": 6,
+    "missing_expected_count": 6,
+    "occluder_behind_visible_count": 6,
+    "occluder_behind_expected_count": 6,
+    "occlusion_unavailable_count": 6,
+    "occlusion_expected_count": 6,
+    "state_restore_exact_count": 6,
+    "state_restore_expected_count": 6,
+    "all_preregistered_checks_passed": true,
+    "repeatability": {
+      "pair_count": 48,
+      "rgb_count": 108,
+      "all_identities_equal": true,
+      "all_png_hashes_equal": true,
+      "all_measurements_equal": true,
+      "all_decisions_equal": true,
+      "all_records_equal": true,
+      "all_repeat_checks_passed": true
+    }
+  },
+  "provenance": {
+    "environment_path": "artifacts/motion_observation_boundary_001/run002/environment.json",
+    "audit_commit": "a90107cd9563073d061da2641852703a157b8570",
+    "audit_branch": "main",
+    "audit_status": "",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "input_and_code_hashes": {
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/logsim-credibility-audit/configs/motion_observation_boundary_001.json": "d75e2d8f71383f41558d2a0e8eb67b2c6220a950c78b496f6d254729398352c0",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_boundary_probe.py": "660275430f32943073b0be3bb1afd24b9ee4f7d134ec750588e8fb62d8d4a24a",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_probe.py": "d21841c2899f33e1b3849771b30b51f8ede05aaa4ecfbeefd61a881433447248",
+      "/home/yawei/HUGSIM/gaussian_renderer/__init__.py": "303918d0097d3759f960a663bd05255ecbb402009cf96117fe2e49ba9a225c22",
+      "/home/yawei/HUGSIM/scene/cameras.py": "8a1d10518fd282599e17d1ae3d91201124e2a357144968480c69acca283cfd1a"
+    },
+    "runtime": {
+      "host": "stf-precision-3680",
+      "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+      "torch": "2.4.1+cu121",
+      "gpu": "NVIDIA GeForce RTX 4090 D"
+    }
+  },
+  "artifact_hashes": {
+    "artifacts/motion_observation_boundary_001/run002/environment.json": "e355027515f0a14591e827a951d519c99c370f1486722a78eb78bfc5be5f4ad7",
+    "artifacts/motion_observation_boundary_001/run002/config.json": "78bdfae60097dba1f4d7aeaa153e0db75b44cf9e145396b6991c697e89cf1d19",
+    "artifacts/motion_observation_boundary_001/run002/measurement_qualification.json": "e30c0778475fb09b7aeb78eb2dc57ef8c1a3222d73de1150507e3331eb8b716c",
+    "artifacts/motion_observation_boundary_001/run002/measurements.json": "5fcf9dc2416f71a14602bb0620fe4080295a5d569bce4fc58761788811fa47b2",
+    "artifacts/motion_observation_boundary_001/run002/summary.json": "061acf62f66a8cd3558d73771770b8bdca6c520f173392bbf1ce699c3ef0eb8f",
+    "artifacts/motion_observation_boundary_001/run002/boundary_results.png": "bdb1370799b85ae2a552c5597f00b56d2ee494dcbcb1e152c6811749c4279eba",
+    "artifacts/motion_observation_boundary_001/run002/occlusion_diagnostic.png": "e4522c10c3c3b2cf45f8081455387b2ae09b36153975e55166b6b11576b87cf4",
+    "artifacts/motion_observation_boundary_001/run004/environment.json": "a68b1fa4c602c5233ca5a8cc46def79f3eabc7cdd50e2c7dd683d3e5e6d464f0",
+    "artifacts/motion_observation_boundary_001/run004/measurements.json": "5fcf9dc2416f71a14602bb0620fe4080295a5d569bce4fc58761788811fa47b2",
+    "artifacts/motion_observation_boundary_001/run004/summary.json": "061acf62f66a8cd3558d73771770b8bdca6c520f173392bbf1ce699c3ef0eb8f",
+    "artifacts/motion_observation_boundary_001/repeatability_run002_run004.json": "48d76cffdf88367c5820a608eec6e971db7a0af83848bb0b69e24259a72c4778",
+    "artifacts/motion_observation_boundary_001/run001/status.json": "43394595513dca86cfaaa89087e050b6df801a8e8af18e7c236607f5dea00e64",
+    "artifacts/motion_observation_boundary_001/run001/failure.txt": "6664a192d4aa0f1ac63a13c4bd42baea5ed6204000abdb8f95661d1853ad1e67",
+    "artifacts/motion_observation_boundary_001/run003/status.json": "131fcc80f910bb6b0ee7331b138386b5be165cb5fd531a6be11451a507a2a361",
+    "artifacts/motion_observation_boundary_001/run003/failure.txt": "a2e161b34e4dba53b720ef5d6d8083b8fdeebd3f9ced8b829fa11d3e35cf016e"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "rgb_measurement_qualified_on_finite_boundary_grid": "accepted",
+      "full_endpoint_projection_predicts_visible_marker_width_in_design_grid": "accepted",
+      "simple_fxW_over_Z_valid_for_rotated_or_unequal_depth_targets_in_design_grid": "rejected",
+      "common_depth_span_valid_when_endpoint_depths_differ_in_design_grid": "rejected",
+      "controlled_missing_or_front_occluded_feature_returns_unavailable": "accepted",
+      "same_host_cross_process_successful_render_repeatability": "accepted",
+      "all_postfix_full_process_attempts_initialize_cleanly": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "simple_fxW_over_Z_valid_for_rotated_or_unequal_depth_targets_in_design_grid": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All 24 premise-violating visible pairs excluded the simple prediction while remaining within 0.5 px of full endpoint projection.",
+        "diagnostic_finding": "equal_depth_formula_premise_boundary",
+        "evidence_refs": [
+          "docs/runs/motion_observation_boundary_001.md",
+          "artifacts/motion_observation_boundary_001/run002/summary.json",
+          "artifacts/motion_observation_boundary_001/run002/measurements.json"
+        ]
+      },
+      "common_depth_span_valid_when_endpoint_depths_differ_in_design_grid": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All 18 unequal-depth pairs excluded the common-depth span prediction while the six centered-yaw pairs covered it.",
+        "diagnostic_finding": "common_depth_formula_premise_boundary",
+        "evidence_refs": [
+          "docs/runs/motion_observation_boundary_001.md",
+          "artifacts/motion_observation_boundary_001/run002/summary.json",
+          "artifacts/motion_observation_boundary_001/run002/measurements.json"
+        ]
+      },
+      "all_postfix_full_process_attempts_initialize_cleanly": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "run003 failed inside PyTorch/SymPy initialization before model load or rendering, between two successful post-fix processes.",
+        "diagnostic_finding": "runtime_initialization_instability",
+        "evidence_refs": [
+          "docs/runs/motion_observation_boundary_001.md",
+          "artifacts/motion_observation_boundary_001/run003/status.json",
+          "artifacts/motion_observation_boundary_001/run003/failure.txt"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "equal_depth_formula_premise_boundary": {
+      "component": "motion-observation simplified projection model",
+      "expected": "The fxW/Z_center formula is applicable only when the feature span is fronto-parallel and its endpoints share the required depth approximation.",
+      "observed": "The 12 equal-geometry pairs covered the simple prediction; all 24 rotated or unequal-depth pairs excluded it, while all 36 visible pairs matched full endpoint projection.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Use full endpoint projection or explicitly qualify the geometric premises; the negative result diagnoses model scope rather than a renderer defect.",
+      "evidence_refs": [
+        "docs/runs/motion_observation_boundary_001.md",
+        "artifacts/motion_observation_boundary_001/run002/summary.json",
+        "artifacts/motion_observation_boundary_001/run002/measurements.json"
+      ]
+    },
+    "common_depth_formula_premise_boundary": {
+      "component": "common-depth lateral-span approximation",
+      "expected": "Keeping the projected lateral span should explain centered orientation change, but it should be rejected when endpoint depths materially differ.",
+      "observed": "All six centered-yaw pairs covered the common-depth prediction; all 18 offset-yaw or depth-skew pairs excluded it.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Orientation and per-endpoint depth are separately observable in this grid and should not be collapsed into one width-over-center-depth formula.",
+      "evidence_refs": [
+        "docs/runs/motion_observation_boundary_001.md",
+        "artifacts/motion_observation_boundary_001/run002/summary.json",
+        "artifacts/motion_observation_boundary_001/run002/measurements.json"
+      ]
+    },
+    "controlled_visibility_rejection": {
+      "component": "paired-RGB marker measurement and controlled Gaussian occluder",
+      "expected": "A behind occluder leaves two measurable features; a missing left feature or front occluder leaves exactly one component and no width; temporary opacity changes must not leak.",
+      "observed": "Behind was measurable in 6/6; missing and front occlusion each returned exact found-1 failures in 6/6; all six baseline-after-missing renders were pixel exact.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The analysis preserves unavailable observations under the frozen artificial-marker contract; this does not qualify real vehicle occlusion.",
+      "evidence_refs": [
+        "docs/runs/motion_observation_boundary_001.md",
+        "artifacts/motion_observation_boundary_001/run002/summary.json",
+        "artifacts/motion_observation_boundary_001/run002/occlusion_diagnostic.png"
+      ]
+    },
+    "runtime_initialization_instability": {
+      "component": "pinned HUGSIM Python process initialization",
+      "expected": "Each independent process should load the pinned scene before rendering.",
+      "observed": "run003 failed in PyTorch importing SymPy multipledispatch before scene restoration; run002 and run004 succeeded and ten short fresh-process optimizer imports did not reproduce the failure.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "Keep per-run health gates and failed-attempt logs; the root cause is not isolated enough to attribute to HUGSIM or claim a stable failure rate.",
+      "evidence_refs": [
+        "docs/runs/motion_observation_boundary_001.md",
+        "artifacts/motion_observation_boundary_001/run003/status.json",
+        "artifacts/motion_observation_boundary_001/run003/failure.txt"
+      ]
+    }
+  },
+  "limitations": [
+    "Known Gaussian marker centres and paired-contrast readout only",
+    "Occluder is a controlled Gaussian, not a qualified real vehicle or material",
+    "Missing-marker control qualifies rejection logic but is not physical occlusion",
+    "Same camera, GPU, renderer, driver and host for both process repeats",
+    "No AD, real camera, learned vehicle geometry, or task boundary is qualified",
+    "The two successful repeats share one host and device.",
+    "No source-real image or independent physical occluder is used."
+  ]
+}
