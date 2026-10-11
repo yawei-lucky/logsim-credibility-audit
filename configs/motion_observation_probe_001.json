@@ -1,0 +1,40 @@
+{
+  "experiment_id": "motion_observation_probe_001",
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "old_run": "artifacts/hugsim_motion_metamorphic/scene-0383-motion-nominal-001-run001",
+  "camera": "CAM_FRONT",
+  "metadata_frame": "00000",
+  "duration_s": 2.0,
+  "sample_dt_s": 0.25,
+  "difference_window_s": 0.5,
+  "marker_separation_m": 1.6,
+  "marker_sigma_m": 0.035,
+  "marker_opacity": 0.9,
+  "contrast_levels": [0.9, 0.1],
+  "difference_threshold_u8": 8,
+  "min_component_area_px": 3,
+  "width_error_bound_px": 0.5,
+  "repeat_rgb_max_u8": 0,
+  "contexts": ["isolated", "scene0383_static"],
+  "trajectories": [
+    {"id": "train_slow", "z0_m": 24.0, "closing_speed_mps": 2.0, "role": "identify"},
+    {"id": "train_fast", "z0_m": 24.0, "closing_speed_mps": 6.0, "role": "identify"},
+    {"id": "heldout", "z0_m": 28.0, "closing_speed_mps": 4.0, "role": "heldout"}
+  ],
+  "conditions": [
+    {"id": "baseline", "bias_m": 0.0, "delay_s": 0.0, "scale": 1.0, "log_scale_amplitude": 0.0},
+    {"id": "distance", "bias_m": 1.0, "delay_s": 0.0, "scale": 1.0, "log_scale_amplitude": 0.0},
+    {"id": "delay", "bias_m": 0.0, "delay_s": 0.5, "scale": 1.0, "log_scale_amplitude": 0.0},
+    {"id": "constant_scale", "bias_m": 0.0, "delay_s": 0.0, "scale": 1.1, "log_scale_amplitude": 0.0},
+    {"id": "varying_scale", "bias_m": 0.0, "delay_s": 0.0, "scale": 1.0, "log_scale_amplitude": 0.12},
+    {"id": "combined", "bias_m": 1.0, "delay_s": 0.5, "scale": 1.0, "log_scale_amplitude": 0.0}
+  ],
+  "log_scale_omega_rad_s": 3.141592653589793,
+  "qualification": {
+    "widths_px": [30.0, 45.0, 70.0, 100.0],
+    "phases_px": [0.0, 0.25, 0.5, 0.75],
+    "sigmas_px": [0.75, 1.5, 3.0],
+    "opacities": [0.5, 0.9]
+  }
+}
