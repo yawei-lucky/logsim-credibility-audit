@@ -1,0 +1,42 @@
+{
+  "experiment_id": "fixed_trajectory_receiver_process_repeat_001",
+  "outcome_informed": true,
+  "runtime_python": "/home/yawei/miniforge3/envs/sparse4d-audit/bin/python",
+  "primary_config": "configs/fixed_trajectory_receiver_regression_001.json",
+  "primary_config_sha256": "9be30107f64d4a3b59431e5b782ea6d9ad4cbfac87cbd4fd68bf6e1f74157fdf",
+  "primary_regression": "artifacts/fixed_trajectory_receiver_regression_001/receiver_regression.json",
+  "primary_regression_sha256": "bdc44a9bcd00d55c30abdba8d4d27d6bd055b93c658fc751ca884da909cb3388",
+  "primary_native_diagnostic": "artifacts/fixed_trajectory_receiver_regression_001/native_difference_diagnostic.json",
+  "primary_native_diagnostic_sha256": "948ca36d631370043ba23905cf79778f17a1ee724a42064fd829188e00a95c1c",
+  "diagnostic_helper": "scripts/diagnose_fixed_trajectory_receiver_regression.py",
+  "diagnostic_helper_sha256": "21a1a47f1094c67b1ceaee2fe93f4fa67fb0895da619d5c6702f174fa2617f6f",
+  "comparison_script": "scripts/compare_fixed_trajectory_receiver_process_repeat.py",
+  "comparison_script_sha256": "24d635de9761d0faaaaae6177714941d5675d4a137668f1df0c37a5d0b86bb1f",
+  "runner_script": "scripts/run_fixed_trajectory_receiver_process_repeat.py",
+  "runner_script_sha256": "21631ca78d4581db7d37745929b111b749b95055d54cefe906fbca8865a49619",
+  "runtime_deps_tree": {
+    "file_count": 58,
+    "sha256": "0cc7ce0b5b530fc2460f23f40e86f3989376ba5a0af8903511e86828c97c0eee"
+  },
+  "gpu_driver_and_name": "580.95.05, NVIDIA GeForce RTX 4090 D",
+  "execution_manifest": "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_execution_manifest.json",
+  "log_root": "artifacts/fixed_trajectory_receiver_regression_001/process_repeat_001_logs",
+  "windows": [
+    {
+      "id": "straight",
+      "frames": [12, 18, 24, 30, 36, 42, 48, 54],
+      "left_receiver_root": "artifacts/fixed_trajectory_receiver_regression_001/receiver/straight-current-run002",
+      "left_receiver_report_sha256": "733c24b45813b1511eca8adb3d3f3d6c996a4c7fe89b77ab54c601790dacbd90",
+      "left_native_outputs_sha256": "7bed88e439036149f79ff4f11c3cf2cbb5ec6446e1875dc5860e9f0284d2e62e",
+      "right_receiver_root": "artifacts/fixed_trajectory_receiver_regression_001/receiver/straight-current-run003"
+    },
+    {
+      "id": "turn",
+      "frames": [60, 66, 72, 78, 84, 90, 96, 102],
+      "left_receiver_root": "artifacts/fixed_trajectory_receiver_regression_001/receiver/turn-current-run002",
+      "left_receiver_report_sha256": "9125e6eaf740113f6aa7b42bd377146ff8814c9add9d000004303243cb43be2d",
+      "left_native_outputs_sha256": "2c73a392b453f4d67f45e069a08ef682ccb2cab58cd37b83ce5422abafb34245",
+      "right_receiver_root": "artifacts/fixed_trajectory_receiver_regression_001/receiver/turn-current-run003"
+    }
+  ]
+}
