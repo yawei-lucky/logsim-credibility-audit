@@ -4,7 +4,7 @@
   "native_float_max_abs_tolerance": 0.0001,
   "domain_metric_max_abs_tolerance_m": 0.0001,
   "comparison_script": "scripts/compare_fixed_trajectory_receiver_regression.py",
-  "comparison_script_sha256": "f4fd20d271c3ba1870bcd949d1ee176c8db0912a74f68d02c5cdd8af97608ab2",
+  "comparison_script_sha256": "43ab6057e4e76d0f8a138451333594b842f4c7caf2d9625ccbd4898ce0299e59",
   "current_render_comparison": "artifacts/fixed_trajectory_render_regression_001/comparison_run002_run003.json",
   "current_render_comparison_sha256": "cc9450737fe26114ceb1576e97f1a58cdf44d54da6775a6de5f68c7af51ed7a5",
   "source_metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",

@@ -55,7 +55,7 @@ def check_hash(path, expected, label):
 def git(repo, *args):
     return subprocess.check_output(
         ["git", "-C", str(repo), *args], text=True
-    ).strip()
+    ).rstrip("\n")
 
 
 def git_diff_sha256(repo):
