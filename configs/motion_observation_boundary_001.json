@@ -1,0 +1,36 @@
+{
+  "experiment_id": "motion_observation_boundary_001",
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "camera": "CAM_FRONT",
+  "metadata_frame": "00000",
+  "contexts": ["isolated", "scene0383_static"],
+  "center_depths_m": [16.0, 24.0, 32.0],
+  "marker_separation_m": 1.6,
+  "marker_sigma_m": 0.035,
+  "marker_opacity": 0.9,
+  "contrast_levels": [0.9, 0.1],
+  "difference_threshold_u8": 8,
+  "min_component_area_px": 3,
+  "width_error_bound_px": 0.5,
+  "conditions": [
+    {"id": "equal_depth", "kind": "equal_depth"},
+    {"id": "left_marker_missing", "kind": "missing", "missing_index": 0},
+    {"id": "yaw_45deg_center", "kind": "rigid_yaw", "yaw_deg": 45.0, "center_x_m": 0.0},
+    {"id": "yaw_plus45_offset3m", "kind": "rigid_yaw", "yaw_deg": 45.0, "center_x_m": 3.0},
+    {"id": "yaw_minus45_offset3m", "kind": "rigid_yaw", "yaw_deg": -45.0, "center_x_m": 3.0},
+    {"id": "depth_skew_12m", "kind": "depth_skew", "half_depth_skew_m": 6.0},
+    {"id": "left_marker_occluder_behind", "kind": "occlusion", "occluder_depth_offset_m": 2.0, "expected_occluded": false},
+    {"id": "left_marker_occluder_front", "kind": "occlusion", "occluder_depth_offset_m": -2.0, "expected_occluded": true}
+  ],
+  "missing_marker_opacity": 0.000001,
+  "occluder_sigma_m": 0.45,
+  "occluder_opacity": 0.9999,
+  "occluder_level": 0.25,
+  "qualification": {
+    "widths_px": [20.0, 22.0, 24.0, 30.0, 32.0, 40.0, 54.0, 64.0, 75.0],
+    "phases_px": [0.0, 0.25, 0.5, 0.75],
+    "sigmas_px": [0.55, 0.8, 1.2, 1.8, 2.4],
+    "opacities": [0.7, 0.9]
+  }
+}
