@@ -1,0 +1,25 @@
+{
+  "experiment_id": "fixed_trajectory_render_regression_001",
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",
+  "render_driver": "scripts/render_hugsim_exact_source_pose.py",
+  "comparison_script": "scripts/compare_fixed_trajectory_render_regression.py",
+  "preregistration": "docs/runs/fixed_trajectory_render_regression_preregistration_001.md",
+  "expected_current_driver_sha256": "c72a4e9ce4a189acb8d69b0921676b8236dfed34d56844e9a5329d2b795211c5",
+  "python_hash_seed": "0",
+  "child_timeout_s": 180,
+  "expected_native_dynamic_ids": ["d793362732e547249b1a05af84d09967"],
+  "windows": [
+    {
+      "id": "straight",
+      "frames": [12, 18, 24, 30, 36, 42, 48, 54],
+      "golden_manifest": "artifacts/hugsim_matched_pose/scene-0383-source-window-factual-run002/assembled_render_manifest.json"
+    },
+    {
+      "id": "turn",
+      "frames": [60, 66, 72, 78, 84, 90, 96, 102],
+      "golden_manifest": "artifacts/hugsim_matched_pose/scene-0383-source-turn-window-factual-run001/assembled_render_manifest.json"
+    }
+  ]
+}
