@@ -1,0 +1,1072 @@
+{
+  "pair_count": 342,
+  "rgb_render_count": 684,
+  "groups": [
+    {
+      "context": "isolated",
+      "trajectory": "train_slow",
+      "condition": "baseline",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0011764570018603232,
+      "zero_model_width_excluded_frames": 0,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_slow",
+      "condition": "distance",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0011764570018603232,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_slow",
+      "condition": "delay",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0011764570018603232,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_slow",
+      "condition": "constant_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03176718036610282,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0012416089787197077,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_slow",
+      "condition": "varying_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.002205870520966935,
+      "zero_model_width_excluded_frames": 6,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_slow",
+      "condition": "combined",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0011764570018603232,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_fast",
+      "condition": "baseline",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018522710954632093,
+      "zero_model_width_excluded_frames": 0,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_fast",
+      "condition": "distance",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.021885493816910184,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018452568304718753,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 1
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_fast",
+      "condition": "delay",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018522710954632093,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 4
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_fast",
+      "condition": "constant_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.039824108556615556,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018810171218945348,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_fast",
+      "condition": "varying_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0027118833074495363,
+      "zero_model_width_excluded_frames": 6,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "isolated",
+      "trajectory": "train_fast",
+      "condition": "combined",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.021885493816910184,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018452568304718753,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "isolated",
+      "trajectory": "heldout",
+      "condition": "baseline",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001971483149538572,
+      "zero_model_width_excluded_frames": 0,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "heldout",
+      "condition": "distance",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001971483149538572,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "heldout",
+      "condition": "delay",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001971483149538572,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "heldout",
+      "condition": "constant_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.0274679173417951,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018575022225102988,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "isolated",
+      "trajectory": "heldout",
+      "condition": "varying_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0018888955798957163,
+      "zero_model_width_excluded_frames": 6,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "isolated",
+      "trajectory": "heldout",
+      "condition": "combined",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03544254040826189,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001515070779244454,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_slow",
+      "condition": "baseline",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.024624811712172345,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001128021519096481,
+      "zero_model_width_excluded_frames": 0,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_slow",
+      "condition": "distance",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001128021519096481,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_slow",
+      "condition": "delay",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001128021519096481,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_slow",
+      "condition": "constant_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03730461760733306,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001847626876749442,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_slow",
+      "condition": "varying_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.02748688445019809,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001510878936276161,
+      "zero_model_width_excluded_frames": 6,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_slow",
+      "condition": "combined",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0021907824823164807,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_fast",
+      "condition": "baseline",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.033871702190893416,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0013857216920598603,
+      "zero_model_width_excluded_frames": 0,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_fast",
+      "condition": "distance",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03193388503823513,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0016321475223366466,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 1
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_fast",
+      "condition": "delay",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.033871702190893416,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0013857216920598603,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 4
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_fast",
+      "condition": "constant_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03730461760733306,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001412698687119851,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_fast",
+      "condition": "varying_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029324914137333735,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0017945737918791849,
+      "zero_model_width_excluded_frames": 6,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "train_fast",
+      "condition": "combined",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03193388503823513,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0016321475223366466,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "heldout",
+      "condition": "baseline",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0011301484914353066,
+      "zero_model_width_excluded_frames": 0,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "heldout",
+      "condition": "distance",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0012830964304774428,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "heldout",
+      "condition": "delay",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0014961378926298674,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "heldout",
+      "condition": "constant_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.03235347855898851,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0013575250405815364,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "heldout",
+      "condition": "varying_scale",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.024624811712172345,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.001706365705369195,
+      "zero_model_width_excluded_frames": 6,
+      "zero_model_growth_excluded_windows": 5
+    },
+    {
+      "context": "scene0383_static",
+      "trajectory": "heldout",
+      "condition": "combined",
+      "expected_frames": 9,
+      "measured_frames": 9,
+      "max_abs_width_error_px": 0.029682002158729404,
+      "width_within_budget": true,
+      "expected_growth_windows": 7,
+      "growth_windows": 7,
+      "growth_predictions_covered": 7,
+      "max_abs_growth_error_per_s": 0.0014961378926298674,
+      "zero_model_width_excluded_frames": 9,
+      "zero_model_growth_excluded_windows": 0
+    }
+  ],
+  "identification": {
+    "isolated": {
+      "identified": true,
+      "bias_m": 0.9937141219498109,
+      "delay_s": 0.501425874063937,
+      "speed_offsets": [
+        {
+          "speed_mps": 2.0,
+          "d_m": 1.996565870077685,
+          "interval_m": [
+            1.7668571024243356,
+            2.2447791165320616
+          ]
+        },
+        {
+          "speed_mps": 6.0,
+          "d_m": 4.002269366333433,
+          "interval_m": [
+            3.8795832815135505,
+            4.1324387425034494
+          ]
+        }
+      ],
+      "parameter_vertices": [
+        {
+          "bias_m": 0.7104940128797281,
+          "delay_s": 0.5281815447723037
+        },
+        {
+          "bias_m": 0.5840662823847786,
+          "delay_s": 0.5913954100197785
+        },
+        {
+          "bias_m": 1.4273770340413172,
+          "delay_s": 0.4087010412453722
+        },
+        {
+          "bias_m": 1.3009493035463677,
+          "delay_s": 0.47191490649284695
+        }
+      ],
+      "bias_interval_m": [
+        0.5840662823847786,
+        1.4273770340413172
+      ],
+      "delay_interval_s": [
+        0.4087010412453722,
+        0.5913954100197785
+      ],
+      "method": "median equivalent-depth offset per training speed; no heldout data or injected b/delta used"
+    },
+    "scene0383_static": {
+      "identified": true,
+      "bias_m": 0.9958481957740908,
+      "delay_s": 0.5006366974029177,
+      "speed_offsets": [
+        {
+          "speed_mps": 2.0,
+          "d_m": 1.9971215905799262,
+          "interval_m": [
+            1.7655094231507569,
+            2.2433716090831233
+          ]
+        },
+        {
+          "speed_mps": 6.0,
+          "d_m": 3.999668380191597,
+          "interval_m": [
+            3.882596270581395,
+            4.1355484584077935
+          ]
+        }
+      ],
+      "parameter_vertices": [
+        {
+          "bias_m": 0.7069659994354378,
+          "delay_s": 0.5292717118576595
+        },
+        {
+          "bias_m": 0.5804899055222386,
+          "delay_s": 0.5925097588142592
+        },
+        {
+          "bias_m": 1.4237592783339874,
+          "delay_s": 0.40980616537456793
+        },
+        {
+          "bias_m": 1.2972831844207882,
+          "delay_s": 0.47304421233116756
+        }
+      ],
+      "bias_interval_m": [
+        0.5804899055222386,
+        1.4237592783339874
+      ],
+      "delay_interval_s": [
+        0.40980616537456793,
+        0.5925097588142592
+      ],
+      "method": "median equivalent-depth offset per training speed; no heldout data or injected b/delta used"
+    }
+  },
+  "heldout": [
+    {
+      "context": "isolated",
+      "time_s": 0.0,
+      "measured_px": 32.66118105787757,
+      "prediction_px": 32.682348259415136,
+      "residual_px": -0.02116720153756546,
+      "interval_px": [
+        31.984095867398104,
+        33.36917317942067
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 0.25,
+      "measured_px": 33.77011184571194,
+      "prediction_px": 33.771781016922446,
+      "residual_px": -0.0016691712105085799,
+      "interval_px": [
+        33.06013404932426,
+        34.47130678430456
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 0.5,
+      "measured_px": 34.94013466893887,
+      "prediction_px": 34.93634857691789,
+      "residual_px": 0.0037860920209809024,
+      "interval_px": [
+        34.209902239043835,
+        35.649915786284495
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 0.75,
+      "measured_px": 36.180416279236056,
+      "prediction_px": 36.18410126425242,
+      "residual_px": -0.0036849850163633846,
+      "interval_px": [
+        35.44124722402808,
+        36.91324603863359
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 1.0,
+      "measured_px": 37.529996957000094,
+      "prediction_px": 37.524282070221126,
+      "residual_px": 0.005714886778967809,
+      "interval_px": [
+        36.76317021454224,
+        38.2707730535867
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 1.25,
+      "measured_px": 38.971830644884164,
+      "prediction_px": 38.96755601663236,
+      "residual_px": 0.004274628251806689,
+      "interval_px": [
+        38.18604724916557,
+        39.73344009405648
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 1.5,
+      "measured_px": 40.540619573007916,
+      "prediction_px": 40.526294568535846,
+      "residual_px": 0.01432500447207019,
+      "interval_px": [
+        39.72190210154809,
+        41.31395381430095
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 1.75,
+      "measured_px": 42.24934930862673,
+      "prediction_px": 42.21493115185832,
+      "residual_px": 0.03441815676841031,
+      "interval_px": [
+        41.38474688186387,
+        43.027154359207124
+      ],
+      "covered": true
+    },
+    {
+      "context": "isolated",
+      "time_s": 2.0,
+      "measured_px": 44.06035236020017,
+      "prediction_px": 44.0504094171185,
+      "residual_px": 0.009942943081668432,
+      "interval_px": [
+        43.19101076811825,
+        44.890482759034406
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 0.0,
+      "measured_px": 32.66318481916613,
+      "prediction_px": 32.68342644562361,
+      "residual_px": -0.020241626457476514,
+      "interval_px": [
+        31.983209434888657,
+        33.36828527937234
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 0.25,
+      "measured_px": 33.79436767691004,
+      "prediction_px": 33.7729322829041,
+      "residual_px": 0.021435394005941077,
+      "interval_px": [
+        33.05918791872306,
+        34.47035834261887
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 0.5,
+      "measured_px": 34.92040634397739,
+      "prediction_px": 34.9375806125763,
+      "residual_px": -0.01717426859890736,
+      "interval_px": [
+        34.20889017014963,
+        35.64890039300622
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 0.75,
+      "measured_px": 36.181174942840755,
+      "prediction_px": 36.185422877492286,
+      "residual_px": -0.004247934651530727,
+      "interval_px": [
+        35.44016207562777,
+        36.91215634592054
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 1.0,
+      "measured_px": 37.531173445571824,
+      "prediction_px": 37.525703397763195,
+      "residual_px": 0.0054700478086289195,
+      "interval_px": [
+        36.762003775721176,
+        38.26960059768188
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 1.25,
+      "measured_px": 38.95253191731558,
+      "prediction_px": 38.96908878439407,
+      "residual_px": -0.016556867078485027,
+      "interval_px": [
+        38.18479003124949,
+        39.732175075113894
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 1.5,
+      "measured_px": 40.55503249964846,
+      "prediction_px": 40.527952415726226,
+      "residual_px": 0.027080083922236042,
+      "interval_px": [
+        39.72054307952543,
+        41.31258482194807
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 1.75,
+      "measured_px": 42.222428310859584,
+      "prediction_px": 42.216730037746636,
+      "residual_px": 0.005698273112948016,
+      "interval_px": [
+        41.38327317037557,
+        43.02566802757556
+      ],
+      "covered": true
+    },
+    {
+      "context": "scene0383_static",
+      "time_s": 2.0,
+      "measured_px": 44.05886023667091,
+      "prediction_px": 44.052368136169285,
+      "residual_px": 0.00649210050162452,
+      "interval_px": [
+        43.189407211850735,
+        44.888863329167876
+      ],
+      "covered": true
+    }
+  ],
+  "repeats": [
+    {
+      "context": "isolated",
+      "index": 0,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 1,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 2,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 3,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 4,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 5,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 6,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 7,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "isolated",
+      "index": 8,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 0,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 1,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 2,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 3,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 4,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 5,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 6,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 7,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    },
+    {
+      "context": "scene0383_static",
+      "index": 8,
+      "max_rgb_delta_u8": 0,
+      "same_png_hashes": true
+    }
+  ],
+  "all_width_predictions_within_budget": true,
+  "all_growth_predictions_covered": true,
+  "heldout_covered_count": 18,
+  "heldout_expected_count": 18,
+  "max_repeat_rgb_delta_u8": 0,
+  "experiment_id": "motion_observation_probe_001",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "measurement_qualification": {
+    "count": 192,
+    "max_abs_width_error_px": 0.02271828935886333,
+    "design_budget_px": 0.5,
+    "negative_controls_detected": {
+      "missing": true,
+      "clipped": true,
+      "extra": true
+    },
+    "qualified": true,
+    "scope": "finite synthetic grid; not a universal or real-camera error bound"
+  },
+  "old_window_decision": "down-weighted",
+  "limitations": [
+    "Finite designed grid, synthetic markers and paired contrast readout only",
+    "Delay is an injected age of target state, not measured runtime latency",
+    "No real camera, learned car geometry, AD or closed-loop task qualification"
+  ],
+  "provenance": {
+    "preregistration_commit": "1bdf98815cd98650de76491a56009768c1d24f65",
+    "environment_path": "artifacts/motion_observation_probe_001/run001/environment.json",
+    "input_and_code_hashes": {
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_motion_metamorphic/scene-0383-motion-nominal-001-run001/infos.pkl": "1cc7532db334103c931f2bcb4783a0f689992c646ac29eb3889858c3a582d160",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_motion_metamorphic/scene-0383-motion-nominal-001-run001/observations.pkl": "10017438412b0595deae274b2879f16ef87776dd811066c72ba4183dbfd0f339",
+      "/home/yawei/logsim-credibility-audit/configs/motion_observation_probe_001.json": "3faf2b28b42d1b7e61e1804b76482fbae6a0d908f4b8269e0fa91cf14ef7ff49",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_probe.py": "d21841c2899f33e1b3849771b30b51f8ede05aaa4ecfbeefd61a881433447248",
+      "/home/yawei/HUGSIM/gaussian_renderer/__init__.py": "303918d0097d3759f960a663bd05255ecbb402009cf96117fe2e49ba9a225c22",
+      "/home/yawei/HUGSIM/scene/cameras.py": "8a1d10518fd282599e17d1ae3d91201124e2a357144968480c69acca283cfd1a"
+    },
+    "runtime_packages": {
+      "gsplat": "1.2.0",
+      "numpy": "1.26.4",
+      "opencv": "4.11.0",
+      "torch": "2.4.1+cu121"
+    }
+  },
+  "artifact_hashes": {
+    "environment.json": "2c19076fee6e72e5a62ab8fd58cde3a65ef8e47e8efd3bdbf2fdc8c8c0277f42",
+    "config.json": "fc2c9c9d55bb73d4bc52f64b8694c330d61b2189a30011a47afc5a043c41ef55",
+    "measurements.json": "674f62dde5309b61841f396a532efcaac4f4a6e25a53c2b9684ea0f920c9e45b",
+    "growth_windows.json": "507c51c64970d1839ccc6ee3522d0de08f2c445723f9035dca9f0768470013f7",
+    "heldout_predictions.json": "82fd2a9a6d56f49f16156e7a8866a8cad90369356c5f5ed6c46aeabf18de624a",
+    "frozen_identification_isolated.json": "810e02f538fde23457e6c869c6b47c9da29b6fb1992f41aaf4f18de9ee9ca292",
+    "frozen_identification_scene0383_static.json": "c190961b2bcead6e9f8462e957e937580d0274379b99e9a2226dd7d33d129ed2",
+    "measurement_qualification.json": "2e9389f5e5cbe177034f4cfa8e4bc3695647aba4fc2af8739e2d4bdc7cda199d",
+    "summary.json": "5367bc49ec238f8bd63af237f50daccbac43eadf9b38a57e7c80243711e01ad9"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "rgb_measurement_qualified_on_finite_synthetic_grid": "accepted",
+      "known_marker_projection_and_error_propagation_in_design_grid": "accepted",
+      "two_speed_parameters_predict_heldout_combination": "accepted",
+      "local_same_process_render_repeatability": "accepted",
+      "growth_rate_alone_sufficient_for_absolute_scale_fidelity": "rejected",
+      "existing_cf_m_car_physical_feature_measurement_qualified": "down-weighted"
+    },
+    "rejected_claim_contexts": {
+      "growth_rate_alone_sufficient_for_absolute_scale_fidelity": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "A fixed 10 percent size change is excluded by absolute separation in 54/54 frames but not by growth rate in any of the 42 finite windows across the two backgrounds.",
+        "diagnostic_finding": "constant_scale_growth_blindspot",
+        "evidence_refs": [
+          "docs/runs/motion_observation_probe_001.md",
+          "artifacts/motion_observation_probe_001/run001/summary.json",
+          "artifacts/motion_observation_probe_001/run001/growth_windows.json"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "constant_scale_growth_blindspot": {
+      "component": "finite-window log-growth indicator",
+      "expected": "An instrument used alone to establish absolute scale fidelity must distinguish a known 10 percent scale change from the baseline.",
+      "observed": "All 54 constant-scale frames exclude the zero-error absolute-width model; 0/42 growth windows exclude the zero-error growth model, as predicted by cancellation of constant scale in the log ratio.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Growth rate is insufficient for absolute scale fidelity; keep an absolute projection check. This diagnoses the indicator construct, not a HUGSIM renderer defect.",
+      "evidence_refs": [
+        "docs/runs/motion_observation_probe_001.md",
+        "artifacts/motion_observation_probe_001/run001/summary.json",
+        "artifacts/motion_observation_probe_001/run001/growth_windows.json"
+      ]
+    }
+  }
+}

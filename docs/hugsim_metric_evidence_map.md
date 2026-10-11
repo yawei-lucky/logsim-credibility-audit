@@ -37,6 +37,7 @@ World / independent reference
 | Geometry | Actor 3D box、ego/actor pose | HUGSIM 内部状态 | 仿真器声明的几何状态 | 运行配对、轨迹连续性、内部间距计算 | 几何状态符合现实；渲染位置正确 | 独立日志标注、测量或受控场地真值 |
 | Geometry / outcome | NC、DAC、TTC surrogate、PDMS、HDScore | HUGSIM 评分器 | 内部几何、地图、计划轨迹和车辆状态下的 AD 表现 | 在完整未来时域内描述 HUGSIM 内部评分结果 | 物理 TTC；传感器正确；仿真器整体可信 | 独立重算、现实或受控场地结果、有效时域检查 |
 | Rendering | RGB | HUGSIM 渲染器 | 虚拟相机像素输出 | AD 实际可接收的视觉输入；可检查可见性和外观变化 | RGB 与真实相机一致；任务信息充分 | 同位姿、同标定、同时刻真实 RGB 和相同接收方 |
+| Rendering / motion observation | 已知双标记的 RGB 质心间距、有限窗增长率、跨速度参数预测 | 人工给定三维标记与独立 CPU 投影；RGB 来自 HUGSIM，测量器经解析图像有限网格资格化 | 规定运动、轴向偏差、信息年龄和尺度变化如何传成图像量 | [标靶实验 001](runs/motion_observation_probe_001.md)：324 个主测量图对符合 0.5 px 预算，场景背景最大残差 0.037305 px；两背景共 18/18 留出预测被区间覆盖；10% 恒定尺度揭示增长率指标盲区 | 普通车辆轮廓/物理尺寸、现实相机、实测系统延迟、AD 线索使用或驾驶任务等效；宽度与增长率也不是两份独立证据 | 转动/非等深/遮挡失效对照；可追溯车辆特征和现实相机参考；独立任务误差界 |
 | Rendering | Semantic mask | HUGSIM 渲染器 | 渲染器声明的像素类别 | 内部对象可见区域、跨模态诊断 | 语义标签真实正确；可作为独立真值 | 独立真实标注或独立标注流程；跨视角与时序检查 |
 | Rendering | Depth map | HUGSIM 渲染器 | 渲染器声明的像素深度 | 内部深度排序、遮挡和几何诊断 | 真实尺度深度正确；可作为独立真值 | 匹配 lidar/stereo/测量参考及误差区间 |
 | Rendering | Array / calibration contract | HUGSIM observation + `cam_params` | 六相机数组形状、数据类型、内外参格式与时间内稳定性 | 接收方接口完整；标定数值在内部满足基本代数约束 | 跨相机看到同一世界点；标定符合真实传感器 | 独立标定、公共三维对应点和重投影误差 |
