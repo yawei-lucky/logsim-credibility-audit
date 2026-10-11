@@ -1,4 +1,4 @@
-# Codex Next Task — 冻结轨迹渲染与接收方回归
+# Codex Next Task — 冻结 SparseDrive 发布回归
 
 > 顶层：**预测结构一致性、动作效应一致性、任务边界一致性**。
 > 当前重点：解释误差经什么过程传播，以及何时不可忽略；不以通过项数量背书。
@@ -25,16 +25,30 @@
 超范围主张为 `rejected`；整体仍为 `down-weighted`。普通车辆、现实遮挡、真实
 相机和 AD 没有因此获得资格。
 
-## 下一项：NuRec 式冻结轨迹回归
+随后完成 [HUGSIM 冻结轨迹渲染回归 001](docs/runs/fixed_trajectory_render_regression_001.md)：
 
-1. 复用 scene-0383 已有直行／转弯 matched factual 窗口和历史 golden PNG；固定
-   位姿、相机、场景、版本与预处理，在两个新进程重渲染。
-2. 先比较精确 SHA-256；若不一致，再报告逐相机最大像素差、MAE、PSNR 和 SSIM，
-   不用平均分掩盖局部回归。历史只读检查已有 24/24 张重叠 PNG 完全一致，但当前
-   driver 已变化，因此新实验定位为管线版本回归，不冒充新 HUGSIM release 对比。
-3. 渲染回归通过后，再让同一冻结 SparseDrive 分别读取真实 RGB、历史 HUGSIM
-   RGB 和新 HUGSIM RGB，并做 reset repeat。比较 mode、逐 waypoint 漂移、
-   ADE/FDE 和端点有符号偏移，区分 renderer 漂移与 receiver/runtime 漂移。
+- 两个完整成功轮次的 96/96 张 RGB 逐字节、逐像素相同，且两轮各自与历史
+  golden 96/96 相同；最大像素差 0、最小 SSIM 1.0。
+- 第一轮一个 frame 66 子进程在 0.214 s 后以 `SIGSEGV` 退出；预注册两轮合计
+  31/32 进程完成，所以 32/32 启动完整性及原两轮完整比较主张为 `rejected`。
+- outcome-informed 第三轮 16/16 完成，只支持成功轮次的窄 RGB 重复性，不抹掉
+  原失败；故障组件未隔离。
+- 窄 RGB 历史兼容性为 `accepted`，运行机制诊断和整体 segment 均为
+  `down-weighted`；没有因此建立现实等效。
+
+## 下一项：NuRec 式冻结接收方回归
+
+1. 把完整 `run002` 的 straight 与 turn 窗口分别无损装配为 receiver-ready 输入；
+   两段必须独立 reset，不能合为一条 16 帧历史。
+2. 保持 SparseDrive commit/working diff、Stage2 checkpoint、config、adapter、
+   calibration、相机顺序和预处理不变；每段运行 baseline 与 independent reset
+   repeat，共 32 次 frame forward。
+3. 逐帧比较 historical-sim 与 current-sim 的 selected mode、六个 final waypoints
+   和完整 native tensor 结构；final-plan 主门沿用已冻结 receiver tolerance
+   `1e-4 m`，整数输出必须精确相同，并报告相对本地 reset envelope 的幅度。
+4. 真实 RGB 不重跑；若接收方回归通过，复用已有 real report 检查旧的
+   `D_domain` 数值是否由当前 sim receiver 输出保持。该实验只裁决发布回归和
+   runtime 复现性，不新增现实等效证据。
 
 不把当前零散场景合成为“事件复现率”；仓库没有 NuRec 式同类真实事件簇和合格
 抽样分布。先完成上述固定窗口回归，再决定是否有信息增益继续接收方重跑。

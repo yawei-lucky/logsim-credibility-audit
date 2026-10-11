@@ -1,0 +1,217 @@
+{
+  "experiment_id": "fixed_trajectory_render_regression_001",
+  "status": "completed_with_retained_failed_planned_run_and_diagnostic_followup",
+  "preregistration_commit": "8b22fcf97a369daf1a1a23f7b16648b51ad28ccf",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "planned_runs": {
+    "run001": {
+      "status": "failed",
+      "completed_processes": 15,
+      "planned_processes": 16,
+      "image_count": 90,
+      "expected_image_count": 96,
+      "failure": "turn/frame66 child exited -11 (SIGSEGV) after 0.21436294098384678 s; no child log content, report or RGB output"
+    },
+    "run002": {
+      "status": "complete",
+      "completed_processes": 16,
+      "planned_processes": 16,
+      "image_count": 96,
+      "expected_image_count": 96
+    }
+  },
+  "diagnostic_followup": {
+    "run": "run003",
+    "plan": "artifacts/fixed_trajectory_render_regression_001/diagnostic_run003_plan.md",
+    "plan_sha256": "b5c7dd5ef394d8dcf053b7d96217d8bccd6363292575b8db44cbe7aaa83a244c",
+    "outcome_informed": true,
+    "status": "complete",
+    "completed_processes": 16,
+    "planned_processes": 16,
+    "image_count": 96,
+    "expected_image_count": 96,
+    "interpretation_boundary": "run003 does not replace run001 or restore the rejected preregistered 32/32 startup claim"
+  },
+  "design": {
+    "scene": "scene-0383",
+    "windows": {
+      "straight": [12, 18, 24, 30, 36, 42, 48, 54],
+      "turn": [60, 66, 72, 78, 84, 90, 96, 102]
+    },
+    "camera_count": 6,
+    "images_per_complete_run": 96,
+    "fresh_sequential_process_per_frame": true,
+    "historical_driver_sha256": "f619803522f3cd12565427c4b7b3c1ccc429c9fe426e53a037ca519337700d4e",
+    "current_driver_sha256": "c72a4e9ce4a189acb8d69b0921676b8236dfed34d56844e9a5329d2b795211c5",
+    "golden_manifest_sha256": {
+      "straight": "d73786ba1a87ea4acfdd028c81ae79f361106d44fd1626d12f097039655beee3",
+      "turn": "f3803f60a7131d3756c37214be101a2234df0c4780a93e5e6e7711648aae6f62"
+    }
+  },
+  "results": {
+    "preregistered_process_health": {
+      "completed": 31,
+      "planned": 32,
+      "passed": false
+    },
+    "all_process_attempts_including_diagnostic": {
+      "completed": 47,
+      "attempted": 48,
+      "general_failure_rate_inference_allowed": false
+    },
+    "run001_to_golden_available": {
+      "tested": 90,
+      "png_byte_exact": 90,
+      "pixel_exact": 90,
+      "max_abs_uint8": 0
+    },
+    "run001_to_run002_overlap": {
+      "tested": 90,
+      "png_byte_exact": 90,
+      "pixel_exact": 90,
+      "max_abs_uint8": 0
+    },
+    "run002_to_run003": {
+      "tested": 96,
+      "png_byte_exact": 96,
+      "pixel_exact": 96,
+      "max_abs_uint8": 0,
+      "max_mae_uint8": 0.0,
+      "min_ssim": 1.0
+    },
+    "run002_to_golden": {
+      "tested": 96,
+      "png_byte_exact": 96,
+      "pixel_exact": 96,
+      "max_abs_uint8": 0,
+      "max_mae_uint8": 0.0,
+      "min_ssim": 1.0
+    },
+    "run003_to_golden": {
+      "tested": 96,
+      "png_byte_exact": 96,
+      "pixel_exact": 96,
+      "max_abs_uint8": 0,
+      "max_mae_uint8": 0.0,
+      "min_ssim": 1.0
+    },
+    "produced_images_exact_to_golden": {
+      "exact": 282,
+      "produced": 282
+    }
+  },
+  "provenance": {
+    "host": "stf-precision-3680",
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "gpu_driver": "580.95.05",
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "torch": "2.4.1+cu121",
+    "torch_cuda": "12.1",
+    "gsplat": "1.2.0",
+    "numpy": "1.26.4",
+    "imageio": "2.37.0",
+    "audit_commit_at_execution": "8b22fcf97a369daf1a1a23f7b16648b51ad28ccf",
+    "audit_status_at_execution": "",
+    "hugsim_status_at_execution": "?? pixi.toml.smoke-backup",
+    "scene_checkpoint_sha256": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+    "cfg_sha256": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+    "metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+    "native_dynamic_sha256": "462a1d4579b94447e2a2951d6ffc80f0b6cf26a6968ff78025d41cb92ad924a6"
+  },
+  "artifact_hashes": {
+    "artifacts/fixed_trajectory_render_regression_001/run001/render_manifest.json": "9285b9758dfbbc925a34cdbc7bf1db50cd028b3edd316102db8f8338185e20f5",
+    "artifacts/fixed_trajectory_render_regression_001/run001/status.json": "388de32fa8df45d9fa3d056fd1beb2fa8b28f06c743c8edd2c680137b91eb6ea",
+    "artifacts/fixed_trajectory_render_regression_001/run001/failure.txt": "05add0777c806816f457f755893cf52373e3b468b640a75c91b0afd13adbc075",
+    "artifacts/fixed_trajectory_render_regression_001/run001/child_logs/turn/frame_00066.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/fixed_trajectory_render_regression_001/run001/failure_diagnostics.txt": "8681cbc5e0df05c8dc40886f8369ab9fe7f358afa60575d3480f9c615559f2ed",
+    "artifacts/fixed_trajectory_render_regression_001/run002/render_manifest.json": "390fa0f900547693b4d81c9fa348fae3b9e4f8a9b9e8750cbd6653c072c656cc",
+    "artifacts/fixed_trajectory_render_regression_001/run003/render_manifest.json": "04ad71e8023bcbe340be6387f3606de5174c666c5582a737285ffbe8e6e9a01b",
+    "artifacts/fixed_trajectory_render_regression_001/partial_comparison_run001_run002.json": "1e00b84867f04403927ffb82cdd7db4fcb54df4fcd4919ff0fe5844ff070bd7c",
+    "artifacts/fixed_trajectory_render_regression_001/comparison_run002_run003.json": "cc9450737fe26114ceb1576e97f1a58cdf44d54da6775a6de5f68c7af51ed7a5",
+    "artifacts/fixed_trajectory_render_regression_001/diagnostic_run003_plan.md": "b5c7dd5ef394d8dcf053b7d96217d8bccd6363292575b8db44cbe7aaa83a244c",
+    "artifacts/fixed_trajectory_render_regression_001/fixed_trajectory_render_regression_summary.png": "5daf1c84e2ef26e2135e0da28b2ff0a1d7cc7677d6e5a242e0159e0d0f0eea1f"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "frozen_input_asset_and_golden_identity_qualified": "accepted",
+      "all_32_preregistered_child_processes_complete": "rejected",
+      "preregistered_run001_run002_all_96_images_repeat_exactly": "rejected",
+      "both_preregistered_runs_all_96_images_match_golden": "rejected",
+      "run001_available_images_match_run002_and_golden": "accepted",
+      "run002_run003_successful_complete_rgb_repeatability": "accepted",
+      "run002_run003_historical_golden_compatibility": "accepted",
+      "sigsegv_mechanism_diagnostic": "down-weighted"
+    },
+    "rejected_claim_contexts": {
+      "all_32_preregistered_child_processes_complete": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "run001 turn/frame66 exited -11 after 0.214 s, so only 31 of 32 preregistered child processes completed.",
+        "diagnostic_finding": "unisolated_early_process_sigsegv",
+        "evidence_refs": [
+          "docs/runs/fixed_trajectory_render_regression_001.md",
+          "artifacts/fixed_trajectory_render_regression_001/run001/render_manifest.json",
+          "artifacts/fixed_trajectory_render_regression_001/run001/status.json"
+        ]
+      },
+      "preregistered_run001_run002_all_96_images_repeat_exactly": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "The failed run001 child produced no six-camera output, leaving only 90 of the required 96 image pairs. Missing images are not pixel mismatches but cannot be removed from the frozen denominator.",
+        "diagnostic_finding": "unisolated_early_process_sigsegv",
+        "evidence_refs": [
+          "docs/runs/fixed_trajectory_render_regression_001.md",
+          "artifacts/fixed_trajectory_render_regression_001/run001/render_manifest.json"
+        ]
+      },
+      "both_preregistered_runs_all_96_images_match_golden": {
+        "tested": true,
+        "rejection_basis": "invalidated_by_diagnostic",
+        "reason": "run001 produced only 90 of 96 planned images; all 90 available images matched but the complete two-run claim failed its health gate.",
+        "diagnostic_finding": "unisolated_early_process_sigsegv",
+        "evidence_refs": [
+          "docs/runs/fixed_trajectory_render_regression_001.md",
+          "artifacts/fixed_trajectory_render_regression_001/run001/render_manifest.json",
+          "artifacts/fixed_trajectory_render_regression_001/run002/render_manifest.json"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "successful_complete_rgb_identity": {
+      "component": "fixed-pose stateless HUGSIM RGB render pipeline",
+      "expected": "With frozen inputs and environment, successful independent processes reproduce each RGB exactly and remain compatible with the historical golden.",
+      "observed": "run002 and outcome-informed run003 were 96/96 PNG-byte and decoded-pixel exact to each other and each historical golden; all 90 available run001 images were also exact.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "No RGB regression or output nondeterminism was observed for the selected 96-image trajectory on this host; this does not establish realism or cross-platform stability.",
+      "evidence_refs": [
+        "docs/runs/fixed_trajectory_render_regression_001.md",
+        "artifacts/fixed_trajectory_render_regression_001/comparison_run002_run003.json"
+      ]
+    },
+    "unisolated_early_process_sigsegv": {
+      "component": "fresh-process render pipeline initialization",
+      "expected": "Every frozen child process exits zero and emits one report plus six valid RGB images.",
+      "observed": "One preregistered child exited -11 in 0.214 s with an empty log and no report or RGB; the same frame completed in run002 and run003.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "Retain per-process health gates and failed attempts. The event is real, but no component attribution or general failure-rate inference is supported.",
+      "evidence_refs": [
+        "docs/runs/fixed_trajectory_render_regression_001.md",
+        "artifacts/fixed_trajectory_render_regression_001/run001/render_manifest.json",
+        "artifacts/fixed_trajectory_render_regression_001/run001/child_logs/turn/frame_00066.log",
+        "artifacts/fixed_trajectory_render_regression_001/run001/failure_diagnostics.txt"
+      ]
+    }
+  },
+  "limitations": [
+    "One scene and two windows on one host, GPU, driver and software environment",
+    "Historical golden shares the HUGSIM commit, scene assets and renderer lineage",
+    "Per-frame prev_viewpoint is null, so temporal renderer state, optical flow and history are not tested",
+    "No new real RGB, depth, LiDAR, reconstruction-fidelity or AD receiver output is measured",
+    "The single SIGSEGV has no traceback, core or component-level isolation",
+    "The diagnostic third run was outcome-informed and cannot repair the preregistered startup failure"
+  ]
+}

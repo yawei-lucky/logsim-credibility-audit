@@ -367,3 +367,23 @@ PNG 哈希与 48 个测量记录完全一致。该窄工具和构念诊断可 `a
 后续短进程未复现，根因未隔离。因此“所有进程都能稳定启动”这一实测主张为
 `rejected`，运行时机制诊断为 `down-weighted`。下一步转向冻结轨迹 golden RGB
 回归，再决定是否重跑 matched real/sim SparseDrive 接收方。
+
+## 15. 冻结轨迹渲染回归 001
+
+[冻结轨迹渲染回归 001](runs/fixed_trajectory_render_regression_001.md) 固定 scene-0383
+直行与持续转弯两个窗口、16 帧、六相机、source pose、原生动态对象和历史
+golden，以每帧一个全新进程重渲染。两个完整成功轮次的 96/96 张 PNG 字节和
+解码像素完全相同，两轮各自与 historical golden 也为 96/96 完全相同；最大
+uint8 差为 0。这个窄历史兼容性与成功轮次重复性诊断为 `accepted`，限定同一
+主机、GPU、驱动、HUGSIM commit、scene 资产和 96 图集合。
+
+预注册第一轮的 frame 66 子进程在 0.214 s 后以 signal 11 退出，未产生报告或
+六相机图像；原两轮只有 31/32 启动和 186/192 图。因此预注册 32/32 启动完整性、
+原两轮全 96 图重复性及两轮完整 golden 回归主张均为 `rejected`。故障后留存的
+第三轮 16/16 完成，不能替代首轮；没有 traceback、core 或组件定位，机制诊断
+为 `down-weighted`。
+
+整体仍为 `down-weighted`。同源历史 golden 只排除当前 RGB 文件漂移，不能支持
+重建现实性、真实—仿真等效、跨平台确定性或 AD 正确性。下一步只做冻结
+SparseDrive 的 current-sim 对 historical-sim 发布回归，以区分 renderer identity
+与 receiver/runtime 复现性；真实 RGB 不需要重复推理。

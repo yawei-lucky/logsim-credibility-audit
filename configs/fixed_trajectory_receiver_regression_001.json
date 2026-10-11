@@ -1,0 +1,91 @@
+{
+  "experiment_id": "fixed_trajectory_receiver_regression_001",
+  "plan_max_abs_tolerance_m": 0.0001,
+  "native_float_max_abs_tolerance": 0.0001,
+  "domain_metric_max_abs_tolerance_m": 0.0001,
+  "comparison_script": "scripts/compare_fixed_trajectory_receiver_regression.py",
+  "comparison_script_sha256": "f4fd20d271c3ba1870bcd949d1ee176c8db0912a74f68d02c5cdd8af97608ab2",
+  "current_render_comparison": "artifacts/fixed_trajectory_render_regression_001/comparison_run002_run003.json",
+  "current_render_comparison_sha256": "cc9450737fe26114ceb1576e97f1a58cdf44d54da6775a6de5f68c7af51ed7a5",
+  "source_metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",
+  "source_metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+  "metadata_archive_manifest": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/source_archive_manifest.json",
+  "metadata_archive_manifest_sha256": "3d2434d5329c896e5241935c99e3e63faf89d64615c53c5c0fc2e627244c0612",
+  "assembly_script": "scripts/assemble_hugsim_exact_pose_window.py",
+  "assembly_script_sha256": "2b5ea5dfbbfef473ed097102ed36d5671fa2dee52d4536ffd6f9561941d5438b",
+  "receiver_adapter": "scripts/run_sparsedrive_real_source.py",
+  "receiver_adapter_sha256": "446669552992fdb9e501d06ccbe14741ff783f4e94c3f3a26108c6dd5251dbef",
+  "transitive_helper_sha256": [
+    {
+      "path": "scripts/render_hugsim_exact_source_pose.py",
+      "sha256": "c72a4e9ce4a189acb8d69b0921676b8236dfed34d56844e9a5329d2b795211c5"
+    },
+    {
+      "path": "scripts/run_sparse4d_hugsim_receiver.py",
+      "sha256": "fefc62619e4b4968f54acafde1c15123f57e0e1f8c2c35eb5c969a3cccf5b0e9"
+    },
+    {
+      "path": "scripts/run_sparsedrive_hugsim_receiver.py",
+      "sha256": "6cc984ebd34f15c0a6e6d5f6e3d42d4515d980cd159b8ff01243c87ae4a3b32a"
+    }
+  ],
+  "sparsedrive_root": "/home/yawei/SparseDrive",
+  "sparsedrive_commit": "ec0225d4b7a2dd7e6ce10179a2b7660dcb74b2f1",
+  "sparsedrive_working_diff_sha256": "541f5a5a561745bff64962ba8ffe679d657f578acef3193e3550f205f06a1e3d",
+  "sparsedrive_status": [
+    " M projects/mmdet3d_plugin/models/attention.py",
+    " M projects/mmdet3d_plugin/models/motion/instance_queue.py",
+    " M projects/mmdet3d_plugin/ops/__init__.py"
+  ],
+  "checkpoint": "artifacts/sparsedrive_receiver/official-v1.0/sparsedrive_stage2.pth",
+  "checkpoint_sha256": "a9786bd3398907666ef436b287b465d6de8c424467413648e4614e0b884db7ad",
+  "model_config": "/home/yawei/SparseDrive/projects/configs/sparsedrive_small_stage2.py",
+  "model_config_sha256": "812414bb981eadca1365654575eeb799c91252de756a1d5b573e0a284cc88f11",
+  "runtime_python": "/home/yawei/miniforge3/envs/sparse4d-audit/bin/python",
+  "runtime_deps": "artifacts/sparsedrive_receiver/runtime-deps-v1",
+  "anchor_dir": "artifacts/sparsedrive_receiver/official-v1.0/anchors",
+  "anchor_sha256": {
+    "kmeans_det_900.npy": "ee499cd401d1308ceab829e2a1bd641de7c5aa5027e43f2368eec67ecdf0c5a5",
+    "kmeans_map_100.npy": "405353e450b806eb191acc98de5efe5132351f211c5a20c582c7a3afb18e363f",
+    "kmeans_motion_6.npy": "b343adc2fc84d10e556bf7698ce840887ab25111c999563088982f05236a97cb",
+    "kmeans_plan_6.npy": "eba94f7656ee90dfce22b1f95217f757fbcc6950988a968017f713c9b956efc6"
+  },
+  "calibration_reference_run": "artifacts/hugsim_contrast/scene-0383-easy-00-run007-9s",
+  "calibration_infos_sha256": "b923c6b5a355956fcfe33a06aa5a43448b168bb526aae6c29cba140c9d4e1e82",
+  "windows": [
+    {
+      "id": "straight",
+      "frames": [12, 18, 24, 30, 36, 42, 48, 54],
+      "current_render_root": "artifacts/fixed_trajectory_render_regression_001/run002/renders/straight",
+      "current_input_root": "artifacts/fixed_trajectory_receiver_regression_001/inputs/straight-current-run002",
+      "current_receiver_root": "artifacts/fixed_trajectory_receiver_regression_001/receiver/straight-current-run002",
+      "historical_input_root": "artifacts/hugsim_matched_pose/scene-0383-source-window-factual-run002",
+      "historical_input_manifest_sha256": "d73786ba1a87ea4acfdd028c81ae79f361106d44fd1626d12f097039655beee3",
+      "historical_receiver_report": "artifacts/sparsedrive_real_source/scene-0383-sim-factual-source-window-run002/sparsedrive_real_source_qualification.json",
+      "historical_receiver_report_sha256": "9b7b20223c78406731b296977ead069c6128be7990c731a83fd40284b0af1059",
+      "historical_native_outputs": "artifacts/sparsedrive_real_source/scene-0383-sim-factual-source-window-run002/native_outputs.pt",
+      "historical_native_outputs_sha256": "0bea3b95bd96b09624d1ddfc52518f698bdb459e7f0b195a047b4346dc22b0c2",
+      "real_receiver_report": "artifacts/sparsedrive_real_source/scene-0383-real-source-window-run004/sparsedrive_real_source_qualification.json",
+      "real_receiver_report_sha256": "412d483bfa57319724fedf1457afbebe46f86bc57160a74af14155ee291b4994",
+      "historical_real_sim_audit": "artifacts/sparsedrive_real_sim_factual/scene-0383-source-window-run002/sparsedrive_real_sim_factual_audit.json",
+      "historical_real_sim_audit_sha256": "baa5ff1365ec1635aa94bf1473d8fe09cf272b94babaf81d5a80ae0aef2a2816"
+    },
+    {
+      "id": "turn",
+      "frames": [60, 66, 72, 78, 84, 90, 96, 102],
+      "current_render_root": "artifacts/fixed_trajectory_render_regression_001/run002/renders/turn",
+      "current_input_root": "artifacts/fixed_trajectory_receiver_regression_001/inputs/turn-current-run002",
+      "current_receiver_root": "artifacts/fixed_trajectory_receiver_regression_001/receiver/turn-current-run002",
+      "historical_input_root": "artifacts/hugsim_matched_pose/scene-0383-source-turn-window-factual-run001",
+      "historical_input_manifest_sha256": "f3803f60a7131d3756c37214be101a2234df0c4780a93e5e6e7711648aae6f62",
+      "historical_receiver_report": "artifacts/sparsedrive_real_source/scene-0383-sim-factual-source-turn-window-run001/sparsedrive_real_source_qualification.json",
+      "historical_receiver_report_sha256": "e8820931985abd24c6ca6b07267f92b129bab36244449047d8b106e6d135ff1c",
+      "historical_native_outputs": "artifacts/sparsedrive_real_source/scene-0383-sim-factual-source-turn-window-run001/native_outputs.pt",
+      "historical_native_outputs_sha256": "637acd1af535799f1392f2dd329d9dc93e4e46544a08c376205af262f8c3dc3c",
+      "real_receiver_report": "artifacts/sparsedrive_real_source/scene-0383-real-source-turn-window-run001/sparsedrive_real_source_qualification.json",
+      "real_receiver_report_sha256": "ca3256778b1ec449786604a1ca73af14ceea3d992f087b75a9356c017f721508",
+      "historical_real_sim_audit": "artifacts/sparsedrive_real_sim_factual/scene-0383-source-turn-window-run001/sparsedrive_real_sim_factual_audit.json",
+      "historical_real_sim_audit_sha256": "d61d34226e8332891ee85fb88e34cb2a57d35aa95d1667f11b5a5fcc3ed167ca"
+    }
+  ]
+}
