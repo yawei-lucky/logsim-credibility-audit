@@ -29,6 +29,17 @@ The three questions are related, not sequential stages or a proven-complete
 metric set. Their claim and qualification contract is defined in
 [`CREDIBILITY_VALIDATION_METHOD.md`](../CREDIBILITY_VALIDATION_METHOD.md).
 
+## Current Work Entry — Basic Screening (2026-10-12)
+
+按用户明确调整，当前先逐题打磨基本可信性筛查，暂缓新的规律机制研究和
+NuRec 接入。目标是“过了才有可能可信”：在支持条件、输入、干预和测量均
+有效时，基础关系的反例阻断对应用途；通过不能升级为整体可信。
+
+先补现有试题的判错盲区，再按明确试题补独立标注和真实窗口。新增帧数不能
+替代独立参考或新增场景覆盖。规则冻结后检验未用于开发的样本；三问题框架、
+历史实验和裁决保留，不扩通用 benchmark。具体下一题见
+[`CODEX_NEXT_TASK.md`](../CODEX_NEXT_TASK.md)。
+
 ## Comparative Validation Guideline
 
 > 同一个智驾模型面对现实数据和对应的仿真数据，是否形成相近的感知、风险排序、规划和控制行为？
