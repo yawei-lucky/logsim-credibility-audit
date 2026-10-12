@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 
 from run_motion_observation_probe import measure_pair
+from measure_credibility_marker_identity import measure_tagged_pair
 
 
 class InputError(ValueError):
@@ -85,6 +86,61 @@ def failure(message, kind="input_invalid", tested=False):
     return {"evidence_label": "rejected", "tested": tested, "failure_kind": kind, "reason": str(message)}
 
 
+def evaluate_tagged_frame(result, expected, bright, dim, suite, projected_uv):
+    """Check code identity separately from visible count and unlabelled position."""
+    cfg = suite["measurement"]
+    result["expected_visible_ids"] = expected["expected_visible_ids"]
+    try:
+        observation = measure_tagged_pair(bright, dim, cfg)
+    except ValueError as error:
+        result.update(failure(error, "measurement_unqualified"))
+        return result
+    features = observation["features"]
+    actual_ids = [feature["identity"] for feature in features]
+    result.update({"measurement": observation, "observed_visible_markers": len(features),
+                   "observed_visible_ids": actual_ids, "measured_width_px": observation["width_px"]})
+    if len(features) != expected["expected_visible_markers"]:
+        result.update(failure("visible marker count contradicts the declared condition", "contradiction", True))
+        return result
+    if not observation["identities_qualified"]:
+        result.update(failure("RGB contrast code is ambiguous or unknown; marker identity remains unmeasured",
+                              "measurement_unqualified"))
+        return result
+    uv_by_id = dict(zip(expected["marker_ids"], projected_uv, strict=True))
+    expected_uv = np.asarray(sorted([uv_by_id[key] for key in expected["expected_visible_ids"]], key=lambda point: point[0]))
+    measured_uv = np.asarray([[feature["u"], feature["v"]] for feature in features])
+    residual = measured_uv - expected_uv
+    maximum = float(np.max(np.abs(residual)))
+    position_budget = cfg["position_error_bound_px"]
+    ids_match = sorted(actual_ids) == sorted(expected["expected_visible_ids"])
+    result.update({"expected_uv_px": expected_uv.tolist(), "measured_uv_px": measured_uv.tolist(),
+                   "position_residual_px": residual.tolist(), "max_abs_position_residual_px": maximum,
+                   "position_error_bound_px": position_budget,
+                   "unlabelled_position_within_budget": maximum <= position_budget,
+                   "identity_within_contract": ids_match,
+                   "identity_position_within_budget": None,
+                   "width_within_budget": None})
+    if len(features) == 2:
+        width_residual = observation["width_px"] - result["expected_width_px"]
+        result.update({"width_residual_px": width_residual,
+                       "width_within_budget": abs(width_residual) <= cfg["width_error_bound_px"]})
+    if ids_match:
+        labelled = measured_uv - np.asarray([uv_by_id[key] for key in actual_ids])
+        labelled_maximum = float(np.max(np.abs(labelled)))
+        result.update({"identity_position_residual_px": labelled.tolist(),
+                       "max_abs_identity_position_residual_px": labelled_maximum,
+                       "identity_position_within_budget": labelled_maximum <= position_budget})
+    if not ids_match:
+        result.update(failure(f"visible identities {actual_ids} contradict expected {expected['expected_visible_ids']}", "contradiction", True))
+    elif not result["identity_position_within_budget"]:
+        result.update(failure("identity-associated position exceeds the frozen position budget", "contradiction", True))
+    elif result["width_within_budget"] is False:
+        result.update(failure("tagged marker width exceeds the frozen width budget", "contradiction", True))
+    else:
+        result.update({"evidence_label": "accepted", "tested": True, "failure_kind": None})
+    return result
+
+
 def evaluate_frame(expected, submitted, suite, root):
     result = {"id": expected["id"], "expected_visible_markers": expected["expected_visible_markers"]}
     try:
@@ -103,6 +159,8 @@ def evaluate_frame(expected, submitted, suite, root):
     except (InputError, KeyError, TypeError, ValueError) as error:
         result.update(failure(error))
         return result
+    if "identity_channels" in suite["measurement"]:
+        return evaluate_tagged_frame(result, expected, bright, dim, suite, uv)
     try:
         observation = measure_pair(bright, dim, suite["measurement"])
     except ValueError as error:
@@ -165,6 +223,16 @@ def validate_suite(suite):
     if "position_error_bound_px" in measurement:
         if numeric(measurement["position_error_bound_px"], "position_error_bound_px") <= 0:
             raise InputError("position_error_bound_px must be positive")
+    identity_mode = "identity_channels" in measurement
+    if identity_mode:
+        if measurement["identity_channels"] != {"left": 0, "right": 2} or any(
+            type(channel) is not int for channel in measurement["identity_channels"].values()
+        ):
+            raise InputError("identity_channels must specify left=RGB red and right=RGB blue")
+        if not 0.5 < numeric(measurement.get("identity_min_channel_fraction"), "identity_min_channel_fraction") <= 1:
+            raise InputError("identity_min_channel_fraction must lie in (0.5, 1]")
+        if "position_error_bound_px" not in measurement:
+            raise InputError("tagged identity contract requires a qualified position budget")
     if not 0 < numeric(measurement.get("difference_threshold_u8"), "difference_threshold_u8") < 255:
         raise InputError("difference_threshold_u8 must lie between 0 and 255")
     area = measurement.get("min_component_area_px")
@@ -178,8 +246,16 @@ def validate_suite(suite):
             times.append(numeric(frame.get("capture_time_s"), "suite capture_time_s"))
             if type(frame.get("expected_visible_markers")) is not int or frame["expected_visible_markers"] not in (1, 2):
                 raise InputError("expected_visible_markers must be 1 or 2")
-            if "position_error_bound_px" in measurement and frame["expected_visible_markers"] != 2:
+            if "position_error_bound_px" in measurement and not identity_mode and frame["expected_visible_markers"] != 2:
                 raise InputError("absolute position contract requires two visible markers; single-marker identity is not qualified")
+            if identity_mode:
+                ids, visible = frame.get("marker_ids"), frame.get("expected_visible_ids")
+                if ids not in (["left", "right"], ["right", "left"]):
+                    raise InputError("marker_ids must identify both prescribed endpoints exactly once")
+                if not isinstance(visible, list) or len(visible) != frame["expected_visible_markers"] or any(
+                    key not in ids for key in visible
+                ) or len(set(visible)) != len(visible):
+                    raise InputError("expected_visible_ids must be unique marker IDs matching the declared count")
             projection_width(frame.get("marker_camera_xyz_m"), camera.get("intrinsics"))
         if any(after <= before for before, after in zip(times, times[1:])):
             raise InputError(f"suite frame times must increase strictly: {case['id']}")
@@ -204,6 +280,10 @@ def evaluate_submission(suite, submission, submission_root):
         report["limitations"] = [item for item in report["limitations"]
                                  if not item.startswith(("Width does not", "A single visible"))]
         report["limitations"].append("Position matching uses increasing image u, not semantic marker identity; single-marker cases are unsupported.")
+    if isinstance(measurement, dict) and "identity_channels" in measurement:
+        report["claim"] = "This submitted RGB set satisfies the finite contrast-coded marker count, identity and associated-position contract."
+        report["limitations"] = [item for item in report["limitations"] if not item.startswith("Position matching uses")]
+        report["limitations"].append("Identity is a controlled RGB contrast code; no natural object identity or real occlusion equivalence is qualified.")
     try:
         expected_cases = validate_suite(suite)
         if not isinstance(submission, dict) or type(submission.get("schema_version")) is not int or submission.get("schema_version") != 1 or submission.get("suite_id") != suite["suite_id"]:

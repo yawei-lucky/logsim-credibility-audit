@@ -1,0 +1,67 @@
+{
+  "experiment_id": "credibility_screening_identity_001",
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "camera": "CAM_FRONT",
+  "metadata_frame": "00000",
+  "contexts": ["isolated", "scene0383_static"],
+  "marker_sigma_m": 0.035,
+  "marker_opacity": 0.9,
+  "occluder_sigma_m": 0.45,
+  "occluder_opacity": 0.9999,
+  "occluder_level": 0.25,
+  "occluder_depth_offset_m": -2.0,
+  "marker_codes": {
+    "left": {"bright": [0.9, 0.2, 0.2], "dim": [0.1, 0.2, 0.2]},
+    "right": {"bright": [0.2, 0.2, 0.9], "dim": [0.2, 0.2, 0.1]}
+  },
+  "conditions": [
+    {"id": "both_visible", "case_id": "both_visible", "occluded_index": null, "swap_codes": false},
+    {"id": "occlude_left", "case_id": "occlude_left", "occluded_index": 0, "swap_codes": false},
+    {"id": "occlude_right", "case_id": "occlude_right", "occluded_index": 1, "swap_codes": false},
+    {"id": "wrong_right_identity", "case_id": "occlude_left", "occluded_index": 0, "swap_codes": true},
+    {"id": "wrong_left_identity", "case_id": "occlude_right", "occluded_index": 1, "swap_codes": true}
+  ],
+  "qualification": {
+    "templates": [
+      {"centres": [[426.25, 228.25]], "ids": ["left"]},
+      {"centres": [[426.25, 228.25]], "ids": ["right"]},
+      {"centres": [[469.75, 228.25]], "ids": ["left"]},
+      {"centres": [[469.75, 228.25]], "ids": ["right"]},
+      {"centres": [[426.25, 228.25], [469.75, 228.25]], "ids": ["left", "right"]},
+      {"centres": [[426.25, 228.25], [469.75, 228.25]], "ids": ["right", "left"]}
+    ],
+    "phases_u_px": [0.0, 0.5],
+    "phases_v_px": [0.0, 0.5],
+    "sigmas_px": [0.8, 1.2, 1.6],
+    "mixes": [
+      [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+      [[0.94, 0.03, 0.03], [0.03, 0.94, 0.03], [0.03, 0.03, 0.94]]
+    ]
+  },
+  "suite": {
+    "schema_version": 1,
+    "suite_id": "credibility_screening_identity_001",
+    "camera": {
+      "name": "CAM_FRONT", "width": 800, "height": 450,
+      "pixel_centres": "u = column + 0.5, v = row + 0.5",
+      "intrinsics": [[633.208601523277, 0.0, 408.1335098723992], [0.0, 633.208601523277, 245.75353289647379], [0.0, 0.0, 1.0]]
+    },
+    "measurement": {
+      "difference_threshold_u8": 8, "min_component_area_px": 3,
+      "width_error_bound_px": 0.5, "position_error_bound_px": 0.25,
+      "identity_channels": {"left": 0, "right": 2}, "identity_min_channel_fraction": 0.85
+    },
+    "cases": [
+      {"id": "both_visible", "question": "Both contrast-coded markers retain identity and associated position.", "frames": [
+        {"id": "frame000", "capture_time_s": 0.0, "marker_camera_xyz_m": [[0.7, -0.65, 23.5], [2.3, -0.65, 23.5]],
+         "marker_ids": ["left", "right"], "expected_visible_markers": 2, "expected_visible_ids": ["left", "right"]}]},
+      {"id": "occlude_left", "question": "Occluding the left marker leaves only the right identity and no full width.", "frames": [
+        {"id": "frame000", "capture_time_s": 0.0, "marker_camera_xyz_m": [[0.7, -0.65, 23.5], [2.3, -0.65, 23.5]],
+         "marker_ids": ["left", "right"], "expected_visible_markers": 1, "expected_visible_ids": ["right"]}]},
+      {"id": "occlude_right", "question": "Occluding the right marker leaves only the left identity and no full width.", "frames": [
+        {"id": "frame000", "capture_time_s": 0.0, "marker_camera_xyz_m": [[0.7, -0.65, 23.5], [2.3, -0.65, 23.5]],
+         "marker_ids": ["left", "right"], "expected_visible_markers": 1, "expected_visible_ids": ["left"]}]}
+    ]
+  }
+}

@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from evaluate_credibility_screening import evaluate_submission, projection_width
 from run_motion_observation_probe import synthetic_pair
+from measure_credibility_marker_identity import synthetic_tagged_pair
 
 
 class CredibilityScreeningTests(unittest.TestCase):
@@ -38,6 +39,25 @@ class CredibilityScreeningTests(unittest.TestCase):
 
     def evaluate(self):
         return evaluate_submission(self.suite, self.submission, self.root)
+
+    def enable_identity(self, visible_ids):
+        self.suite["measurement"].update({"position_error_bound_px": 0.25,
+                                         "identity_channels": {"left": 0, "right": 2},
+                                         "identity_min_channel_fraction": 0.85})
+        frame = self.suite["cases"][0]["frames"][0]
+        frame.update({"marker_ids": ["left", "right"], "expected_visible_ids": visible_ids,
+                      "expected_visible_markers": len(visible_ids)})
+
+    def write_tagged(self, centres, identities):
+        # Literal RGB patterns also exercise the saved PNG channel ordering.
+        bright = {"left": [0.9, 0.2, 0.2], "right": [0.2, 0.2, 0.9],
+                  "ambiguous": [0.9, 0.2, 0.9], "unknown": [0.2, 0.9, 0.2]}
+        dim = {"left": [0.1, 0.2, 0.2], "right": [0.2, 0.2, 0.1],
+               "ambiguous": [0.1, 0.2, 0.1], "unknown": [0.2, 0.1, 0.2]}
+        pair = synthetic_tagged_pair(np.full((100, 160, 3), 80, dtype=np.uint8), centres,
+                                    [bright[key] for key in identities], [dim[key] for key in identities], 1.2, 0.9)
+        for filename, image in zip(("bright.png", "dim.png"), pair, strict=True):
+            self.assertTrue(cv2.imwrite(str(self.root / filename), cv2.cvtColor(image, cv2.COLOR_RGB2BGR)))
 
     def test_full_projection_passes_but_wrong_common_depth_rgb_fails(self):
         result = self.evaluate()
@@ -140,6 +160,58 @@ class CredibilityScreeningTests(unittest.TestCase):
         result = self.evaluate()
         self.assertFalse(result["contract_passed"])
         self.assertIn("3x3 camera matrix", result["input_errors"][0])
+
+    def test_single_identity_is_read_from_colour_not_position_and_count(self):
+        self.enable_identity(["right"])
+        self.write_tagged([(92.5, 50)], ["right"])
+        frame = self.evaluate()["cases"][0]["frames"][0]
+        self.assertEqual(frame["evidence_label"], "accepted")
+        self.assertEqual(frame["observed_visible_ids"], ["right"])
+        self.assertIsNone(frame["measured_width_px"])
+        self.write_tagged([(92.5, 50)], ["left"])
+        frame = self.evaluate()["cases"][0]["frames"][0]
+        self.assertTrue(frame["tested"])
+        self.assertEqual(frame["failure_kind"], "contradiction")
+        self.assertEqual(frame["observed_visible_ids"], ["left"])
+        self.assertTrue(frame["unlabelled_position_within_budget"])
+        self.assertFalse(frame["identity_within_contract"])
+        self.assertIsNone(frame["measured_width_px"])
+        for key in ("identity_channels", "identity_min_channel_fraction", "position_error_bound_px"):
+            del self.suite["measurement"][key]
+        self.assertTrue(self.evaluate()["screening_contract_satisfied"])
+
+    def test_both_visible_tags_require_identity_associated_positions(self):
+        self.enable_identity(["left", "right"])
+        self.write_tagged([(55, 50), (92.5, 50)], ["left", "right"])
+        self.assertTrue(self.evaluate()["screening_contract_satisfied"])
+        self.write_tagged([(55, 50), (92.5, 50)], ["right", "left"])
+        frame = self.evaluate()["cases"][0]["frames"][0]
+        self.assertTrue(frame["identity_within_contract"])
+        self.assertTrue(frame["unlabelled_position_within_budget"])
+        self.assertFalse(frame["identity_position_within_budget"])
+        self.assertTrue(frame["tested"])
+        self.assertEqual(frame["failure_kind"], "contradiction")
+
+    def test_ambiguous_and_unknown_codes_do_not_invent_identity(self):
+        self.enable_identity(["right"])
+        for identity in ("ambiguous", "unknown"):
+            self.write_tagged([(92.5, 50)], [identity])
+            frame = self.evaluate()["cases"][0]["frames"][0]
+            self.assertFalse(frame["tested"])
+            self.assertEqual(frame["failure_kind"], "measurement_unqualified")
+            self.assertEqual(frame["observed_visible_ids"], [None])
+            self.assertIsNone(frame["measured_width_px"])
+
+    def test_identity_metadata_and_fraction_must_be_valid(self):
+        self.enable_identity(["right"])
+        for value in (None, 0.5, True, float("nan"), 1.1):
+            self.suite["measurement"]["identity_min_channel_fraction"] = value
+            self.assertTrue(self.evaluate()["input_errors"])
+        self.suite["measurement"]["identity_min_channel_fraction"] = 0.85
+        frame = self.suite["cases"][0]["frames"][0]
+        for value in (None, [], ["other"], ["right", "right"]):
+            frame["expected_visible_ids"] = value
+            self.assertTrue(self.evaluate()["input_errors"])
 
 
 if __name__ == "__main__":
