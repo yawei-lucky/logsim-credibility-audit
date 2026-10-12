@@ -1,0 +1,373 @@
+{
+  "experiment_id": "credibility_screening_position_001",
+  "date": "2026-10-12",
+  "status": "completed",
+  "execution_scope": "New bounded HUGSIM rendering and independent CPU position qualification; no AD, real-vehicle run, new real-data download or mechanism parameter identification.",
+  "preregistration_commit": "bfe721356e4f6d11076d346285ee2e15e8f1811a",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "qualification_run": "artifacts/credibility_screening_position_001/qualification_run001",
+  "hugsim_run": "artifacts/credibility_screening_position_001/hugsim_run001",
+  "legacy_compatibility_run": "artifacts/credibility_screening_position_001/legacy_compatibility_run001",
+  "source_availability_gate_passed": false,
+  "design": {
+    "case_count": 1,
+    "camera": "CAM_FRONT",
+    "contexts": [
+      "isolated",
+      "scene0383_static"
+    ],
+    "nominal_camera_xyz_m": [
+      [
+        0.7,
+        -0.65,
+        23.5
+      ],
+      [
+        2.3,
+        -0.65,
+        23.5
+      ]
+    ],
+    "conditions": [
+      {
+        "id": "nominal",
+        "translation_camera_m": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "expect_nominal_pass": true
+      },
+      {
+        "id": "wrong_u",
+        "translation_camera_m": [
+          0.75,
+          0.0,
+          0.0
+        ],
+        "expect_nominal_pass": false
+      },
+      {
+        "id": "wrong_v",
+        "translation_camera_m": [
+          0.0,
+          0.5,
+          0.0
+        ],
+        "expect_nominal_pass": false
+      }
+    ],
+    "position_budget_per_coordinate_px": 0.25,
+    "width_budget_px": 0.5,
+    "matching": "increasing image u, not semantic identity"
+  },
+  "results": {
+    "experiment_id": "credibility_screening_position_001",
+    "overall_evidence_label": "down-weighted",
+    "qualification_pair_count": 288,
+    "rgb_render_count": 12,
+    "nominal_pair_count": 2,
+    "displaced_control_pair_count": 4,
+    "max_nominal_position_error_px": 0.021930285368739533,
+    "max_actual_state_position_error_px": 0.03542635996143417,
+    "max_abs_width_error_px": 0.03993185587489734,
+    "checks": {
+      "position_measurement_qualified": true,
+      "nominal_positions_pass": true,
+      "all_rendered_positions_match_actual_commands": true,
+      "width_only_misses_both_displacement_axes": true,
+      "displacements_rejected_as_measured_position_contradictions": true,
+      "placement_roundtrips_valid": true
+    },
+    "all_preregistered_checks_passed": true,
+    "limitations": [
+      "One new placement, two contexts, one camera; no population generalization.",
+      "Deliberate common displacements qualify the screener, not a newly discovered HUGSIM defect.",
+      "Image left/right correspondence does not establish semantic marker identity.",
+      "No natural vehicle, real camera, AD response or driving-task equivalence was tested."
+    ]
+  },
+  "measurement_qualification": {
+    "count": 288,
+    "max_abs_position_error_px": 0.03364873484997588,
+    "max_abs_width_error_px": 0.06632676095520651,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "qualified": true,
+    "reference": "Direct 2D centres; no HUGSIM, camera state, depth or fitted corrections.",
+    "scope": "Finite phase/size/position/background grid; not a universal or real-camera bound."
+  },
+  "per_condition": [
+    {
+      "context": "isolated",
+      "condition": "nominal",
+      "width_error_px": 0.008554460163622934,
+      "max_nominal_position_error_px": 0.021930285368739533,
+      "max_actual_state_position_error_px": 0.021930285368739533,
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "width_only_contract_passed": true
+    },
+    {
+      "context": "isolated",
+      "condition": "wrong_u",
+      "width_error_px": -0.018168757245973666,
+      "max_nominal_position_error_px": 20.243619883525128,
+      "max_actual_state_position_error_px": 0.034834728526902836,
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "width_only_contract_passed": true
+    },
+    {
+      "context": "isolated",
+      "condition": "wrong_v",
+      "width_error_px": 0.031127544809237406,
+      "max_nominal_position_error_px": 13.457556081829637,
+      "max_actual_state_position_error_px": 0.029245955303338178,
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "width_only_contract_passed": true
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "nominal",
+      "width_error_px": 0.01438857935033866,
+      "max_nominal_position_error_px": 0.01882122558225774,
+      "max_actual_state_position_error_px": 0.01882122558225774,
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "width_only_contract_passed": true
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "wrong_u",
+      "width_error_px": -0.017711448579746047,
+      "max_nominal_position_error_px": 20.24421151495966,
+      "max_actual_state_position_error_px": 0.03542635996143417,
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "width_only_contract_passed": true
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "wrong_v",
+      "width_error_px": 0.03993185587489734,
+      "max_nominal_position_error_px": 13.470898697510222,
+      "max_actual_state_position_error_px": 0.030204256261640694,
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "width_only_contract_passed": true
+    }
+  ],
+  "legacy_compatibility": {
+    "case_count": 11,
+    "pair_count": 35,
+    "decisions_widths_residuals_rgb_hashes_unchanged": true
+  },
+  "provenance": {
+    "started_utc": "2026-10-12T11:35:20.264060+00:00",
+    "host": "stf-precision-3680",
+    "role": "bounded HUGSIM absolute-position screening",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "pid": 60852,
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "output": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_position_001/hugsim_run001",
+    "argv": [
+      "scripts/run_credibility_screening_position.py",
+      "--config",
+      "configs/credibility_screening_position_001.json",
+      "--output",
+      "artifacts/credibility_screening_position_001/hugsim_run001"
+    ],
+    "audit_commit": "bfe721356e4f6d11076d346285ee2e15e8f1811a",
+    "audit_branch": "main",
+    "audit_status": "",
+    "audit_remote": "origin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (fetch)\norigin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (push)",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "hashes": {
+      "/home/yawei/logsim-credibility-audit/configs/credibility_screening_position_001.json": "2407c756b3e4b8f4e86a6f849fa677001705dc5362526f4b84f040ffd0757cee",
+      "/home/yawei/logsim-credibility-audit/scripts/run_credibility_screening_position.py": "b7f1780ab15b1ca20d905215977aa4c1b97538dedf015a170feedd9867312d96",
+      "/home/yawei/logsim-credibility-audit/scripts/evaluate_credibility_screening.py": "d6df57fc53cbde54a1350ecaf7196206ceed04d8d336e317e18b1213078d9b98",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_probe.py": "d21841c2899f33e1b3849771b30b51f8ede05aaa4ecfbeefd61a881433447248",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/HUGSIM/gaussian_renderer/__init__.py": "303918d0097d3759f960a663bd05255ecbb402009cf96117fe2e49ba9a225c22",
+      "/home/yawei/HUGSIM/scene/cameras.py": "8a1d10518fd282599e17d1ae3d91201124e2a357144968480c69acca283cfd1a",
+      "/home/yawei/HUGSIM/.pixi/envs/default/lib/python3.11/site-packages/gsplat/cuda/csrc/rasterize_to_pixels_fwd.cu": "4c88a7ee0227597d6017152de938ee14323441e2b588a17e22395140270e7e64"
+    },
+    "torch": "2.4.1+cu121",
+    "gpu": "NVIDIA GeForce RTX 4090 D"
+  },
+  "artifact_hashes": {
+    "artifacts/credibility_screening_position_001/hugsim_run001/camera_reference.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/credibility_screening_position_001/hugsim_run001/config.json": "2743e4e06177b3b42617e304a0a248f5f9f079fa10177cd766d2125ac81de5d3",
+    "artifacts/credibility_screening_position_001/hugsim_run001/environment.json": "48a2bf3fc83fa76cb879c654bbc66867b210208ce5f374a51c62b780e645f09e",
+    "artifacts/credibility_screening_position_001/hugsim_run001/measurement_qualification.json": "2d8c43e451f327f9448034a98304dd8da45e71388b76cdefb927c16fe5ea40cc",
+    "artifacts/credibility_screening_position_001/hugsim_run001/position_screening.png": "393ae941fe9aa7da0a7207876e7e2b9bf4dde8653cabcbf1ab0b605d48f44afa",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/actual_state_report.json": "61c1e573aa2a59af3f1d2fce542add1628e8e1bd6e735bc420fdb162251dcffa",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/actual_state_suite.json": "2e5cad9b57b379fa4918d5bec0332ab13fc479055690338d9a221405a4f9cd2a",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/bright.png": "71ffdcbe93e4bb2aa1cf99145c7306ac6ec58f7588478e68f59e5b35d5e4c521",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/dim.png": "316a371ef365256b609cc6af57c1fc59a77beca9204c2880e2b91b8888a72528",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/nominal_report.json": "61c1e573aa2a59af3f1d2fce542add1628e8e1bd6e735bc420fdb162251dcffa",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/submission.json": "daba73fa2910136fb46dd5f3727b7e1a5425626019ddb08559d97b67f4f07c67",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_nominal/width_only_report.json": "6e4a7d0ce6bb6aeef4bcdc2ffa5b136ba8596412a3e39b4c9cc9d298ec3fe9b8",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/actual_state_report.json": "271dd66cd1409ea8b42839aa4ba07838fdac9bfab204cb46822b46cede7a0877",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/actual_state_suite.json": "9ed42644556c0d760fbb43553a3fc52fc5f9ace88ca6bad18717ccbccf2cf104",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/bright.png": "8b8157641b3f85117086c859aa8a67023dfac7d7cbcc2f75e934702ee0c98b00",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/dim.png": "ac348b0776195f4db12b831d6681eb2cf9e12eb2a9b49d6911decba67ccfb4c1",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/nominal_report.json": "ccd59af9c33361ac470da1df472f7688adff9826fa2df56be25eea1bcf00d318",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/submission.json": "8cf26f017f4cc05b82b99350e32f9a2fb64676516d4d02ac795c02fefcfe827b",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_u/width_only_report.json": "d2e748178c2a9b1e44f9ba948e456f33b99b7d37130ece6530ba2ef35e32d31a",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/actual_state_report.json": "322e5d1f535bf644c81e2b6cd5c60b1370e6173428f2b0ff5c2e53da9a61d858",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/actual_state_suite.json": "49260bbb20fa695b083ffb662eafb1f80d1addc4381dc688209f4ec42dde0099",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/bright.png": "c65375fe21b96efec79a91959564b1daebb471b57d96f6236d9ff9f31b124f25",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/dim.png": "66122535135109adfec909819fd8bedc2cb9970da6837fbf09671d4389206e55",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/nominal_report.json": "d55ceba828d42e1e6192e830b012d1b509a39d3df5a551dddbb0b45fbc7f2a5e",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/submission.json": "3700a2528a5bc1bec484152a7e173e637baac60d4215fde2294d6c6207172202",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/isolated_wrong_v/width_only_report.json": "0960c4d9c879dc1340f85cdd23e75b8b19a2d8fcb82d3792ad2171e0706eae3a",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/actual_state_report.json": "453aa234433ca943705cdaa599a14e997dda7692c2ab5a26071062648c0168d7",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/actual_state_suite.json": "2e5cad9b57b379fa4918d5bec0332ab13fc479055690338d9a221405a4f9cd2a",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/bright.png": "4d2aa41e1b8389614d82ee724c248464a547131bf2747f643f2e35bd71a85215",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/dim.png": "e4fa5ec2e083b926894141184a5a4c1703e73c916dcda4880a916ec4d2bea940",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/nominal_report.json": "453aa234433ca943705cdaa599a14e997dda7692c2ab5a26071062648c0168d7",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/submission.json": "89fe1dd028655251262c297ed36e70fc6067b6a38c3af480414c88f6f98c5675",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_nominal/width_only_report.json": "127e0e289a591db368545c3ddcd409ed459894d2901e437d7324c769fe73ddd1",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/actual_state_report.json": "52dfd4c07201767d31675f3ad6c8633a810847d83707b3fa4e9f8208b5e15510",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/actual_state_suite.json": "9ed42644556c0d760fbb43553a3fc52fc5f9ace88ca6bad18717ccbccf2cf104",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/bright.png": "4f2c64b908efbbaaea52362e8ed722287c7469791d1f48c98c48814ceb130e3f",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/dim.png": "df2db7f9f8ac32f6948418ef0012322275f0d0adb16da0bf84778dcb36896bd0",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/nominal_report.json": "46578acbdb72ca7607613d7a9d1ca3d6756eb4edcc36c3a73781859da1e6ef9f",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/submission.json": "5c49048ddbb6842bc42611eeadf0506fb26ea5bae5b29722f0f59f8d1a5b59a8",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_u/width_only_report.json": "96dcd9dbe0b4a505ae0aa1c99d52cf4ed902879153080974dbd2893de4f34e92",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/actual_state_report.json": "41a28222f4fb66c7a7b9b341ee6e5fd60b9ecf8d1eacb8e8df338cf2b5317237",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/actual_state_suite.json": "49260bbb20fa695b083ffb662eafb1f80d1addc4381dc688209f4ec42dde0099",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/bright.png": "5d44abdb92fdfa628d725e0fbd94f4c992be08dc74ade273f3607a4a29fef3df",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/dim.png": "2d2dfb3df7f04a7f4fe881c7f673ae21e15d6a28534abd56c0a74cb30938fc8c",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/nominal_report.json": "13782a5c5ae676921bbfd347d4ba79116a4e0ded4651943d1fe496ff44388fb5",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/submission.json": "613b07a3be4601b258d95891738c4ce0b0838372399d68ed9d2f7bc1ac102bca",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rgb/scene0383_static_wrong_v/width_only_report.json": "5b3f466eb32d605e42eebb3581a8ea77c50fe6fb7d5f00e6ed4a412c2eba334c",
+    "artifacts/credibility_screening_position_001/hugsim_run001/rows.json": "f6e73ce98f2ef69f42863de65e571260222cca6fbb18ca70871d51f2ca21ade3",
+    "artifacts/credibility_screening_position_001/hugsim_run001/run.log": "ea19fd5702ac4ce9e2ca7cd402b21117f64e7e31f3ccdfde4d682938112467f8",
+    "artifacts/credibility_screening_position_001/hugsim_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/credibility_screening_position_001/hugsim_run001/suite.json": "2e5cad9b57b379fa4918d5bec0332ab13fc479055690338d9a221405a4f9cd2a",
+    "artifacts/credibility_screening_position_001/hugsim_run001/summary.json": "3eb72a6b22d0219f6f3e37e8386196a540e91073632e4b2d5dd1547552210599",
+    "artifacts/credibility_screening_position_001/qualification_run001/camera_reference.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/credibility_screening_position_001/qualification_run001/config.json": "2743e4e06177b3b42617e304a0a248f5f9f079fa10177cd766d2125ac81de5d3",
+    "artifacts/credibility_screening_position_001/qualification_run001/environment.json": "6018dc8f57c68a071657d3ca9fc572f26e1fda8947eea9f46454bc08aa477dd9",
+    "artifacts/credibility_screening_position_001/qualification_run001/measurement_qualification.json": "2d8c43e451f327f9448034a98304dd8da45e71388b76cdefb927c16fe5ea40cc",
+    "artifacts/credibility_screening_position_001/qualification_run001/run.log": "39e9195af68cb5534c6f2c746362716759c94466febdc8fab78564aba210ecbf",
+    "artifacts/credibility_screening_position_001/qualification_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/credibility_screening_position_001/qualification_run001/suite.json": "2e5cad9b57b379fa4918d5bec0332ab13fc479055690338d9a221405a4f9cd2a",
+    "artifacts/credibility_screening_position_001/legacy_compatibility_run001/report.json": "583f4b84713ffdee7577d0cd543503c32d6ba5f5267a81d644af7270ca8a3285"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_position_measurement_qualification": "accepted",
+      "new_nominal_points_satisfy_absolute_projection_contract": "accepted",
+      "all_rendered_points_match_actual_commanded_positions": "accepted",
+      "new_gate_rejects_specified_common_displacements": "accepted",
+      "width_only_establishes_absolute_position": "rejected",
+      "deliberately_displaced_rgb_satisfies_nominal_positions": "rejected",
+      "position_pass_establishes_general_AD_simulator_fitness": "rejected",
+      "this_experiment_establishes_real_AD_equivalence": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "width_only_establishes_absolute_position": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All four deliberately displaced pairs passed the nominal width gate while violating nominal absolute position by approximately 20.24 px or 13.46 px.",
+        "diagnostic_finding": "width_translation_blindspot",
+        "evidence_refs": [
+          "artifacts/credibility_screening_position_001/hugsim_run001/summary.json",
+          "artifacts/credibility_screening_position_001/hugsim_run001/rows.json"
+        ]
+      },
+      "deliberately_displaced_rgb_satisfies_nominal_positions": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All four displaced pairs produced tested position contradictions, not input-invalid blocks; their actual commanded positions were rendered correctly.",
+        "diagnostic_finding": "controlled_displacement_rejection",
+        "evidence_refs": [
+          "artifacts/credibility_screening_position_001/hugsim_run001/summary.json",
+          "artifacts/credibility_screening_position_001/hugsim_run001/rows.json"
+        ]
+      },
+      "position_pass_establishes_general_AD_simulator_fitness": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Only one placement, two backgrounds, one camera and artificial Gaussian markers were tested; ordinary objects, identity and wider conditions remain unqualified.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_position_001.md"
+        ]
+      },
+      "this_experiment_establishes_real_AD_equivalence": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No real-camera pair, AD inference, task-equivalence margin or closed-loop driving outcome was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_position_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "finite_position_qualification": {
+      "component": "paired-RGB centroid measurement",
+      "expected": "Independent 2D centres satisfy the predeclared 0.25 px per-coordinate and 0.5 px width budgets.",
+      "observed": "288/288 pairs measurable; maximum position error 0.03364873484997588 px, maximum width error 0.06632676095520651 px.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Supports this finite artificial-marker qualification grid only; the budget is not a real-camera or driving-safety threshold.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_position_001/hugsim_run001/measurement_qualification.json"
+      ]
+    },
+    "point_rendering_matches_commands": {
+      "component": "HUGSIM marker placement and RGB rendering under declared camera",
+      "expected": "All rendered contrast centroids agree with independent projection of actual commanded endpoints within 0.25 px.",
+      "observed": "6/6 commanded states passed; maximum actual-state position error 0.03542635996143417 px.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite new projection-position evidence; deliberate controls are not newly discovered HUGSIM defects.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_position_001/hugsim_run001/summary.json",
+        "artifacts/credibility_screening_position_001/hugsim_run001/rows.json"
+      ]
+    },
+    "width_translation_blindspot": {
+      "component": "width-only screening sufficiency",
+      "expected": "Width alone would be sufficient to determine absolute endpoint positions.",
+      "observed": "Common horizontal and vertical translations left width within budget in 4/4 displaced pairs, despite substantial absolute position errors.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Require the separately qualified position gate for position claims; width agreement cannot replace it.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_position_001/hugsim_run001/summary.json",
+        "artifacts/credibility_screening_position_001/hugsim_run001/rows.json"
+      ]
+    },
+    "controlled_displacement_rejection": {
+      "component": "absolute-position screening gate",
+      "expected": "Correct positions pass and specified common displacements fail as measured contradictions while width stays correct.",
+      "observed": "2/2 nominal pairs passed; 4/4 deliberate displacement pairs were rejected by position; all 6/6 actual-state references passed.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The gate excludes these two displacement controls in two contexts, without a population detection-rate claim.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_position_001/hugsim_run001/summary.json",
+        "artifacts/credibility_screening_position_001/hugsim_run001/rows.json"
+      ]
+    }
+  },
+  "limitations": [
+    "One new placement, two contexts, one camera; no population generalization.",
+    "Deliberate common displacements qualify the screener, not a newly discovered HUGSIM defect.",
+    "Image left/right correspondence does not establish semantic marker identity.",
+    "No natural vehicle, real camera, AD response or driving-task equivalence was tested."
+  ]
+}
