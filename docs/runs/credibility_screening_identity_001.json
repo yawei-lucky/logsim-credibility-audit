@@ -1,0 +1,780 @@
+{
+  "experiment_id": "credibility_screening_identity_001",
+  "date": "2026-10-12",
+  "preregistration_commit": "051d108412d0fc59cfdd5a032c2f8ff8b616a5a9",
+  "preregistration": "docs/runs/credibility_screening_identity_preregistration_001.md",
+  "config": "configs/credibility_screening_identity_001.json",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "claim_contract": {
+    "simulator": "pinned HUGSIM with contrast-coded Gaussian marker adapter",
+    "purpose": "Basic screening of surviving controlled marker identity and associated projection",
+    "scope": "CAM_FRONT frame00000, one camera-space placement, isolated and scene-0383 static backgrounds",
+    "receiver": "not applicable; no AD",
+    "interventions": "both visible, occlude left/right, and deliberate swapped-code controls; camera and marker opacity fixed",
+    "reference": "Predeclared red/blue codes, independent full endpoint projection and literal 2D qualification centres",
+    "position_budget_per_coordinate_px": 0.25,
+    "width_budget_px": 0.5,
+    "identity_min_channel_fraction": 0.85,
+    "unknown_identity_policy": "null; tested=false, measurement_unqualified; never count as a measured physical contradiction",
+    "unmeasurable_full_width_policy": "null when fewer than two visible markers",
+    "visibility_definition": "Measurable RGB contrast component above the frozen threshold; not complete absence of Gaussian transmittance",
+    "required_gates": [
+      "input completeness and timing",
+      "independent coded measurement qualification",
+      "front occlusion execution and unchanged marker opacity",
+      "RGB code identity and associated position",
+      "controlled faults rejected as measured contradictions"
+    ]
+  },
+  "results": {
+    "experiment_id": "credibility_screening_identity_001",
+    "overall_evidence_label": "down-weighted",
+    "qualification_pair_count": 288,
+    "rendered_pair_count": 10,
+    "rgb_render_count": 20,
+    "baseline_pair_count": 6,
+    "swapped_code_control_pair_count": 4,
+    "max_actual_identity_position_error_px": 0.045153049926710764,
+    "checks": {
+      "measurement_qualified": true,
+      "all_baseline_cases_pass": true,
+      "all_actual_coded_states_pass": true,
+      "count_only_misses_swapped_survivor_codes": true,
+      "wrong_survivor_ids_are_measured_contradictions": true,
+      "single_marker_never_invents_full_width": true
+    },
+    "all_preregistered_checks_passed": true,
+    "limitations": [
+      "Two controlled RGB codes, one camera, one placement and two backgrounds only.",
+      "Swapped-code controls qualify the screener; they are not newly discovered HUGSIM identity defects.",
+      "Gaussian occlusion and coded identity do not qualify ordinary vehicles, real-camera identity or AD equivalence."
+    ]
+  },
+  "measurement_qualification": {
+    "count": 288,
+    "correct_identity_pair_count": 288,
+    "max_abs_position_error_px": 0.03971962616822111,
+    "max_abs_width_error_px": 0.07688707530752481,
+    "minimum_code_fraction": 0.9363885088919288,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "identity_min_channel_fraction": 0.85,
+    "negative_controls": {
+      "ambiguous": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "unknown_green": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "boundary": {
+        "blocked": true,
+        "reason": "marker touches image boundary"
+      }
+    },
+    "qualified": true,
+    "scope": "Finite independent 2D code/phase/size/background/mixing grid; not natural object identity or a real-camera bound.",
+    "reference": "Literal independent 2D centres and RGB codes; no HUGSIM, projected truth ROI or fitted correction."
+  },
+  "minimum_observed_hugsim_code_fraction": 0.8936335403726708,
+  "cpu_qualification_before_gpu_matches_full_run": true,
+  "per_condition": [
+    {
+      "context": "isolated",
+      "condition": "both_visible",
+      "case_id": "both_visible",
+      "actual_marker_ids": [
+        "left",
+        "right"
+      ],
+      "occluded_index": null,
+      "occlusion_geometry": null,
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "left",
+        "right"
+      ],
+      "observed_visible_ids": [
+        "left",
+        "right"
+      ],
+      "observed_visible_markers": 2,
+      "measured_width_px": 43.075579349960265,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.034957134518833755,
+      "identity_within_contract": true,
+      "tested": true,
+      "failure_kind": null,
+      "max_actual_identity_position_residual_px": 0.034957134518833755
+    },
+    {
+      "context": "isolated",
+      "condition": "occlude_left",
+      "case_id": "occlude_left",
+      "actual_marker_ids": [
+        "left",
+        "right"
+      ],
+      "occluded_index": 0,
+      "occlusion_geometry": {
+        "target_index": 0,
+        "target_camera_xyz_m": [
+          0.7,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          0.6404255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "right"
+      ],
+      "observed_visible_ids": [
+        "right"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.0331228136521986,
+      "identity_within_contract": true,
+      "tested": true,
+      "failure_kind": null,
+      "max_actual_identity_position_residual_px": 0.0331228136521986
+    },
+    {
+      "context": "isolated",
+      "condition": "occlude_right",
+      "case_id": "occlude_right",
+      "actual_marker_ids": [
+        "left",
+        "right"
+      ],
+      "occluded_index": 1,
+      "occlusion_geometry": {
+        "target_index": 1,
+        "target_camera_xyz_m": [
+          2.3,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          2.104255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "left"
+      ],
+      "observed_visible_ids": [
+        "left"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.012213802199227075,
+      "identity_within_contract": true,
+      "tested": true,
+      "failure_kind": null,
+      "max_actual_identity_position_residual_px": 0.012213802199227075
+    },
+    {
+      "context": "isolated",
+      "condition": "wrong_right_identity",
+      "case_id": "occlude_left",
+      "actual_marker_ids": [
+        "right",
+        "left"
+      ],
+      "occluded_index": 0,
+      "occlusion_geometry": {
+        "target_index": 0,
+        "target_camera_xyz_m": [
+          0.7,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          0.6404255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "right"
+      ],
+      "observed_visible_ids": [
+        "left"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.0331228136521986,
+      "identity_within_contract": false,
+      "tested": true,
+      "failure_kind": "contradiction",
+      "max_actual_identity_position_residual_px": 0.0331228136521986
+    },
+    {
+      "context": "isolated",
+      "condition": "wrong_left_identity",
+      "case_id": "occlude_right",
+      "actual_marker_ids": [
+        "right",
+        "left"
+      ],
+      "occluded_index": 1,
+      "occlusion_geometry": {
+        "target_index": 1,
+        "target_camera_xyz_m": [
+          2.3,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          2.104255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "left"
+      ],
+      "observed_visible_ids": [
+        "right"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.012213802199227075,
+      "identity_within_contract": false,
+      "tested": true,
+      "failure_kind": "contradiction",
+      "max_actual_identity_position_residual_px": 0.012213802199227075
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "both_visible",
+      "case_id": "both_visible",
+      "actual_marker_ids": [
+        "left",
+        "right"
+      ],
+      "occluded_index": null,
+      "occlusion_geometry": null,
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "left",
+        "right"
+      ],
+      "observed_visible_ids": [
+        "left",
+        "right"
+      ],
+      "observed_visible_markers": 2,
+      "measured_width_px": 43.10784740168373,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.04497998298822381,
+      "identity_within_contract": true,
+      "tested": true,
+      "failure_kind": null,
+      "max_actual_identity_position_residual_px": 0.04497998298822381
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "occlude_left",
+      "case_id": "occlude_left",
+      "actual_marker_ids": [
+        "left",
+        "right"
+      ],
+      "occluded_index": 0,
+      "occlusion_geometry": {
+        "target_index": 0,
+        "target_camera_xyz_m": [
+          0.7,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          0.6404255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "right"
+      ],
+      "observed_visible_ids": [
+        "right"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.045153049926710764,
+      "identity_within_contract": true,
+      "tested": true,
+      "failure_kind": null,
+      "max_actual_identity_position_residual_px": 0.045153049926710764
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "occlude_right",
+      "case_id": "occlude_right",
+      "actual_marker_ids": [
+        "left",
+        "right"
+      ],
+      "occluded_index": 1,
+      "occlusion_geometry": {
+        "target_index": 1,
+        "target_camera_xyz_m": [
+          2.3,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          2.104255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": true,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "left"
+      ],
+      "observed_visible_ids": [
+        "left"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.01477110100779555,
+      "identity_within_contract": true,
+      "tested": true,
+      "failure_kind": null,
+      "max_actual_identity_position_residual_px": 0.01477110100779555
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "wrong_right_identity",
+      "case_id": "occlude_left",
+      "actual_marker_ids": [
+        "right",
+        "left"
+      ],
+      "occluded_index": 0,
+      "occlusion_geometry": {
+        "target_index": 0,
+        "target_camera_xyz_m": [
+          0.7,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          0.6404255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "right"
+      ],
+      "observed_visible_ids": [
+        "left"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.034405262759719335,
+      "identity_within_contract": false,
+      "tested": true,
+      "failure_kind": "contradiction",
+      "max_actual_identity_position_residual_px": 0.034405262759719335
+    },
+    {
+      "context": "scene0383_static",
+      "condition": "wrong_left_identity",
+      "case_id": "occlude_right",
+      "actual_marker_ids": [
+        "right",
+        "left"
+      ],
+      "occluded_index": 1,
+      "occlusion_geometry": {
+        "target_index": 1,
+        "target_camera_xyz_m": [
+          2.3,
+          -0.65,
+          23.5
+        ],
+        "occluder_camera_xyz_m": [
+          2.104255319148936,
+          -0.5946808510638298,
+          21.5
+        ],
+        "ray_alignment_error_px": 5.684341886080802e-14,
+        "front_depth_gap_m": 2.0,
+        "marker_opacity_unchanged": true
+      },
+      "nominal_contract_passed": false,
+      "actual_state_contract_passed": true,
+      "count_only_contract_passed": true,
+      "expected_visible_ids": [
+        "left"
+      ],
+      "observed_visible_ids": [
+        "right"
+      ],
+      "observed_visible_markers": 1,
+      "measured_width_px": null,
+      "unlabelled_position_within_budget": true,
+      "max_abs_position_residual_px": 0.01095660887295935,
+      "identity_within_contract": false,
+      "tested": true,
+      "failure_kind": "contradiction",
+      "max_actual_identity_position_residual_px": 0.01095660887295935
+    }
+  ],
+  "legacy_compatibility": {
+    "seed_case_count": 11,
+    "seed_pair_count": 35,
+    "position_pair_count": 6,
+    "rows": [
+      {
+        "scope": "seed_11_cases_35_pairs",
+        "unchanged": true
+      },
+      {
+        "scope": "isolated_nominal",
+        "unchanged": true
+      },
+      {
+        "scope": "isolated_wrong_u",
+        "unchanged": true
+      },
+      {
+        "scope": "isolated_wrong_v",
+        "unchanged": true
+      },
+      {
+        "scope": "scene0383_static_nominal",
+        "unchanged": true
+      },
+      {
+        "scope": "scene0383_static_wrong_u",
+        "unchanged": true
+      },
+      {
+        "scope": "scene0383_static_wrong_v",
+        "unchanged": true
+      }
+    ],
+    "decisions_measurements_hashes_unchanged": true
+  },
+  "implementation_validation": {
+    "relevant_unittest_count": 13,
+    "passed": true,
+    "test_source": "tests/test_credibility_screening.py",
+    "test_source_sha256": "91b6d2d7c0e9bb70b2b7d5f7d74b557dbab799ee8cae7e80f91730022c72c488",
+    "scope": "Includes one-marker colour decoding, unknown identity, both-visible swapped associations and prior contracts."
+  },
+  "provenance": {
+    "started_utc": "2026-10-12T12:10:26.871258+00:00",
+    "host": "stf-precision-3680",
+    "role": "bounded HUGSIM occlusion-identity screening",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "pid": 67381,
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "output": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_identity_001/hugsim_run001",
+    "argv": [
+      "scripts/run_credibility_screening_identity.py",
+      "--config",
+      "configs/credibility_screening_identity_001.json",
+      "--output",
+      "artifacts/credibility_screening_identity_001/hugsim_run001"
+    ],
+    "audit_commit": "051d108412d0fc59cfdd5a032c2f8ff8b616a5a9",
+    "audit_status": "",
+    "audit_branch": "main",
+    "audit_remote": "origin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (fetch)\norigin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (push)",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "hashes": {
+      "/home/yawei/logsim-credibility-audit/configs/credibility_screening_identity_001.json": "a9e38f773c226114a2ee4202ac885c0a669b5c9c95aa106024055797ff1289bb",
+      "/home/yawei/logsim-credibility-audit/scripts/run_credibility_screening_identity.py": "23e59952bbb1216d7fc7f71d1d6d2ba1327cf13962e0f9ca035b3abad8b4fecc",
+      "/home/yawei/logsim-credibility-audit/scripts/evaluate_credibility_screening.py": "263aa97ee0ba14b25ef099f8a774aac63028a79c4abeeff14a816b75c10e6287",
+      "/home/yawei/logsim-credibility-audit/scripts/measure_credibility_marker_identity.py": "21fcc7afaeb838584ca3e06d2a7966044a8e55cedeebbdc267434ce43d32dd2b",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_probe.py": "d21841c2899f33e1b3849771b30b51f8ede05aaa4ecfbeefd61a881433447248",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_boundary_probe.py": "660275430f32943073b0be3bb1afd24b9ee4f7d134ec750588e8fb62d8d4a24a",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/HUGSIM/gaussian_renderer/__init__.py": "303918d0097d3759f960a663bd05255ecbb402009cf96117fe2e49ba9a225c22",
+      "/home/yawei/HUGSIM/scene/cameras.py": "8a1d10518fd282599e17d1ae3d91201124e2a357144968480c69acca283cfd1a",
+      "/home/yawei/HUGSIM/.pixi/envs/default/lib/python3.11/site-packages/gsplat/cuda/csrc/rasterize_to_pixels_fwd.cu": "4c88a7ee0227597d6017152de938ee14323441e2b588a17e22395140270e7e64"
+    },
+    "torch": "2.4.1+cu121",
+    "gpu": "NVIDIA GeForce RTX 4090 D"
+  },
+  "artifact_hashes": {
+    "artifacts/credibility_screening_identity_001/hugsim_run001/camera_reference.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/config.json": "59588d0f77ff88fdec53ca7614ea006fcbc9aceec17c06806261428484e15892",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/environment.json": "c24362ea45dd7bfbc6e7514c2ae7fda4e294cb6d7254c6ceac2b90faf956cac1",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/identity_screening.png": "0018b2d97f61d6d140f121c88912da2631c35012677a360e94a3519d848cb995",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/measurement_qualification.json": "fc36e0133335203cb101342e7f041693d7fb974c10c24dece747b1684ec7ae46",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/actual_state_report.json": "223b7ef3332602d5c11febdd6dd5bc05345c6625c7236a92bda62702379f8c49",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/actual_state_suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/bright.png": "f0a51824965c550cdb7b705a1b1687fd5905398f53693c36187199d111db6c8c",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/count_only_report.json": "23fc97099146b65aa98771509161c66c0d4d3c5a24a80ea229ab0dd4ecd12376",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/dim.png": "a84a1aa51a53cbcd7e8e1622e84d8010857980bbcd353fe18685b47cd9176534",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/nominal_report.json": "223b7ef3332602d5c11febdd6dd5bc05345c6625c7236a92bda62702379f8c49",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_both_visible/submission.json": "5a250d1fce8e6f9bd6e37d3c872234c3de3b05a463a39a0a5419db8cec04c133",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/actual_state_report.json": "223b7ef3332602d5c11febdd6dd5bc05345c6625c7236a92bda62702379f8c49",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/actual_state_suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/bright.png": "cce1055776b0c030b022c1da33c3402f6879b926e096d0c195bb6b869a403dff",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/count_only_report.json": "23fc97099146b65aa98771509161c66c0d4d3c5a24a80ea229ab0dd4ecd12376",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/dim.png": "20e3472695d437ece858aa9483e6b90b192907f910f918aa9da3c7058224166b",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/nominal_report.json": "223b7ef3332602d5c11febdd6dd5bc05345c6625c7236a92bda62702379f8c49",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_left/submission.json": "5a250d1fce8e6f9bd6e37d3c872234c3de3b05a463a39a0a5419db8cec04c133",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/actual_state_report.json": "223b7ef3332602d5c11febdd6dd5bc05345c6625c7236a92bda62702379f8c49",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/actual_state_suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/bright.png": "e3428605a0dd6f62aa41b8d4b1369793a0fe4d153754abcfe98345854f304971",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/count_only_report.json": "23fc97099146b65aa98771509161c66c0d4d3c5a24a80ea229ab0dd4ecd12376",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/dim.png": "48cdbb65013fa55437a70fc87cf77d7ee6663a5ceccd3dc72296f4f2405ec162",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/nominal_report.json": "223b7ef3332602d5c11febdd6dd5bc05345c6625c7236a92bda62702379f8c49",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_occlude_right/submission.json": "5a250d1fce8e6f9bd6e37d3c872234c3de3b05a463a39a0a5419db8cec04c133",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/actual_state_report.json": "47c91eed337af4ba1f0b6c60266cf7814ef3a3786c896cdac1325d990ceb9745",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/actual_state_suite.json": "8f2fbe38bf97fd4f37356bbc049db48a74f9bbb8ff5c9f0cb76acd8e732fb95c",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/bright.png": "f06692d5b56cc21845801407102a3ebaf048d969307b0bc612c0139eded6686f",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/count_only_report.json": "86587033aa0d111c5f06df385af7413f7547fea7024e9d3fc5f7499fcf6da77e",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/dim.png": "fbf37dba41a034fce12e8fef16808d8e6865b902cd20f845cffd825df2f60503",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/nominal_report.json": "b590da0e82853afb074c6509cf100592f69746a5c1f904fc29397b3917cbb86f",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_left_identity/submission.json": "fff97dadc42440261176262f80abcca5e98232cda8d1b6001040be5f29f29c6b",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/actual_state_report.json": "356011d0158acfda428d8fd2e3c4bd7b8ae2df5fc4e8b2f00836e46ba4486771",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/actual_state_suite.json": "3c6cc8cdfd5ba1a149450454b723cac819d115dc434b92b9d1e7b77603fed55b",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/bright.png": "5098f0341d8d1179311d515c9b8eeace91b3922edb7287a2845c931bb8127e81",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/count_only_report.json": "feb03ea2323cc422462a7012bff9e88ca958f26e32c6fb7e9cb603a56eaa53e5",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/dim.png": "489da8d4bc7122df900177cdbd479b20e00a73df74d17f126f8606d1244223f5",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/nominal_report.json": "efaff6bca0fa62c97521ba97af59e024c0d35da1caf0deb527866886fb0609d6",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/isolated_wrong_right_identity/submission.json": "871c4ad7548e4b55613520cc2920842396d56ef241d67faad05370c8867ca730",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/actual_state_report.json": "6de53a8d41a076489507bcf9dce18caf42df2acc5eaed960fda5f3e635cc9091",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/actual_state_suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/bright.png": "eee31f19d98376cdf05f2cf12acdd5ebc3d47d3ed33d13d472542671b86deb4e",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/count_only_report.json": "c65226d9aea5179ef64d5fc44d80b34581c76f055481da508a3316b00f0158f4",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/dim.png": "84ec261effcddb49ae539f36e0991c3aa25683f8b1605daa6d58108d944c84a6",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/nominal_report.json": "6de53a8d41a076489507bcf9dce18caf42df2acc5eaed960fda5f3e635cc9091",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_both_visible/submission.json": "aff3f3d5eeda00051a0e7870d8dc0a1c2cd2401658880e58dcafd55ce5ff81e7",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/actual_state_report.json": "6de53a8d41a076489507bcf9dce18caf42df2acc5eaed960fda5f3e635cc9091",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/actual_state_suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/bright.png": "3d708104eb8b4569d7f95b288bff0b3cc043deb2f7223aee378156123ec28be3",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/count_only_report.json": "c65226d9aea5179ef64d5fc44d80b34581c76f055481da508a3316b00f0158f4",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/dim.png": "56506593e053705da2a7bb16bef750237e07ca09a9a01310dedf28a29055bfa5",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/nominal_report.json": "6de53a8d41a076489507bcf9dce18caf42df2acc5eaed960fda5f3e635cc9091",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_left/submission.json": "aff3f3d5eeda00051a0e7870d8dc0a1c2cd2401658880e58dcafd55ce5ff81e7",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/actual_state_report.json": "6de53a8d41a076489507bcf9dce18caf42df2acc5eaed960fda5f3e635cc9091",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/actual_state_suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/bright.png": "877eb0dbe6b6cd7320427c9636f8e59acc57f525f506b96c8bea51d4df0388f1",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/count_only_report.json": "c65226d9aea5179ef64d5fc44d80b34581c76f055481da508a3316b00f0158f4",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/dim.png": "0b6a804da59b95a70d3fec75d038cabe74c226f41d8e873b4d387d539108eae0",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/nominal_report.json": "6de53a8d41a076489507bcf9dce18caf42df2acc5eaed960fda5f3e635cc9091",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_occlude_right/submission.json": "aff3f3d5eeda00051a0e7870d8dc0a1c2cd2401658880e58dcafd55ce5ff81e7",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/actual_state_report.json": "63f55c9ef48f763f97c91becc7e0f30136b725ce3c1e8805f1eb211e8d3cdd6d",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/actual_state_suite.json": "8f2fbe38bf97fd4f37356bbc049db48a74f9bbb8ff5c9f0cb76acd8e732fb95c",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/bright.png": "a96664e7989750111f16d0fbd2ab0524eb67b2a17aaf15654aea4794c1ea9bea",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/count_only_report.json": "9859361b54e720b7bc9c3dadf2b94d8d89eef64cdd16575379ba2e04778978e3",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/dim.png": "117e413f2957cf17c37ef75be633efc21a1f6a9c2a0e06150111980cac6a2788",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/nominal_report.json": "fa4720412b4fe3f04f13b07ea3332ffbd91005bb4432faf361c7a821afaa5db7",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_left_identity/submission.json": "828a858a446129184f27c2f2ab3636a1ca819b6f1946fff2a6c0cc1581116428",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/actual_state_report.json": "c28e47a96f8e3fa3a0c22415ffeed7e131b3a9871d5a27254cfdcc44c15b9073",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/actual_state_suite.json": "3c6cc8cdfd5ba1a149450454b723cac819d115dc434b92b9d1e7b77603fed55b",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/bright.png": "f9be9ae96aa74472b9d3c20d0fa9734d33fa8ca629028c2efac48c275c09b333",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/count_only_report.json": "37a53227015ed36c32c20b7b5e9efe46ac500828393e040b801d94f1da29a1fe",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/dim.png": "1730939c4ea2cd7c6740ac16437fe87f9582c982e601522e82a02f2530b65c16",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/nominal_report.json": "eca5e0b56f002d62d48415fd998871b114bfdb03286e24b2d87f6e6d3f06e174",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rgb/scene0383_static_wrong_right_identity/submission.json": "d9815501e0a115f8ea476e60ca1ceb3cc07ae42620b5ac5a58adac8f96ae9b0e",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/rows.json": "6022dfeb8e34c2320b11015aa1465fef4e966022dd786e94fb0fc91cd0aa0028",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/run.log": "3e7385ecd2244e964f1b33493a636bf5cbfb220ded6cce14b6378455c440f461",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975",
+    "artifacts/credibility_screening_identity_001/hugsim_run001/summary.json": "34c65d1ccb4e4496e676057ddd51a6d08f71c880183a565779c0af41bd5b3ff0",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/isolated_nominal_report.json": "61c1e573aa2a59af3f1d2fce542add1628e8e1bd6e735bc420fdb162251dcffa",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/isolated_wrong_u_report.json": "ccd59af9c33361ac470da1df472f7688adff9826fa2df56be25eea1bcf00d318",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/isolated_wrong_v_report.json": "d55ceba828d42e1e6192e830b012d1b509a39d3df5a551dddbb0b45fbc7f2a5e",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/scene0383_static_nominal_report.json": "453aa234433ca943705cdaa599a14e997dda7692c2ab5a26071062648c0168d7",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/scene0383_static_wrong_u_report.json": "46578acbdb72ca7607613d7a9d1ca3d6756eb4edcc36c3a73781859da1e6ef9f",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/scene0383_static_wrong_v_report.json": "13782a5c5ae676921bbfd347d4ba79116a4e0ded4651943d1fe496ff44388fb5",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/seed_report.json": "d5e95d4a0560a8b8d4e685222270ce750c8ed53826dfc078965bfb56d8164e24",
+    "artifacts/credibility_screening_identity_001/legacy_compatibility_run001/summary.json": "dca5c57dfbc2d61c31fe874814f5c9f0644067a22723afc655e5a294d0619d45",
+    "artifacts/credibility_screening_identity_001/qualification_run001/camera_reference.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/credibility_screening_identity_001/qualification_run001/config.json": "59588d0f77ff88fdec53ca7614ea006fcbc9aceec17c06806261428484e15892",
+    "artifacts/credibility_screening_identity_001/qualification_run001/environment.json": "aa69cc8100e0664743641e9673e85b416c1f44feb5fa184aeee7bab77ca3346b",
+    "artifacts/credibility_screening_identity_001/qualification_run001/measurement_qualification.json": "fc36e0133335203cb101342e7f041693d7fb974c10c24dece747b1684ec7ae46",
+    "artifacts/credibility_screening_identity_001/qualification_run001/run.log": "19ae56515d10f83bb1e3b8c0d0d082d383a9ab741021ffb11daaef35ae5c04c1",
+    "artifacts/credibility_screening_identity_001/qualification_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/credibility_screening_identity_001/qualification_run001/suite.json": "ef34805dfaa08e7ae24a925d653afade6c827aadd987fd4dc74e3f2154a81975"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_coded_identity_measurement_qualification": "accepted",
+      "normal_coded_markers_preserve_surviving_identity_and_position": "accepted",
+      "all_rendered_coded_states_match_actual_commands": "accepted",
+      "new_gate_rejects_specified_wrong_survivor_codes": "accepted",
+      "count_and_unlabelled_position_establish_surviving_identity": "rejected",
+      "deliberately_swapped_survivor_codes_satisfy_nominal_identity": "rejected",
+      "coded_marker_pass_establishes_natural_vehicle_identity": "rejected",
+      "this_experiment_establishes_real_AD_equivalence": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "count_and_unlabelled_position_establish_surviving_identity": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All four deliberately swapped survivor-code pairs passed the old count gate and unlabelled position budget while presenting the wrong surviving code.",
+        "diagnostic_finding": "count_position_identity_blindspot",
+        "evidence_refs": [
+          "artifacts/credibility_screening_identity_001/hugsim_run001/summary.json",
+          "artifacts/credibility_screening_identity_001/hugsim_run001/rows.json"
+        ]
+      },
+      "deliberately_swapped_survivor_codes_satisfy_nominal_identity": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All four wrong-code pairs yielded measured identity contradictions, not missing input or unqualified readings; actual-command coded references passed.",
+        "diagnostic_finding": "controlled_identity_rejection",
+        "evidence_refs": [
+          "artifacts/credibility_screening_identity_001/hugsim_run001/summary.json",
+          "artifacts/credibility_screening_identity_001/hugsim_run001/rows.json"
+        ]
+      },
+      "coded_marker_pass_establishes_natural_vehicle_identity": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Only two contrast codes, one camera, one placement, two backgrounds and specified Gaussian occlusion were tested; natural vehicle identity and general occlusion are unqualified.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_identity_001.md"
+        ]
+      },
+      "this_experiment_establishes_real_AD_equivalence": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No real-camera pair, AD inference, task-equivalence margin or closed-loop driving outcome was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_identity_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "finite_coded_measurement_qualification": {
+      "component": "paired-RGB contrast code and centroid reader",
+      "expected": "Identity must be correct on the independent finite 2D grid, position within 0.25 px and width within 0.5 px; ambiguous, unknown and clipped readings must not invent a qualified identity.",
+      "observed": "288/288 identities correct; maximum position error 0.03971962616822111 px; maximum width error 0.07688707530752481 px; all three unqualified controls blocked.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Supports the finite artificial-code qualification grid only; arbitrary mixing and real-camera uncertainty remain unqualified.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_identity_001/hugsim_run001/measurement_qualification.json"
+      ]
+    },
+    "coded_rendering_matches_commands": {
+      "component": "HUGSIM artificial marker RGB identity, placement and specified occlusion",
+      "expected": "Actual commanded codes and positions must be present in RGB; front occlusion must remove the intended measurable component without altering marker opacity.",
+      "observed": "10/10 actual-command states passed; maximum associated-position error 0.045153049926710764 px; all eight single-marker pairs preserved null full width; eight occluders aligned within 5.684341886080802e-14 px and 2 m in front.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite coded-marker execution evidence; does not qualify natural object identity, perfect opaque occlusion or AD fitness.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_identity_001/hugsim_run001/summary.json",
+        "artifacts/credibility_screening_identity_001/hugsim_run001/rows.json"
+      ]
+    },
+    "count_position_identity_blindspot": {
+      "component": "visible count and unlabelled-position sufficiency",
+      "expected": "Correct count and unlabelled surviving position would establish surviving marker identity.",
+      "observed": "4/4 deliberate wrong-code controls passed count and unlabelled-position checks despite the wrong surviving code.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "A separate qualified code-identity check is required for this identity claim; code-swapping controls are not HUGSIM defects.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_identity_001/hugsim_run001/summary.json",
+        "artifacts/credibility_screening_identity_001/hugsim_run001/rows.json"
+      ]
+    },
+    "controlled_identity_rejection": {
+      "component": "coded identity screening gate",
+      "expected": "Normal codes pass; swapped survivor codes fail as measured contradictions even when count and unlabelled position remain correct.",
+      "observed": "6/6 normal pairs passed; 4/4 wrong-code pairs were rejected with tested=true and failure_kind=contradiction; all 10 actual-command references passed.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Qualifies these specified controls in two backgrounds only; no statistical population detection rate is claimed.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_identity_001/hugsim_run001/summary.json",
+        "artifacts/credibility_screening_identity_001/hugsim_run001/rows.json"
+      ]
+    }
+  },
+  "limitations": [
+    "Two controlled RGB codes, one camera, one placement and two backgrounds only.",
+    "Swapped-code controls qualify the screener; they are not newly discovered HUGSIM identity defects.",
+    "Gaussian occlusion and coded identity do not qualify ordinary vehicles, real-camera identity or AD equivalence.",
+    "Finite independent 2D qualification grid is not a universal colour-mixing or real-camera uncertainty bound.",
+    "Occlusion below the measurement threshold is not a proof of completely opaque natural-object visibility.",
+    "No new real data, source-pair upgrade, AD output or driving equivalence evidence."
+  ]
+}
