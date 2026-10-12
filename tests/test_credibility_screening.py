@@ -107,6 +107,34 @@ class CredibilityScreeningTests(unittest.TestCase):
         self.assertTrue(result["screening_contract_satisfied"])
         self.assertTrue(any("common translation" in limitation for limitation in result["limitations"]))
 
+    def test_position_gate_passes_correct_rgb_and_rejects_width_preserving_translations(self):
+        self.suite["measurement"]["position_error_bound_px"] = 0.25
+        frame = self.evaluate()["cases"][0]["frames"][0]
+        self.assertEqual(frame["evidence_label"], "accepted")
+        self.assertLessEqual(frame["max_abs_position_residual_px"], 0.25)
+        # These centres are known image coordinates, not simulator outputs.
+        for dx, dy in ((2, 0), (0, 3)):
+            self.write_pair([(55 + dx, 50 + dy), (92.5 + dx, 50 + dy)])
+            result = self.evaluate()
+            frame = result["cases"][0]["frames"][0]
+            self.assertFalse(result["screening_contract_satisfied"])
+            self.assertTrue(frame["tested"])
+            self.assertEqual(frame["failure_kind"], "contradiction")
+            self.assertTrue(frame["width_within_budget"])
+            self.assertFalse(frame["position_within_budget"])
+            self.assertIn("position residual", frame["reason"])
+
+    def test_position_budget_invalid_or_single_marker_contract_is_unmeasured(self):
+        for budget in (None, 0, -1, True, float("nan"), float("inf"), "0.25"):
+            self.suite["measurement"]["position_error_bound_px"] = budget
+            result = self.evaluate()
+            self.assertFalse(result["screening_contract_satisfied"])
+            self.assertTrue(result["input_errors"])
+            self.assertEqual(result["tested_frame_count"] if "tested_frame_count" in result else 0, 0)
+        self.suite["measurement"]["position_error_bound_px"] = 0.25
+        self.suite["cases"][0]["frames"][0]["expected_visible_markers"] = 1
+        self.assertIn("two visible markers", self.evaluate()["input_errors"][0])
+
     def test_general_projection_matrix_is_not_silently_treated_as_camera_intrinsics(self):
         self.suite["camera"]["intrinsics"] = [[100, 0, 80, 40], [0, 100, 50, 0], [0, 0, 1, 0]]
         result = self.evaluate()

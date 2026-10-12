@@ -1,0 +1,61 @@
+{
+  "experiment_id": "credibility_screening_position_001",
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "camera": "CAM_FRONT",
+  "metadata_frame": "00000",
+  "contexts": ["isolated", "scene0383_static"],
+  "marker_sigma_m": 0.035,
+  "marker_opacity": 0.9,
+  "contrast_levels": [0.9, 0.1],
+  "conditions": [
+    {"id": "nominal", "translation_camera_m": [0.0, 0.0, 0.0], "expect_nominal_pass": true},
+    {"id": "wrong_u", "translation_camera_m": [0.75, 0.0, 0.0], "expect_nominal_pass": false},
+    {"id": "wrong_v", "translation_camera_m": [0.0, 0.5, 0.0], "expect_nominal_pass": false}
+  ],
+  "qualification": {
+    "centres_uv_px": [
+      [[250.25, 125.75], [293.75, 125.75]],
+      [[426.25, 228.25], [469.75, 228.25]],
+      [[615.75, 345.25], [659.25, 345.25]]
+    ],
+    "phases_u_px": [0.0, 0.25, 0.5, 0.75],
+    "phases_v_px": [0.0, 0.25, 0.5, 0.75],
+    "sigmas_px": [0.8, 1.2, 1.6]
+  },
+  "suite": {
+    "schema_version": 1,
+    "suite_id": "credibility_screening_position_001",
+    "camera": {
+      "name": "CAM_FRONT",
+      "width": 800,
+      "height": 450,
+      "pixel_centres": "u = column + 0.5, v = row + 0.5",
+      "intrinsics": [
+        [633.208601523277, 0.0, 408.1335098723992],
+        [0.0, 633.208601523277, 245.75353289647379],
+        [0.0, 0.0, 1.0]
+      ]
+    },
+    "measurement": {
+      "difference_threshold_u8": 8,
+      "min_component_area_px": 3,
+      "width_error_bound_px": 0.5,
+      "position_error_bound_px": 0.25
+    },
+    "cases": [
+      {
+        "id": "absolute_endpoint_position",
+        "question": "Do both RGB contrast centroids agree with their prescribed absolute 2D projections?",
+        "frames": [
+          {
+            "id": "frame000",
+            "capture_time_s": 0.0,
+            "marker_camera_xyz_m": [[0.7, -0.65, 23.5], [2.3, -0.65, 23.5]],
+            "expected_visible_markers": 2
+          }
+        ]
+      }
+    ]
+  }
+}

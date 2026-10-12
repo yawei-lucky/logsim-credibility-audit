@@ -123,8 +123,24 @@ def evaluate_frame(expected, submitted, suite, root):
         return result
     residual = observation["width_px"] - width
     result["width_residual_px"] = residual
+    result["width_within_budget"] = abs(residual) <= budget
+    position_budget = suite["measurement"].get("position_error_bound_px")
+    if position_budget is not None:
+        # The correspondence is image left/right, not semantic marker identity.
+        expected_uv = np.asarray(sorted(uv, key=lambda point: point[0]))
+        measured_uv = np.asarray([[feature["u"], feature["v"]] for feature in observation["features"]])
+        position_residual = measured_uv - expected_uv
+        maximum = float(np.max(np.abs(position_residual)))
+        result.update({"position_correspondence": "increasing image u; no semantic identity",
+                       "expected_uv_px": expected_uv.tolist(), "measured_uv_px": measured_uv.tolist(),
+                       "position_residual_px": position_residual.tolist(),
+                       "max_abs_position_residual_px": maximum,
+                       "position_error_bound_px": position_budget,
+                       "position_within_budget": maximum <= position_budget})
     if abs(residual) > budget:
         result.update(failure(f"width residual {residual} px exceeds the frozen {budget} px budget", "contradiction", True))
+    elif position_budget is not None and not result["position_within_budget"]:
+        result.update(failure(f"position residual {maximum} px exceeds the frozen {position_budget} px per-coordinate budget", "contradiction", True))
     else:
         result.update({"evidence_label": "accepted", "tested": True, "failure_kind": None})
     return result
@@ -146,6 +162,9 @@ def validate_suite(suite):
         raise InputError("measurement must be an object")
     if numeric(measurement.get("width_error_bound_px"), "width_error_bound_px") <= 0:
         raise InputError("width_error_bound_px must be positive")
+    if "position_error_bound_px" in measurement:
+        if numeric(measurement["position_error_bound_px"], "position_error_bound_px") <= 0:
+            raise InputError("position_error_bound_px must be positive")
     if not 0 < numeric(measurement.get("difference_threshold_u8"), "difference_threshold_u8") < 255:
         raise InputError("difference_threshold_u8 must lie between 0 and 255")
     area = measurement.get("min_component_area_px")
@@ -159,6 +178,8 @@ def validate_suite(suite):
             times.append(numeric(frame.get("capture_time_s"), "suite capture_time_s"))
             if type(frame.get("expected_visible_markers")) is not int or frame["expected_visible_markers"] not in (1, 2):
                 raise InputError("expected_visible_markers must be 1 or 2")
+            if "position_error_bound_px" in measurement and frame["expected_visible_markers"] != 2:
+                raise InputError("absolute position contract requires two visible markers; single-marker identity is not qualified")
             projection_width(frame.get("marker_camera_xyz_m"), camera.get("intrinsics"))
         if any(after <= before for before, after in zip(times, times[1:])):
             raise InputError(f"suite frame times must increase strictly: {case['id']}")
@@ -176,7 +197,13 @@ def evaluate_submission(suite, submission, submission_root):
                               "Declared capture timestamps are checked; actual capture or delivery age is not independently observed.",
                               "A single visible component establishes count only; the surviving marker's identity or absolute location is not checked.",
                               "No ordinary vehicle geometry, real-camera equivalence, driving safety, or event replay rate is qualified.",
-                              "Historical seed cases reused here are not new independent held-out samples."]}
+                              "Historical seed cases, when reused, are not new independent held-out samples."]}
+    measurement = suite.get("measurement") if isinstance(suite, dict) else None
+    if isinstance(measurement, dict) and "position_error_bound_px" in measurement:
+        report["claim"] = "This submitted RGB set satisfies the specified finite two-marker width and absolute 2D position contract."
+        report["limitations"] = [item for item in report["limitations"]
+                                 if not item.startswith(("Width does not", "A single visible"))]
+        report["limitations"].append("Position matching uses increasing image u, not semantic marker identity; single-marker cases are unsupported.")
     try:
         expected_cases = validate_suite(suite)
         if not isinstance(submission, dict) or type(submission.get("schema_version")) is not int or submission.get("schema_version") != 1 or submission.get("suite_id") != suite["suite_id"]:
