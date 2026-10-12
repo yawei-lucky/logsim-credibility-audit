@@ -1,0 +1,158 @@
+{
+  "experiment_id": "credibility_screening_seed_001",
+  "date": "2026-10-12",
+  "status": "completed_cpu_seed_and_fault_qualification",
+  "execution_scope": "Historical RGB remeasurement and tester qualification only; no new HUGSIM, AD, or real-vehicle run.",
+  "retained_development_run": "artifacts/credibility_screening_001/seed_run001",
+  "final_seed_run": "artifacts/credibility_screening_001/seed_run002",
+  "summary": {
+    "suite_id": "credibility_screening_001",
+    "case_count": 11,
+    "frame_count": 35,
+    "measurement_qualification": {
+      "count": 132,
+      "max_abs_width_error_px": 0.04780397031055372,
+      "budget_px": 0.5,
+      "qualified": true,
+      "scope": "Finite 2D grid at seed target widths, sizes and phases; no other renderer or real-camera qualification."
+    },
+    "negative_controls_detected": 9,
+    "negative_controls_expected": 9,
+    "mechanism_contradictions_detected": 7,
+    "input_integrity_blocks_detected": 2,
+    "screener_qualification_passed": true
+  },
+  "real_inventory_summary": {
+    "scene_count": 1,
+    "window_count": 2,
+    "image_count": 96,
+    "unique_archive_member_count": 96,
+    "integrity_passed_image_count": 96,
+    "all_selected_member_checks_passed": true
+  },
+  "source_availability_gate_passed": false,
+  "provenance": {
+    "host": "stf-precision-3680",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "role": "CPU historical seed and deliberate-fault qualification",
+    "suite": "/home/yawei/logsim-credibility-audit/configs/credibility_screening_001.json",
+    "suite_sha256": "55b9fa46988e282199f5e2d319e106883ccb391b7490c185a108e7493a7f39ba",
+    "output": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_001/seed_run002",
+    "branch": "main",
+    "audit_commit": "eb5082cecc91bece783a4f280298f17a0a8ae63a",
+    "audit_status": "?? configs/credibility_real_anchors_001.json\n?? configs/credibility_screening_001.json\n?? scripts/evaluate_credibility_screening.py\n?? scripts/inventory_credibility_real_anchors.py\n?? scripts/run_credibility_screening_seed.py\n?? tests/test_credibility_screening.py\n",
+    "code_hashes": {
+      "scripts/run_credibility_screening_seed.py": "ddeb1501361f306c6c27265962ae1cf67cf86f0487a5dde04c2f4c288bb7fae7",
+      "scripts/evaluate_credibility_screening.py": "c85a0abb89a30ccd21635bf1d547e15a01903b5f02bb68990db7d5ad016cad30",
+      "scripts/run_motion_observation_probe.py": "d21841c2899f33e1b3849771b30b51f8ede05aaa4ecfbeefd61a881433447248",
+      "scripts/run_motion_observation_boundary_probe.py": "660275430f32943073b0be3bb1afd24b9ee4f7d134ec750588e8fb62d8d4a24a"
+    },
+    "health_status": "starting"
+  },
+  "artifact_hashes": {
+    "artifacts/credibility_screening_001/seed_run002/summary.json": "b5889ba08d948b0edafa001db14d1c3962d680a861d97618299897f43bfebc63",
+    "artifacts/credibility_screening_001/seed_run002/environment.json": "c07eba0051274b53e04c3a3b89e932dc0aaebf02877dc3ea3319c90c12a7e1fa",
+    "artifacts/credibility_screening_001/seed_run002/measurement_qualification.json": "40b642a7bc9f8e7ea677c37964739e79ced37f080a78c996588b5c70eeff4ce1",
+    "artifacts/credibility_screening_001/seed_run002/baseline_submission.json": "bc4f03b84b8cd93dcc1a0173d52f6341df3e059ca0f0564888683df178ef2b2e",
+    "artifacts/credibility_screening_001/seed_run002/suite.json": "55b9fa46988e282199f5e2d319e106883ccb391b7490c185a108e7493a7f39ba",
+    "artifacts/credibility_screening_001/seed_run002/status.json": "c64169fb66a4cd391044d2b8277ebbc344a23d2ac816a2b44aa5c925f7b86d28",
+    "artifacts/credibility_screening_001/real_inventory_run001.json": "c042292406fa6b4529851c43c2a39514ac5f1721ec4825d533eca74ce4b1c0c5",
+    "artifacts/credibility_screening_001/seed_run002/baseline/report.json": "da30d5d23dad4f9377615cc8be134b81c0a78af07bb71c510d423e717dba96c9",
+    "artifacts/credibility_screening_001/seed_run002/hidden_distance_bias_1m/report.json": "aca494db4618aab151347b8e0741b58f6d539f263cf706c3b0026b38c452c6a2",
+    "artifacts/credibility_screening_001/seed_run002/hidden_capture_delay_0_5s/report.json": "b3b115c34c04bea6738a4c23b9c94b75aba771ff998270b472d268b8c8fb738a",
+    "artifacts/credibility_screening_001/seed_run002/hidden_constant_scale_1_1/report.json": "4721d71a57d19d91347196bf432c9001d3f8915f872ae147a7b97e2775a1b754",
+    "artifacts/credibility_screening_001/seed_run002/frozen_motion_frames/report.json": "d4ccd28ed3898bcc117f68924f12d3f1bac2e1e8e3826384d51d8406eae5a8c4",
+    "artifacts/credibility_screening_001/seed_run002/ignored_front_occluder/report.json": "3a43f24bc3adea8241b6ef3615c4368011464eaa3e8b3c07dc8aa35339b48587",
+    "artifacts/credibility_screening_001/seed_run002/ignored_marker_removal/report.json": "31766bc5a5ab3e9cbca5cccaae631fe35a818e7c002c4677958f7407265750f3",
+    "artifacts/credibility_screening_001/seed_run002/missing_required_case/report.json": "05984b7c80638e9da25a52f8a8345386a1a813feb0e96e261fd0d32d1d53251e",
+    "artifacts/credibility_screening_001/seed_run002/incorrect_capture_timestamp/report.json": "c6a51898a87371c04b8d0ab62076d8d28507872c1c86bc221edb6226d8859540",
+    "artifacts/credibility_screening_001/seed_run002/collapsed_endpoint_depths/report.json": "f61847643e9161cf7dd48bbe99b49d976b424c0b0dcb1f0382df7da699b5b8c9"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_width_measurement_qualification": "accepted",
+      "historical_seed_satisfies_finite_width_count_contract": "accepted",
+      "specified_fault_types_are_detected": "accepted",
+      "selected_real_members_exist_and_match_manifests": "accepted",
+      "seed_pass_proves_general_simulator_credibility": "rejected",
+      "this_run_is_an_independent_holdout_validation": "rejected",
+      "real_anchors_establish_real_world_task_equivalence": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "seed_pass_proves_general_simulator_credibility": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Only a finite artificial-marker width/count contract was tested; absolute location, identity and ordinary objects have unresolved measurement gaps.",
+        "evidence_refs": [
+          "docs/credibility_screening_set_001.md"
+        ]
+      },
+      "this_run_is_an_independent_holdout_validation": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Cases were retrospectively assembled from already inspected successful experiments, including the old heldout trajectory.",
+        "evidence_refs": [
+          "configs/credibility_screening_001.json"
+        ]
+      },
+      "real_anchors_establish_real_world_task_equivalence": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "Member integrity is not a complete source gate or independent task-equivalence margin.",
+        "evidence_refs": [
+          "artifacts/credibility_screening_001/real_inventory_run001.json",
+          "docs/runs/sparsedrive_real_sim_turn_window_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "finite_measurement_qualification": {
+      "component": "paired RGB centre-separation measurement",
+      "expected": "Independent 2D targets at seed projected coordinates remain within frozen 0.5 px width budget.",
+      "observed": "132/132 passed; max absolute width error 0.04780397031055372 px.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Width measurement is qualified only on the finite tested artificial-marker grid.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_001/seed_run002/summary.json",
+        "artifacts/credibility_screening_001/seed_run002/baseline/report.json",
+        "artifacts/credibility_screening_001/seed_run002/measurement_qualification.json"
+      ]
+    },
+    "typed_fault_detection": {
+      "component": "CPU credibility screener",
+      "expected": "Seven mechanism faults must produce tested contradictions in the specified case; two structural faults must block as input_invalid.",
+      "observed": "7/7 mechanism contradictions and 2/2 integrity blocks met their expected types in seed_run002.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "The tester can exclude these specified faults; no inferred population detection rate or new HUGSIM failure.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_001/seed_run002/summary.json",
+        "scripts/run_credibility_screening_seed.py"
+      ]
+    },
+    "real_member_integrity": {
+      "component": "official-sample selected real RGB members",
+      "expected": "Every selected local member agrees with its frozen extraction manifest and declared dimensions.",
+      "observed": "96/96 complete checks passed across one scene and two windows; full source gate remains false.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "These actual road images exist locally and are traceable to the declared extraction members, without complete original nuScenes identity or training split qualification.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_001/real_inventory_run001.json",
+        "configs/credibility_real_anchors_001.json"
+      ]
+    }
+  },
+  "limitations": [
+    "Retrospective development seed, not new independent holdout.",
+    "Width cannot detect common marker translation; single-component count does not establish surviving marker identity.",
+    "Capture timestamp is declared, not independently measured exposure or delivery time.",
+    "Negative controls are tester qualifications, not new simulator faults or a population failure rate.",
+    "New renderer adapter needs independent measurement qualification.",
+    "No real-world task-equivalence or safety threshold."
+  ]
+}

@@ -1,0 +1,1523 @@
+{
+  "schema_version": 1,
+  "suite_id": "credibility_screening_001",
+  "selection_status": "retrospective_seed_not_independent_holdout",
+  "purpose": "Reject specified motion-to-image or visibility contracts on a finite controlled grid; no aggregate simulator credibility score.",
+  "camera": {
+    "name": "CAM_FRONT",
+    "model": "pinhole",
+    "width": 800,
+    "height": 450,
+    "intrinsics": [
+      [
+        633.208601523277,
+        0.0,
+        408.1335098723992
+      ],
+      [
+        0.0,
+        633.208601523277,
+        245.75353289647379
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "render_contract": {
+    "coordinate_convention": "camera x right, y down, z forward; point coordinates in metres; pixel centres at x+0.5,y+0.5",
+    "background_context": "scene0383_static",
+    "marker_sigma_m": 0.035,
+    "marker_opacity": 0.9,
+    "contrast_levels": [
+      0.9,
+      0.1
+    ],
+    "paired_renders": "Identical background, camera, geometry and state; only both marker colours differ. No auto exposure, resize, noise or tone mapping changes.",
+    "unsupported_adapter": "A simulator unable to implement this marker/camera contract is unqualified for this suite, not thereby globally untrustworthy."
+  },
+  "measurement": {
+    "difference_threshold_u8": 8,
+    "min_component_area_px": 3,
+    "width_error_bound_px": 0.5,
+    "scope": "Qualified paired-contrast synthetic marker widths only. This is not an ordinary vehicle or driving safety threshold."
+  },
+  "reference_sources": {
+    "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+    "configs/motion_observation_boundary_001.json": "d75e2d8f71383f41558d2a0e8eb67b2c6220a950c78b496f6d254729398352c0",
+    "configs/motion_observation_probe_001.json": "3faf2b28b42d1b7e61e1804b76482fbae6a0d908f4b8269e0fa91cf14ef7ff49"
+  },
+  "real_anchor_config": "configs/credibility_real_anchors_001.json",
+  "cases": [
+    {
+      "id": "geometry_equal_depth",
+      "question": "predictive_structure_consistency",
+      "interventions": {
+        "id": "equal_depth",
+        "kind": "equal_depth"
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/equal_depth/bright.png",
+              "sha256": "d3ee2363b195ed6e3a4c28a3a125d3fe4ba713d687487cfe52c69cd3469fb346"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/equal_depth/dim.png",
+              "sha256": "b9df3b4fd459eda805d7669639a8a8921204d78ad4b571d0d76728cbeaf280b8"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_left_marker_missing",
+      "question": "action_effect_consistency",
+      "interventions": {
+        "id": "left_marker_missing",
+        "kind": "missing",
+        "missing_index": 0
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 1,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/left_marker_missing/bright.png",
+              "sha256": "81445f0f7105ab97b9dbd950c5cc3ff48d3976a6a1bdc1b3f99c32cfd4598d08"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/left_marker_missing/dim.png",
+              "sha256": "590f6346b1e4825b00613552fa0cafdfdabda0b0f5cb1440487884151d227539"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_yaw_45deg_center",
+      "question": "predictive_structure_consistency",
+      "interventions": {
+        "id": "yaw_45deg_center",
+        "kind": "rigid_yaw",
+        "yaw_deg": 45.0,
+        "center_x_m": 0.0
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.5656854249492381,
+              0,
+              24.565685424949237
+            ],
+            [
+              0.5656854249492381,
+              0,
+              23.434314575050763
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/yaw_45deg_center/bright.png",
+              "sha256": "25064168a903079544c8f7a07a80dd837741ac2f581c7e972b1f3f51725f100d"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/yaw_45deg_center/dim.png",
+              "sha256": "e20cd6af657814b35c660ebf08d8628b9cc30e2607b1b48af1e0b28665d7e4fb"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_yaw_plus45_offset3m",
+      "question": "predictive_structure_consistency",
+      "interventions": {
+        "id": "yaw_plus45_offset3m",
+        "kind": "rigid_yaw",
+        "yaw_deg": 45.0,
+        "center_x_m": 3.0
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              2.4343145750507618,
+              0,
+              24.565685424949237
+            ],
+            [
+              3.5656854249492382,
+              0,
+              23.434314575050763
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/yaw_plus45_offset3m/bright.png",
+              "sha256": "bfdcfdf8f311fcc03fcf28152df87573dc379d5d2a823a207f9a44c3b45d59d0"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/yaw_plus45_offset3m/dim.png",
+              "sha256": "45abcbdc5dedb38c8e1c9fdab421466b5459f4a12043c0a12eb75b4e49ccfeff"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_yaw_minus45_offset3m",
+      "question": "predictive_structure_consistency",
+      "interventions": {
+        "id": "yaw_minus45_offset3m",
+        "kind": "rigid_yaw",
+        "yaw_deg": -45.0,
+        "center_x_m": 3.0
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              2.4343145750507618,
+              0,
+              23.434314575050763
+            ],
+            [
+              3.5656854249492382,
+              0,
+              24.565685424949237
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/yaw_minus45_offset3m/bright.png",
+              "sha256": "b43869227a5d13a038275790e1aff1517cc76dd07e32be377b41d897076bd237"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/yaw_minus45_offset3m/dim.png",
+              "sha256": "abccab0c9c6fc2120c2d8527b3323b439189bde8ebea3d0b9d27dd335deee7e5"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_depth_skew_12m",
+      "question": "predictive_structure_consistency",
+      "interventions": {
+        "id": "depth_skew_12m",
+        "kind": "depth_skew",
+        "half_depth_skew_m": 6.0
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              18.0
+            ],
+            [
+              0.8,
+              0,
+              30.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/depth_skew_12m/bright.png",
+              "sha256": "fbbd1a9c25b3b15a7bf2d7f53a2d7c8fe6e07e479579779a6f6dfb077ea84239"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/depth_skew_12m/dim.png",
+              "sha256": "d959970df17b53c518ee7ed6284eac9d4ebc3d5855ede7ec688380fb7b0e2aee"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_left_marker_occluder_behind",
+      "question": "action_effect_consistency",
+      "interventions": {
+        "id": "left_marker_occluder_behind",
+        "kind": "occlusion",
+        "occluder_depth_offset_m": 2.0,
+        "expected_occluded": false,
+        "occluder_camera_xyz_m": [
+          -0.8666666666666667,
+          0.0,
+          26.0
+        ],
+        "occluder_sigma_m": 0.45,
+        "occluder_opacity": 0.9999,
+        "occluder_level": 0.25
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/left_marker_occluder_behind/bright.png",
+              "sha256": "9e468b875b41a72d7747de4000c75c1137e08e69cb01e96a5fa59f9128e331b6"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/left_marker_occluder_behind/dim.png",
+              "sha256": "d0c7cd5717f93e4852e00a4e367dd7555a1e0038106a1d6737e58835eba7389e"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "geometry_left_marker_occluder_front",
+      "question": "action_effect_consistency",
+      "interventions": {
+        "id": "left_marker_occluder_front",
+        "kind": "occlusion",
+        "occluder_depth_offset_m": -2.0,
+        "expected_occluded": true,
+        "occluder_camera_xyz_m": [
+          -0.7333333333333334,
+          0.0,
+          22.0
+        ],
+        "occluder_sigma_m": 0.45,
+        "occluder_opacity": 0.9999,
+        "occluder_level": 0.25
+      },
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 1,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/left_marker_occluder_front/bright.png",
+              "sha256": "7bd1ecfc74ab7a1ce0dfd10fe0b1f7d147caea3c99eea4ab504e3ca4d28bcf82"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_boundary_001/run002/rgb/scene0383_static/depth_24m/left_marker_occluder_front/dim.png",
+              "sha256": "fd3ff6bf7d28d310838784a7d6047b9eb116c21280a48ed5d1aed4a88a32730e"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "motion_train_slow",
+      "question": "predictive_structure_consistency",
+      "trajectory": {
+        "id": "train_slow",
+        "z0_m": 24.0,
+        "closing_speed_mps": 2.0,
+        "role": "identify"
+      },
+      "role": "retrospective_seed",
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/000_bright.png",
+              "sha256": "d3ee2363b195ed6e3a4c28a3a125d3fe4ba713d687487cfe52c69cd3469fb346"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/000_dim.png",
+              "sha256": "b9df3b4fd459eda805d7669639a8a8921204d78ad4b571d0d76728cbeaf280b8"
+            }
+          }
+        },
+        {
+          "id": "001",
+          "capture_time_s": 0.25,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              23.5
+            ],
+            [
+              0.8,
+              0,
+              23.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/001_bright.png",
+              "sha256": "b85d8f0a03dd01401c13f34ad754a55524f85a316f61e6b6fcd9e6b3f23e8209"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/001_dim.png",
+              "sha256": "9efea3c586b218b98bf1d622d3ce396436436af8c242925c8ebb931890352d38"
+            }
+          }
+        },
+        {
+          "id": "002",
+          "capture_time_s": 0.5,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              23.0
+            ],
+            [
+              0.8,
+              0,
+              23.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/002_bright.png",
+              "sha256": "5aaa782daee06876905161d255da2960db25bf914df68256d50ab3f4c35a317b"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/002_dim.png",
+              "sha256": "c5d7f7cea58a140d4e26d5e77412344be142c0105912f4aec22a6cb070fc7d4f"
+            }
+          }
+        },
+        {
+          "id": "003",
+          "capture_time_s": 0.75,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              22.5
+            ],
+            [
+              0.8,
+              0,
+              22.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/003_bright.png",
+              "sha256": "0722898d283fa10c653b93e2215e8f6cd856a7f9bcea9ec9a27889cebdaab6d5"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/003_dim.png",
+              "sha256": "3559fbd663426ab87ca0c1fb6139b36a70506b0bb665be68191cf8f9373a563b"
+            }
+          }
+        },
+        {
+          "id": "004",
+          "capture_time_s": 1.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              22.0
+            ],
+            [
+              0.8,
+              0,
+              22.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/004_bright.png",
+              "sha256": "b24653af4a6db81f9eeed9e4839724b7586a61bb3d09d5a8d8bb7e92ac6b8205"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/004_dim.png",
+              "sha256": "1fdde7a7999380a49548ac4121747119d811e54e18254224fd8bcce8c316bbb1"
+            }
+          }
+        },
+        {
+          "id": "005",
+          "capture_time_s": 1.25,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              21.5
+            ],
+            [
+              0.8,
+              0,
+              21.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/005_bright.png",
+              "sha256": "6f281c1a34ba83d70fbb50c8c4592abf0db965d00ececccf8bbbbc58f7251cb7"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/005_dim.png",
+              "sha256": "d91d1bf6f6e8ff30bf1027518b3841b35f041088890deb1e629b6ec4e0729858"
+            }
+          }
+        },
+        {
+          "id": "006",
+          "capture_time_s": 1.5,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              21.0
+            ],
+            [
+              0.8,
+              0,
+              21.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/006_bright.png",
+              "sha256": "c6f0167203c8bc954c085516fb3f412c850d7c3918b2e38ffce1b91300681668"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/006_dim.png",
+              "sha256": "0a12d2bfc2e2519d30127b18838b137d864083148e487c43414fc8f9008263e7"
+            }
+          }
+        },
+        {
+          "id": "007",
+          "capture_time_s": 1.75,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              20.5
+            ],
+            [
+              0.8,
+              0,
+              20.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/007_bright.png",
+              "sha256": "50b8ea9eb6f0d9cb70263c5b0df817b3d9cfcc362c968f87e4777cebeaa73f00"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/007_dim.png",
+              "sha256": "9ef60114abcef0d0a30ae3c7a432a0027452e006e829f2319188cbb41430efe8"
+            }
+          }
+        },
+        {
+          "id": "008",
+          "capture_time_s": 2.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              20.0
+            ],
+            [
+              0.8,
+              0,
+              20.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/008_bright.png",
+              "sha256": "9af2142d1cb66db9ed5ee1f87d04bffce13d336b1079704f519f6c3394285f27"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_slow/baseline_r0/008_dim.png",
+              "sha256": "7b1318605579319eb828d5617dbe0d9f23f456a180da717c0746b844104876f4"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "motion_train_fast",
+      "question": "predictive_structure_consistency",
+      "trajectory": {
+        "id": "train_fast",
+        "z0_m": 24.0,
+        "closing_speed_mps": 6.0,
+        "role": "identify"
+      },
+      "role": "retrospective_seed",
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/000_bright.png",
+              "sha256": "d3ee2363b195ed6e3a4c28a3a125d3fe4ba713d687487cfe52c69cd3469fb346"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/000_dim.png",
+              "sha256": "b9df3b4fd459eda805d7669639a8a8921204d78ad4b571d0d76728cbeaf280b8"
+            }
+          }
+        },
+        {
+          "id": "001",
+          "capture_time_s": 0.25,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              22.5
+            ],
+            [
+              0.8,
+              0,
+              22.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/001_bright.png",
+              "sha256": "0722898d283fa10c653b93e2215e8f6cd856a7f9bcea9ec9a27889cebdaab6d5"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/001_dim.png",
+              "sha256": "3559fbd663426ab87ca0c1fb6139b36a70506b0bb665be68191cf8f9373a563b"
+            }
+          }
+        },
+        {
+          "id": "002",
+          "capture_time_s": 0.5,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              21.0
+            ],
+            [
+              0.8,
+              0,
+              21.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/002_bright.png",
+              "sha256": "c6f0167203c8bc954c085516fb3f412c850d7c3918b2e38ffce1b91300681668"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/002_dim.png",
+              "sha256": "0a12d2bfc2e2519d30127b18838b137d864083148e487c43414fc8f9008263e7"
+            }
+          }
+        },
+        {
+          "id": "003",
+          "capture_time_s": 0.75,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              19.5
+            ],
+            [
+              0.8,
+              0,
+              19.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/003_bright.png",
+              "sha256": "cc6ef7f3523ed6f4efb13b4cbcb569f4684ccd4aaa00bb5141bfcb8cb8ee42f8"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/003_dim.png",
+              "sha256": "987f58e9388e10c9ad8c439c53fe8002ccfea57d7ee6188f3cdd9c3b3c74f9f0"
+            }
+          }
+        },
+        {
+          "id": "004",
+          "capture_time_s": 1.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              18.0
+            ],
+            [
+              0.8,
+              0,
+              18.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/004_bright.png",
+              "sha256": "547efc8b2d69723618023cce2e7c2f02c6b967abae56c046554e1fbd653463ae"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/004_dim.png",
+              "sha256": "528a5d8e3798e6e3c9fef5b60db2942e4b12f9088f0f96b0709bfffa118cbf59"
+            }
+          }
+        },
+        {
+          "id": "005",
+          "capture_time_s": 1.25,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              16.5
+            ],
+            [
+              0.8,
+              0,
+              16.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/005_bright.png",
+              "sha256": "86267c2d262fbf6851060a98377a2a88ed28d7dd590563cbc9401cd670625885"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/005_dim.png",
+              "sha256": "ac1ea1b34773d73479f7d3416043895c795ddb7648485111de27136b0d980501"
+            }
+          }
+        },
+        {
+          "id": "006",
+          "capture_time_s": 1.5,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              15.0
+            ],
+            [
+              0.8,
+              0,
+              15.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/006_bright.png",
+              "sha256": "6fb8a4d982cdeadfe0f32e1273596df51f9d1744925915b67b54740a0a4de9fb"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/006_dim.png",
+              "sha256": "5e2300d1a228b77c2d5322fe6f04e372bd712a7b5956f4694ac3d4e4d79529be"
+            }
+          }
+        },
+        {
+          "id": "007",
+          "capture_time_s": 1.75,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              13.5
+            ],
+            [
+              0.8,
+              0,
+              13.5
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/007_bright.png",
+              "sha256": "1294ba2b4a94d7ecee25e357cd974ae35fb3c01d42efb92b626b61f7d43559b4"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/007_dim.png",
+              "sha256": "ef54ce5bb31c79e30722079f567e3106e2198c5b93d6f2e0a2dce36a0a498c8c"
+            }
+          }
+        },
+        {
+          "id": "008",
+          "capture_time_s": 2.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              12.0
+            ],
+            [
+              0.8,
+              0,
+              12.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/008_bright.png",
+              "sha256": "528850e65695d3a36e39b98644b449e2dbf33c8de2ace77120d17acba64d836d"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/baseline_r0/008_dim.png",
+              "sha256": "0638b7e1811654c5caf5b18837a2dc3440a310405a555bcdeb19b12f6a48005d"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "motion_heldout",
+      "question": "predictive_structure_consistency",
+      "trajectory": {
+        "id": "heldout",
+        "z0_m": 28.0,
+        "closing_speed_mps": 4.0,
+        "role": "heldout"
+      },
+      "role": "retrospective_seed",
+      "frames": [
+        {
+          "id": "000",
+          "capture_time_s": 0.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              28.0
+            ],
+            [
+              0.8,
+              0,
+              28.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/000_bright.png",
+              "sha256": "bb856388a1efeebeeabf63b661e158bdb399c79e986a2976f402c19995b4b13a"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/000_dim.png",
+              "sha256": "13c24c24fa0375c7e220446340aab136d5e5af1ef7e65024c2c91e29a56fa90e"
+            }
+          }
+        },
+        {
+          "id": "001",
+          "capture_time_s": 0.25,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              27.0
+            ],
+            [
+              0.8,
+              0,
+              27.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/001_bright.png",
+              "sha256": "a60aca7aa47b1c92369f3e609ef46cfb54e23c4c5630a610c7796d0e8302483d"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/001_dim.png",
+              "sha256": "f991983699ef620858ab686ec0bf7dbfe2a05499ee48d4008ed4a9bfa36e0794"
+            }
+          }
+        },
+        {
+          "id": "002",
+          "capture_time_s": 0.5,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              26.0
+            ],
+            [
+              0.8,
+              0,
+              26.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/002_bright.png",
+              "sha256": "2da9dedbe43f07771dc29c195bf4ce00c9c571331c1921686a4dc58f5dde2eb5"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/002_dim.png",
+              "sha256": "1d053d4bb10a7c3766e457ab1579522b21eda22a9738aaccb03148678e820adc"
+            }
+          }
+        },
+        {
+          "id": "003",
+          "capture_time_s": 0.75,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              25.0
+            ],
+            [
+              0.8,
+              0,
+              25.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/003_bright.png",
+              "sha256": "c66bac16457da1a5a1d289d40323e97108e0933d1103da3a32341ef26bf3d527"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/003_dim.png",
+              "sha256": "bf73c7acacfbe154e0534d3586b9ecfa91fc8388d90cea5df9c059976d4e1c19"
+            }
+          }
+        },
+        {
+          "id": "004",
+          "capture_time_s": 1.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              24.0
+            ],
+            [
+              0.8,
+              0,
+              24.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/004_bright.png",
+              "sha256": "d3ee2363b195ed6e3a4c28a3a125d3fe4ba713d687487cfe52c69cd3469fb346"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/004_dim.png",
+              "sha256": "b9df3b4fd459eda805d7669639a8a8921204d78ad4b571d0d76728cbeaf280b8"
+            }
+          }
+        },
+        {
+          "id": "005",
+          "capture_time_s": 1.25,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              23.0
+            ],
+            [
+              0.8,
+              0,
+              23.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/005_bright.png",
+              "sha256": "5aaa782daee06876905161d255da2960db25bf914df68256d50ab3f4c35a317b"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/005_dim.png",
+              "sha256": "c5d7f7cea58a140d4e26d5e77412344be142c0105912f4aec22a6cb070fc7d4f"
+            }
+          }
+        },
+        {
+          "id": "006",
+          "capture_time_s": 1.5,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              22.0
+            ],
+            [
+              0.8,
+              0,
+              22.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/006_bright.png",
+              "sha256": "b24653af4a6db81f9eeed9e4839724b7586a61bb3d09d5a8d8bb7e92ac6b8205"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/006_dim.png",
+              "sha256": "1fdde7a7999380a49548ac4121747119d811e54e18254224fd8bcce8c316bbb1"
+            }
+          }
+        },
+        {
+          "id": "007",
+          "capture_time_s": 1.75,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              21.0
+            ],
+            [
+              0.8,
+              0,
+              21.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/007_bright.png",
+              "sha256": "c6f0167203c8bc954c085516fb3f412c850d7c3918b2e38ffce1b91300681668"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/007_dim.png",
+              "sha256": "0a12d2bfc2e2519d30127b18838b137d864083148e487c43414fc8f9008263e7"
+            }
+          }
+        },
+        {
+          "id": "008",
+          "capture_time_s": 2.0,
+          "marker_camera_xyz_m": [
+            [
+              -0.8,
+              0,
+              20.0
+            ],
+            [
+              0.8,
+              0,
+              20.0
+            ]
+          ],
+          "expected_visible_markers": 2,
+          "seed_rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/008_bright.png",
+              "sha256": "9af2142d1cb66db9ed5ee1f87d04bffce13d336b1079704f519f6c3394285f27"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/heldout/baseline_r0/008_dim.png",
+              "sha256": "7b1318605579319eb828d5617dbe0d9f23f456a180da717c0746b844104876f4"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "excluded_claims": [
+    "real_camera_or_vehicle_feature_accuracy",
+    "absolute_image_translation_accuracy",
+    "real_world_task_safety",
+    "independent_heldout_generalization",
+    "event_reproduce_rate",
+    "complete_closed_loop_equivalence"
+  ],
+  "negative_control_inputs": [
+    {
+      "condition": "distance",
+      "frames": [
+        {
+          "id": "000",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/000_bright.png",
+              "sha256": "c66bac16457da1a5a1d289d40323e97108e0933d1103da3a32341ef26bf3d527"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/000_dim.png",
+              "sha256": "bf73c7acacfbe154e0534d3586b9ecfa91fc8388d90cea5df9c059976d4e1c19"
+            }
+          }
+        },
+        {
+          "id": "001",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/001_bright.png",
+              "sha256": "b85d8f0a03dd01401c13f34ad754a55524f85a316f61e6b6fcd9e6b3f23e8209"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/001_dim.png",
+              "sha256": "9efea3c586b218b98bf1d622d3ce396436436af8c242925c8ebb931890352d38"
+            }
+          }
+        },
+        {
+          "id": "002",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/002_bright.png",
+              "sha256": "b24653af4a6db81f9eeed9e4839724b7586a61bb3d09d5a8d8bb7e92ac6b8205"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/002_dim.png",
+              "sha256": "1fdde7a7999380a49548ac4121747119d811e54e18254224fd8bcce8c316bbb1"
+            }
+          }
+        },
+        {
+          "id": "003",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/003_bright.png",
+              "sha256": "50b8ea9eb6f0d9cb70263c5b0df817b3d9cfcc362c968f87e4777cebeaa73f00"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/003_dim.png",
+              "sha256": "9ef60114abcef0d0a30ae3c7a432a0027452e006e829f2319188cbb41430efe8"
+            }
+          }
+        },
+        {
+          "id": "004",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/004_bright.png",
+              "sha256": "4c0e5eca9fff7489b6630b00eb84fd6716c9eacbe8cc6deb6d02b7f671e75b3e"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/004_dim.png",
+              "sha256": "28b0e75448b9a125c88c571b01edc9bd1d7966a6289e03c72f1a38324877df30"
+            }
+          }
+        },
+        {
+          "id": "005",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/005_bright.png",
+              "sha256": "10d4c5644a448747ce85993ece528f22c076b789d1f60fbd82cf3dff9eac25aa"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/005_dim.png",
+              "sha256": "6a61b7e33dfc92353973a2a4f4cf1ed999296308ae1a3359a8d750555a677b33"
+            }
+          }
+        },
+        {
+          "id": "006",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/006_bright.png",
+              "sha256": "e640adfe170bccf1e43fba70275855c62e6790c66dfa74881e23c5c28744b3f2"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/006_dim.png",
+              "sha256": "c910575e9a9b9c78f900e95ab63fa870cd71c271d90979bdcb475c2a4d81d874"
+            }
+          }
+        },
+        {
+          "id": "007",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/007_bright.png",
+              "sha256": "a811ba769c3816ed6f4fdbd756e8a6435c7fba496ea1551d8cbab407dc08d341"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/007_dim.png",
+              "sha256": "ecac467be68d05c819e0d70ba07884f3f45a59a4b5ad376c9281a44b31fe9f52"
+            }
+          }
+        },
+        {
+          "id": "008",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/008_bright.png",
+              "sha256": "c9bddddd8432f18f53e648486b4fa5cd9e1c2c191bdaf1474074ae33a38a85f5"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/distance_r0/008_dim.png",
+              "sha256": "203e15fd3f5b2b98db8717d783753ffd4ca2e45c82e9728d45da4e1f012395eb"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "condition": "delay",
+      "frames": [
+        {
+          "id": "000",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/000_bright.png",
+              "sha256": "a60aca7aa47b1c92369f3e609ef46cfb54e23c4c5630a610c7796d0e8302483d"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/000_dim.png",
+              "sha256": "f991983699ef620858ab686ec0bf7dbfe2a05499ee48d4008ed4a9bfa36e0794"
+            }
+          }
+        },
+        {
+          "id": "001",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/001_bright.png",
+              "sha256": "acbbd955a36fd1a2bfc9bac42043bcec32fd2378fe5c949384c7a1eba15cb86c"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/001_dim.png",
+              "sha256": "5f3958b37b9703699aa290578bf5aa557154ad2844912ff00a9ce996f3713220"
+            }
+          }
+        },
+        {
+          "id": "002",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/002_bright.png",
+              "sha256": "d3ee2363b195ed6e3a4c28a3a125d3fe4ba713d687487cfe52c69cd3469fb346"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/002_dim.png",
+              "sha256": "b9df3b4fd459eda805d7669639a8a8921204d78ad4b571d0d76728cbeaf280b8"
+            }
+          }
+        },
+        {
+          "id": "003",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/003_bright.png",
+              "sha256": "0722898d283fa10c653b93e2215e8f6cd856a7f9bcea9ec9a27889cebdaab6d5"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/003_dim.png",
+              "sha256": "3559fbd663426ab87ca0c1fb6139b36a70506b0bb665be68191cf8f9373a563b"
+            }
+          }
+        },
+        {
+          "id": "004",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/004_bright.png",
+              "sha256": "c6f0167203c8bc954c085516fb3f412c850d7c3918b2e38ffce1b91300681668"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/004_dim.png",
+              "sha256": "0a12d2bfc2e2519d30127b18838b137d864083148e487c43414fc8f9008263e7"
+            }
+          }
+        },
+        {
+          "id": "005",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/005_bright.png",
+              "sha256": "cc6ef7f3523ed6f4efb13b4cbcb569f4684ccd4aaa00bb5141bfcb8cb8ee42f8"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/005_dim.png",
+              "sha256": "987f58e9388e10c9ad8c439c53fe8002ccfea57d7ee6188f3cdd9c3b3c74f9f0"
+            }
+          }
+        },
+        {
+          "id": "006",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/006_bright.png",
+              "sha256": "547efc8b2d69723618023cce2e7c2f02c6b967abae56c046554e1fbd653463ae"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/006_dim.png",
+              "sha256": "528a5d8e3798e6e3c9fef5b60db2942e4b12f9088f0f96b0709bfffa118cbf59"
+            }
+          }
+        },
+        {
+          "id": "007",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/007_bright.png",
+              "sha256": "86267c2d262fbf6851060a98377a2a88ed28d7dd590563cbc9401cd670625885"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/007_dim.png",
+              "sha256": "ac1ea1b34773d73479f7d3416043895c795ddb7648485111de27136b0d980501"
+            }
+          }
+        },
+        {
+          "id": "008",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/008_bright.png",
+              "sha256": "6fb8a4d982cdeadfe0f32e1273596df51f9d1744925915b67b54740a0a4de9fb"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/delay_r0/008_dim.png",
+              "sha256": "5e2300d1a228b77c2d5322fe6f04e372bd712a7b5956f4694ac3d4e4d79529be"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "condition": "constant_scale",
+      "frames": [
+        {
+          "id": "000",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/000_bright.png",
+              "sha256": "d47903a6a291a390c00ce1dce5ed7c30945eb9cc45279e890c6f275786642f8c"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/000_dim.png",
+              "sha256": "f60a4c76e128f85976ab9ea32ebe2f43a55f8646b8783e5b1faaaef44a9c668a"
+            }
+          }
+        },
+        {
+          "id": "001",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/001_bright.png",
+              "sha256": "85bb70c0ba785ed8c4c5833e972bf40eedd3a01a32e967571a17058267a8ea44"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/001_dim.png",
+              "sha256": "d72a62da87595a2da5472dc17495be57ec7a1ed2451be8fd9850b05453964974"
+            }
+          }
+        },
+        {
+          "id": "002",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/002_bright.png",
+              "sha256": "0babe07a1977cb1303b2feb2aed093bcaa31ddf0f81f37872f91fc0d39e5e313"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/002_dim.png",
+              "sha256": "40b2e97a62dc6cf72d035a1e39cf843009d8d49690427de61bba1383c0860562"
+            }
+          }
+        },
+        {
+          "id": "003",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/003_bright.png",
+              "sha256": "690164a044bd4188a40214addfb55e5c12301ec3f9cd214c12446eb4880c3644"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/003_dim.png",
+              "sha256": "9a811ab4e3c17b82d022078022db6adf386855fcf08fe2637672259fbf94bb6f"
+            }
+          }
+        },
+        {
+          "id": "004",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/004_bright.png",
+              "sha256": "580e37c69db991485990c64bc76fb6084cd07bfba111c4132402c976ffec7631"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/004_dim.png",
+              "sha256": "604417d6df4e52554c272f2966378f6d1696c27a005f86ee75b15d6f491406e0"
+            }
+          }
+        },
+        {
+          "id": "005",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/005_bright.png",
+              "sha256": "3cbc6bec55ed3c36a85b33f8ebd3f670560e220df2d398eb7c7359e0c8e65431"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/005_dim.png",
+              "sha256": "290c99a3532d559149a7c1ac862831413d4cdfe4c2ff19201e39cf2a8f3e7dbd"
+            }
+          }
+        },
+        {
+          "id": "006",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/006_bright.png",
+              "sha256": "8c36b36912c85c553247d637dcda14473d3e9874274b85007dafcd94aba762b4"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/006_dim.png",
+              "sha256": "2d8378b282492cd83cd0c9d55f45fcc50cf3259443de4f12388e69537df7905a"
+            }
+          }
+        },
+        {
+          "id": "007",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/007_bright.png",
+              "sha256": "ce06074046c7056fedfc785c9dd36b2b2e86cb9128df1646ea8f1dd9c3668d98"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/007_dim.png",
+              "sha256": "2eacc31cdc0620e96a6bd1e7fcfc946db43828a93266c055d98b5892a39cf2b9"
+            }
+          }
+        },
+        {
+          "id": "008",
+          "rgb": {
+            "bright": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/008_bright.png",
+              "sha256": "9345ff9be7aef8469a20a2ce6f2f1588ac50fc9c44c7fbf4b1628838643aff36"
+            },
+            "dim": {
+              "path": "artifacts/motion_observation_probe_001/run001/rgb/scene0383_static/train_fast/constant_scale_r0/008_dim.png",
+              "sha256": "f5c0f1e7f4eb6c0db5772cc71659ae4d429158ddbb044af07fad135139a3f32a"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

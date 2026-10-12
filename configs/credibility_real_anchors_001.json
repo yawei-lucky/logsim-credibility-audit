@@ -1,0 +1,35 @@
+{
+  "inventory_id": "credibility_real_anchors_001",
+  "purpose": "Inventory the existing real RGB anchors; do not judge simulator reality equivalence.",
+  "metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",
+  "metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+  "metadata_manifest": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/source_archive_manifest.json",
+  "metadata_manifest_sha256": "3d2434d5329c896e5241935c99e3e63faf89d64615c53c5c0fc2e627244c0612",
+  "cameras": ["CAM_FRONT", "CAM_FRONT_RIGHT", "CAM_FRONT_LEFT", "CAM_BACK", "CAM_BACK_LEFT", "CAM_BACK_RIGHT"],
+  "windows": [
+    {
+      "id": "straight_turn_entry",
+      "scene": "scene-0383",
+      "root": "artifacts/hugsim_source_anchor/scene-0383-sparsedrive-real-window-002",
+      "manifest": "artifacts/hugsim_source_anchor/scene-0383-sparsedrive-real-window-002/source_archive_manifest.json",
+      "manifest_sha256": "cf9ca0fc27ac23e6308e9b7f002612e66489488f1f6dfd88f6e85eb8fd5e4317",
+      "frames": [12, 18, 24, 30, 36, 42, 48, 54]
+    },
+    {
+      "id": "sustained_left_turn",
+      "scene": "scene-0383",
+      "root": "artifacts/hugsim_source_anchor/scene-0383-sparsedrive-real-turn-window-run001",
+      "manifest": "artifacts/hugsim_source_anchor/scene-0383-sparsedrive-real-turn-window-run001/source_archive_manifest.json",
+      "manifest_sha256": "94d48d340076c24d2b6dd013ec021cfc5de0a4f829111f1890a07b0a5e4ecef0",
+      "frames": [60, 66, 72, 78, 84, 90, 96, 102]
+    }
+  ],
+  "provenance_gaps": [
+    "Original nuScenes sample/sample_data tokens and the audited ASAP conversion mapping are absent.",
+    "Checkpoint training split and checkpoint/source-archive release pairing are not independently established.",
+    "The full archive SHA-256 is provider-declared; only selected members were downloaded and locally verified.",
+    "Original CAN bus, calibrated_sensor tables and scene-specific LIDAR_TOP-to-CAM_FRONT calibration are absent.",
+    "This inventory supplies RGB and declared source metadata, not independent vehicle/lane/occupancy labels or real LiDAR/depth.",
+    "No independent task-equivalence acceptance margin has been established."
+  ]
+}
