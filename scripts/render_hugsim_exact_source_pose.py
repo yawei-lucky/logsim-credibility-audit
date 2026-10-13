@@ -38,8 +38,21 @@ def frame_camera(frame: dict[str, Any]) -> str:
     return PurePosixPath(frame["rgb_path"]).parent.name
 
 
+def select_camera_names(requested: list[str] | None = None) -> tuple[str, ...]:
+    """Preserve explicit order while retaining the historical six-camera default."""
+
+    if not requested:
+        return CAMERAS
+    if len(requested) != len(set(requested)):
+        raise ValueError("camera selections must be unique")
+    unknown = sorted(set(requested) - set(CAMERAS))
+    if unknown:
+        raise ValueError(f"unknown camera selections: {unknown}")
+    return tuple(requested)
+
+
 def select_camera_records(
-    metadata: dict[str, Any], frame_index: int
+    metadata: dict[str, Any], frame_index: int, cameras: list[str] | None = None
 ) -> dict[str, dict[str, Any]]:
     records = {}
     for frame in metadata.get("frames", []):
@@ -60,7 +73,7 @@ def select_camera_records(
     timestamps = {float(frame["timestamp"]) for frame in records.values()}
     if len(timestamps) != 1:
         raise ValueError(f"frame {frame_index} has inconsistent timestamps")
-    return records
+    return {camera: records[camera] for camera in select_camera_names(cameras)}
 
 
 def records_without_dynamics(
@@ -176,6 +189,8 @@ def git_commit(repo: Path) -> str | None:
 
 
 def render_variants(args: argparse.Namespace) -> dict[str, Any]:
+    cameras = select_camera_names(getattr(args, "camera", None))
+
     import matplotlib.pyplot as plt
     import imageio.v2 as imageio
     import torch
@@ -194,7 +209,7 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
             metadata = json.load(stream)
         metadata_by_label[label] = metadata
         records_by_label[label] = select_camera_records(
-            metadata, args.frame_index
+            metadata, args.frame_index, list(cameras)
         )
     omitted_dynamic_labels = set(args.omit_dynamics)
     unknown_omissions = omitted_dynamic_labels - set(records_by_label)
@@ -211,7 +226,7 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
     reference_label = next(iter(records_by_label))
     reference_records = records_by_label[reference_label]
     for label, records in records_by_label.items():
-        for camera in CAMERAS:
+        for camera in cameras:
             reference = reference_records[camera]
             candidate = records[camera]
             if candidate["rgb_path"] != reference["rgb_path"]:
@@ -278,7 +293,7 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
         variant_dir.mkdir()
         camera_results = {}
         render_arrays[label] = {}
-        for camera in CAMERAS:
+        for camera in cameras:
             frame = records[camera]
             real_image = real_images[camera]
             intrinsics = np.asarray(frame["intrinsics"], dtype=np.float64)
@@ -390,16 +405,16 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
 
     reference_columns = 1 if has_real_reference else 0
     figure, axes = plt.subplots(
-        len(CAMERAS),
+        len(cameras),
         reference_columns + len(render_arrays),
         figsize=(
             5.2 * (reference_columns + len(render_arrays)),
-            2.6 * len(CAMERAS),
+            2.6 * len(cameras),
         ),
         squeeze=False,
     )
     labels = list(render_arrays)
-    for row, camera in enumerate(CAMERAS):
+    for row, camera in enumerate(cameras):
         if has_real_reference:
             axes[row, 0].imshow(real_images[camera])
             axes[row, 0].set_title(f"{camera} — source RGB")
@@ -437,7 +452,8 @@ def render_variants(args: argparse.Namespace) -> dict[str, Any]:
         "timestamp_s": float(
             next(iter(reference_records.values()))["timestamp"]
         ),
-        "camera_order": list(CAMERAS),
+        "camera_order": list(cameras),
+        "metadata_camera_group_validation": "complete_six_camera_group",
         "hugsim": {
             "repo": str(args.hugsim_repo),
             "commit": git_commit(args.hugsim_repo),
@@ -489,6 +505,16 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--hugsim-repo", type=Path, required=True)
     parser.add_argument("--model-dir", type=Path, required=True)
+    parser.add_argument(
+        "--camera",
+        action="append",
+        choices=CAMERAS,
+        help=(
+            "Render only this camera; repeat to select more in the declared "
+            "order. Default: all six cameras. Full six-camera metadata groups "
+            "are still validated."
+        ),
+    )
     reference_group = parser.add_mutually_exclusive_group(required=True)
     reference_group.add_argument("--real-root", type=Path)
     reference_group.add_argument(

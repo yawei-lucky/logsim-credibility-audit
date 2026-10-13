@@ -1,0 +1,24 @@
+{
+  "experiment_id": "credibility_screening_real_landmark_001",
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "camera": "CAM_FRONT",
+  "frame_indices": [
+    108,
+    114,
+    120
+  ],
+  "reference": "configs/credibility_real_landmark_reference_001.json",
+  "reference_sha256": "d44e378682cde279c974d6cdedecc148444f4cb65b1f3400d9d6de8ede38d17f",
+  "real_root": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001",
+  "source_archive_manifest": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/source_archive_manifest.json",
+  "metadata": {
+    "released": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json",
+    "source_init": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json"
+  },
+  "wrong_camera_yaw_degrees": -5.0,
+  "comparison_policy": "Intervals overlapping are not contradicted by this coarse picture reference, never accepted physical equivalence. Strictly disjoint intervals are an annotation-level position contradiction; attribution remains down-weighted if camera/source provenance unresolved. Unknown candidate reading is unmeasured.",
+  "expected_render_count": 9,
+  "strict_source_pair_gate_passed": false,
+  "AD": "not applicable"
+}

@@ -1,0 +1,133 @@
+{
+  "reference_id": "credibility_real_landmark_reference_001",
+  "date": "2026-10-13",
+  "reference_type": "Codex raw-RGB visual candidate annotations; not human ground truth or calibrated uncertainty",
+  "scope": "Same grey metal streetlamp, visible shaft outer-contour midpoint in pixel rows200..239; CAM_FRONT800x450. Observational image coordinates only.",
+  "selection_record": "artifacts/credibility_screening_real_vehicle_001/selection_run001/selection.json",
+  "selection_record_sha256": "cdaf5b53568f129ad34475caad858a9bcca39035b3de32c60f9d5ee495b2e82c",
+  "real_source_root": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001",
+  "source_archive_manifest": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/source_archive_manifest.json",
+  "source_archive_manifest_sha256": "14c0e2313c599f7bc2c48fd45fdac9b35282ddd748587cd278bcd653d497f488",
+  "reference_created_before_new_sim_outputs": true,
+  "vehicle_question": {
+    "status": "unmeasured_no_identifiable_vehicle",
+    "frames": [
+      108,
+      114,
+      120
+    ],
+    "reason": "All selected raw pictures show road, park vegetation, curb and poles; no identifiable vehicle supports a positive vehicle-position question. Do not interpret this as a HUGSIM failure or hidden-object absence."
+  },
+  "annotation_policy": "Two source-only Codex reads. Reference interval is the conservative hull of candidate readings, frozen before sim. They share the same image source and do not count as independent truth votes. Unclear object identity or contour is unknown; no fitting to sim.",
+  "band_y_px": [
+    200,
+    240
+  ],
+  "coordinate_convention": "Pixel coordinates of visible contour; half-open vertical band [200,240), horizontal midpoint of shaft outer contours; not darkest ridge.",
+  "frames": [
+    {
+      "frame_index": 108,
+      "timestamp_s": 9.000520944595337,
+      "rgb_path": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg",
+      "rgb_sha256": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+      "visibility": "visible",
+      "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+      "root_candidate_u_interval_px": [
+        104,
+        114
+      ],
+      "second_candidate_u_interval_px": [
+        106.5,
+        111
+      ],
+      "second_candidate_contour_edge_intervals_px": [
+        [
+          103,
+          107
+        ],
+        [
+          110,
+          115
+        ]
+      ],
+      "u_interval_px": [
+        104,
+        114
+      ],
+      "occlusion_or_truncation": "No evident obstruction in selected shaft band; upper image not used",
+      "uncertainty": "Blur, mild slant and shaded-vs-lit contour choice; interval is visual reading allowance, not calibrated statistical uncertainty."
+    },
+    {
+      "frame_index": 114,
+      "timestamp_s": 9.500945091247559,
+      "rgb_path": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg",
+      "rgb_sha256": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+      "visibility": "visible",
+      "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+      "root_candidate_u_interval_px": [
+        199,
+        210
+      ],
+      "second_candidate_u_interval_px": [
+        201.5,
+        206
+      ],
+      "second_candidate_contour_edge_intervals_px": [
+        [
+          198,
+          202
+        ],
+        [
+          205,
+          210
+        ]
+      ],
+      "u_interval_px": [
+        199,
+        210
+      ],
+      "occlusion_or_truncation": "No evident obstruction in selected shaft band; upper image not used",
+      "uncertainty": "Blur, mild slant and shaded-vs-lit contour choice; interval is visual reading allowance, not calibrated statistical uncertainty."
+    },
+    {
+      "frame_index": 120,
+      "timestamp_s": 10.000824928283691,
+      "rgb_path": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg",
+      "rgb_sha256": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+      "visibility": "visible",
+      "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+      "root_candidate_u_interval_px": [
+        304,
+        315
+      ],
+      "second_candidate_u_interval_px": [
+        307.5,
+        311
+      ],
+      "second_candidate_contour_edge_intervals_px": [
+        [
+          304,
+          307
+        ],
+        [
+          311,
+          315
+        ]
+      ],
+      "u_interval_px": [
+        304,
+        315
+      ],
+      "occlusion_or_truncation": "No evident obstruction in selected shaft band; upper image not used",
+      "uncertainty": "Blur, mild slant and shaded-vs-lit contour choice; interval is visual reading allowance, not calibrated statistical uncertainty."
+    }
+  ],
+  "provenance_gaps": [
+    "Original nuScenes sample/sample_data tokens and the audited ASAP conversion mapping are absent.",
+    "Checkpoint training split and checkpoint/source-archive release pairing are not independently established.",
+    "The full archive SHA-256 is provider-declared; only selected members were downloaded and locally verified.",
+    "Original CAN bus, calibrated_sensor tables and scene-specific LIDAR_TOP-to-CAM_FRONT calibration are absent.",
+    "This inventory supplies RGB and declared source metadata, not independent vehicle/lane/occupancy labels or real LiDAR/depth.",
+    "No independent task-equivalence acceptance margin has been established."
+  ]
+}

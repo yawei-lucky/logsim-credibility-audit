@@ -1,7 +1,9 @@
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
+import imageio.v2 as imageio
 import numpy as np
 
 
@@ -14,6 +16,7 @@ from render_hugsim_exact_source_pose import (  # noqa: E402
     load_reference_inputs,
     parse_checkpoint_specs,
     records_without_dynamics,
+    select_camera_names,
     select_camera_records,
 )
 
@@ -26,6 +29,61 @@ def identity(size):
 
 
 class HugsimExactSourcePoseRenderTest(unittest.TestCase):
+    def complete_frames(self):
+        return [
+            {
+                "rgb_path": f"./images/{camera}/00004.jpg",
+                "timestamp": 0.4,
+                "intrinsics": identity(4),
+                "camtoworld": identity(4),
+                "width": 8,
+                "height": 6,
+            }
+            for camera in CAMERAS
+        ]
+
+    def test_camera_selection_preserves_default_and_explicit_order(self):
+        self.assertEqual(select_camera_names(), CAMERAS)
+        self.assertEqual(select_camera_names([]), CAMERAS)
+        self.assertEqual(
+            select_camera_names(["CAM_BACK", "CAM_FRONT"]),
+            ("CAM_BACK", "CAM_FRONT"),
+        )
+        for names in (["CAM_FRONT", "CAM_FRONT"], ["UNKNOWN"]):
+            with self.assertRaises(ValueError):
+                select_camera_names(names)
+
+        records = select_camera_records(
+            {"frames": self.complete_frames()}, 4, ["CAM_BACK", "CAM_FRONT"]
+        )
+        self.assertEqual(list(records), ["CAM_BACK", "CAM_FRONT"])
+
+    def test_single_camera_selection_still_validates_unselected_metadata(self):
+        frames = self.complete_frames()
+        invalid_groups = [frames[:-1], [*frames, dict(frames[-1])]]
+        mismatched_time = [dict(frame) for frame in frames]
+        mismatched_time[-1]["timestamp"] = 0.5
+        invalid_groups.append(mismatched_time)
+        for invalid in invalid_groups:
+            with self.subTest(group=invalid):
+                with self.assertRaises(ValueError):
+                    select_camera_records({"frames": invalid}, 4, ["CAM_FRONT"])
+
+    def test_single_camera_requires_only_its_source_rgb(self):
+        records = select_camera_records(
+            {"frames": self.complete_frames()}, 4, ["CAM_FRONT"]
+        )
+        source = np.full((6, 8, 3), 37, dtype=np.uint8)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            path = root / "images/CAM_FRONT/00004.jpg"
+            path.parent.mkdir(parents=True)
+            imageio.imwrite(path, source)
+            images, paths = load_reference_inputs(records, root)
+            self.assertEqual(list(images), ["CAM_FRONT"])
+            self.assertEqual(paths, {"CAM_FRONT": path})
+            np.testing.assert_array_equal(images["CAM_FRONT"], source)
+
     def test_checkpoint_specs_require_existing_unique_paths(self):
         parsed = parse_checkpoint_specs([f"actor={__file__}"])
         self.assertEqual(parsed["actor"], Path(__file__).resolve())
