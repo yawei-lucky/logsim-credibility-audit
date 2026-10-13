@@ -54,7 +54,10 @@ HUGSIM 的一般测试域适用性。
 冻结规则后再检验新样本。可直接用成熟投影规律判题，不要求同时开展新理论
 研究；[绝对位置一题](docs/runs/credibility_screening_position_001.md)和
 [受控遮挡后的编码身份题](docs/runs/credibility_screening_identity_001.md)已完成。
-下一题先补自然车辆位置或可见性的独立参考，再选择真实短窗口。
+随后执行[新真实图片路灯杆候选位置题](docs/runs/credibility_screening_real_landmark_001.md)：
+原选窗口无可辨认车辆，车辆题未测；粗候选标注可以排除指定明显错位，但
+参考资格和坐标配对仍不足。下一步先核对相机坐标转换和标注资格，保留自然
+车辆正样本待办。
 更多 RGB 不能替代独立
 标注、来源配对或判错依据，也不把各题通过数汇总成整体可信分数。
 

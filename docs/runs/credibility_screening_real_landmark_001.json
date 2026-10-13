@@ -1,0 +1,2055 @@
+{
+  "experiment_id": "credibility_screening_real_landmark_001",
+  "date": "2026-10-13",
+  "preregistration_commit": "b5cd375fa88c9de58f6dd94af039ccdf2f7639de",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "preregistration": "docs/runs/credibility_screening_real_landmark_preregistration_001.md",
+  "config": "configs/credibility_screening_real_landmark_001.json",
+  "reference": "configs/credibility_real_landmark_reference_001.json",
+  "claim_contract": {
+    "simulator": "Pinned HUGSIM, releasedscene0383 reconstruction and native dynamics",
+    "purpose": "Basic coarse source-picture landmark-position screening and commanded wrong-view exclusion",
+    "scope": "CAM_FRONT800x450; source indices108,114,120; same thin metal shaft outer-contour midpoint in rows[200,240)",
+    "receiver": "not applicable; no AD",
+    "reference_kind": "Frozen raw-RGB Codex visual candidate intervals, not human ground truth or calibrated uncertainty",
+    "comparison": "Closed intervals overlap versus strictly disjoint; no extraepsilon or artificial-marker budget",
+    "unknown_policy": "Unmeasured; cannot count as physical or annotation-position contradiction",
+    "input_failure_policy": "Rejected withtested=false; never a physical counterexample",
+    "strict_source_pair_gate_passed": false,
+    "physical_or_driving_accuracy_margin": "unqualified",
+    "required_inputs": [
+      "archive member integrity",
+      "source-only reference frozen before GPU",
+      "consistent frame/time/camera geometry",
+      "candidate target definition and RGB-linked observation",
+      "wrong-yaw input executed without changing translation,K,time,dynamics"
+    ]
+  },
+  "selection": {
+    "experiment_id": "credibility_screening_real_vehicle_001",
+    "recorded_utc": "2026-10-13T11:30:54.434471+00:00",
+    "host": "stf-precision-3680",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "audit_commit": "4da3de2756abb7dab075d9a48e2c8c9f6a1373a9",
+    "selection": "first three stride-6 indices after the greatest frame already inventoried as locally used; CAM_FRONT only",
+    "previously_used_frame_indices": [
+      4,
+      9,
+      12,
+      14,
+      18,
+      24,
+      26,
+      30,
+      32,
+      36,
+      38,
+      42,
+      44,
+      48,
+      49,
+      54,
+      60,
+      66,
+      72,
+      78,
+      84,
+      90,
+      96,
+      102
+    ],
+    "selected_frame_indices": [
+      108,
+      114,
+      120
+    ],
+    "selected_timestamps_s": [
+      9.000520944595337,
+      9.500945091247559,
+      10.000824928283691
+    ],
+    "scene": "scene-0383",
+    "camera": "CAM_FRONT",
+    "source_metadata": "artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json",
+    "source_metadata_sha256": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+    "data_inventory_sha256": "ca83b1eae773620b7d548e30662fa6a9689c160096836ae802d4ff6df8768fd0",
+    "source_archive": {
+      "camera_rgb_counts": {
+        "CAM_BACK": 180,
+        "CAM_BACK_LEFT": 180,
+        "CAM_BACK_RIGHT": 180,
+        "CAM_FRONT": 180,
+        "CAM_FRONT_LEFT": 180,
+        "CAM_FRONT_RIGHT": 180
+      },
+      "entry_count": 7631,
+      "etag": "\"5e54c7c7e3782c2ead7fd507d406b3d0e4b064963455a96e93959be0e21c1e9c\"",
+      "execution_context": "approved network-visible read-only context after sandbox urllib request denied",
+      "inspection": "2026-10-12, HEAD and 1 MiB ZIP tail; no RGB members downloaded",
+      "original_full_archive_sha256_recomputed": false,
+      "rgb_count": 1080,
+      "scene_rgb_counts": {
+        "data/scene-0383": 1080
+      },
+      "size_bytes": 2375358963,
+      "source_command": "import scripts.fetch_hugsim_sample_anchor as m; r=m.HttpRangeReader(url,timeout_s=20,retries=0); members=m.load_central_directory(r); count names containing /images/ and ending jpg/png",
+      "url": "https://huggingface.co/datasets/hyzhou404/HUGSIM/resolve/main/sample_data/data.zip?download=true"
+    },
+    "selected_real_rgb_inspected": false,
+    "selected_sim_rgb_inspected": false,
+    "reference_plan": "Annotate raw real RGB before new simulator outputs. Select a clear fully visible natural vehicle if identifiable across all three frames. Record conservative horizontal support intervals and unknowns, not physical3D ground truth. If ambiguous, leave unmeasured; do not tune from sim.",
+    "strongest_allowed_claim": "Frozen image-annotation screening under provider-declared correspondence; strict matched real-sim provenance and physical sensor/AD equivalence unqualified."
+  },
+  "reference_annotations": {
+    "reference_id": "credibility_real_landmark_reference_001",
+    "date": "2026-10-13",
+    "reference_type": "Codex raw-RGB visual candidate annotations; not human ground truth or calibrated uncertainty",
+    "scope": "Same grey metal streetlamp, visible shaft outer-contour midpoint in pixel rows200..239; CAM_FRONT800x450. Observational image coordinates only.",
+    "selection_record": "artifacts/credibility_screening_real_vehicle_001/selection_run001/selection.json",
+    "selection_record_sha256": "cdaf5b53568f129ad34475caad858a9bcca39035b3de32c60f9d5ee495b2e82c",
+    "real_source_root": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001",
+    "source_archive_manifest": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/source_archive_manifest.json",
+    "source_archive_manifest_sha256": "14c0e2313c599f7bc2c48fd45fdac9b35282ddd748587cd278bcd653d497f488",
+    "reference_created_before_new_sim_outputs": true,
+    "vehicle_question": {
+      "status": "unmeasured_no_identifiable_vehicle",
+      "frames": [
+        108,
+        114,
+        120
+      ],
+      "reason": "All selected raw pictures show road, park vegetation, curb and poles; no identifiable vehicle supports a positive vehicle-position question. Do not interpret this as a HUGSIM failure or hidden-object absence."
+    },
+    "annotation_policy": "Two source-only Codex reads. Reference interval is the conservative hull of candidate readings, frozen before sim. They share the same image source and do not count as independent truth votes. Unclear object identity or contour is unknown; no fitting to sim.",
+    "band_y_px": [
+      200,
+      240
+    ],
+    "coordinate_convention": "Pixel coordinates of visible contour; half-open vertical band [200,240), horizontal midpoint of shaft outer contours; not darkest ridge.",
+    "frames": [
+      {
+        "frame_index": 108,
+        "timestamp_s": 9.000520944595337,
+        "rgb_path": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg",
+        "rgb_sha256": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+        "visibility": "visible",
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "root_candidate_u_interval_px": [
+          104,
+          114
+        ],
+        "second_candidate_u_interval_px": [
+          106.5,
+          111
+        ],
+        "second_candidate_contour_edge_intervals_px": [
+          [
+            103,
+            107
+          ],
+          [
+            110,
+            115
+          ]
+        ],
+        "u_interval_px": [
+          104,
+          114
+        ],
+        "occlusion_or_truncation": "No evident obstruction in selected shaft band; upper image not used",
+        "uncertainty": "Blur, mild slant and shaded-vs-lit contour choice; interval is visual reading allowance, not calibrated statistical uncertainty."
+      },
+      {
+        "frame_index": 114,
+        "timestamp_s": 9.500945091247559,
+        "rgb_path": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg",
+        "rgb_sha256": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+        "visibility": "visible",
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "root_candidate_u_interval_px": [
+          199,
+          210
+        ],
+        "second_candidate_u_interval_px": [
+          201.5,
+          206
+        ],
+        "second_candidate_contour_edge_intervals_px": [
+          [
+            198,
+            202
+          ],
+          [
+            205,
+            210
+          ]
+        ],
+        "u_interval_px": [
+          199,
+          210
+        ],
+        "occlusion_or_truncation": "No evident obstruction in selected shaft band; upper image not used",
+        "uncertainty": "Blur, mild slant and shaded-vs-lit contour choice; interval is visual reading allowance, not calibrated statistical uncertainty."
+      },
+      {
+        "frame_index": 120,
+        "timestamp_s": 10.000824928283691,
+        "rgb_path": "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg",
+        "rgb_sha256": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+        "visibility": "visible",
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "root_candidate_u_interval_px": [
+          304,
+          315
+        ],
+        "second_candidate_u_interval_px": [
+          307.5,
+          311
+        ],
+        "second_candidate_contour_edge_intervals_px": [
+          [
+            304,
+            307
+          ],
+          [
+            311,
+            315
+          ]
+        ],
+        "u_interval_px": [
+          304,
+          315
+        ],
+        "occlusion_or_truncation": "No evident obstruction in selected shaft band; upper image not used",
+        "uncertainty": "Blur, mild slant and shaded-vs-lit contour choice; interval is visual reading allowance, not calibrated statistical uncertainty."
+      }
+    ],
+    "provenance_gaps": [
+      "Original nuScenes sample/sample_data tokens and the audited ASAP conversion mapping are absent.",
+      "Checkpoint training split and checkpoint/source-archive release pairing are not independently established.",
+      "The full archive SHA-256 is provider-declared; only selected members were downloaded and locally verified.",
+      "Original CAN bus, calibrated_sensor tables and scene-specific LIDAR_TOP-to-CAM_FRONT calibration are absent.",
+      "This inventory supplies RGB and declared source metadata, not independent vehicle/lane/occupancy labels or real LiDAR/depth.",
+      "No independent task-equivalence acceptance margin has been established."
+    ]
+  },
+  "qualification": {
+    "preflight_healthy": true,
+    "source_member_count": 3,
+    "validated_full_six_camera_groups_per_metadata": 3,
+    "metadata_variants_before_control": 2,
+    "wrong_yaw_only_records_modified": 3,
+    "yaw_composition_verified": true,
+    "interval_evaluator_tests_passed": 7,
+    "single_camera_renderer_tests_passed": 9,
+    "test_results_basis": "Tests executed by implementation agents; no RGB recognition or physical uncertainty qualification is implied.",
+    "candidate_reference_not_human_truth": true,
+    "source_metadata_source_input_hashes": {
+      "/home/yawei/logsim-credibility-audit/configs/credibility_real_landmark_reference_001.json": "d44e378682cde279c974d6cdedecc148444f4cb65b1f3400d9d6de8ede38d17f",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/source_archive_manifest.json": "14c0e2313c599f7bc2c48fd45fdac9b35282ddd748587cd278bcd653d497f488",
+      "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_vehicle_001/selection_run001/selection.json": "cdaf5b53568f129ad34475caad858a9bcca39035b3de32c60f9d5ee495b2e82c",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/dynamic_d793362732e547249b1a05af84d09967.pth": "462a1d4579b94447e2a2951d6ffc80f0b6cf26a6968ff78025d41cb92ad924a6"
+    },
+    "implementation_source_hashes": {
+      "scripts/run_credibility_screening_real_landmark.py": "867131b1dec4de40dc5594659a0386526c9ae445b16f90fbc38d2280c2c484a2",
+      "scripts/render_hugsim_exact_source_pose.py": "ee70f8a651b30ad6360d615d78c85fa0c00cb83cdfc0e57a15244e4737402c19",
+      "scripts/evaluate_landmark_interval_screening.py": "842e2d0f9fa2d92d29f37acd3a5ec4a564c9e457f8cb426bf6504fbf96797fe3",
+      "tests/test_hugsim_exact_source_pose_render.py": "84be171bb7a1da8ec97f90308a433b25dca339f169a8547d792e91744b9adf1e",
+      "tests/test_landmark_interval_screening.py": "7804dc81cfbbd7db078d28831d477dce72f88bf515838fc2191da38f0cdb8c88"
+    }
+  },
+  "rendering": {
+    "render_count": 9,
+    "completed": true,
+    "native_dynamics_retained": true,
+    "images": [
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.5019048054633727,
+            0.04522397220099004,
+            -0.8637397516562136,
+            -8.243582234809873
+          ],
+          [
+            -0.04248124950534512,
+            0.9987158030279486,
+            0.027605945423124056,
+            -0.1370454069592726
+          ],
+          [
+            0.8638789901908936,
+            0.022837187230566887,
+            0.5031814316786315,
+            32.448864633338694
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.3718766356009357,
+              0.9282599163562933,
+              0.006426163733931834,
+              -2.125864947690948
+            ],
+            [
+              -0.01841353661002824,
+              -0.0004551424476346221,
+              -0.9998303528673572,
+              0.3119826913168978
+            ],
+            [
+              -0.9280995149032455,
+              -0.371931876197186,
+              0.01726180479559387,
+              18.838895985696574
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 108,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg",
+        "real_sha256": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/released/CAM_FRONT.png",
+        "render_sha256": "a8f7e05718cbf168265b9b2033a6983dbb3621125d0b696eef89d04405c6d045",
+        "timestamp_s": 9.000520944595337,
+        "variant": "released"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.5052103251588564,
+            0.028942220596945935,
+            -0.8625107971612869,
+            -8.112162866229028
+          ],
+          [
+            -0.0418222738302011,
+            0.9990842778198015,
+            0.009027913654634918,
+            0.13773133659494619
+          ],
+          [
+            0.861982264762189,
+            0.031511167547420234,
+            0.5059581223335031,
+            31.382395200096255
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.3744027334092133,
+              0.9269847750073524,
+              0.022843382417584084,
+              -2.04486375294141
+            ],
+            [
+              -0.016367063859907403,
+              0.01802482405718667,
+              -0.9997035685333485,
+              0.8063409060829656
+            ],
+            [
+              -0.9271217354998823,
+              -0.37466562775663587,
+              0.008423475613476365,
+              17.758879488597813
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 108,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg",
+        "real_sha256": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/source_init/CAM_FRONT.png",
+        "render_sha256": "59db31213e492ba97f35035b6396e4a9f39571a815bcd22adcbc8cded6f6635f",
+        "timestamp_s": 9.000520944595337,
+        "variant": "source_init"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.42471502655310567,
+            0.04522397220099004,
+            -0.9041968472397801,
+            -8.243582234809873
+          ],
+          [
+            -0.0399135788479337,
+            0.9987158030279486,
+            0.031203381319813213,
+            -0.1370454069592726
+          ],
+          [
+            0.9044468212358004,
+            0.022837187230566887,
+            0.4259746593822823,
+            32.448864633338694
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.3718766356009357,
+              0.9282599163562933,
+              0.006426163733931834,
+              -2.125864947690948
+            ],
+            [
+              -0.01841353661002824,
+              -0.0004551424476346221,
+              -0.9998303528673572,
+              0.3119826913168978
+            ],
+            [
+              -0.9280995149032455,
+              -0.371931876197186,
+              0.01726180479559387,
+              18.838895985696574
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 108,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg",
+        "real_sha256": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/wrong_yaw/CAM_FRONT.png",
+        "render_sha256": "a5f7c510670368a102f1723c46b77e295afb1554d50baa5aa8c5c60b54b2f5e9",
+        "timestamp_s": 9.000520944595337,
+        "variant": "wrong_yaw"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.3611457743479569,
+            0.03678937065143383,
+            -0.9317833824863406,
+            -10.151133725971611
+          ],
+          [
+            -0.03476867331024251,
+            0.9990579127671253,
+            0.02596971878248073,
+            -0.0993565411665735
+          ],
+          [
+            0.9318609708678972,
+            0.023018017822282622,
+            0.362084661134206,
+            33.126546697245395
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.3939544710106944,
+              0.9191293816796677,
+              -0.0010268903713732333,
+              -1.589563090578963
+            ],
+            [
+              -0.014553487219576975,
+              -0.0073549658308903155,
+              -0.9998670414046937,
+              0.3073474353724359
+            ],
+            [
+              -0.9190147282717684,
+              -0.3938871465417186,
+              0.016274059382622833,
+              18.60388345136103
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 114,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg",
+        "real_sha256": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/released/CAM_FRONT.png",
+        "render_sha256": "146c5cdc904bb10a25bda4005f7f3417f4e7ae99ca5f6997997828c9ee81be17",
+        "timestamp_s": 9.500945091247559,
+        "variant": "released"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.3653626958077352,
+            0.013075295958509568,
+            -0.930773408057891,
+            -9.993751613936865
+          ],
+          [
+            -0.033386055202564865,
+            0.9994420932088902,
+            0.0009346872432881318,
+            0.09004835980699966
+          ],
+          [
+            0.930266344564886,
+            0.030733352531555343,
+            0.36559539003118674,
+            32.03845437584636
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.3969392275351145,
+              0.917560586295831,
+              0.022843382417584088,
+              -1.498804989703558
+            ],
+            [
+              -0.01680256383662861,
+              0.01761956044295212,
+              -0.9997035685333486,
+              0.8135437030125061
+            ],
+            [
+              -0.9176910828227227,
+              -0.3972053896490412,
+              0.008423475613476367,
+              17.48901851178283
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 114,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg",
+        "real_sha256": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/source_init/CAM_FRONT.png",
+        "render_sha256": "a5045cef4f0727dc95fe77a20e08eb2fcd38f68a16626673204ef50bec61187f",
+        "timestamp_s": 9.500945091247559,
+        "variant": "source_init"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.2785612328631503,
+            0.03678937065143383,
+            -0.9597135936063599,
+            -10.151133725971611
+          ],
+          [
+            -0.032372957881912655,
+            0.9990579127671253,
+            0.028901185708745787,
+            -0.0993565411665735
+          ],
+          [
+            0.9598727161159116,
+            0.023018017822282622,
+            0.2794897846286969,
+            33.126546697245395
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.3939544710106944,
+              0.9191293816796677,
+              -0.0010268903713732333,
+              -1.589563090578963
+            ],
+            [
+              -0.014553487219576975,
+              -0.0073549658308903155,
+              -0.9998670414046937,
+              0.3073474353724359
+            ],
+            [
+              -0.9190147282717684,
+              -0.3938871465417186,
+              0.016274059382622833,
+              18.60388345136103
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 114,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg",
+        "real_sha256": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/wrong_yaw/CAM_FRONT.png",
+        "render_sha256": "8a5c12fd7dc51fe06847ba362de928db86f724b6721028726cff9349a5a4cd5e",
+        "timestamp_s": 9.500945091247559,
+        "variant": "wrong_yaw"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.19554206026217022,
+            0.023191512133434386,
+            -0.9804210607863286,
+            -12.265783935950688
+          ],
+          [
+            -0.03180812346977242,
+            0.999344346453438,
+            0.017295100256517888,
+            -0.07220301246614319
+          ],
+          [
+            0.9801793437681479,
+            0.027803434617256508,
+            0.19615153089824833,
+            33.49976343982244
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.4164728838414508,
+              0.9091026275516843,
+              -0.009096680900588185,
+              -1.047140855943347
+            ],
+            [
+              -0.008789895132121792,
+              -0.014031624682430107,
+              -0.9998629162301883,
+              0.28879962631871825
+            ],
+            [
+              -0.9091056455486073,
+              -0.41633583329734347,
+              0.013834707956988181,
+              18.374140279512154
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 120,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg",
+        "real_sha256": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/released/CAM_FRONT.png",
+        "render_sha256": "75dcc02f3597ea655e0ab425768e63b8ce5d29ef3678c98033331115c499177a",
+        "timestamp_s": 10.000824928283691,
+        "variant": "released"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.19997130367940869,
+            -0.008589930697728202,
+            -0.9797640995644643,
+            -12.09904478407384
+          ],
+          [
+            -0.03077731333929371,
+            0.9994130468457374,
+            -0.015043895045318246,
+            0.021345076102434746
+          ],
+          [
+            0.9793182499516551,
+            0.033162853995514975,
+            0.19958955490330518,
+            32.381408458276894
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.4192387408296786,
+              0.9075885951615236,
+              0.022843382417584084,
+              -0.951943166774754
+            ],
+            [
+              -0.0172280323393347,
+              0.017203777591030995,
+              -0.9997035685333485,
+              0.8207698671449748
+            ],
+            [
+              -0.9077125498136835,
+              -0.41950801180588776,
+              0.008423475613476365,
+              17.219752975230335
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 120,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg",
+        "real_sha256": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/source_init/CAM_FRONT.png",
+        "render_sha256": "2aeadd3f114fab54ffebc4e9e236f73e69c237fbd119c0b9bea5be8b0ecd7f7c",
+        "timestamp_s": 10.000824928283691,
+        "variant": "source_init"
+      },
+      {
+        "camera": "CAM_FRONT",
+        "camtoworld": [
+          [
+            0.10934863792883119,
+            0.023191512133434386,
+            -0.9937328761533823,
+            -12.265783935950688
+          ],
+          [
+            -0.030179716648082878,
+            0.999344346453438,
+            0.02000154780492554,
+            -0.07220301246614319
+          ],
+          [
+            0.9935451978074024,
+            0.027803434617256508,
+            0.1099768563713891,
+            33.49976343982244
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "dynamics": {
+          "d793362732e547249b1a05af84d09967": [
+            [
+              -0.4164728838414508,
+              0.9091026275516843,
+              -0.009096680900588185,
+              -1.047140855943347
+            ],
+            [
+              -0.008789895132121792,
+              -0.014031624682430107,
+              -0.9998629162301883,
+              0.28879962631871825
+            ],
+            [
+              -0.9091056455486073,
+              -0.41633583329734347,
+              0.013834707956988181,
+              18.374140279512154
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        "frame_index": 120,
+        "full_metadata_camera_group_validated": true,
+        "intrinsics": [
+          [
+            633.208601523277,
+            0.0,
+            408.1335098723992,
+            0.0
+          ],
+          [
+            0.0,
+            633.208601523277,
+            245.75353289647379,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        "landmark_annotation": null,
+        "native_dynamic_ids": [
+          "d793362732e547249b1a05af84d09967"
+        ],
+        "position_decision": "unmeasured_pending_frozen_image_reading",
+        "real_path": "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg",
+        "real_sha256": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+        "render_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/wrong_yaw/CAM_FRONT.png",
+        "render_sha256": "b50390560dd037de0e7cfe99a07e9a73ebef4edb9b4950d180a5a662d7cc6922",
+        "timestamp_s": 10.000824928283691,
+        "variant": "wrong_yaw"
+      }
+    ],
+    "strict_source_pair_gate_passed": false
+  },
+  "annotation_evaluation": {
+    "experiment_id": "credibility_screening_real_landmark_001",
+    "rgb_observation_count": 9,
+    "source_frame_count": 3,
+    "reader_styles": "root, blinded and conservative hull reuse exactly the same nine RGBs; not additional coverage or independent source evidence",
+    "all_inputs_valid": true,
+    "all_positions_readable": true,
+    "strict_source_pair_gate_passed": false,
+    "physical_equivalence_established": false,
+    "overall_evidence_label": "down-weighted",
+    "comparisons": [
+      {
+        "reader_style": "hull",
+        "variant": "released",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              103.0,
+              113.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              197.0,
+              208.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              302.0,
+              313.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          }
+        ]
+      },
+      {
+        "reader_style": "hull",
+        "variant": "source_init",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              140.0,
+              151.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 26.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              234.0,
+              245.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 24.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              344.0,
+              357.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 29.0
+          }
+        ]
+      },
+      {
+        "reader_style": "hull",
+        "variant": "wrong_yaw",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              171.0,
+              182.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 57.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              255.0,
+              267.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 45.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              359.0,
+              373.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 44.0
+          }
+        ]
+      },
+      {
+        "reader_style": "root",
+        "variant": "released",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              103.0,
+              113.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              197.0,
+              208.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              302.0,
+              313.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          }
+        ]
+      },
+      {
+        "reader_style": "root",
+        "variant": "source_init",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              140.0,
+              151.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 26.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              234.0,
+              245.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 24.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              344.0,
+              357.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 29.0
+          }
+        ]
+      },
+      {
+        "reader_style": "root",
+        "variant": "wrong_yaw",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              171.0,
+              182.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 57.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              255.0,
+              267.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 45.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              359.0,
+              373.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 44.0
+          }
+        ]
+      },
+      {
+        "reader_style": "blinded",
+        "variant": "released",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              107.0,
+              111.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              201.0,
+              204.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              307.0,
+              310.0
+            ],
+            "label": "down-weighted",
+            "failure_kind": null,
+            "minimum_gap_px": 0.0
+          }
+        ]
+      },
+      {
+        "reader_style": "blinded",
+        "variant": "source_init",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              141.0,
+              145.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 27.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              238.0,
+              241.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 28.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              345.0,
+              351.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 30.0
+          }
+        ]
+      },
+      {
+        "reader_style": "blinded",
+        "variant": "wrong_yaw",
+        "rows": [
+          {
+            "frame_index": 108,
+            "interval": [
+              172.0,
+              175.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 58.0
+          },
+          {
+            "frame_index": 114,
+            "interval": [
+              260.0,
+              264.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 50.0
+          },
+          {
+            "frame_index": 120,
+            "interval": [
+              362.0,
+              366.0
+            ],
+            "label": "rejected",
+            "failure_kind": "annotation_interval_conflict",
+            "minimum_gap_px": 47.0
+          }
+        ]
+      }
+    ]
+  },
+  "annotation_ledger": {
+    "rows": [
+      {
+        "frame_index": 108,
+        "variant": "released",
+        "timestamp_s": 9.000520944595337,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/released/CAM_FRONT.png",
+        "rgb_sha256": "a8f7e05718cbf168265b9b2033a6983dbb3621125d0b696eef89d04405c6d045",
+        "visibility": "visible",
+        "u_interval_px": [
+          103,
+          113
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          103,
+          113
+        ],
+        "blinded_candidate_u_interval_px": [
+          107,
+          111
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            103,
+            106
+          ],
+          [
+            112,
+            115
+          ]
+        ],
+        "blinded_uncertainty": "Grey shaft with narrow right highlight visible; much of band against lawn. Blurring and small row-dependent edge shift limit exact contour endpoints."
+      },
+      {
+        "frame_index": 108,
+        "variant": "source_init",
+        "timestamp_s": 9.000520944595337,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/source_init/CAM_FRONT.png",
+        "rgb_sha256": "59db31213e492ba97f35035b6396e4a9f39571a815bcd22adcbc8cded6f6635f",
+        "visibility": "visible",
+        "u_interval_px": [
+          140,
+          151
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          140,
+          151
+        ],
+        "blinded_candidate_u_interval_px": [
+          141,
+          145
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            137,
+            141
+          ],
+          [
+            146,
+            149
+          ]
+        ],
+        "blinded_uncertainty": "Grey shaft separated from brown trunk to right. Contours softly blended, with slight change across the foliage-to-lawn background transition."
+      },
+      {
+        "frame_index": 108,
+        "variant": "wrong_yaw",
+        "timestamp_s": 9.000520944595337,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/wrong_yaw/CAM_FRONT.png",
+        "rgb_sha256": "a5f7c510670368a102f1723c46b77e295afb1554d50baa5aa8c5c60b54b2f5e9",
+        "visibility": "visible",
+        "u_interval_px": [
+          171,
+          182
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          171,
+          182
+        ],
+        "blinded_candidate_u_interval_px": [
+          172,
+          175
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            168,
+            171
+          ],
+          [
+            176,
+            179
+          ]
+        ],
+        "blinded_uncertainty": "Shaft identifiable with dark face and right highlight; band includes a background transition near upper rows. Soft edge halo and small horizontal contour variation are included."
+      },
+      {
+        "frame_index": 114,
+        "variant": "released",
+        "timestamp_s": 9.500945091247559,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/released/CAM_FRONT.png",
+        "rgb_sha256": "146c5cdc904bb10a25bda4005f7f3417f4e7ae99ca5f6997997828c9ee81be17",
+        "visibility": "visible",
+        "u_interval_px": [
+          197,
+          208
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          197,
+          208
+        ],
+        "blinded_candidate_u_interval_px": [
+          201,
+          204
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            197,
+            200
+          ],
+          [
+            205,
+            208
+          ]
+        ],
+        "blinded_uncertainty": "Dark shaft face and light right-side strip identifiable. Outer boundaries are softened by blur; top of band lies against dark foliage and lower rows against lawn."
+      },
+      {
+        "frame_index": 114,
+        "variant": "source_init",
+        "timestamp_s": 9.500945091247559,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/source_init/CAM_FRONT.png",
+        "rgb_sha256": "a5045cef4f0727dc95fe77a20e08eb2fcd38f68a16626673204ef50bec61187f",
+        "visibility": "visible",
+        "u_interval_px": [
+          234,
+          245
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          234,
+          245
+        ],
+        "blinded_candidate_u_interval_px": [
+          238,
+          241
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            234,
+            237
+          ],
+          [
+            242,
+            245
+          ]
+        ],
+        "blinded_uncertainty": "Target identifiable from right highlight and straight dark face. Dark foliage behind upper band and blur weaken left contour; small horizontal variation included."
+      },
+      {
+        "frame_index": 114,
+        "variant": "wrong_yaw",
+        "timestamp_s": 9.500945091247559,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/wrong_yaw/CAM_FRONT.png",
+        "rgb_sha256": "8a5c12fd7dc51fe06847ba362de928db86f724b6721028726cff9349a5a4cd5e",
+        "visibility": "visible",
+        "u_interval_px": [
+          255,
+          267
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          255,
+          267
+        ],
+        "blinded_candidate_u_interval_px": [
+          260,
+          264
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            257,
+            260
+          ],
+          [
+            264,
+            267
+          ]
+        ],
+        "blinded_uncertainty": "Dark face and narrow light right strip distinguish shaft from adjacent brown tree. Blur and changing background limit exact outer edges."
+      },
+      {
+        "frame_index": 120,
+        "variant": "released",
+        "timestamp_s": 10.000824928283691,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/released/CAM_FRONT.png",
+        "rgb_sha256": "75dcc02f3597ea655e0ab425768e63b8ce5d29ef3678c98033331115c499177a",
+        "visibility": "visible",
+        "u_interval_px": [
+          302,
+          313
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          302,
+          313
+        ],
+        "blinded_candidate_u_interval_px": [
+          307,
+          310
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            303,
+            306
+          ],
+          [
+            311,
+            314
+          ]
+        ],
+        "blinded_uncertainty": "Dark face and thin right highlight readable. Upper foliage background reduces contrast; outer contour includes blur halo uncertainty rather than darkest internal ridge."
+      },
+      {
+        "frame_index": 120,
+        "variant": "source_init",
+        "timestamp_s": 10.000824928283691,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/source_init/CAM_FRONT.png",
+        "rgb_sha256": "2aeadd3f114fab54ffebc4e9e236f73e69c237fbd119c0b9bea5be8b0ecd7f7c",
+        "visibility": "visible",
+        "u_interval_px": [
+          344,
+          357
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          344,
+          357
+        ],
+        "blinded_candidate_u_interval_px": [
+          345,
+          351
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            341,
+            346
+          ],
+          [
+            350,
+            354
+          ]
+        ],
+        "blinded_uncertainty": "Weakest outer-contour reading: most of band has dark foliage behind the shaft. Narrow right-side highlight identifies the shaft, but left contour is broad and blended; midpoint interval is deliberately wider."
+      },
+      {
+        "frame_index": 120,
+        "variant": "wrong_yaw",
+        "timestamp_s": 10.000824928283691,
+        "target": "grey metal streetlamp shaft, dark left face and bright narrow right highlight; not neighboring tree",
+        "rgb_path": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/wrong_yaw/CAM_FRONT.png",
+        "rgb_sha256": "b50390560dd037de0e7cfe99a07e9a73ebef4edb9b4950d180a5a662d7cc6922",
+        "visibility": "visible",
+        "u_interval_px": [
+          359,
+          373
+        ],
+        "annotation_basis": "Conservative hull of root and blinded Codex visual candidates; same RGB source, not human truth or independent statistical votes.",
+        "root_candidate_u_interval_px": [
+          359,
+          373
+        ],
+        "blinded_candidate_u_interval_px": [
+          362,
+          366
+        ],
+        "blinded_contour_edge_intervals_px": [
+          [
+            358,
+            361
+          ],
+          [
+            367,
+            370
+          ]
+        ],
+        "blinded_uncertainty": "Slender grey shaft identifiable separately from nearby tree. Upper portion has lower contrast against foliage; both outer edges are softly blended."
+      }
+    ],
+    "independent_human_truth": false,
+    "auto_RGB_recognition_performed": false,
+    "union_policy_frozen_before_sim": true
+  },
+  "reading_independence": {
+    "reference": "Two source-only Codex reads before new sim output; shared source images, no independent truth votes.",
+    "render": "Root reader knewreference andcondition; additional fresh reader saw nine anonymous images, notsourcecoordinates, frameIDs ormetadata labels.",
+    "combination": "Conservative hull policy predeclared; both readers reuse the same nine RGBs, never increase coverage.",
+    "human_ground_truth": false,
+    "auto_RGB_recognition": false
+  },
+  "provenance": {
+    "argv": [
+      "scripts/run_credibility_screening_real_landmark.py",
+      "--config",
+      "configs/credibility_screening_real_landmark_001.json",
+      "--output",
+      "artifacts/credibility_screening_real_landmark_001/hugsim_run001"
+    ],
+    "audit_branch": "main",
+    "audit_commit": "b5cd375fa88c9de58f6dd94af039ccdf2f7639de",
+    "audit_remotes": "origin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (fetch)\norigin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (push)",
+    "audit_status": "",
+    "config_path": "/home/yawei/logsim-credibility-audit/configs/credibility_screening_real_landmark_001.json",
+    "config_sha256": "ac42d0e11b7a6c53a951c14155242004801ed9b39f686f37de27fab8945acc6e",
+    "cuda_version": "12.1",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "host": "stf-precision-3680",
+    "hugsim_branch": "main",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_remotes": "origin\thttps://github.com/yawei-lucky/HUGSIM.git (fetch)\norigin\thttps://github.com/yawei-lucky/HUGSIM.git (push)",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "output": "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_landmark_001/hugsim_run001",
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "renderer_script_sha256": "ee70f8a651b30ad6360d615d78c85fa0c00cb83cdfc0e57a15244e4737402c19",
+    "role": "frozen real-image landmark render diagnostic; no automated landmark scoring",
+    "runner_sha256": "867131b1dec4de40dc5594659a0386526c9ae445b16f90fbc38d2280c2c484a2",
+    "seed": 0,
+    "source_hashes": {
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/dynamic_d793362732e547249b1a05af84d09967.pth": "462a1d4579b94447e2a2951d6ffc80f0b6cf26a6968ff78025d41cb92ad924a6",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/logsim-credibility-audit/artifacts/credibility_screening_real_vehicle_001/selection_run001/selection.json": "cdaf5b53568f129ad34475caad858a9bcca39035b3de32c60f9d5ee495b2e82c",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/source_archive_manifest.json": "14c0e2313c599f7bc2c48fd45fdac9b35282ddd748587cd278bcd653d497f488",
+      "/home/yawei/logsim-credibility-audit/artifacts/hugsim_source_anchor/scene-0383-official-sample-metadata-run001/meta_data_init.json": "55e4e4d2b94f6259bba767dd12e927b9ff6ba4acc786b03fa303bac382760f0d",
+      "/home/yawei/logsim-credibility-audit/configs/credibility_real_landmark_reference_001.json": "d44e378682cde279c974d6cdedecc148444f4cb65b1f3400d9d6de8ede38d17f"
+    },
+    "started_utc": "2026-10-13T11:44:23.699094+00:00",
+    "torch_version": "2.4.1+cu121"
+  },
+  "artifact_hashes": {
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/annotation_ledger.json": "c0ca2336d517e52be6b856f7109156e5b7820242b66cddb20d4c6de48d8ecd1c",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blind_readings.json": "c6ba1e27912be4af1ebffc5208ba084fb5d17a08f10448827f679d067ba146dd",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blinded_released_report.json": "14ed13cbb514f2ac2bac666ef313926fbc1ec0b390dcbc929a2e0d983419ad7e",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blinded_released_submission.json": "8bc915b9e6f68486f26274893d844ee6d7956d9db9c621c476eac2a0006147e3",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blinded_source_init_report.json": "c09c77d577af69ab230bdac7af0e24d5aabc740c8814fbe3e02cee1e69d411b0",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blinded_source_init_submission.json": "ca5ee5dbfa4ce2c5e2b82b1122e3f38dea359dc77710f7ab0e3ca2fef1f4d8c5",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blinded_wrong_yaw_report.json": "205e24c95e2663bc0a21c6eb95b2de521c28227d7fe8ad41e00d9ad0cc349c10",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/blinded_wrong_yaw_submission.json": "9dfab31b2553a3c924d38fffe922269cdda438b4ed29bbbfdb8c4d565ac02e5b",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_released/environment.json": "e6ecb11684442a968acf32d3d65095c78d2e0557c31c6721b6cf3492b20576c1",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_released/evaluation.json": "18a0ce61e34a1f0dd95af03fe587b4694637f6feaa4acd37c1a7cd30f03e809c",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_released/execution_status.json": "23dd35d9ac0e53a7e6a0239e64c51d6da792001f0e90681197f85efe2b4eb081",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_source_init/environment.json": "bd75fe7a5f98baf0fca0beb1d6c0a6b792e64aeacb0595f8c6e3319b4b314099",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_source_init/evaluation.json": "955ec998fe7a2c470f976c7ec91601c3b5da296c7e33253e3fa16032cbd96c66",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_source_init/execution_status.json": "23dd35d9ac0e53a7e6a0239e64c51d6da792001f0e90681197f85efe2b4eb081",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_wrong_yaw/environment.json": "0d94948f627cf25ed67aa6f025ea48689c04f2b7eb495864c362a70657989766",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_wrong_yaw/evaluation.json": "8003bb29a015f29f8dd16d6d6f942bfccb0a85aacd20fc8c04d9dc37ca5a191d",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/cli_wrong_yaw/execution_status.json": "23dd35d9ac0e53a7e6a0239e64c51d6da792001f0e90681197f85efe2b4eb081",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/hull_released_report.json": "6a90060d54e68d0e2e92a9eb3f9f275d7f6567e89d4cf2b3ff9c702ec24595c3",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/hull_released_submission.json": "0954890a4988dbc580c7eab3c0bdc940fb01a27d2e0adff9ba8f218f6137e292",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/hull_source_init_report.json": "5cd7502fbb0c4a9125dca1fbabf5d28f99869e9f9aea918de8d7f8ea73fc4412",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/hull_source_init_submission.json": "9b12d8e0d84b3ded0ca86f28b62fb3f78c74e56095864c3c41c16d680c67353d",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/hull_wrong_yaw_report.json": "060b6cb12e7d9d1f89055909c7a2c02f80af402a8f93de9ce8bf7c0bc5236710",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/hull_wrong_yaw_submission.json": "b621fbc0ba736469a0c53994013abc74f5c645028af1939460b197473ec11cc5",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/landmark_position_comparison.png": "6dc84b06ce8d3a822637c83d9db06e90ff66f1eb98072fb2c1608789407a73bb",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/real_window_overview.png": "abf5906746f9830934b898d579df4be9b7c0d71c01186aadda72cda2bb1b0e71",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/root_released_report.json": "35ff5b1428f7af090fdfd3165e5285e8164f66bbb0decde58c7510401278bb57",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/root_released_submission.json": "8b881751642d1164e1f259c6d1fffdbf0736f7d37f787ee96a7e4df1dab29871",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/root_source_init_report.json": "7c171e3a3a2fe1d5ea03522e5589caeb090a4e408f0aa3dcb3978f4629f5ca62",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/root_source_init_submission.json": "7106bca363034c8a7df6e3a38c85f09bc3e101f55ad4ec55dcf6acf4f56e2067",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/root_wrong_yaw_report.json": "c986d432085692f110f5c9a7e3d9e5a061989f88d8fb408ddc14e0b95da5fa89",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/root_wrong_yaw_submission.json": "20c12a7e6175bdbcf1fa73eef8cbfaf30b86ff83c0b933a6490c7df2e4aa121a",
+    "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/summary.json": "e0baaeb81eebf78f205051825a1cf970e37ab7f26b89c9ab7e031075f7f7c452",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_00.png": "146c5cdc904bb10a25bda4005f7f3417f4e7ae99ca5f6997997828c9ee81be17",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_01.png": "2aeadd3f114fab54ffebc4e9e236f73e69c237fbd119c0b9bea5be8b0ecd7f7c",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_02.png": "8a5c12fd7dc51fe06847ba362de928db86f724b6721028726cff9349a5a4cd5e",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_03.png": "a5f7c510670368a102f1723c46b77e295afb1554d50baa5aa8c5c60b54b2f5e9",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_04.png": "b50390560dd037de0e7cfe99a07e9a73ebef4edb9b4950d180a5a662d7cc6922",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_05.png": "a5045cef4f0727dc95fe77a20e08eb2fcd38f68a16626673204ef50bec61187f",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_06.png": "75dcc02f3597ea655e0ab425768e63b8ce5d29ef3678c98033331115c499177a",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_07.png": "59db31213e492ba97f35035b6396e4a9f39571a815bcd22adcbc8cded6f6635f",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/item_08.png": "a8f7e05718cbf168265b9b2033a6983dbb3621125d0b696eef89d04405c6d045",
+    "artifacts/credibility_screening_real_landmark_001/blind_reading_pack_run001/mapping_root_only.json": "5fbd3f336a237acec699c0b42a1d7466b2de55cb2055384cf90d3400d5115c76",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/environment.json": "e1c586d675405650ce502b035b3b3ecf04cb409a4b51d88197454c69326c0b7f",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/execution_status.json": "8ed369dadfccac445d4fc968770377db47a9c3e8d10c7f960d1201de243f7ab2",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/exact_pose_render.json": "b53a9db2738818fc82465193abfebbdd480979ec04a6536f4e1965e82dd59ab6",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/real_vs_pose_variants.png": "b5f13794e1d90af7207eb9cea6f0f27dc5f18ed1a4258715dfd1d9f666361631",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/released/CAM_FRONT.png": "a8f7e05718cbf168265b9b2033a6983dbb3621125d0b696eef89d04405c6d045",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/source_init/CAM_FRONT.png": "59db31213e492ba97f35035b6396e4a9f39571a815bcd22adcbc8cded6f6635f",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00108/wrong_yaw/CAM_FRONT.png": "a5f7c510670368a102f1723c46b77e295afb1554d50baa5aa8c5c60b54b2f5e9",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/exact_pose_render.json": "df341538bfa05323bf9a5ee0fc8f0d33d9efb4d5368e9d729e91261b7ec1a451",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/real_vs_pose_variants.png": "2ecfbf77d102067e4348c70c181876a2ee8847c5b8e45ef5febaf84c51e5988f",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/released/CAM_FRONT.png": "146c5cdc904bb10a25bda4005f7f3417f4e7ae99ca5f6997997828c9ee81be17",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/source_init/CAM_FRONT.png": "a5045cef4f0727dc95fe77a20e08eb2fcd38f68a16626673204ef50bec61187f",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00114/wrong_yaw/CAM_FRONT.png": "8a5c12fd7dc51fe06847ba362de928db86f724b6721028726cff9349a5a4cd5e",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/exact_pose_render.json": "b3fa971cdec6660db68d842cf11961dde0bc371c2804194f4efedd8fa302169f",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/real_vs_pose_variants.png": "5381188ce74ec97009a483e4a3c76aba999dc4614896d5a9f5e6071be4badf0a",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/released/CAM_FRONT.png": "75dcc02f3597ea655e0ab425768e63b8ce5d29ef3678c98033331115c499177a",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/source_init/CAM_FRONT.png": "2aeadd3f114fab54ffebc4e9e236f73e69c237fbd119c0b9bea5be8b0ecd7f7c",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/frames/frame_00120/wrong_yaw/CAM_FRONT.png": "b50390560dd037de0e7cfe99a07e9a73ebef4edb9b4950d180a5a662d7cc6922",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/input_preflight.json": "5ba70d58f205310137d5ba60892138768f4b2c00a45578e3321792719a345788",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/intervention_record.json": "a28509fc276e17920ed0a08f5df78014a8d7ad3cad4c407ec6e3e51e8a92439b",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/metadata/wrong_yaw.json": "898b71e355c2e8a04594dab2119004c454f3603226fc0905b2c61fff74536070",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/render_progress.json": "904fb69d676f1b939bf45255da1faa012585b3e0b3977eed424f199ca3545ec0",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/run.log": "55199b08952070cfb7a39b3ebce1ca2e4a2af87a49dd83f71999b2dc8ef01b6a",
+    "artifacts/credibility_screening_real_landmark_001/hugsim_run001/summary.json": "bb35fd0597d9fbb569d432f5c876b009f46f29e1480388f3a1a2dc0d7280c2b9",
+    "artifacts/credibility_screening_real_landmark_001/inspection_run001/rendered_shaft_band.png": "36e8ed788ca4d89ca5451149d1f4e5ebb9ab9ef9551c6a0e02ebed1152d528aa",
+    "artifacts/credibility_screening_real_landmark_001/inspection_run001/root_readings.json": "deb6a3d8340a29b54eba6fbb4e77a7e266beb1d4016c3e4a8048b9c631d13519",
+    "artifacts/credibility_screening_real_landmark_001/qualification_run001/summary.json": "823ac9fa10c5c9337a207a014d3a97cfb37aaa21216ddeaca89057bddc8baba1",
+    "artifacts/credibility_screening_real_vehicle_001/selection_run001/camera_source_records.json": "41d7c60aacb93aab5f31c78d4fd4c4ae8a2afb1d9f1e2d94a4c41fd030814ce9",
+    "artifacts/credibility_screening_real_vehicle_001/selection_run001/raw_lamp_reading.png": "4a0b4ee907b8e6c133a4f80b81f8c81696856328840b26b73cf29f0f79d14b74",
+    "artifacts/credibility_screening_real_vehicle_001/selection_run001/selection.json": "cdaf5b53568f129ad34475caad858a9bcca39035b3de32c60f9d5ee495b2e82c",
+    "artifacts/credibility_screening_real_vehicle_001/selection_run001/source_member_integrity.json": "290a79dbce08c7e37c99ecc52e9228a7d12991d2bdf1ef191b601ff279f901bd",
+    "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00108.jpg": "5c520038e7e0cdeb4dba4c5f51add062e4456bc39aa31df1be839a75ce6683c6",
+    "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00114.jpg": "fd8ce0023e407724cb1c2f37566cff0aa062a57c4f142b6105f169edc4e45f73",
+    "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/images/CAM_FRONT/00120.jpg": "ec70294136cd4f663d3f9b6d407ac9616dd7dcb1554cc8691b94a481d7c8846a",
+    "artifacts/hugsim_source_anchor/scene-0383-basic-real-vehicle-window-run001/source_archive_manifest.json": "14c0e2313c599f7bc2c48fd45fdac9b35282ddd748587cd278bcd653d497f488"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "three_archive_RGB_members_have_verified_local_integrity": "accepted",
+      "bounded_interval_evaluator_and_single_camera_contract_qualified": "accepted",
+      "released_candidate_positions_not_contradicted_by_frozen_reference": "down-weighted",
+      "wrong_yaw_candidate_positions_overlap_reference": "rejected",
+      "source_init_candidate_positions_overlap_reference": "rejected",
+      "strict_physical_source_pairing_verified": "rejected",
+      "natural_vehicle_position_was_evaluated": "rejected",
+      "candidate_interval_overlap_establishes_physical_camera_accuracy": "rejected",
+      "this_experiment_establishes_AD_or_general_simulator_fitness": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "wrong_yaw_candidate_positions_overlap_reference": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Three deliberately commanded wrong-yaw candidate intervals were disjoint from the frozen source-image intervals, with minimum gaps57,45,44px. RGB/time/hash inputs were valid; no unqualified/missing reading was counted.",
+        "diagnostic_finding": "controlled_wrong_view_annotation_conflict",
+        "evidence_refs": [
+          "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/summary.json",
+          "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/annotation_ledger.json"
+        ]
+      },
+      "source_init_candidate_positions_overlap_reference": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Three source-init candidate intervals were disjoint with minimum gaps26,24,29px. This rejects candidate-interval compatibility, not physical calibration or the simulator component.",
+        "diagnostic_finding": "metadata_choice_annotation_conflict",
+        "evidence_refs": [
+          "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/summary.json",
+          "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/annotation_ledger.json"
+        ]
+      },
+      "strict_physical_source_pairing_verified": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "Original nuScenes identities, conversion and calibration provenance, coordinate gauge reconciliation, release pairing and training split were not independently qualified.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_real_landmark_001.md"
+        ]
+      },
+      "natural_vehicle_position_was_evaluated": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "The metadata-selected raw window had no identifiable vehicle supporting the intended positive vehicle-position question; no vehicle coordinate was invented.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "configs/credibility_real_landmark_reference_001.json"
+        ]
+      },
+      "candidate_interval_overlap_establishes_physical_camera_accuracy": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Codex visual candidate intervals are not human ground truth or calibrated uncertainty; interval overlap is only a necessary coarse consistency check.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_real_landmark_001.md"
+        ]
+      },
+      "this_experiment_establishes_AD_or_general_simulator_fitness": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No AD, driving-task margin, natural vehicle-positive reference, depth or closed-loop outcome was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/credibility_screening_real_landmark_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "source_member_integrity": {
+      "component": "selected official-archive RGB member extraction",
+      "expected": "Three preselected source members must have matching archiveCRC,length,SHA256 and decode to800x450RGB.",
+      "observed": "3/3 matched;360558 JPEG bytes;full-archiveSHA256 remains provider-declared.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Local content integrity only, not original nuScenes token provenance or source/checkpoint pairing.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_real_vehicle_001/selection_run001/source_member_integrity.json"
+      ]
+    },
+    "bounded_comparison_implementation": {
+      "component": "candidate interval evaluator and single-camera selection",
+      "expected": "Interval touching remains nonconflict; strict disjointness is measured annotation conflict; unknowns remain unmeasured; input failures cannot become position contradictions; single-camera selection still validates full metadata group.",
+      "observed": "7/7 interval/integrity tests and9/9 renderer selection tests passed;full3frame metadata groups andyaw-onlycomposition verified.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Qualification concerns supplied annotation algebra and interface checks, not automated natural-object measurement or physical uncertainty.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_real_landmark_001/qualification_run001/summary.json",
+        "tests/test_landmark_interval_screening.py",
+        "tests/test_hugsim_exact_source_pose_render.py"
+      ]
+    },
+    "released_candidate_agreement": {
+      "component": "rendered image candidate landmark position under released records",
+      "expected": "Compare the released candidate shaft midpoint interval to the frozen raw-image reference without adapting the reference to the render.",
+      "observed": "3/3 released intervals overlap; root, blinded reader and conservative hull gave the same categories.",
+      "expectation_met": true,
+      "evidence_decision": "down-weighted",
+      "implication": "A coarse source-picture reference did not exclude these images; physical calibration, sensor/AD fitness and annotated truth remain unqualified.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/summary.json",
+        "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/annotation_ledger.json"
+      ]
+    },
+    "controlled_wrong_view_annotation_conflict": {
+      "component": "deliberate camera-yaw control and interval screening",
+      "expected": "A known wrong-camera view should produce a readable landmark interval excluded by the frozen source-picture reference.",
+      "observed": "3/3 wrong-view intervals were strictly disjoint;minimum gaps57,45,44px;all inputs valid;root/blind/hull categories agree.",
+      "expectation_met": true,
+      "evidence_decision": "down-weighted",
+      "implication": "Supports inspectable candidate-annotation exclusion of this commanded perturbation, not a discovered HUGSIM defect or a population detection rate.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/summary.json",
+        "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/annotation_ledger.json",
+        "artifacts/credibility_screening_real_landmark_001/hugsim_run001/intervention_record.json"
+      ]
+    },
+    "metadata_choice_annotation_conflict": {
+      "component": "source-init metadata applied directly to released reconstruction",
+      "expected": "The source-init candidate landmark intervals would remain compatible with the frozen source-picture intervals.",
+      "observed": "3/3 source-init intervals disjoint;minimum gaps26,24,29px;released counterparts overlap.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "Audit metadata choice and coordinate conversion; source/release gauge and pairing are unresolved, so no physical component is isolated.",
+      "evidence_refs": [
+        "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/summary.json",
+        "artifacts/credibility_screening_real_landmark_001/annotation_evaluation_run001/annotation_ledger.json"
+      ]
+    }
+  },
+  "limitations": [
+    "The selected positive vehicle-position question remains unmeasured because no identifiable vehicle was available in the frozen raw window.",
+    "Same scene, one camera and3newtimes do not establish an independently held-out reconstruction split.",
+    "Candidate intervals do not establish human or calibrated sensor truth.",
+    "Source-init and released records have unresolved coordinate and release dependencies; their numeric pose difference is not an actual physical-camera error.",
+    "A supplied annotation can be wrong despite valid imagehash; the evaluator does not automatically verify its object semantics.",
+    "Interval intersection is necessary only, not sufficientaccuracy.",
+    "No AD, depth, real driving margin orclosedloopoutcome was tested."
+  ],
+  "next_bounded_step": "Audit source-init/released coordinate conversion and source/reference qualification before adding vehicle-positive samples or more same-scene pass counts."
+}
