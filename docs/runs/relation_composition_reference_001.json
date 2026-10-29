@@ -1,0 +1,254 @@
+{
+  "experiment_id": "relation_composition_reference_001",
+  "date": "2026-10-29",
+  "scope": "exploratory researcher-designed synthetic receiver, not HUGSIM, AD or real-world validation",
+  "result_before_git_freeze": true,
+  "independent_blind_holdout": false,
+  "reference_and_relation_predictor_share_logic": true,
+  "same_outcomes_in_development_and_rerun": true,
+  "results": {
+    "scope": "exploratory designed reference; no HUGSIM, real AD or blind validation",
+    "horizon": 8,
+    "cases": [
+      {
+        "split": "calibration",
+        "hazard": "early",
+        "visibility": "early",
+        "hazard_sequence": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "visibility_sequence": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "deadline": 3,
+        "observed_joint": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "reference": true,
+        "relation_prediction": true,
+        "marginal_prediction": true
+      },
+      {
+        "split": "calibration",
+        "hazard": "late",
+        "visibility": "late",
+        "hazard_sequence": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "visibility_sequence": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "deadline": 6,
+        "observed_joint": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        "reference": true,
+        "relation_prediction": true,
+        "marginal_prediction": true
+      },
+      {
+        "split": "heldout",
+        "hazard": "early",
+        "visibility": "late",
+        "hazard_sequence": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "visibility_sequence": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "deadline": 3,
+        "observed_joint": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        "reference": false,
+        "relation_prediction": false,
+        "marginal_prediction": true
+      },
+      {
+        "split": "heldout",
+        "hazard": "late",
+        "visibility": "early",
+        "hazard_sequence": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1
+        ],
+        "visibility_sequence": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "deadline": 6,
+        "observed_joint": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "reference": false,
+        "relation_prediction": false,
+        "marginal_prediction": true
+      }
+    ],
+    "checks": {
+      "equal_hazard_sequence_multisets": true,
+      "equal_visibility_sequence_multisets": true,
+      "calibration_successes": 2,
+      "heldout_successes": 0,
+      "heldout_relation_correct": 2,
+      "heldout_marginal_correct": 0
+    },
+    "limitations": [
+      "the joint rule and receiver are predefined, not discovered",
+      "two constructed heldout pairings are not independent real samples",
+      "response by a synthetic deadline is not driving safety",
+      "the predictor observes the full declared hazard sequence and deadline"
+    ],
+    "script_sha256": "07c3b6a58ed64ef36ac0ebc70ea3a894b7188db5b425a21943c6e0e23cb0950c"
+  },
+  "artifact_hashes": {
+    "artifacts/relation_composition_reference_001/run001/summary.json": "d84fcdaeae8ab65edb132cda456f0e38ec9f04fb0ed60f91b6e6625fd472f641",
+    "artifacts/relation_composition_reference_001/run002/environment.json": "eca9d3e0325a1f4cf88b3cd0dc989c3e16d10d8d5dca56f2ced32e02480cc2b0",
+    "artifacts/relation_composition_reference_001/run002/status.json": "c0c359bd44f6f8aacd20700abf844c9c05ee1c7140b17d270ef93d8bde6764df",
+    "artifacts/relation_composition_reference_001/run002/summary.json": "1613a93fc31a46da84a5dc138fe13a63d3cc47cce81b33f8367b679215f78265"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "same_individual_sequence_multisets_determine_response_distribution": "rejected",
+      "controlled_pairing_changes_synthetic_response_distribution": "accepted",
+      "joint_predictor_discovers_unknown_real_relationship": "rejected",
+      "experiment_establishes_hugsim_or_AD_credibility": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "same_individual_sequence_multisets_determine_response_distribution": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Both individual time-series multisets match exactly while the same fixed receiver has two versus zero deadline responses.",
+        "diagnostic_finding": "joint_pairing_blindspot",
+        "evidence_refs": [
+          "artifacts/relation_composition_reference_001/run002/summary.json",
+          "scripts/run_relation_composition_reference.py"
+        ]
+      },
+      "joint_predictor_discovers_unknown_real_relationship": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "The predictor and reference use the same researcher-defined logical rule; no unknown real relationship was learned.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/relation_composition_reference_001.md"
+        ]
+      },
+      "experiment_establishes_hugsim_or_AD_credibility": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No HUGSIM rendering, real observations, AD receiver, vehicle dynamics or task-safety boundary was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/relation_composition_reference_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "joint_pairing_blindspot": {
+      "component": "combination of hazard timing with visibility timing in the synthetic receiver",
+      "expected": "Identical multisets of individual hazard and visibility time series determine the same deadline-response distribution.",
+      "observed": "Hazard and visibility multisets are each exactly equal; aligned pairings produce 2/2 responses, crossed pairings 0/2.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "The individual-series multisets omit their pairing, within this specified finite reference. This is not a real or HUGSIM failure.",
+      "evidence_refs": [
+        "artifacts/relation_composition_reference_001/run002/summary.json",
+        "scripts/run_relation_composition_reference.py"
+      ]
+    }
+  },
+  "limitations": [
+    "the joint rule and receiver are predefined, not discovered",
+    "two constructed heldout pairings are not independent real samples",
+    "response by a synthetic deadline is not driving safety",
+    "the predictor observes the full declared hazard sequence and deadline",
+    "The experiment was not frozen in Git before results were seen.",
+    "The two groups contain two constructed cases each, not a population sample.",
+    "Only response by a designated deadline was tested; stopping and safety were not simulated."
+  ]
+}
