@@ -1,0 +1,907 @@
+{
+  "experiment_id": "physics_alphabet_probe_001",
+  "date": "2026-10-29",
+  "preregistration_commit": "8ed4d9fa3d3fb90d5ee788e450503de45db9db78",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "config": "configs/physics_alphabet_probe_001.json",
+  "preregistration": "docs/runs/physics_alphabet_probe_preregistration_001.md",
+  "concept_dictionary": "docs/physical_mechanism_alphabet_001.md",
+  "scope": "Finite classical geometry/visibility operator vocabulary test using new HUGSIM rendered RGB; not complete world physics or AD validation.",
+  "claim_contract": {
+    "domain": "Two coloured Gaussian marker points; one released CAM_FRONT camera; isolated and scene0383static backgrounds",
+    "operations": [
+      "object-local Y rotation R",
+      "relative3D translation T",
+      "pointwise perspective P",
+      "given geometry/opacity visibility V"
+    ],
+    "local_body_points_m": [
+      [
+        -0.8,
+        0,
+        0
+      ],
+      [
+        0.8,
+        0,
+        0
+      ]
+    ],
+    "position_budget_px": 0.25,
+    "RGB_measurement": "Independent literal2D qualified red/blue contrast coding; whole image component centroid; no expected ROI",
+    "renderer_execution": "Local points held fixed; HUGSIM applies recorded B2W pose and camera rendering; independent scalar prediction",
+    "calibration_policy": "image-additive uses only the five unoccluded single-case RGB centroids per background; combined cases never update them",
+    "claim_boundary": "Only tested configurations and seven preregistered candidate programs, not a unique or complete alphabet",
+    "AD": "not applicable",
+    "source_pair_gate": "not used to claim direct real-sim equivalence"
+  },
+  "results": {
+    "experiment_id": "physics_alphabet_probe_001",
+    "overall_evidence_label": "down-weighted",
+    "single_pair_count": 16,
+    "combination_pair_count": 32,
+    "rgb_count": 96,
+    "qualification_pairs": 432,
+    "statistics": {
+      "R_T_P_V": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 16,
+          "max_position_error_px": 0.09056338373568451
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 32,
+          "max_position_error_px": 0.06366542269091724
+        }
+      },
+      "T_R_P_V": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 16,
+          "max_position_error_px": 0.09056338373568451
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 0,
+          "max_position_error_px": 74.1907277285029
+        }
+      },
+      "image_additive": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 16,
+          "max_position_error_px": 0.048594362048476114
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 2,
+          "max_position_error_px": 2.246779566809721
+        }
+      },
+      "without_R": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 12,
+          "max_position_error_px": 3.143958609400954
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 0,
+          "max_position_error_px": 5.2999473406133575
+        }
+      },
+      "without_T": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 12,
+          "max_position_error_px": 80.221867526305
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 0,
+          "max_position_error_px": 81.39308072380459
+        }
+      },
+      "fixed_depth_P": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 8,
+          "max_position_error_px": 16.901007373977336
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 0,
+          "max_position_error_px": 18.38203680583507
+        }
+      },
+      "without_V": {
+        "single": {
+          "count": 16,
+          "tested": 16,
+          "passed": 12,
+          "max_position_error_px": 0.09056338373568451
+        },
+        "combination": {
+          "count": 32,
+          "tested": 32,
+          "passed": 16,
+          "max_position_error_px": 0.06293463557381074
+        }
+      }
+    },
+    "compatible_on_single_cases": [
+      "R_T_P_V",
+      "T_R_P_V",
+      "image_additive"
+    ],
+    "compatible_on_all_cases": [
+      "R_T_P_V"
+    ],
+    "full_program_all_pass": true,
+    "only_full_program_compatible": true,
+    "limitations": [
+      "Candidate physical operators and grammar are researcher-specified; no law discovered from scratch.",
+      "Only two coded Gaussian markers, one camera and two contexts; no dynamics or real AD.",
+      "Image-additive coefficients use single-operator images only; all other programs use frozen geometry and camera.",
+      "Finite candidate discrimination does not establish a unique minimal or complete alphabet of world simulation."
+    ]
+  },
+  "measurement_qualification": {
+    "count": 432,
+    "correct_identity_pair_count": 432,
+    "max_abs_position_error_px": 0.04283489096570747,
+    "max_abs_width_error_px": 0.07823999379837687,
+    "minimum_code_fraction": 0.8877481177275839,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "identity_min_channel_fraction": 0.85,
+    "negative_controls": {
+      "ambiguous": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "unknown_green": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "boundary": {
+        "blocked": true,
+        "reason": "marker touches image boundary"
+      }
+    },
+    "qualified": true,
+    "scope": "Finite independent 2D code/phase/size/background/mixing grid; not natural object identity or a real-camera bound."
+  },
+  "qualification_before_gpu_identical": true,
+  "execution_validation": {
+    "local_shape_and_opacity_unchanged": true,
+    "max_scalar_vs_matrix_intended_placement_error_m": 4.440892098500626e-16,
+    "unqualified_RGB_count": 0,
+    "single_marker_null_width_count": 20,
+    "implementation_tests_passed": 5
+  },
+  "provenance": {
+    "started_utc": "2026-10-29T12:13:12.788575+00:00",
+    "host": "stf-precision-3680",
+    "role": "HUGSIM physical operator vocabulary test",
+    "cwd": "/home/yawei/logsim-credibility-audit",
+    "python": "/home/yawei/HUGSIM/.pixi/envs/default/bin/python",
+    "output": "/home/yawei/logsim-credibility-audit/artifacts/physics_alphabet_probe_001/hugsim_run001",
+    "argv": [
+      "scripts/run_physics_alphabet_probe.py",
+      "--config",
+      "configs/physics_alphabet_probe_001.json",
+      "--output",
+      "artifacts/physics_alphabet_probe_001/hugsim_run001"
+    ],
+    "audit_commit": "8ed4d9fa3d3fb90d5ee788e450503de45db9db78",
+    "audit_status": "",
+    "branch": "main",
+    "remote": "origin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (fetch)\norigin\thttps://github.com/yawei-lucky/logsim-credibility-audit.git (push)",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "input_hashes": {
+      "/home/yawei/logsim-credibility-audit/configs/physics_alphabet_probe_001.json": "d20eb0396a25fb03125f9c653e6c75128f13bedac988e7dd20565712b835f301",
+      "/home/yawei/logsim-credibility-audit/scripts/run_physics_alphabet_probe.py": "64b8c7645fd1b446230bcfce3d821ab334e3e0c800d356cdd369ff16d2f3a57b",
+      "/home/yawei/logsim-credibility-audit/scripts/measure_credibility_marker_identity.py": "21fcc7afaeb838584ca3e06d2a7966044a8e55cedeebbdc267434ce43d32dd2b",
+      "/home/yawei/logsim-credibility-audit/scripts/run_credibility_screening_identity.py": "23e59952bbb1216d7fc7f71d1d6d2ba1327cf13962e0f9ca035b3abad8b4fecc",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_probe.py": "d21841c2899f33e1b3849771b30b51f8ede05aaa4ecfbeefd61a881433447248",
+      "/home/yawei/logsim-credibility-audit/scripts/run_motion_observation_boundary_probe.py": "660275430f32943073b0be3bb1afd24b9ee4f7d134ec750588e8fb62d8d4a24a",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json": "8ef9561d9b1bf6e9f563891603a5360da421930c88252e74e9ce2615be59df5d",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/scene.pth": "1b42fbd9bd93cc8b460977ac09b5bafba0b06af597e4dbf707f7fbd34801acf9",
+      "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/cfg.yaml": "4b4ae91e0eea78395387159fb5589aab6086b5fd4c29ede09f7ca288cc99b9e7",
+      "/home/yawei/HUGSIM/gaussian_renderer/__init__.py": "303918d0097d3759f960a663bd05255ecbb402009cf96117fe2e49ba9a225c22"
+    },
+    "torch": "2.4.1+cu121",
+    "gpu": "NVIDIA GeForce RTX 4090 D"
+  },
+  "artifact_hashes": {
+    "artifacts/physics_alphabet_probe_001/analysis_run001/composition_examples.png": "af10f6f2de8a247a47ca84ff884a639f6b38d9c99e5810c6d01313e3ea4a0778",
+    "artifacts/physics_alphabet_probe_001/analysis_run001/operator_compatibility.png": "7d49d900e292f129ddeb8ace5c5dc35fea4b5db947027f5e014d829404f18d0d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/camera_record.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/cases.json": "4094431f81f696470491c366dd65b973835f81284d4969483fbbea675a8ed9e7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/config.json": "d20eb0396a25fb03125f9c653e6c75128f13bedac988e7dd20565712b835f301",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/environment.json": "4956a972063a95db3b904067c6e42de3dc77872965b5f2349d6f1517f4418c0b",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/isolated_single_image_effects.json": "493e88a53b535426f51621c2c30ad5da7571161bd22e174f4d00ac7bdb441f70",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/measurement_qualification.json": "ac6f0f9896893e3bf9d9db8a96703b174c89bcf041d700afcea3196df7c84190",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30/bright.png": "e084f04cdffb16d787f135cad8a8cec927931aa8c19fd89de99e3eb0abf4dafb",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30/dim.png": "f7e252c4bc3a8cff26652eedd9dcc8155edc1226eb517c12ee1552dded6102cb",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30/record.json": "379077ad6a890883190cfa2706881408eba6afe1595cd83b79821472410e38f3",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_behind_left/bright.png": "9e7e3f2a7286e8e98dc10c7568d773744efe7946e0881559ded984894318df68",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_behind_left/dim.png": "c1d351b95d2a07c1770921b1c0be18f56c70eab58876b95eb6dc0fd90c1a0b1f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_behind_left/record.json": "66eb7720a071942f1e48a9f3d65b4a096ec163397809387a24e4b69f0fddf3ee",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_front_left/bright.png": "a62c61c63dbf4e7cf141c494b73a3006c883649cfe300cba7deed013c88aa71e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_front_left/dim.png": "8d974ca079eba61e5bbc4e6c27794179da1955a4fda5453d6d97d9646d64c252",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_front_left/record.json": "12d886c9d2db56dcead7218f03bac701e46c0f411473dcf93b4885acea6443dd",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_front_right/bright.png": "77bb79ae6dfa141327d62b7264441a16f1afe6a6c7b25dc1061957c2a4e9b61a",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_front_right/dim.png": "1b9f38758989a3dc8b094b807872beadbd9d4466ab16bc08a5c69f408ddab44b",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_front_right/record.json": "0bd1ca80c3f533fef66efb4524ce389925555832ba9f90cdbec74eda53b79232",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_none/bright.png": "9caa2309ef39e1a8108c70cf9897b49aa7dd3c70a30a00bb6b7147a33021bef9",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_none/dim.png": "33348acb6e9f9c2dc52fec8014d29393dd7a070ca7ad9a14449bc5a0ebbc35d9",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T0_none/record.json": "6fb1547774e614f7643b85e3704b1d2644cfbe5e6af1a2c6a54c4c442ec9c8ee",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_behind_left/bright.png": "e40dadc22e0b1fd1b4b9154a3b838987cd2cdffda117d6d5ad6180d9c6fca1bf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_behind_left/dim.png": "172f9f56b120e673ca28fb66e11a611f826b24450392f5da008f5c43f98df737",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_behind_left/record.json": "4510e438581fb7c168c97f98ee63189238f29d82a45932b3a02b3e6b18ff82e4",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_front_left/bright.png": "85f64694eb09d9c5f7cfe40028f62c23d5ee1f68a57589d44c041c1148aac795",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_front_left/dim.png": "dc38c0a6e4bea78dd5df7ec0cb8464c1576aacb1e1f4172db9741abb08e1e7ef",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_front_left/record.json": "02ef07ec370349dfb315012cf30e7c44707afb59d6c262a527c7f77d0bfd55bf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_front_right/bright.png": "c23facf6d3fced46c5ab56f337c439eded63fe388a84e249db96ce024931b8dc",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_front_right/dim.png": "80cec405b56594694135928677aff0425bf1277cda1a3564d52e1e6a97ddf46c",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_front_right/record.json": "ea980dad418729dd849dcb8297824e91fe385700e065c65245892c5f5755d3f6",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_none/bright.png": "8ed24cc096403f2e0d54f5162961c793f4acbfce7f807bfe68dddebfc5a79bdf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_none/dim.png": "5667b9024f901623ae65decd5c728121a8c2818459e9097e4a2b963bb5a87bb4",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R-30_T1_none/record.json": "d5fd3afd3b9258c2576de1a6830ade47057486752aedb7a1dae390951669eec8",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30/bright.png": "a77d2e354070dc90bb48212eba41120ca197103b3bb716e2d2ebda2f3ec95a55",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30/dim.png": "66dea30772a5b66ce0a30db22dffbc2551ec45af9be2c812496092bf6ec1acbf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30/record.json": "ca1c3af3a4712264091937175e115b21ef9286d40962767a0ba471b523979b63",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_behind_left/bright.png": "540d830ec7f22d987060fe474f3f81752cb190bbfba55098ff18b1126c517cf3",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_behind_left/dim.png": "2c27e5bf89ee1116f441ea6307d74ab33e9eae3b3ea5226099211d7c43d32da3",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_behind_left/record.json": "62a57e5ff7e3475e4b917b392518e28efb1372bce8fdbb5501629239d0b50bd7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_front_left/bright.png": "8b603ac571f31a0f577bb79252dc85ea0a82dda821c5547a155aaedd619a39e1",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_front_left/dim.png": "8c25cd90d0bee2a949c9462f98f8eabd8a2e814233abcca80240ac3aac686e9e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_front_left/record.json": "568736acb04ad40f326a56f578499a7c2f080ae5e96e98033c64d548cef43f95",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_front_right/bright.png": "7db256c73a79cefe2373a28c395b18a492c661d79cdd2362f07474b1f72f9fcf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_front_right/dim.png": "8f391a6014dc7787d44e5926d30e4ea838a891b8f86aa89b9040a52750d439ac",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_front_right/record.json": "10e6a8657183d40b589799e46bd7f35599c24017ff8a850256e154509dba7c2a",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_none/bright.png": "6ffc47747c556cbff70b6acd91bb6284c36fb43f9f71ba4c9868b52493a00f35",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_none/dim.png": "a17342680c3466521f460a1f0e7b5b84a5e08c48405fde502c4828568eb68936",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T0_none/record.json": "b4983cb5f5420521db1d6a1f45bff1e079145585c8f511c97bb156608c77d8d0",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_behind_left/bright.png": "0cd9a839890428821b81568e5b9bcbf6c2ee4cc68c0743e7278d2ea425ba76a5",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_behind_left/dim.png": "26d10bd46811e2a3515000ae188e1e263195e0f4996f3ffd25c91927f6b40ce4",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_behind_left/record.json": "38aa0e82b5f76eec43e9459e95037361107c056a0c02fe56bb1f18c7ab9ea6a3",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_front_left/bright.png": "d6c6f652ffa4edb153e65818d2687eea99cd2d8ad20b35e57ccfa2561021b410",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_front_left/dim.png": "0ae034b66ffd06b608472409f07d15a80dc91e2c6123eb412f7f714454573232",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_front_left/record.json": "193b664d835995128c6d51a9249ab352e00c609df2282b15a874c9e580f90463",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_front_right/bright.png": "ce7f310963649750f4f5256e302e8a89ee8cde8ce6fc756e7e347ec077adbe1d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_front_right/dim.png": "5b0dd6a571b2f847d6f757fe00021563351f0ab86645c372ce43ac8c2bb516b7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_front_right/record.json": "ead35cefb5d8d13f77f52a6f5aa2274d77a1dc9b32733ff07c365a1f83a7486f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_none/bright.png": "bec295f8ba8aee7a23c8da525c6e30d98c147ab25278c86496d7f01e132b5d81",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_none/dim.png": "1116ee29f32edef3c0c51410876ef8e95ed56c58efffbe792ab5aed01fc4fe75",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/R30_T1_none/record.json": "d5aa71c6166bbe701361f904c713af7d965094978948499934a48b62b5ec7f81",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/T0/bright.png": "66191905609850c0b738b0270975cef486da2c522fbcaf17308b492e45a91d9f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/T0/dim.png": "c9e55adfb677070c4e293cf83c15804656a0ca9c436b3146cba56660047234c5",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/T0/record.json": "6861f402fe4d2228227a967abfb243e7b2f5031e75965aa142f91c9dc0a08440",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/T1/bright.png": "03c6fd97dbf6a3263c26d61dd39699a38402172a4f2632ea84cfd3af48882742",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/T1/dim.png": "46b7493bb6e44a49684d8a2c4add8a425db23c9d2a1e540e44a536f39f0a0803",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/T1/record.json": "6139f5b8ac721bfb4c728998f6c271cbaeb9885b8f0495cf881558cd0e0dcff0",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_behind_left/bright.png": "6bb4ba5a2b40fabd2c1d166ac79ced1b814b1c5af7d2ac57685ea83667c377de",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_behind_left/dim.png": "9dff7489ec1430d0b1d851cb21e1eccc65a9f591897f95c1a4892c781c5a322b",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_behind_left/record.json": "fb0b9d5f637dbc7c83d5813c56d5b24c3bbf9bbde208b467d54496a3a3a21075",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_front_left/bright.png": "383ee050fcffc8aa8a72eae8a4131dbcb0ad3d7ea799d176ea65d380e6ffb036",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_front_left/dim.png": "0ceb7a9dc395e6e269ab158f26e983a1d56c9f26a53a2a01b32b2e9f431734a0",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_front_left/record.json": "732478d59fbcdaa00f7c677c8ae5dc41b9c3968fe297d4270f823d5bcd5a9d9a",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_front_right/bright.png": "fa75ec39cbc83b8022b893d41de6361ee00f753e1612934d51b3d4b8aaeb7d7e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_front_right/dim.png": "a5bbd29078eafccdc748cebd43ab476c4e529e1505adc53b0615d378fcde5c2c",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/V_front_right/record.json": "55fdf25909401a04d63805b6428206b219f091675361ed158767e75f97cdc7c7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/base/bright.png": "1361443a219a84d18a7c2417e7bdb7c195e717709dc8f31ca119143ed9066410",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/base/dim.png": "1c582a99e4dd533fe6c8153e3330f8e2aa4b83f266421e1953d29412037a7258",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/isolated/base/record.json": "338aa3d222fd70ae138b93f03a5a40bd8e69464d8d1d60dcf40159e143db662f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30/bright.png": "a8e63a8165e552f3a45c898c8fcabc525800ebf7d7abeeecd71e97fde025cc91",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30/dim.png": "69d7fc5d382ffc74c78e7e9db2c8a82c1baa09d968f7a57fe250cdbdf84cd291",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30/record.json": "fe75333e32f25821aa512b296b97167f02f344b387468154e9c71797b8b100a2",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_behind_left/bright.png": "10a95cb5b56a63cec2c91ad83ce5517672425495f090f60f086195ba512f9c93",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_behind_left/dim.png": "198cb323d2394314d829130e4d9bb1a700d6ac91090b2c1d32b495db577a45ba",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_behind_left/record.json": "2cfc86347daa1d617fd827ee55cac22d9fd817ee63b14e427d869352ebca4c9e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_front_left/bright.png": "c4102edd778ccb8aace2274c9706147c66be02e0d384fb922e864873bb49cc54",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_front_left/dim.png": "b5ba56011843de48e35a6c259b3310c6947b74de1db64829d0bdb62ba0946f1a",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_front_left/record.json": "1139b3990df1f035b081a8f619c5f3a670a416c56db6ddbcb4ab2f2904f513d9",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_front_right/bright.png": "e890ad6c75007e22268ee7edeb3561bfa4b8162d8f0eb13f72d9d84e5f075a84",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_front_right/dim.png": "5e88e16611bbc5ae14d33cee10b92e8f39c539dfb0138de3f58ec6d7d22192b3",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_front_right/record.json": "a985e561a5375fedd507f71a04ea982e405c56b87334186a781aabf192e9ff9d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_none/bright.png": "0d83f139de45fee49444ca9b28937dcaaa0c37165bfae75a88e1f7f9ebf25628",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_none/dim.png": "1b7d5c99a7c46bc9e486e77eca7c29d4046c3140ac50bc6f26466811e047f30c",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T0_none/record.json": "538690817c4f74ddd767a7eff90e067b277dbd1a982e2c3d2fab84c34fa764c5",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_behind_left/bright.png": "00622853b9033cedaf9d7da89bbc6a72af0359ef9a090d280d53ad35d3575b28",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_behind_left/dim.png": "7352e2d69676c3a3ab446b16a7656ccd7f4c4b31e556f30cf37f8abededac03d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_behind_left/record.json": "949fced30cb51db332194047feae0acd5888ffc8388bf67fb34681241739a5f3",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_front_left/bright.png": "426231c6fb5b67bf6a3ea9494b767f828df3c712625952ae7a1d7145bb9c8f4f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_front_left/dim.png": "d26121e21c5e0309222565728e2652c14a2eadaa4871e6b34466b9d3572a4efe",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_front_left/record.json": "ebd4d8a7067c18d292739d57c88ca16edaac22e04b89f03a9863f2380c2fe4ce",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_front_right/bright.png": "3f9a88b15bedbe79d032a2f71daa9073cc3609fa9dcee9dbf0fd91d50f3a8ce7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_front_right/dim.png": "ac91e1ccbe2ec9d1ac88cc078f8726aafcadcbd76f4d11b2e834d20edf37264f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_front_right/record.json": "22758334ba16f7a66a9c0c438aa05b1f15c74ae638452249ede7b143f7fa201f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_none/bright.png": "1ed04f114a7553122935692ca49697c75343683119a06b9b657c5ecdb8ae78d7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_none/dim.png": "52e6891b0f66e3c50d81ffb5517577aa016d1c6707cf71afde6e92555b6971e2",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R-30_T1_none/record.json": "66ec0bc87bbb4088e041c8aa02fd5e03dc263b53d9494ec2b80efeca8287a501",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30/bright.png": "7d0aa63cfb674023b2cd02a5f4af54450705bfc35af363af973f7962d357f5af",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30/dim.png": "b9971d47b9bfaf30f336cc245dcc5aeeb002988763e3bc6d9f8367bcb37efebd",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30/record.json": "04e198fe77a35d4e93ad20cf49415427e00a8bf83aadd723d41f0a5bc87174de",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_behind_left/bright.png": "c4332c35ba670f55b2d5acc64d676cb5d83753fe22f1661ba5a859b8ad1d28cf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_behind_left/dim.png": "28f578ae825348f0c87aa65ada63626bd1f49aafeed5329aceb19f206bb5bde9",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_behind_left/record.json": "6ae9e41cf864db35082b92873b86ce7133abd02c967cb955391d2705f2d125b7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_front_left/bright.png": "f569b4a078f559365957714f0832079792d4985394a3a67a51a7b86c638f5c1a",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_front_left/dim.png": "e5a094ed614785e9ddab7e02d93125a963d4a76664fdb87c4279be4e1bea863d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_front_left/record.json": "16c2389cda6118de0e91e220afae2099fbeba8b490634b13b2a7d16491affe9d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_front_right/bright.png": "d7666a89201fb4110e6c21546fb390d723c0eccf28ee6e63699d5112ea9ea7fc",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_front_right/dim.png": "6cdce73ec0ec962a75331318987217f1202748e4c55a7df4f4a6f74bcbe3aa31",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_front_right/record.json": "b6940c26f54e12a9ee100fd5477e489c7dd7307a72fb6026653317dc86d2e5da",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_none/bright.png": "cc8a456b1918cc3fbdee63f87e6c95389bd5eb883af253fcba09093aa4dbb293",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_none/dim.png": "d59b844891a2964bf08679ef6cec66f63ffa3f46d60f1ac5c10b9a9e19bb7d13",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T0_none/record.json": "d2731d25f25a351d0618746826e5ec9d03f900e8fd9005168e53bb242ebfc691",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_behind_left/bright.png": "197867a353487d719e795ffea7f8fe88eb68a6db8206e29d0505e7d885d84653",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_behind_left/dim.png": "ca26c023a15a8ed521ddd0bc629815ea49899a789080c2885aeb3b87e8342ac1",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_behind_left/record.json": "567c1425202aa52cff07d876779c73880e7a0147e73fa840485458253b121f73",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_front_left/bright.png": "436480c9d791a539edda5b9356bec8e58afd2ef5eacdc06cc54ebb0b1bfe0b8e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_front_left/dim.png": "f3e77fd4be0f7f70e2c917ef1691b69c91b5c672a4f1cd050e6b370e73ad5011",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_front_left/record.json": "edce56bfb77c403593cdcb6c4c36e7dccd1c94f058a615e74ca0da479a818951",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_front_right/bright.png": "9cd7fbbee1e5aa46dc3ffaba0155d3c074154158fec70dafea9c1a2bae92322f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_front_right/dim.png": "009b035d9f49482bc7ef1cf1060567a57cece20e7016bd7943f50ded1aad74f7",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_front_right/record.json": "801921e133b1ee031a0c018f59faf4e70a220ab248e1245d62dffac52cfcea84",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_none/bright.png": "775beafdfd3db75e9c9a3b8a7ec3f3b201eddb249ac5cae715fc71e66152cdba",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_none/dim.png": "496d694b84f81f47f4b7f1b6ccd9a1e100bf5a1504934dacc6088a09eca8650c",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/R30_T1_none/record.json": "dc7e6a938a703553b6ddedc56d5a37c2b0d471b4124e99aede5c85b3c2db64fc",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/T0/bright.png": "d09a03dd9fb606a16658c712dec88218efb7c3831c2f186a050d0a98fa904458",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/T0/dim.png": "404c2639735f10b936a7f330d8046d04a62201f847fa0fff9caee7d6963a9640",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/T0/record.json": "1849f4c36468d7d9e5114cbaaaf7376c84e2517fca92b88d29ec4005578353fa",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/T1/bright.png": "a5790170da008dcbc3e40b453d95bf9d6f1ac7d002cb71fa13a0b8f20d5652fd",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/T1/dim.png": "ee0a9dd70f653539b172de40c31e416abcf6d1e955e0393fc3ddf36689a9347e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/T1/record.json": "1aedbdc83198c7a65fe0f907146684383dcfcf6e9783cb0c6c0d6a26d4bf6f60",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_behind_left/bright.png": "fa1b2d147eeb0fb43a912a3fb813e0a77dc22befbcc93a24a38c0f29a179420e",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_behind_left/dim.png": "cfa65c59f1112ec9daa58413b74b1c00076560098cdf1435d5148afea8df5f3b",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_behind_left/record.json": "55672ef47d2e1533df65cefc43f2ff65c279d31fa9fee8f928738ab7bff5194b",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_front_left/bright.png": "07fd0aef410dd9ad7c43070a1a4d3a513a8663c61355f3402636d62b3a460bcf",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_front_left/dim.png": "710f0f6ad67f7b4552a5802c421730fe8c2db1835fbf7695bca3a578f14e751d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_front_left/record.json": "7d6acc2640e8f3575dea5588d6e945bf6006870f9094ff9d58f88fc03997d084",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_front_right/bright.png": "52e6254f01c1e4cfd490a040cbbd4645caf3d4fd521b608f4847a09441d2396c",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_front_right/dim.png": "a01efc58f8874730d3ea2960fba518d56c3729194bafaf27455ea3f3ef0441b4",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/V_front_right/record.json": "dbf14f660ef66a2969aacd4df3925d848855d5c5117c08d71eb0541bdccc23d0",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/base/bright.png": "2d3d2690c0a38242d9d3066e58f6e49faf434c6bf33a11a2fce647151b974ad5",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/base/dim.png": "8683282c6a508cec570df1a33bc1604f1f6f28bbe96872b52305e424001f5036",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rgb/scene0383_static/base/record.json": "efe869d44433c65e8505cf6cddeaaf318883af04a93e28cf454bd2fbd041181f",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json": "9d1012dccd0a68b11ed71378971d43c1d2cec7821396e2bc70e8c95dce3d78e1",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/run.log": "f3ffd8ce1a922490c88f5a8d2bd7ca44d3ef25b9a34a50e4937b06f03a8bc62c",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/scene0383_static_single_image_effects.json": "3cb3b010b59a6023bd1bf5ef88fab01999f28271879904af58e621b5acf018db",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json": "25e130f5a06c509fa88baaaba7df2a6a2f406fbc91f2502094111a3dc3464005",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/camera_record.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/cases.json": "4094431f81f696470491c366dd65b973835f81284d4969483fbbea675a8ed9e7",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/config.json": "d20eb0396a25fb03125f9c653e6c75128f13bedac988e7dd20565712b835f301",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/environment.json": "7058a81b23431af744b39f22bccea9b4a7b5b0a2e5ac4427e0bd50dbc4b076fe",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/measurement_qualification.json": "ac6f0f9896893e3bf9d9db8a96703b174c89bcf041d700afcea3196df7c84190",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/run.log": "0270a97177b089f3641753a925ea869e27fb1c48692cb6357fe7eee13e806ae0",
+    "artifacts/physics_alphabet_probe_001/qualification_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/physics_alphabet_probe_001/analysis_run001/image_additive_uncertainty_audit.json": "4796f0ae64e688283577379f1ce4339f2ce6eb346d38f72b1246250b948aa648"
+  },
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_coded_measurement_qualified": "accepted",
+      "full_operator_program_matches_finite_RGB_contract": "accepted",
+      "single_conditions_determine_composition_rule": "rejected",
+      "swapped_order_valid_for_all_new_combinations": "rejected",
+      "additive_image_effects_valid_for_all_new_combinations": "rejected",
+      "rotation_can_be_omitted_in_this_family": "rejected",
+      "translation_can_be_omitted_in_this_family": "rejected",
+      "fixed_depth_can_replace_point_perspective_in_this_family": "rejected",
+      "visibility_can_be_omitted_in_this_family": "rejected",
+      "unique_minimal_complete_world_alphabet_established": "rejected",
+      "unknown_physical_laws_discovered_from_pixels": "rejected",
+      "this_experiment_establishes_real_AD_fitness": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "single_conditions_determine_composition_rule": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Three fixed candidates match every single condition but disagree on new combinations.",
+        "diagnostic_finding": "single_case_ambiguity",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "swapped_order_valid_for_all_new_combinations": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "T_R_P_V: 16/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+        "diagnostic_finding": "order_rule",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "additive_image_effects_valid_for_all_new_combinations": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "image_additive: 16/16 single and 2/32 combination pairs fit the frozen contract; all48 readouts were qualified. Even after the post-result conservative4epsilon uncertainty audit,21/32 combinations remain incompatible;11are unresolved.",
+        "diagnostic_finding": "image_sum",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "rotation_can_be_omitted_in_this_family": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "without_R: 12/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+        "diagnostic_finding": "rotation_ablation",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "translation_can_be_omitted_in_this_family": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "without_T: 12/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+        "diagnostic_finding": "translation_ablation",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "fixed_depth_can_replace_point_perspective_in_this_family": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "fixed_depth_P: 8/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+        "diagnostic_finding": "perspective_ablation",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "visibility_can_be_omitted_in_this_family": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "without_V: 12/16 single and 16/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+        "diagnostic_finding": "visibility_ablation",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "unique_minimal_complete_world_alphabet_established": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Only a finite hand-specified seven-program class with two coded markers was compared; alternative equivalent representations and omitted mechanism families remain.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/physics_alphabet_probe_001.md"
+        ]
+      },
+      "unknown_physical_laws_discovered_from_pixels": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "Geometry, local state, candidate operators and laws were researcher-specified; no unsupervised or causal representation discovery was run.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/physics_alphabet_probe_001.md"
+        ]
+      },
+      "this_experiment_establishes_real_AD_fitness": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No real-source pair, AD, temporal dynamics, actuator, contact or driving-task margin was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/physics_alphabet_probe_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "qualified_instrument": {
+      "component": "coded RGB centroid/identity instrument",
+      "expected": "Finite literal2D coding grid fits0.25px position and0.5px width budgets; unqualified patterns block.",
+      "observed": "432/432 identity pairs correct; max position 0.04283489096570747px; all3unqualified controls blocked.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite artificial marker qualification only.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/measurement_qualification.json"
+      ]
+    },
+    "full_internal_consistency": {
+      "component": "HUGSIM object-local rigid placement through rendered RGB",
+      "expected": "The frozen four-operation program matches all controlled visible point identities and positions.",
+      "observed": "48/48 pairs passed; maximum position error 0.09056338373568451px.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Supports this finite rendering execution contract, not real-world/AD fitness or unique mechanisms.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "single_case_ambiguity": {
+      "component": "identifiability of operator ordering from single conditions",
+      "expected": "All single conditions would uniquely identify the composition rule.",
+      "observed": "Full, swapped-order and image-additive programs each passed16/16 singles; only full passed all32 combinations.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Require discriminating combinations; not evidence that HUGSIM spontaneously uses a wrong order.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "order_rule": {
+      "component": "T_R_P_V",
+      "expected": "This candidate substitution would fit every tested condition.",
+      "observed": "T_R_P_V: 16/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite candidate-family counterexample only; the candidate is a prediction rule, not an observed HUGSIM defect.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "image_sum": {
+      "component": "image_additive",
+      "expected": "This candidate substitution would fit every tested condition.",
+      "observed": "image_additive: 16/16 single and 2/32 combination pairs fit the frozen contract; all48 readouts were qualified. Post-result conservative error audit:21/32 exceed4*0.25px,11/32 remain unresolved; original point-score decisions unchanged.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite candidate-family counterexample only; the candidate is a prediction rule, not an observed HUGSIM defect. Rejecting the broad additive mechanism is supported by the21 errors outside the propagated bound, not all30 point-score failures.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json",
+        "artifacts/physics_alphabet_probe_001/analysis_run001/image_additive_uncertainty_audit.json"
+      ]
+    },
+    "rotation_ablation": {
+      "component": "without_R",
+      "expected": "This candidate substitution would fit every tested condition.",
+      "observed": "without_R: 12/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite candidate-family counterexample only; the candidate is a prediction rule, not an observed HUGSIM defect.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "translation_ablation": {
+      "component": "without_T",
+      "expected": "This candidate substitution would fit every tested condition.",
+      "observed": "without_T: 12/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite candidate-family counterexample only; the candidate is a prediction rule, not an observed HUGSIM defect.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "perspective_ablation": {
+      "component": "fixed_depth_P",
+      "expected": "This candidate substitution would fit every tested condition.",
+      "observed": "fixed_depth_P: 8/16 single and 0/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite candidate-family counterexample only; the candidate is a prediction rule, not an observed HUGSIM defect.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "visibility_ablation": {
+      "component": "without_V",
+      "expected": "This candidate substitution would fit every tested condition.",
+      "observed": "without_V: 12/16 single and 16/32 combination pairs fit the frozen contract; all48 readouts were qualified.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite candidate-family counterexample only; the candidate is a prediction rule, not an observed HUGSIM defect.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_probe_001/hugsim_run001/rows.json"
+      ]
+    }
+  },
+  "limitations": [
+    "Candidate physical operators and grammar are researcher-specified; no law discovered from scratch.",
+    "Only two coded Gaussian markers, one camera and two contexts; no dynamics or real AD.",
+    "Image-additive coefficients use single-operator images only; all other programs use frozen geometry and camera.",
+    "Finite candidate discrimination does not establish a unique minimal or complete alphabet of world simulation.",
+    "Visibility is conditional on the given Gaussian opacity/size and contrast threshold; not natural-object opaque visibility.",
+    "All point positions are controlled, not original real-object3D labels; no source-pair gate upgrade.",
+    "A candidate operator can be merged or split under a different representation; the term alphabet is a research analogy.",
+    "The propagated image-additive measurement-error audit was introduced after inspecting results; it does not change the preregistered point-score criterion."
+  ],
+  "image_additive_uncertainty_audit": {
+    "scope": "Post-result measurement-uncertainty audit; preregistered point-prediction decisions are retained unchanged.",
+    "hypothesis": "True image coordinates obey uv_comb=uv_R+uv_T-uv_base. Each distinct measured coordinate has bounded error epsilon.",
+    "conditional_derivation": "Observed residual has absolute bound epsilon_comb+epsilon_R+epsilon_T+epsilon_base=4epsilon; no independence or Gaussian error assumption.",
+    "measurement_epsilon_px": 0.25,
+    "residual_bound_px": 1.0,
+    "count": 32,
+    "robustly_excluded_count": 21,
+    "unresolved_count": 11,
+    "not_a_real_camera_bound": true,
+    "rows": [
+      {
+        "context": "isolated",
+        "case_id": "R-30_T0_none",
+        "max_residual_px": 2.244632327280385,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T0_front_left",
+        "max_residual_px": 2.2383169653145387,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T0_front_right",
+        "max_residual_px": 1.935517281327975,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T0_behind_left",
+        "max_residual_px": 2.24667314360687,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T1_none",
+        "max_residual_px": 1.0258172357612807,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T1_front_left",
+        "max_residual_px": 1.0301431914957107,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T1_front_right",
+        "max_residual_px": 0.9461122345941817,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R-30_T1_behind_left",
+        "max_residual_px": 1.0258172357613375,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T0_none",
+        "max_residual_px": 1.0167166450657987,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T0_front_left",
+        "max_residual_px": 1.014332266388294,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T0_front_right",
+        "max_residual_px": 0.7941431854697498,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T0_behind_left",
+        "max_residual_px": 1.0167166450657987,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T1_none",
+        "max_residual_px": 0.3703688222219057,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T1_front_left",
+        "max_residual_px": 0.3675819284363797,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T1_front_right",
+        "max_residual_px": 0.02769892421588338,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "isolated",
+        "case_id": "R30_T1_behind_left",
+        "max_residual_px": 0.3715759977496873,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T0_none",
+        "max_residual_px": 2.246779566809721,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T0_front_left",
+        "max_residual_px": 2.2206064661633604,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T0_front_right",
+        "max_residual_px": 1.94601435516239,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T0_behind_left",
+        "max_residual_px": 2.226823046465654,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T1_none",
+        "max_residual_px": 1.022946457091507,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T1_front_left",
+        "max_residual_px": 1.024994986667707,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T1_front_right",
+        "max_residual_px": 1.003171429104384,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R-30_T1_behind_left",
+        "max_residual_px": 1.025308841568119,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T0_none",
+        "max_residual_px": 1.0011954059045252,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T0_front_left",
+        "max_residual_px": 1.0460674476860845,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T0_front_right",
+        "max_residual_px": 0.7681758946458785,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T0_behind_left",
+        "max_residual_px": 1.0011954059045252,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "excluded_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T1_none",
+        "max_residual_px": 0.343210262434809,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T1_front_left",
+        "max_residual_px": 0.34211384019693014,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T1_front_right",
+        "max_residual_px": 0.03544618975337244,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      },
+      {
+        "context": "scene0383_static",
+        "case_id": "R30_T1_behind_left",
+        "max_residual_px": 0.34291166414374175,
+        "single_measurement_bound_px": 0.25,
+        "three_calibration_plus_one_combination_bound_px": 1.0,
+        "classification": "unresolved_with_bound"
+      }
+    ]
+  }
+}
