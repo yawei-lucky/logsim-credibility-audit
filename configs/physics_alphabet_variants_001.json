@@ -1,0 +1,332 @@
+{
+  "hugsim_repo": "/home/yawei/HUGSIM",
+  "model_dir": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383",
+  "camera": "CAM_FRONT",
+  "metadata_frame": "00000",
+  "contexts": [
+    "isolated",
+    "scene0383_static"
+  ],
+  "marker_sigma_m": 0.035,
+  "marker_opacity": 0.9,
+  "occluder_sigma_m": 0.45,
+  "occluder_opacity": 0.9999,
+  "occluder_level": 0.25,
+  "marker_codes": {
+    "left": {
+      "bright": [
+        0.9,
+        0.2,
+        0.2
+      ],
+      "dim": [
+        0.1,
+        0.2,
+        0.2
+      ]
+    },
+    "right": {
+      "bright": [
+        0.2,
+        0.2,
+        0.9
+      ],
+      "dim": [
+        0.2,
+        0.2,
+        0.1
+      ]
+    }
+  },
+  "experiment_id": "physics_alphabet_variants_001",
+  "base_center_camera_m": [
+    0,
+    -0.65,
+    24.0
+  ],
+  "body_points_m": [
+    [
+      -0.8,
+      0,
+      0
+    ],
+    [
+      0.8,
+      0,
+      0
+    ]
+  ],
+  "angles_deg": [
+    -50,
+    55
+  ],
+  "translations_m": [
+    [
+      2.4,
+      0.35,
+      -4.0
+    ],
+    [
+      -1.8,
+      -0.3,
+      4.0
+    ]
+  ],
+  "occluder_depth_gap_m": 2.0,
+  "occlusion_conditions": [
+    "none",
+    "front_left",
+    "front_right",
+    "behind_left"
+  ],
+  "qualification": {
+    "templates": [
+      {
+        "centres": [
+          [
+            440.25,
+            220.25
+          ]
+        ],
+        "ids": [
+          "left"
+        ]
+      },
+      {
+        "centres": [
+          [
+            580.75,
+            244.25
+          ]
+        ],
+        "ids": [
+          "right"
+        ]
+      },
+      {
+        "centres": [
+          [
+            440.25,
+            220.25
+          ]
+        ],
+        "ids": [
+          "right"
+        ]
+      },
+      {
+        "centres": [
+          [
+            580.75,
+            244.25
+          ]
+        ],
+        "ids": [
+          "left"
+        ]
+      },
+      {
+        "centres": [
+          [
+            444.25,
+            235.25
+          ],
+          [
+            460.75,
+            245.75
+          ]
+        ],
+        "ids": [
+          "left",
+          "right"
+        ]
+      },
+      {
+        "centres": [
+          [
+            490.25,
+            220.25
+          ],
+          [
+            560.75,
+            244.75
+          ]
+        ],
+        "ids": [
+          "left",
+          "right"
+        ]
+      },
+      {
+        "centres": [
+          [
+            355.25,
+            215.25
+          ],
+          [
+            405.75,
+            215.75
+          ]
+        ],
+        "ids": [
+          "left",
+          "right"
+        ]
+      },
+      {
+        "centres": [
+          [
+            465.25,
+            235.25
+          ],
+          [
+            510.75,
+            235.75
+          ]
+        ],
+        "ids": [
+          "left",
+          "right"
+        ]
+      }
+    ],
+    "phases_u_px": [
+      0.0,
+      0.5
+    ],
+    "phases_v_px": [
+      0.0,
+      0.5
+    ],
+    "sigmas_px": [
+      0.6,
+      0.9,
+      1.3,
+      1.9
+    ],
+    "mixes": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.94,
+          0.03,
+          0.03
+        ],
+        [
+          0.03,
+          0.94,
+          0.03
+        ],
+        [
+          0.03,
+          0.03,
+          0.94
+        ]
+      ],
+      [
+        [
+          0.9,
+          0.02,
+          0.04
+        ],
+        [
+          0.04,
+          0.94,
+          0.07
+        ],
+        [
+          0.06,
+          0.04,
+          0.89
+        ]
+      ]
+    ]
+  },
+  "suite": {
+    "camera": {
+      "name": "CAM_FRONT",
+      "width": 800,
+      "height": 450,
+      "pixel_centres": "u = column + 0.5, v = row + 0.5",
+      "intrinsics": [
+        [
+          633.208601523277,
+          0.0,
+          408.1335098723992
+        ],
+        [
+          0.0,
+          633.208601523277,
+          245.75353289647379
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "measurement": {
+      "difference_threshold_u8": 8,
+      "min_component_area_px": 3,
+      "width_error_bound_px": 0.5,
+      "position_error_bound_px": 0.25,
+      "identity_channels": {
+        "left": 0,
+        "right": 2
+      },
+      "identity_min_channel_fraction": 0.85
+    }
+  },
+  "reference_config": "configs/physics_alphabet_probe_001.json",
+  "reference_rule_source": "scripts/run_physics_alphabet_probe.py",
+  "reference_rule_sha256": "64b8c7645fd1b446230bcfce3d821ab334e3e0c800d356cdd369ff16d2f3a57b",
+  "reference_angle_deg": 30,
+  "translation_index": 0,
+  "variant_base_depths_m": [
+    18,
+    36
+  ],
+  "variant_body_layouts_m": {
+    "wide_level": [
+      [
+        -1.1,
+        0,
+        0
+      ],
+      [
+        1.1,
+        0,
+        0
+      ]
+    ],
+    "skew_depth": [
+      [
+        -0.9,
+        -0.22,
+        -0.15
+      ],
+      [
+        0.7,
+        0.25,
+        0.25
+      ]
+    ]
+  }
+}
