@@ -1,0 +1,677 @@
+{
+  "experiment_id": "motion_occlusion_probe_001",
+  "date": "2026-10-30",
+  "preregistration_commit": "d4a743d4eead9df5445a4f81db0a7d9d56937bc5",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "config": "configs/motion_occlusion_probe_001.json",
+  "preregistration": "docs/runs/motion_occlusion_probe_preregistration_001.md",
+  "claim_contract": {
+    "scope": "External prescribed motion and front/rear occlusion in paired coded RGB, supplied logical times, two backgrounds.",
+    "sequences": 8,
+    "samples_per_sequence": 45,
+    "dt_s": 0.05,
+    "pair_count": 360,
+    "new_RGB_count": 720,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "reference_states": [
+      "clear",
+      "hidden",
+      "transition"
+    ],
+    "complete_decision_frames": 304,
+    "frames_with_unresolved_transition_point": 56,
+    "qualified_point_checks": 664,
+    "clear_point_checks": 612,
+    "hidden_point_checks": 52,
+    "new_RGB_used_for_fitting": false,
+    "expectation_sha256": "1462f37848b341e7e5cee65167d47bc8d2ef8ea948ab98a9c4b607519b89b8a3"
+  },
+  "results": {
+    "full": {
+      "readout_qualified_frames": 360,
+      "fully_decidable_frames": 304,
+      "fully_decidable_frames_passed": 304,
+      "point_checks": 664,
+      "violation_count": 0,
+      "frames_with_contradictions": 0,
+      "max_qualified_clear_position_error_px": 0.09697582936647109
+    },
+    "stale_target_0p2s": {
+      "readout_qualified_frames": 360,
+      "fully_decidable_frames": 252,
+      "fully_decidable_frames_passed": 8,
+      "point_checks": 612,
+      "violation_count": 590,
+      "frames_with_contradictions": 352,
+      "max_qualified_clear_position_error_px": 2.957272249536004
+    },
+    "stale_occluder_0p5s": {
+      "readout_qualified_frames": 360,
+      "fully_decidable_frames": 234,
+      "fully_decidable_frames_passed": 218,
+      "point_checks": 594,
+      "violation_count": 16,
+      "frames_with_contradictions": 16,
+      "max_qualified_clear_position_error_px": 0.09697582936647109
+    },
+    "ignore_phase": {
+      "readout_qualified_frames": 360,
+      "fully_decidable_frames": 276,
+      "fully_decidable_frames_passed": 264,
+      "point_checks": 636,
+      "violation_count": 12,
+      "frames_with_contradictions": 12,
+      "max_qualified_clear_position_error_px": 0.09697582936647109
+    },
+    "rear_as_front": {
+      "readout_qualified_frames": 360,
+      "fully_decidable_frames": 276,
+      "fully_decidable_frames_passed": 250,
+      "point_checks": 636,
+      "violation_count": 26,
+      "frames_with_contradictions": 26,
+      "max_qualified_clear_position_error_px": 0.09697582936647109
+    },
+    "ignore_occlusion": {
+      "readout_qualified_frames": 360,
+      "fully_decidable_frames": 304,
+      "fully_decidable_frames_passed": 252,
+      "point_checks": 664,
+      "violation_count": 52,
+      "frames_with_contradictions": 52,
+      "max_qualified_clear_position_error_px": 0.09697582936647109
+    }
+  },
+  "events": [
+    {
+      "context": "isolated",
+      "case": "front_early",
+      "independent_disappearance_bracket_s": [
+        0.0,
+        0.4
+      ],
+      "independent_reappearance_bracket_s": [
+        1.0,
+        1.4
+      ],
+      "first_sampled_disappearance_in_bracket_s": 0.4,
+      "first_sampled_reappearance_in_bracket_s": 1.05,
+      "scope": "operational coded-feature readout at sampled logical times, not exact physical opacity or real exposure time"
+    },
+    {
+      "context": "isolated",
+      "case": "front_late",
+      "independent_disappearance_bracket_s": [
+        0.5,
+        0.9
+      ],
+      "independent_reappearance_bracket_s": [
+        1.5,
+        1.9
+      ],
+      "first_sampled_disappearance_in_bracket_s": 0.9,
+      "first_sampled_reappearance_in_bracket_s": 1.55,
+      "scope": "operational coded-feature readout at sampled logical times, not exact physical opacity or real exposure time"
+    },
+    {
+      "context": "scene0383_static",
+      "case": "front_early",
+      "independent_disappearance_bracket_s": [
+        0.0,
+        0.4
+      ],
+      "independent_reappearance_bracket_s": [
+        1.0,
+        1.4
+      ],
+      "first_sampled_disappearance_in_bracket_s": 0.4,
+      "first_sampled_reappearance_in_bracket_s": 1.05,
+      "scope": "operational coded-feature readout at sampled logical times, not exact physical opacity or real exposure time"
+    },
+    {
+      "context": "scene0383_static",
+      "case": "front_late",
+      "independent_disappearance_bracket_s": [
+        0.5,
+        0.9
+      ],
+      "independent_reappearance_bracket_s": [
+        1.5,
+        1.9
+      ],
+      "first_sampled_disappearance_in_bracket_s": 0.9,
+      "first_sampled_reappearance_in_bracket_s": 1.55,
+      "scope": "operational coded-feature readout at sampled logical times, not exact physical opacity or real exposure time"
+    }
+  ],
+  "measurement_qualification": {
+    "positive_pair_count": 768,
+    "correct_identity_and_count_pairs": 768,
+    "max_position_error_px": 0.057628524046435814,
+    "max_width_error_px": 0.11096600331677564,
+    "invalid_controls_blocked": {
+      "ambiguous": true,
+      "unknown_green": true,
+      "boundary": true
+    },
+    "partial_boundary_examples": [
+      {
+        "background": "black",
+        "offset_sigma": -0.75,
+        "left_visible": true,
+        "unoccluded_center_error_px": 0.3083333333333371,
+        "raw_readout": {
+          "features": [
+            {
+              "u": 350.55833333333334,
+              "v": 220.21666666666664,
+              "area_px": 7,
+              "identity": "left",
+              "channel_fractions_rgb": [
+                1.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "u": 500.7566878980892,
+              "v": 220.75668789808918,
+              "area_px": 20,
+              "identity": "right",
+              "channel_fractions_rgb": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            }
+          ],
+          "visible_marker_count": 2,
+          "width_px": 150.19835456475585,
+          "identities_qualified": true
+        }
+      },
+      {
+        "background": "black",
+        "offset_sigma": 0.75,
+        "left_visible": true,
+        "unoccluded_center_error_px": 0.4306722689076423,
+        "raw_readout": {
+          "features": [
+            {
+              "u": 349.81932773109236,
+              "v": 220.41596638655457,
+              "area_px": 7,
+              "identity": "left",
+              "channel_fractions_rgb": [
+                1.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "u": 500.7566878980892,
+              "v": 220.75668789808918,
+              "area_px": 20,
+              "identity": "right",
+              "channel_fractions_rgb": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            }
+          ],
+          "visible_marker_count": 2,
+          "width_px": 150.93736016699683,
+          "identities_qualified": true
+        }
+      },
+      {
+        "background": "texture",
+        "offset_sigma": -0.75,
+        "left_visible": true,
+        "unoccluded_center_error_px": 0.30439330543936194,
+        "raw_readout": {
+          "features": [
+            {
+              "u": 350.55439330543936,
+              "v": 220.21966527196653,
+              "area_px": 7,
+              "identity": "left",
+              "channel_fractions_rgb": [
+                1.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "u": 500.755562619199,
+              "v": 220.75556261919897,
+              "area_px": 20,
+              "identity": "right",
+              "channel_fractions_rgb": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            }
+          ],
+          "visible_marker_count": 2,
+          "width_px": 150.20116931375964,
+          "identities_qualified": true
+        }
+      },
+      {
+        "background": "texture",
+        "offset_sigma": 0.75,
+        "left_visible": true,
+        "unoccluded_center_error_px": 0.4306722689076423,
+        "raw_readout": {
+          "features": [
+            {
+              "u": 349.81932773109236,
+              "v": 220.42436974789914,
+              "area_px": 7,
+              "identity": "left",
+              "channel_fractions_rgb": [
+                1.0,
+                0.0,
+                0.0
+              ]
+            },
+            {
+              "u": 500.755562619199,
+              "v": 220.75556261919897,
+              "area_px": 20,
+              "identity": "right",
+              "channel_fractions_rgb": [
+                0.0,
+                0.0,
+                1.0
+              ]
+            }
+          ],
+          "visible_marker_count": 2,
+          "width_px": 150.93623488810664,
+          "identities_qualified": true
+        }
+      }
+    ],
+    "qualified": true,
+    "scope": "Finite independent 2D alpha-profile instrument qualification; transition examples are diagnostics, not pass requirements or a real-opacity standard."
+  },
+  "transition_diagnostic": {
+    "max_raw_center_error_px": 0.2779067519895193,
+    "visible_transition_points_over_old_position_budget": 1,
+    "scope": "Descriptive readout drift; transition centroids were excluded before GPU and are not HUGSIM projection defects."
+  },
+  "post_result_timing_summary": {
+    "analysis_timing": "Post-result descriptive diagnostic; no gate changes",
+    "algorithm": "Count sampled left-code components and longest consecutive absence from recorded RGB readouts; timestamps remain in event records.",
+    "scope": "Operational coded-feature availability only; no physical opacity duration or AD outcome claim.",
+    "sequences": [
+      {
+        "context": "isolated",
+        "case": "motion_only",
+        "left_code_present_samples": 45,
+        "left_code_absent_samples": 0,
+        "longest_absent_sample_run": 0,
+        "first_sampled_reappearance_s": null
+      },
+      {
+        "context": "isolated",
+        "case": "front_early",
+        "left_code_present_samples": 32,
+        "left_code_absent_samples": 13,
+        "longest_absent_sample_run": 13,
+        "first_sampled_reappearance_s": 1.05
+      },
+      {
+        "context": "isolated",
+        "case": "front_late",
+        "left_code_present_samples": 32,
+        "left_code_absent_samples": 13,
+        "longest_absent_sample_run": 13,
+        "first_sampled_reappearance_s": 1.55
+      },
+      {
+        "context": "isolated",
+        "case": "rear_early",
+        "left_code_present_samples": 45,
+        "left_code_absent_samples": 0,
+        "longest_absent_sample_run": 0,
+        "first_sampled_reappearance_s": null
+      },
+      {
+        "context": "scene0383_static",
+        "case": "motion_only",
+        "left_code_present_samples": 45,
+        "left_code_absent_samples": 0,
+        "longest_absent_sample_run": 0,
+        "first_sampled_reappearance_s": null
+      },
+      {
+        "context": "scene0383_static",
+        "case": "front_early",
+        "left_code_present_samples": 32,
+        "left_code_absent_samples": 13,
+        "longest_absent_sample_run": 13,
+        "first_sampled_reappearance_s": 1.05
+      },
+      {
+        "context": "scene0383_static",
+        "case": "front_late",
+        "left_code_present_samples": 32,
+        "left_code_absent_samples": 13,
+        "longest_absent_sample_run": 13,
+        "first_sampled_reappearance_s": 1.55
+      },
+      {
+        "context": "scene0383_static",
+        "case": "rear_early",
+        "left_code_present_samples": 45,
+        "left_code_absent_samples": 0,
+        "longest_absent_sample_run": 0,
+        "first_sampled_reappearance_s": null
+      }
+    ]
+  },
+  "execution_validation": {
+    "PNG_pairs_read_back": 360,
+    "RGB_hashes_verified": 720,
+    "candidate_judgements_recomputed": 2160,
+    "event_brackets_recomputed_and_samples_inside": 4,
+    "all_recorded_input_hashes_verified": true,
+    "CPU_and_GPU_qualification_and_expectation_files_identical": true,
+    "old_shared_measurement_and_geometry_sources_unchanged": true,
+    "complete_sequences": 8,
+    "samples_per_sequence": 45,
+    "matched_target_pose_across_cases_and_backgrounds": true,
+    "actual_camera_pose_fixed": true,
+    "geometry_and_opacity_preserved": true,
+    "max_actual_float32_pose_vs_scalar_projection_difference_px": 5.057290479726362e-06,
+    "qualified_clear_point_checks": 612,
+    "qualified_hidden_point_checks": 52,
+    "qualified_width_null_frames": 108,
+    "reference_transition_points_preserved": 56,
+    "scope": "Readback, input and arithmetic consistency, not native dynamics, sensor clock or independent real-world evidence.",
+    "implementation_tests_passed": 6,
+    "raw_single_marker_frames": 52
+  },
+  "provenance": {
+    "execution_host": "stf-precision-3680",
+    "audit_commit": "d4a743d4eead9df5445a4f81db0a7d9d56937bc5",
+    "audit_status": "",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "environment_record": "artifacts/motion_occlusion_probe_001/hugsim_run001/environment.json"
+  },
+  "execution_resources": {
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "torch": "2.4.1+cu121",
+    "torch_cuda": "12.1",
+    "elapsed_seconds": 49.269805243995506,
+    "peak_process_RSS_bytes": 1450106880,
+    "peak_torch_GPU_reserved_bytes": 3382706176
+  },
+  "artifact_hashes": {
+    "artifacts/motion_occlusion_probe_001/analysis_run001/partial_occlusion_centroid_boundary.png": "16d8195cd259c71bc663acef8a798ae4d8abf3b005636c86ad08ffda39f66d0a",
+    "artifacts/motion_occlusion_probe_001/analysis_run001/timing_summary_diagnostic.json": "d53ce6b7723cb36d30991bb67b4363f5285d366f3b83bbf484c8159f611b1bb8",
+    "artifacts/motion_occlusion_probe_001/analysis_run001/transition_diagnostics.json": "f3f9b76023935332721d5aa985e689115a603d834f7bad64755e9e7e69a1b94e",
+    "artifacts/motion_occlusion_probe_001/analysis_run001/validate_and_plot.py": "3f44a71c0ef084099232d4c16870a524690bfe85d5527cfba5fc2f418bc8dea8",
+    "artifacts/motion_occlusion_probe_001/analysis_run001/validation.json": "31323e017c25f4a48ce7651867e2cf0192680be9242ebaae55b2381543502217",
+    "artifacts/motion_occlusion_probe_001/analysis_run001/visibility_timeline.png": "7870832d0799ddba65b1fe9958b10d7a93539e993edc9a28271a61cedadd7266",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/camera_record.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/config.json": "f28a24c40c78d507f204cca6072969aaa2cb24c1a84b9fccdd71dc4bd43cbaea",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/environment.json": "a24c713e0e2c5df08f0a4501fde1789daadd9174b32cc115d421a4423ccfc4ca",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/event_brackets.json": "0563014c1a3ff7847665866a20c2a66e5116251c7be9c404991d3f56fb8631a2",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/expectations_before_rgb.json": "1462f37848b341e7e5cee65167d47bc8d2ef8ea948ab98a9c4b607519b89b8a3",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/input_validity.json": "170478d3145c49688b82bf77f4926bcaf640abf0e0023db08668b1ddda3d55bd",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/measurement_qualification.json": "b20200f7981f86e93acc709942e362f3a993a7a57308f55c7058dc826b7feae1",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json": "8561d44a257404bd485e01c1817d3f17e8d12af617ca90d5e618cec801fd0ed0",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/run.log": "5cf35b8243d8f83371c7a5c3d521bb75daf224497412eed90e8fe8063e34eefd",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json": "94d0f158a4331a9b2530e08805968625e933ccfdc8fec0f345b75d4f8163e883",
+    "artifacts/motion_occlusion_probe_001/qualification_run001/expectations_before_rgb.json": "1462f37848b341e7e5cee65167d47bc8d2ef8ea948ab98a9c4b607519b89b8a3",
+    "artifacts/motion_occlusion_probe_001/qualification_run001/measurement_qualification.json": "b20200f7981f86e93acc709942e362f3a993a7a57308f55c7058dc826b7feae1"
+  },
+  "artifact_integrity_scope": "rows.json stores all720 PNG hashes; analysis read back all360 saved per-case records and RGB observations. Manifest hashes expectations, environment, summaries and analysis products.",
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_stable_alpha_profile_instrument_qualified": "accepted",
+      "prescribed_state_RGB_consistency_on_definite_points": "accepted",
+      "bounded_sampled_occlusion_phase_effect_consistent": "accepted",
+      "target_state_0p2s_old_explains_all_current_qualified_points": "rejected",
+      "occluder_state_0p5s_old_explains_all_current_qualified_points": "rejected",
+      "occlusion_phase_can_be_ignored": "rejected",
+      "rear_occluder_can_use_front_occlusion_reference": "rejected",
+      "occlusion_can_be_ignored_in_this_family": "rejected",
+      "every_visible_partial_centroid_is_a_qualified_unoccluded_point_projection": "rejected",
+      "availability_count_and_longest_absence_determine_reappearance_time": "rejected",
+      "native_dynamics_or_true_sensor_timing_qualified": "rejected",
+      "natural_vehicle_or_real_AD_fitness_qualified": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "target_state_0p2s_old_explains_all_current_qualified_points": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "stale_target_0p2s: 590 point contradictions across 352 frames, evaluated only where both the true and candidate references are definite.",
+        "diagnostic_finding": "candidate_stale_target_0p2s",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "occluder_state_0p5s_old_explains_all_current_qualified_points": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "stale_occluder_0p5s: 16 point contradictions across 16 frames, evaluated only where both the true and candidate references are definite.",
+        "diagnostic_finding": "candidate_stale_occluder_0p5s",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "occlusion_phase_can_be_ignored": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "ignore_phase: 12 point contradictions across 12 frames, evaluated only where both the true and candidate references are definite.",
+        "diagnostic_finding": "candidate_ignore_phase",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "rear_occluder_can_use_front_occlusion_reference": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "rear_as_front: 26 point contradictions across 26 frames, evaluated only where both the true and candidate references are definite.",
+        "diagnostic_finding": "candidate_rear_as_front",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "occlusion_can_be_ignored_in_this_family": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "ignore_occlusion: 52 point contradictions across 52 frames, evaluated only where both the true and candidate references are definite.",
+        "diagnostic_finding": "candidate_ignore_occlusion",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "every_visible_partial_centroid_is_a_qualified_unoccluded_point_projection": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "All four independent 2D partial-occlusion controls preserve literal target centres yet shift visible centroids 0.304-0.431 px, beyond the original 0.25 px gate. HUGSIM transition drift is diagnostic only.",
+        "diagnostic_finding": "partial_centroid_boundary",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/measurement_qualification.json",
+          "artifacts/motion_occlusion_probe_001/analysis_run001/transition_diagnostics.json"
+        ]
+      },
+      "availability_count_and_longest_absence_determine_reappearance_time": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Early and late sequences each have 32 left-code-present samples,13 absent samples and a longest absent run of13, while reappearance is at1.05 versus1.55s in both contexts.",
+        "diagnostic_finding": "timing_summary_blindspot",
+        "evidence_refs": [
+          "artifacts/motion_occlusion_probe_001/analysis_run001/timing_summary_diagnostic.json",
+          "artifacts/motion_occlusion_probe_001/hugsim_run001/event_brackets.json"
+        ]
+      },
+      "native_dynamics_or_true_sensor_timing_qualified": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "Every state is externally prescribed at supplied logical timestamps; no native integration or true exposure/delivery measurement.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/motion_occlusion_probe_001.md"
+        ]
+      },
+      "natural_vehicle_or_real_AD_fitness_qualified": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "Only coded Gaussian points and one scene were tested; no natural-shape reference, matched real pair, AD or task margin.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/motion_occlusion_probe_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "stable_instrument": {
+      "component": "Coded RGB centroid and presence reader on stable alpha profiles",
+      "expected": "Finite independently specified clear/hidden 2D controls meet original position, width and identity gates; invalid patterns block.",
+      "observed": "768/768 correct identities and counts; max position error 0.057628524046435814 px, max width error 0.11096600331677564 px; all three invalid controls blocked.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite stable artificial-profile qualification only; transition centroids and real opacity remain unqualified.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/measurement_qualification.json"
+      ]
+    },
+    "definite_state_RGB_contract": {
+      "component": "HUGSIM prescribed poses, alpha occlusion and coded RGB at logical timestamps",
+      "expected": "Frozen independently qualified clear/hidden points follow current prescribed geometry and visibility; transition points remain unresolved.",
+      "observed": "304/304 fully decidable frames fit; 664 point checks with zero contradictions, 56 transition points excluded; max qualified position residual 0.09697582936647109 px.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Bounded prescribed state-to-image consistency, not native motion integration, clock latency or real-AD fitness.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json",
+        "artifacts/motion_occlusion_probe_001/analysis_run001/validation.json"
+      ]
+    },
+    "bounded_phase_effect": {
+      "component": "Relative timing of prescribed target and front occluder trajectories",
+      "expected": "Sampled disappearance/reappearance occurs inside each predeclared conservative clear/hidden bracket; late case reappears later.",
+      "observed": "Both backgrounds: early disappearance/reappearance at 0.4/1.05 s, late at 0.9/1.55 s; all within independent brackets.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Operational coded-feature availability at supplied logical times only, not exact continuous physical visibility or measured sensor delay.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/event_brackets.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json",
+        "artifacts/motion_occlusion_probe_001/analysis_run001/validation.json"
+      ]
+    },
+    "candidate_stale_target_0p2s": {
+      "component": "stale_target_0p2s",
+      "expected": "This fixed candidate explains every jointly qualified current readout in the declared artificial-marker family.",
+      "observed": "stale_target_0p2s: 590 point contradictions across 352 frames, evaluated only where both the true and candidate references are definite.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate explanation rejected, not corresponding HUGSIM defects or an estimate of real system delay. Candidate denominators differ and cannot rank severity or detection rate.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_stale_occluder_0p5s": {
+      "component": "stale_occluder_0p5s",
+      "expected": "This fixed candidate explains every jointly qualified current readout in the declared artificial-marker family.",
+      "observed": "stale_occluder_0p5s: 16 point contradictions across 16 frames, evaluated only where both the true and candidate references are definite.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate explanation rejected, not corresponding HUGSIM defects or an estimate of real system delay. Candidate denominators differ and cannot rank severity or detection rate.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_ignore_phase": {
+      "component": "ignore_phase",
+      "expected": "This fixed candidate explains every jointly qualified current readout in the declared artificial-marker family.",
+      "observed": "ignore_phase: 12 point contradictions across 12 frames, evaluated only where both the true and candidate references are definite.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate explanation rejected, not corresponding HUGSIM defects or an estimate of real system delay. Candidate denominators differ and cannot rank severity or detection rate.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_rear_as_front": {
+      "component": "rear_as_front",
+      "expected": "This fixed candidate explains every jointly qualified current readout in the declared artificial-marker family.",
+      "observed": "rear_as_front: 26 point contradictions across 26 frames, evaluated only where both the true and candidate references are definite.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate explanation rejected, not corresponding HUGSIM defects or an estimate of real system delay. Candidate denominators differ and cannot rank severity or detection rate.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_ignore_occlusion": {
+      "component": "ignore_occlusion",
+      "expected": "This fixed candidate explains every jointly qualified current readout in the declared artificial-marker family.",
+      "observed": "ignore_occlusion: 52 point contradictions across 52 frames, evaluated only where both the true and candidate references are definite.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate explanation rejected, not corresponding HUGSIM defects or an estimate of real system delay. Candidate denominators differ and cannot rank severity or detection rate.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/summary.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "partial_centroid_boundary": {
+      "component": "Applying an unoccluded-centroid measurement model after partial alpha occlusion",
+      "expected": "The old 0.25 px unoccluded-centre budget would hold whenever an identity remains readable under partial occlusion.",
+      "observed": "Four literal 2D controls exceed 0.25 px without moving the specified centres. HUGSIM transition diagnostic max raw drift is 0.2779067519895193 px; that region was excluded before GPU.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Instrument applicability boundary; preserve the unresolved band and qualify other features or intervals. No HUGSIM projection defect is established.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/measurement_qualification.json",
+        "artifacts/motion_occlusion_probe_001/analysis_run001/transition_diagnostics.json",
+        "docs/runs/motion_occlusion_probe_preregistration_001.md"
+      ]
+    },
+    "timing_summary_blindspot": {
+      "component": "Post-result descriptive availability summary",
+      "expected": "These two scalar counts would uniquely determine when the coded feature becomes available again.",
+      "observed": "Counts and longest absent run are equal for early and late cases, but sampled reappearance differs by0.5s.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Finite operational information-timing blindspot; post-result diagnosis, not a new preregistered gate, real opacity duration or AD outcome.",
+      "evidence_refs": [
+        "artifacts/motion_occlusion_probe_001/analysis_run001/timing_summary_diagnostic.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/event_brackets.json",
+        "artifacts/motion_occlusion_probe_001/hugsim_run001/rows.json"
+      ]
+    }
+  },
+  "limitations": [
+    "Externally prescribed poses at logical timestamps; no native dynamics, exposure/delivery latency or AD test.",
+    "Gaussian coded-feature visibility bands qualified only on finite independent 2D alpha profiles; no physical-material opacity standard.",
+    "Transition-point positions and precise visibility onset remain unqualified; raw transition observations are diagnostics only.",
+    "One camera, two coded points, one scene and two backgrounds; no direct real-sim or complete mechanism alphabet claim."
+  ]
+}
