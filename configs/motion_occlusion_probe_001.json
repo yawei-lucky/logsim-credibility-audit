@@ -1,0 +1,151 @@
+{
+  "experiment_id": "motion_occlusion_probe_001",
+  "base_config": "configs/physics_alphabet_variants_001.json",
+  "base_config_sha256": "24fb1612635a1ffc415f2bbd5ef765abe04990ab5b045d61c787c33d47ce8878",
+  "body_points_m": [
+    [
+      -1.8,
+      0,
+      0
+    ],
+    [
+      1.8,
+      0,
+      0
+    ]
+  ],
+  "motion": {
+    "center_at_zero_m": [
+      0,
+      -0.65,
+      26
+    ],
+    "velocity_mps": [
+      0.3,
+      0,
+      -2
+    ],
+    "yaw_at_zero_deg": -5,
+    "yaw_rate_degps": 8
+  },
+  "sampling": {
+    "dt_s": 0.05,
+    "steps": 44
+  },
+  "occlusion": {
+    "front_depth_m": 16,
+    "rear_depth_m": 34,
+    "sigma_m": 0.2,
+    "eps2d_px2": 0.3,
+    "clear_sigma": 5,
+    "hidden_core_sigma": 0.02,
+    "marker_margin_sigma": 3,
+    "offset_profile_sigma": [
+      [
+        0,
+        -6
+      ],
+      [
+        0.4,
+        0
+      ],
+      [
+        1.0,
+        0
+      ],
+      [
+        1.4,
+        6
+      ]
+    ]
+  },
+  "cases": [
+    {
+      "id": "motion_only",
+      "kind": "none",
+      "phase_s": 0
+    },
+    {
+      "id": "front_early",
+      "kind": "front",
+      "phase_s": 0
+    },
+    {
+      "id": "front_late",
+      "kind": "front",
+      "phase_s": 0.5
+    },
+    {
+      "id": "rear_early",
+      "kind": "rear",
+      "phase_s": 0
+    }
+  ],
+  "qualification": {
+    "marker_sigmas_px": [
+      0.9,
+      1.1,
+      1.25
+    ],
+    "occluder_sigmas_px": [
+      7.9,
+      9
+    ],
+    "phases_px": [
+      0,
+      0.5
+    ],
+    "offsets_sigma": [
+      -6,
+      0,
+      0.02,
+      6
+    ],
+    "centres_px": [
+      [
+        350.25,
+        220.25
+      ],
+      [
+        500.75,
+        220.75
+      ]
+    ],
+    "mixes": [
+      [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          0.9,
+          0.02,
+          0.04
+        ],
+        [
+          0.04,
+          0.94,
+          0.07
+        ],
+        [
+          0.06,
+          0.04,
+          0.89
+        ]
+      ]
+    ]
+  }
+}
