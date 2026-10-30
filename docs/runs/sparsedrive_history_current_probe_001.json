@@ -1,0 +1,1157 @@
+{
+  "experiment_id": "sparsedrive_history_current_probe_001",
+  "date": "2026-10-30",
+  "preregistration_commit": "4990d1ec4f6aa77f164208f891d0f519663c1b6f",
+  "claim_contract": {
+    "frames": [
+      12,
+      18,
+      24,
+      30,
+      36,
+      42,
+      48,
+      54
+    ],
+    "prefix_frames": [
+      12,
+      18,
+      24,
+      30,
+      36,
+      42,
+      48
+    ],
+    "current_frame": 54,
+    "replicates_per_arm": 2,
+    "source_image_count": 96,
+    "receiver_frame_count": 64,
+    "delivered_camera_reference_count": 384,
+    "new_render_count": 0,
+    "guard_per_output_m": 0.0001,
+    "guard_meaning": "numerical regression resolution; not task tolerance or statistical coverage",
+    "physical_task_tolerance": null,
+    "mixed_input_scope": "diagnostic source intervention, not recorded physical sensor switching"
+  },
+  "runtime": {
+    "host": "stf-precision-3680",
+    "gpu": "NVIDIA GeForce RTX 4090 D, 580.95.05, 458 MiB",
+    "duration_s": 28.567745,
+    "commands_manifest": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/run_manifest.json"
+  },
+  "results": {
+    "numerical_attribution_eligible": true,
+    "receiver_frame_contracts_checked": 64,
+    "repeat_checks": {
+      "RR": {
+        "max_abs_plan_difference_m": 7.62939453125e-06,
+        "within_guard": true
+      },
+      "RS": {
+        "max_abs_plan_difference_m": 5.7220458984375e-06,
+        "within_guard": true
+      },
+      "SR": {
+        "max_abs_plan_difference_m": 1.049041748046875e-05,
+        "within_guard": true
+      },
+      "SS": {
+        "max_abs_plan_difference_m": 5.7220458984375e-06,
+        "within_guard": true
+      }
+    },
+    "prefix_checks": {
+      "R": {
+        "max_pairwise_plan_difference_m": 1.0013580322265625e-05,
+        "within_guard": true
+      },
+      "S": {
+        "max_pairwise_plan_difference_m": 1.239776611328125e-05,
+        "within_guard": true
+      }
+    },
+    "arms": {
+      "RR": {
+        "plans_xy_m": [
+          [
+            [
+              -0.09732002764940262,
+              1.4633901119232178
+            ],
+            [
+              -0.3097362220287323,
+              2.7266430854797363
+            ],
+            [
+              -0.6257761716842651,
+              3.865370273590088
+            ],
+            [
+              -1.1011698246002197,
+              4.707521438598633
+            ],
+            [
+              -1.7712345123291016,
+              5.419956684112549
+            ],
+            [
+              -2.6162242889404297,
+              5.916800022125244
+            ]
+          ],
+          [
+            [
+              -0.09731987863779068,
+              1.4633898735046387
+            ],
+            [
+              -0.30973586440086365,
+              2.726642608642578
+            ],
+            [
+              -0.6257753968238831,
+              3.8653693199157715
+            ],
+            [
+              -1.1011686325073242,
+              4.707520008087158
+            ],
+            [
+              -1.7712327241897583,
+              5.419954776763916
+            ],
+            [
+              -2.6162221431732178,
+              5.916797161102295
+            ]
+          ]
+        ],
+        "planning_selection": [
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          },
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          }
+        ]
+      },
+      "RS": {
+        "plans_xy_m": [
+          [
+            [
+              -0.09977570921182632,
+              1.4797694683074951
+            ],
+            [
+              -0.32632139325141907,
+              2.7795519828796387
+            ],
+            [
+              -0.6645487546920776,
+              3.9504685401916504
+            ],
+            [
+              -1.1666338443756104,
+              4.849734306335449
+            ],
+            [
+              -1.8675463199615479,
+              5.624127388000488
+            ],
+            [
+              -2.7427990436553955,
+              6.193152904510498
+            ]
+          ],
+          [
+            [
+              -0.09977569431066513,
+              1.4797701835632324
+            ],
+            [
+              -0.326321542263031,
+              2.7795534133911133
+            ],
+            [
+              -0.6645491123199463,
+              3.950470447540283
+            ],
+            [
+              -1.1666343212127686,
+              4.849737167358398
+            ],
+            [
+              -1.8675470352172852,
+              5.624130725860596
+            ],
+            [
+              -2.742799997329712,
+              6.193156719207764
+            ]
+          ]
+        ],
+        "planning_selection": [
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          },
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          }
+        ]
+      },
+      "SR": {
+        "plans_xy_m": [
+          [
+            [
+              -0.09637723118066788,
+              1.4745047092437744
+            ],
+            [
+              -0.30449178814888,
+              2.7558531761169434
+            ],
+            [
+              -0.6271325349807739,
+              3.9135494232177734
+            ],
+            [
+              -1.1145943403244019,
+              4.769551753997803
+            ],
+            [
+              -1.7982696294784546,
+              5.495140075683594
+            ],
+            [
+              -2.662295341491699,
+              5.999824523925781
+            ]
+          ],
+          [
+            [
+              -0.09637727588415146,
+              1.4745054244995117
+            ],
+            [
+              -0.30449193716049194,
+              2.755854368209839
+            ],
+            [
+              -0.6271328330039978,
+              3.913550853729248
+            ],
+            [
+              -1.1145946979522705,
+              4.7695536613464355
+            ],
+            [
+              -1.7982702255249023,
+              5.495142459869385
+            ],
+            [
+              -2.6622958183288574,
+              5.999826908111572
+            ]
+          ]
+        ],
+        "planning_selection": [
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          },
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          }
+        ]
+      },
+      "SS": {
+        "plans_xy_m": [
+          [
+            [
+              -0.09711498767137527,
+              1.4951727390289307
+            ],
+            [
+              -0.31688404083251953,
+              2.8168716430664062
+            ],
+            [
+              -0.6532607078552246,
+              4.006647109985352
+            ],
+            [
+              -1.155803918838501,
+              4.92266845703125
+            ],
+            [
+              -1.859660029411316,
+              5.7095232009887695
+            ],
+            [
+              -2.7408690452575684,
+              6.288118362426758
+            ]
+          ],
+          [
+            [
+              -0.09711503237485886,
+              1.4951733350753784
+            ],
+            [
+              -0.31688424944877625,
+              2.816873073577881
+            ],
+            [
+              -0.6532611846923828,
+              4.006649017333984
+            ],
+            [
+              -1.1558046340942383,
+              4.922670364379883
+            ],
+            [
+              -1.8596611022949219,
+              5.7095255851745605
+            ],
+            [
+              -2.740870475769043,
+              6.288121223449707
+            ]
+          ]
+        ],
+        "planning_selection": [
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          },
+          {
+            "command_index_right_left_straight": 1,
+            "selected_mode_index": 2
+          }
+        ]
+      }
+    },
+    "contrasts": {
+      "current_effect_given_real_history": {
+        "coefficients": {
+          "RS": 1,
+          "RR": -1
+        },
+        "mean_contrast_xy_m": [
+          [
+            -0.0024557486176490784,
+            0.016379833221435547
+          ],
+          [
+            -0.016585424542427063,
+            0.05290985107421875
+          ],
+          [
+            -0.038773149251937866,
+            0.08509969711303711
+          ],
+          [
+            -0.06546485424041748,
+            0.14221501350402832
+          ],
+          [
+            -0.09631305932998657,
+            0.20417332649230957
+          ],
+          [
+            -0.12657630443572998,
+            0.27635622024536133
+          ]
+        ],
+        "lower_xy_m": [
+          [
+            -0.0026558305740356503,
+            0.016179356384277366
+          ],
+          [
+            -0.016785677862167336,
+            0.05270889739990192
+          ],
+          [
+            -0.03897371549606321,
+            0.08489826660156208
+          ],
+          [
+            -0.06566568870544431,
+            0.14201286773681687
+          ],
+          [
+            -0.09651431102752683,
+            0.20397070388793992
+          ],
+          [
+            -0.12677785415649456,
+            0.2761528823852544
+          ]
+        ],
+        "upper_xy_m": [
+          [
+            -0.0022556666612625065,
+            0.016580310058593728
+          ],
+          [
+            -0.01638517122268679,
+            0.05311080474853558
+          ],
+          [
+            -0.03857258300781252,
+            0.08530112762451214
+          ],
+          [
+            -0.06526401977539065,
+            0.14241715927123977
+          ],
+          [
+            -0.09611180763244631,
+            0.20437594909667922
+          ],
+          [
+            -0.1263747547149654,
+            0.2765595581054683
+          ]
+        ],
+        "max_abs_mean_m": 0.27635622024536133,
+        "max_coordinate_distance_from_zero_m": 0.2761528823852544,
+        "numerically_resolved_nonzero": true,
+        "endpoint_forward_mean_m": 0.27635622024536133,
+        "endpoint_euclidean_mean_m": 0.3039643421734024
+      },
+      "current_effect_given_sim_history": {
+        "coefficients": {
+          "SS": 1,
+          "SR": -1
+        },
+        "mean_contrast_xy_m": [
+          [
+            -0.0007377564907073975,
+            0.020667970180511475
+          ],
+          [
+            -0.012392282485961914,
+            0.06101858615875244
+          ],
+          [
+            -0.026128262281417847,
+            0.09309792518615723
+          ],
+          [
+            -0.04120975732803345,
+            0.15311670303344727
+          ],
+          [
+            -0.06139063835144043,
+            0.21438312530517578
+          ],
+          [
+            -0.07857418060302734,
+            0.28829407691955566
+          ]
+        ],
+        "lower_xy_m": [
+          [
+            -0.0009378011941909847,
+            0.020467314529418967
+          ],
+          [
+            -0.012592461299896218,
+            0.06081727485656696
+          ],
+          [
+            -0.026328649711608865,
+            0.09289625625610354
+          ],
+          [
+            -0.041410293769836404,
+            0.15291479568481492
+          ],
+          [
+            -0.06159147281646726,
+            0.21418074111938523
+          ],
+          [
+            -0.07877513427734417,
+            0.288091454315186
+          ]
+        ],
+        "upper_xy_m": [
+          [
+            -0.0005377117872238102,
+            0.020868625831603982
+          ],
+          [
+            -0.01219210367202761,
+            0.06121989746093792
+          ],
+          [
+            -0.02592787485122683,
+            0.09329959411621092
+          ],
+          [
+            -0.04100922088623049,
+            0.1533186103820796
+          ],
+          [
+            -0.061189803886413596,
+            0.21458550949096633
+          ],
+          [
+            -0.07837322692871052,
+            0.2884966995239253
+          ]
+        ],
+        "max_abs_mean_m": 0.28829407691955566,
+        "max_coordinate_distance_from_zero_m": 0.288091454315186,
+        "numerically_resolved_nonzero": true,
+        "endpoint_forward_mean_m": 0.28829407691955566,
+        "endpoint_euclidean_mean_m": 0.29880993397866784
+      },
+      "history_effect_given_real_current": {
+        "coefficients": {
+          "SR": 1,
+          "RR": -1
+        },
+        "mean_contrast_xy_m": [
+          [
+            0.0009426996111869812,
+            0.011115074157714844
+          ],
+          [
+            0.0052441805601119995,
+            0.029210925102233887
+          ],
+          [
+            -0.0013568997383117676,
+            0.048180341720581055
+          ],
+          [
+            -0.013425290584564209,
+            0.06203198432922363
+          ],
+          [
+            -0.027036309242248535,
+            0.07518553733825684
+          ],
+          [
+            -0.04607236385345459,
+            0.08302712440490723
+          ]
+        ],
+        "lower_xy_m": [
+          [
+            0.0007426027536392155,
+            0.010914597320556663
+          ],
+          [
+            0.005043927240371726,
+            0.02901009063720661
+          ],
+          [
+            -0.001557436180114724,
+            0.047979149627685125
+          ],
+          [
+            -0.013626065444946267,
+            0.06183031539917039
+          ],
+          [
+            -0.02723750133514402,
+            0.07498339157104539
+          ],
+          [
+            -0.04627367515564007,
+            0.08282450180053758
+          ]
+        ],
+        "upper_xy_m": [
+          [
+            0.001142796468734747,
+            0.011315550994873025
+          ],
+          [
+            0.005444433879852273,
+            0.029411759567261164
+          ],
+          [
+            -0.001156363296508811,
+            0.048381533813476985
+          ],
+          [
+            -0.013224515724182151,
+            0.06223365325927688
+          ],
+          [
+            -0.02683511714935305,
+            0.07538768310546828
+          ],
+          [
+            -0.04587105255126911,
+            0.08322974700927688
+          ]
+        ],
+        "max_abs_mean_m": 0.08302712440490723,
+        "max_coordinate_distance_from_zero_m": 0.08282450180053758,
+        "numerically_resolved_nonzero": true,
+        "endpoint_forward_mean_m": 0.08302712440490723,
+        "endpoint_euclidean_mean_m": 0.0949534943959044
+      },
+      "history_effect_given_sim_current": {
+        "coefficients": {
+          "SS": 1,
+          "RS": -1
+        },
+        "mean_contrast_xy_m": [
+          [
+            0.002660691738128662,
+            0.015403211116790771
+          ],
+          [
+            0.009437322616577148,
+            0.03731966018676758
+          ],
+          [
+            0.011287987232208252,
+            0.05617856979370117
+          ],
+          [
+            0.010829806327819824,
+            0.07293367385864258
+          ],
+          [
+            0.007886111736297607,
+            0.08539533615112305
+          ],
+          [
+            0.0019297599792480469,
+            0.09496498107910156
+          ]
+        ],
+        "lower_xy_m": [
+          [
+            0.0024606619358062687,
+            0.015202555465698264
+          ],
+          [
+            0.009237143802642844,
+            0.03711822967529255
+          ],
+          [
+            0.011087569999694846,
+            0.05597666244506838
+          ],
+          [
+            0.010629210281372092,
+            0.07273128967285203
+          ],
+          [
+            0.007685217666625999,
+            0.0851924751281743
+          ],
+          [
+            0.001728567886352117,
+            0.0947616432189946
+          ]
+        ],
+        "upper_xy_m": [
+          [
+            0.0028607215404510555,
+            0.015603866767883279
+          ],
+          [
+            0.009637501430511453,
+            0.03752109069824261
+          ],
+          [
+            0.011488404464721658,
+            0.05638047714233396
+          ],
+          [
+            0.011030402374267556,
+            0.07313605804443313
+          ],
+          [
+            0.008087005805969216,
+            0.0855981971740718
+          ],
+          [
+            0.0021309520721439767,
+            0.09516831893920852
+          ]
+        ],
+        "max_abs_mean_m": 0.09496498107910156,
+        "max_coordinate_distance_from_zero_m": 0.0947616432189946,
+        "numerically_resolved_nonzero": true,
+        "endpoint_forward_mean_m": 0.09496498107910156,
+        "endpoint_euclidean_mean_m": 0.09498458614391929
+      },
+      "total_domain_effect": {
+        "coefficients": {
+          "SS": 1,
+          "RR": -1
+        },
+        "mean_contrast_xy_m": [
+          [
+            0.00020494312047958374,
+            0.03178304433822632
+          ],
+          [
+            -0.0071481019258499146,
+            0.09022951126098633
+          ],
+          [
+            -0.027485162019729614,
+            0.14127826690673828
+          ],
+          [
+            -0.054635047912597656,
+            0.2151486873626709
+          ],
+          [
+            -0.08842694759368896,
+            0.2895686626434326
+          ],
+          [
+            -0.12464654445648193,
+            0.3713212013244629
+          ]
+        ],
+        "lower_xy_m": [
+          [
+            4.846262931818002e-06,
+            0.03158262710571291
+          ],
+          [
+            -0.007348385047912576,
+            0.0900285575866695
+          ],
+          [
+            -0.027685787868499734,
+            0.1410768363952637
+          ],
+          [
+            -0.05483600158691404,
+            0.21494701843261765
+          ],
+          [
+            -0.08862837810516355,
+            0.28936651687622117
+          ],
+          [
+            -0.12484833259582562,
+            0.37111834030151414
+          ]
+        ],
+        "upper_xy_m": [
+          [
+            0.0004050399780273495,
+            0.031983461570739724
+          ],
+          [
+            -0.0069478188037872535,
+            0.09043046493530316
+          ],
+          [
+            -0.027284536170959495,
+            0.14147969741821287
+          ],
+          [
+            -0.05443409423828127,
+            0.21535035629272414
+          ],
+          [
+            -0.08822551708221438,
+            0.28977080841064407
+          ],
+          [
+            -0.12444475631713825,
+            0.37152406234741164
+          ]
+        ],
+        "max_abs_mean_m": 0.3713212013244629,
+        "max_coordinate_distance_from_zero_m": 0.37111834030151414,
+        "numerically_resolved_nonzero": true,
+        "endpoint_forward_mean_m": 0.3713212013244629,
+        "endpoint_euclidean_mean_m": 0.3916837954242989
+      },
+      "interaction": {
+        "coefficients": {
+          "SS": 1,
+          "SR": -1,
+          "RS": -1,
+          "RR": 1
+        },
+        "mean_contrast_xy_m": [
+          [
+            0.001717992126941681,
+            0.004288136959075928
+          ],
+          [
+            0.004193142056465149,
+            0.008108735084533691
+          ],
+          [
+            0.01264488697052002,
+            0.007998228073120117
+          ],
+          [
+            0.024255096912384033,
+            0.010901689529418945
+          ],
+          [
+            0.03492242097854614,
+            0.010209798812866211
+          ],
+          [
+            0.04800212383270264,
+            0.011937856674194336
+          ]
+        ],
+        "lower_xy_m": [
+          [
+            0.0013178654670715217,
+            0.0038870044708252394
+          ],
+          [
+            0.0037927099227905714,
+            0.0077064701080313824
+          ],
+          [
+            0.012243933296203657,
+            0.007595128631591397
+          ],
+          [
+            0.023853726005554243,
+            0.010497636413575151
+          ],
+          [
+            0.03452033481597905,
+            0.00980479202270601
+          ],
+          [
+            0.047599620437621226,
+            0.011531896209717729
+          ]
+        ],
+        "upper_xy_m": [
+          [
+            0.00211811878681184,
+            0.004689269447326616
+          ],
+          [
+            0.0045935741901397265,
+            0.008511000061036
+          ],
+          [
+            0.013045840644836382,
+            0.008401327514648838
+          ],
+          [
+            0.024656467819213823,
+            0.01130574264526274
+          ],
+          [
+            0.03532450714111324,
+            0.010614805603026412
+          ],
+          [
+            0.04840462722778405,
+            0.012343817138670943
+          ]
+        ],
+        "max_abs_mean_m": 0.04800212383270264,
+        "max_coordinate_distance_from_zero_m": 0.047599620437621226,
+        "numerically_resolved_nonzero": true,
+        "endpoint_forward_mean_m": 0.011937856674194336,
+        "endpoint_euclidean_mean_m": 0.049464293327851405
+      }
+    }
+  },
+  "source_qualification": {
+    "decision": "down-weighted",
+    "declared_non_rgb_metadata_equal": true,
+    "source_gate_passed": false,
+    "max_initial_optimized_record_translation_m": 0.763264852839188,
+    "max_initial_optimized_record_rotation_deg": 0.3773731705758401,
+    "record_differences_are_physical_errors": false,
+    "unresolved": [
+      "original nuScenes sample identities and calibrated sensor/CAN records",
+      "physical pairing of initial poses with optimized reconstruction coordinates",
+      "checkpoint training/split provenance",
+      "externally qualified task tolerance"
+    ]
+  },
+  "validation": {
+    "new_tests": 6,
+    "existing_receiver_comparator_tests": 8,
+    "existing_camera_interface_tests": 9,
+    "total_passed_tests": 23,
+    "native_readback": {
+      "native_frame_tensors_checked": 64,
+      "config_and_frozen_runner_match": true,
+      "all_commands_succeeded": true,
+      "contrasts_checked": {
+        "current_effect_given_real_history": {
+          "replicate_combinations": 4,
+          "propagated_guard_m": 0.0002,
+          "resolved_nonzero": true
+        },
+        "current_effect_given_sim_history": {
+          "replicate_combinations": 4,
+          "propagated_guard_m": 0.0002,
+          "resolved_nonzero": true
+        },
+        "history_effect_given_real_current": {
+          "replicate_combinations": 4,
+          "propagated_guard_m": 0.0002,
+          "resolved_nonzero": true
+        },
+        "history_effect_given_sim_current": {
+          "replicate_combinations": 4,
+          "propagated_guard_m": 0.0002,
+          "resolved_nonzero": true
+        },
+        "total_domain_effect": {
+          "replicate_combinations": 4,
+          "propagated_guard_m": 0.0002,
+          "resolved_nonzero": true
+        },
+        "interaction": {
+          "replicate_combinations": 16,
+          "propagated_guard_m": 0.0004,
+          "resolved_nonzero": true
+        }
+      },
+      "method": "Enumerate native replicate combinations, then add the coefficient-weighted guard; compare to the independently computed interval propagation.",
+      "analysis_sha256": "94e5869ec3f7bd069db8b74dc136b662fe8539fe62065a0e7409f673919e3ce0",
+      "validation_script_sha256": "589e50bddbf0f9d0a5e9dc37acfec859612ddeca8921365e8d382eae50695bdd"
+    }
+  },
+  "credibility": {
+    "overall_decision": "down-weighted",
+    "claim_decisions": {
+      "real_member_and_render_integrity": "accepted",
+      "input_origin_and_common_non_rgb_contract": "accepted",
+      "numerical_reset_and_prefix_controls": "accepted",
+      "conditional_history_effect": "accepted",
+      "conditional_current_effect": "accepted",
+      "history_current_interaction": "accepted",
+      "current_only_explanation": "rejected",
+      "history_only_explanation": "rejected",
+      "additive_source_effect_explanation": "rejected",
+      "strict_physical_source_pairing": "down-weighted",
+      "real_task_or_closed_loop_equivalence": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "current_only_explanation": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Both are resolved: endpoint forward SR-RR=0.0830271244 m, SS-RS=0.0949649811 m; current image bytes are identical within each comparison.",
+        "diagnostic_finding": "history_affects_fixed_current",
+        "evidence_refs": [
+          "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+          "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+          "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+        ]
+      },
+      "history_only_explanation": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Both are resolved: endpoint forward RS-RR=0.2763562202 m, SS-SR=0.2882940769 m; seven-frame prefix bytes agree within each history group and prefix plan controls pass.",
+        "diagnostic_finding": "current_affects_fixed_history",
+        "evidence_refs": [
+          "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+          "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+          "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+        ]
+      },
+      "additive_source_effect_explanation": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "I has maximum absolute mean coordinate 0.0480021238 m; endpoint right envelope [0.0475996204,0.0484046272] m and forward envelope [0.0115318962,0.0123438171] m exclude zero. All current-frame mode/command selections agree.",
+        "diagnostic_finding": "source_effect_nonadditivity",
+        "evidence_refs": [
+          "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+          "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+          "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+        ]
+      },
+      "real_task_or_closed_loop_equivalence": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "No independently qualified task tolerance, strict physical source pair, executed vehicle loop or real closed-loop outcome in this experiment.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "history_affects_fixed_current": {
+      "component": "fixed SparseDrive temporal input path",
+      "expected": "Under the frozen current-only candidate, SR-RR and SS-RS are indistinguishable within propagated numerical envelopes.",
+      "observed": "Both are resolved: endpoint forward SR-RR=0.0830271244 m, SS-RS=0.0949649811 m; current image bytes are identical within each comparison.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Past RGB source affects this fixed receiver output at the final frame. No individual cache module or physical defect is isolated.",
+      "evidence_refs": [
+        "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+        "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+        "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+      ]
+    },
+    "current_affects_fixed_history": {
+      "component": "fixed SparseDrive current RGB input path",
+      "expected": "Under the frozen history-only candidate, RS-RR and SS-SR are indistinguishable within propagated numerical envelopes.",
+      "observed": "Both are resolved: endpoint forward RS-RR=0.2763562202 m, SS-SR=0.2882940769 m; seven-frame prefix bytes agree within each history group and prefix plan controls pass.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Current RGB origin has a conditional effect after a common prefix, within measured reset variation.",
+      "evidence_refs": [
+        "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+        "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+        "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+      ]
+    },
+    "source_effect_nonadditivity": {
+      "component": "history/current source composition in the fixed receiver",
+      "expected": "The preregistered additive explanation predicts SS=SR+RS-RR, with I=0 inside the four-term propagated envelope.",
+      "observed": "I has maximum absolute mean coordinate 0.0480021238 m; endpoint right envelope [0.0475996204,0.0484046272] m and forward envelope [0.0115318962,0.0123438171] m exclude zero. All current-frame mode/command selections agree.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "A fixed additive source-bias explanation is contradicted here; this does not identify a unique nonlinear mechanism or physical simulator flaw.",
+      "evidence_refs": [
+        "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+        "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+        "docs/runs/sparsedrive_history_current_probe_preregistration_001.md"
+      ]
+    },
+    "physical_pairing_unqualified": {
+      "component": "source/reconstruction physical pairing gate",
+      "expected": "Strict physical pairing requires qualified original source identities, calibration and reconstruction-coordinate correspondence.",
+      "observed": "Local image integrity and declared metadata agree; original identity/calibration/training provenance and initial-versus-optimized physical correspondence remain unresolved.",
+      "expectation_met": false,
+      "evidence_decision": "down-weighted",
+      "implication": "Keep conclusions at input-domain diagnosis. No real-world equivalence or AD correctness judgment.",
+      "evidence_refs": [
+        "artifacts/sparsedrive_history_current_probe_001/qualification_run001/qualification.json",
+        "docs/runs/credibility_screening_real_landmark_001.md"
+      ]
+    }
+  },
+  "artifacts": [
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/qualification_run001/qualification.json",
+      "sha256": "f396bc61dcb143567f80b7a85943eaf481af490b905c005295f11de29e0a3270"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/run_manifest.json",
+      "sha256": "cd499ead3d09c398b2cc21ab1390f106db6692b452429b10710d7a0f1d2771ca"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/analysis_run001/analysis.json",
+      "sha256": "94e5869ec3f7bd069db8b74dc136b662fe8539fe62065a0e7409f673919e3ce0"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/analysis_run001/history_current_plans.png",
+      "sha256": "1de757240f887f41b6a3cc3b31fcffaeffb70e96d1cf85c54ea9158a928bbd03"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/readback_validation.py",
+      "sha256": "589e50bddbf0f9d0a5e9dc37acfec859612ddeca8921365e8d382eae50695bdd"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/readback_validation.json",
+      "sha256": "4c28760db0203dad508d0da6f94ce86684e2a9dea182c3b56bc8b272add536c1"
+    },
+    {
+      "path": "configs/sparsedrive_history_current_probe_001.json",
+      "sha256": "30112148782940d2f8b3a9f942ff52cade7324d3f4c1386eb4295b74878048f6"
+    },
+    {
+      "path": "scripts/run_sparsedrive_history_current_probe.py",
+      "sha256": "b207ee78d3401cb5b8488052c14a0a9f2395ff8d5e02a4de240e8cfd297017ad"
+    },
+    {
+      "path": "tests/test_sparsedrive_history_current_probe.py",
+      "sha256": "c4bfdc1fbd36dc54f33291bc386bd27b46c14bbcbc17d9cae056ee0d93e50697"
+    },
+    {
+      "path": "docs/runs/sparsedrive_history_current_probe_preregistration_001.md",
+      "sha256": "d4f2f51e044033c34c928380e3e429cc7f345f4e08e19bf1024288df49b1a278"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/qualification_run001/inputs/RR/input_manifest.json",
+      "sha256": "b5c6f7706d1773e8a720bd8e12e67b4717eaa5ac2f0d1073b8267111778d7902"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/RR/sparsedrive_real_source_qualification.json",
+      "sha256": "ed05ecc7eab5da70213293b4ae9d4af47c7e36c035cd4453e58b0df2de9f728f"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/RR/native_outputs.pt",
+      "sha256": "2283a7bd56ca22c8631d495268ba41a9e83501e936ee3b7aea4f303be0c34052"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/RR.log",
+      "sha256": "86109b8fa956206fc362bce665c925dc2aec26bebb1abfa89d6993070b8c8264"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/qualification_run001/inputs/RS/input_manifest.json",
+      "sha256": "cc850bfd3fdf3908508a3109c0805149c5f62e76cb42ad887fe08d56f609ac0e"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/RS/sparsedrive_real_source_qualification.json",
+      "sha256": "7ed13e484f1c1b228d4d85dee3dcab79e48cfe277ea9800d1d1623ddde5f1a12"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/RS/native_outputs.pt",
+      "sha256": "bec7be447618aa5b6b3534cc71d3307e07b6f3615d5262fb9856e6dbee3fb60f"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/RS.log",
+      "sha256": "8ee5321578ae93e75afa3043acf9e9676dd5eaa995e96d77e413d20cb5b21e44"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/qualification_run001/inputs/SR/input_manifest.json",
+      "sha256": "f1d905c67d7608fce83bdcd3c2250c91a7ea576edf3b762df3c15f1a4f1ab03a"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/SR/sparsedrive_real_source_qualification.json",
+      "sha256": "732df42fb469aa2f00afe44f47d1c1b9ae25fd7b7b6644e508a58a2edd54fa15"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/SR/native_outputs.pt",
+      "sha256": "f65e4e2da3cf256195d27d4e8e85dee3eaf9900744b547fd9142371e1fe26093"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/SR.log",
+      "sha256": "d6de66d65d58489b670f08ebc27550f102135b5a460762c06baa9aad46052990"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/qualification_run001/inputs/SS/input_manifest.json",
+      "sha256": "65925a64cb1e835e0a6ba651178db2b2f6631d0e426796f084baaaa964bd3735"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/SS/sparsedrive_real_source_qualification.json",
+      "sha256": "acec374700fc9e4c5be0c60d8fe50b8eba548350c7343b4a5739380819737373"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/SS/native_outputs.pt",
+      "sha256": "3f92799390324546ff4a80b2ba249db385b430992721a1837d3445d3fa98392b"
+    },
+    {
+      "path": "artifacts/sparsedrive_history_current_probe_001/receiver_run001/SS.log",
+      "sha256": "0206fbbee26177308538a7ce497a5f2e8bf7c466a41bd5b8d4f5abd7eacd62a9"
+    }
+  ]
+}
