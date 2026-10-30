@@ -1,0 +1,50 @@
+{
+  "experiment_id": "sparsedrive_history_current_probe_001",
+  "primary_config": "configs/fixed_trajectory_receiver_regression_001.json",
+  "primary_config_sha256": "9be30107f64d4a3b59431e5b782ea6d9ad4cbfac87cbd4fd68bf6e1f74157fdf",
+  "window": "straight",
+  "frames": [
+    12,
+    18,
+    24,
+    30,
+    36,
+    42,
+    48,
+    54
+  ],
+  "released_metadata": "/home/yawei/HUGSIM_assets/scenes/nuscenes/scene-0383/meta_data.json",
+  "qualification_root": "artifacts/sparsedrive_history_current_probe_001/qualification_run001",
+  "receiver_root": "artifacts/sparsedrive_history_current_probe_001/receiver_run001",
+  "analysis_root": "artifacts/sparsedrive_history_current_probe_001/analysis_run001",
+  "numerical_guard_per_output_m": 0.0001,
+  "physical_task_tolerance_m": null,
+  "replicates_per_arm": 2,
+  "final_frame": 54,
+  "arm_order": [
+    "RR",
+    "RS",
+    "SR",
+    "SS"
+  ],
+  "runner_sha256": "b207ee78d3401cb5b8488052c14a0a9f2395ff8d5e02a4de240e8cfd297017ad",
+  "qualification_sha256": "f396bc61dcb143567f80b7a85943eaf481af490b905c005295f11de29e0a3270",
+  "current_receiver_helpers": [
+    {
+      "path": "scripts/render_hugsim_exact_source_pose.py",
+      "sha256": "ee70f8a651b30ad6360d615d78c85fa0c00cb83cdfc0e57a15244e4737402c19"
+    },
+    {
+      "path": "scripts/run_sparse4d_hugsim_receiver.py",
+      "sha256": "fefc62619e4b4968f54acafde1c15123f57e0e1f8c2c35eb5c969a3cccf5b0e9"
+    },
+    {
+      "path": "scripts/run_sparsedrive_hugsim_receiver.py",
+      "sha256": "6cc984ebd34f15c0a6e6d5f6e3d42d4515d980cd159b8ff01243c87ae4a3b32a"
+    }
+  ],
+  "runtime_deps_tree": {
+    "file_count": 58,
+    "sha256": "0cc7ce0b5b530fc2460f23f40e86f3989376ba5a0af8903511e86828c97c0eee"
+  }
+}
