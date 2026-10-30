@@ -1,0 +1,441 @@
+{
+  "experiment_id": "physics_alphabet_variants_001",
+  "date": "2026-10-30",
+  "preregistration_commit": "ff7faa7acfe4c67c2edab389e60837cf96f12485",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "config": "configs/physics_alphabet_variants_001.json",
+  "preregistration": "docs/runs/physics_alphabet_variants_preregistration_001.md",
+  "scope": "Frozen supplied R/T/P/V rules under new angles, depths and coded two-point layouts, one camera, two backgrounds. Not general surface-shape or real-AD validation.",
+  "claim_contract": {
+    "new_angles_deg": [
+      -50,
+      55
+    ],
+    "new_base_depths_m": [
+      18,
+      36
+    ],
+    "new_resulting_centre_depths_m": [
+      14,
+      32
+    ],
+    "new_body_layouts_m": {
+      "wide_level": [
+        [
+          -1.1,
+          0,
+          0
+        ],
+        [
+          1.1,
+          0,
+          0
+        ]
+      ],
+      "skew_depth": [
+        [
+          -0.9,
+          -0.22,
+          -0.15
+        ],
+        [
+          0.7,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    "geometry_count": 14,
+    "occlusion_conditions_per_geometry": 4,
+    "contexts": 2,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "identity_min_channel_fraction": 0.85,
+    "new_RGB_used_for_fitting": false,
+    "prediction_manifest_sha256": "62cbb29f0546f616676eee6421730d78cb11f3bad3b7232650812b9691587c5d",
+    "source_pair_gate": "No direct real-sim equivalence claimed"
+  },
+  "results": {
+    "pair_count": 112,
+    "rgb_count": 224,
+    "full_program_by_variant": {
+      "all": {
+        "count": 112,
+        "tested": 112,
+        "passed": 112,
+        "max_position_error_px": 0.11940845412550516
+      },
+      "angle": {
+        "count": 16,
+        "tested": 16,
+        "passed": 16,
+        "max_position_error_px": 0.11940845412550516
+      },
+      "depth": {
+        "count": 16,
+        "tested": 16,
+        "passed": 16,
+        "max_position_error_px": 0.06385712394759935
+      },
+      "layout": {
+        "count": 16,
+        "tested": 16,
+        "passed": 16,
+        "max_position_error_px": 0.05683404656741686
+      },
+      "joint": {
+        "count": 64,
+        "tested": 64,
+        "passed": 64,
+        "max_position_error_px": 0.09841266049636488
+      }
+    },
+    "candidates": {
+      "R_T_P_V": {
+        "count": 112,
+        "tested": 112,
+        "passed": 112,
+        "max_position_error_px": 0.11940845412550516
+      },
+      "T_R_P_V": {
+        "count": 112,
+        "tested": 112,
+        "passed": 0,
+        "max_position_error_px": 209.08720860007992
+      },
+      "without_R": {
+        "count": 112,
+        "tested": 112,
+        "passed": 0,
+        "max_position_error_px": 25.72621252831391
+      },
+      "without_T": {
+        "count": 112,
+        "tested": 112,
+        "passed": 0,
+        "max_position_error_px": 123.1303007880332
+      },
+      "fixed_depth_P": {
+        "count": 112,
+        "tested": 112,
+        "passed": 0,
+        "max_position_error_px": 39.87211183398472
+      },
+      "without_V": {
+        "count": 112,
+        "tested": 112,
+        "passed": 56,
+        "max_position_error_px": 0.09841266049636488
+      }
+    },
+    "unqualified_pair_count": 0
+  },
+  "qualification": {
+    "count": 768,
+    "correct_identity_pair_count": 768,
+    "max_abs_position_error_px": 0.08908045977011625,
+    "max_abs_width_error_px": 0.17146701215858684,
+    "minimum_code_fraction": 0.8847262247838616,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "identity_min_channel_fraction": 0.85,
+    "negative_controls": {
+      "ambiguous": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "unknown_green": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "boundary": {
+        "blocked": true,
+        "reason": "marker touches image boundary"
+      }
+    },
+    "qualified": true,
+    "scope": "Finite independent 2D code/phase/size/background/mixing grid; not natural object identity or a real-camera bound."
+  },
+  "execution_validation": {
+    "PNG_pairs_read_back": 112,
+    "RGB_files_hash_verified": 224,
+    "per_case_records_match_rows": 112,
+    "program_predictions_and_judgements_recomputed": 672,
+    "prediction_manifest_unchanged_and_identical_to_CPU_run": true,
+    "qualification_CPU_and_GPU_identical": true,
+    "shared_rule_and_measurement_source_hashes_unchanged": [
+      "scripts/run_physics_alphabet_probe.py",
+      "scripts/measure_credibility_marker_identity.py",
+      "scripts/run_credibility_screening_identity.py",
+      "scripts/run_motion_observation_probe.py",
+      "scripts/run_motion_observation_boundary_probe.py"
+    ],
+    "all_recorded_input_hashes_verified": true,
+    "single_marker_null_width_pairs": 56,
+    "max_homogeneous_vs_scalar_projection_difference_px": 1.1368683772161603e-13,
+    "opacity_and_local_layout_unchanged_within_each_pair": true,
+    "occluder_gaps_and_ray_alignment_recomputed": true,
+    "scope": "Readback, arithmetic and provenance consistency; no additional independent physical evidence.",
+    "implementation_tests_passed": 9,
+    "new_implementation_tests": 4
+  },
+  "provenance": {
+    "run_directory": "artifacts/physics_alphabet_variants_001/hugsim_run001",
+    "execution_host": "stf-precision-3680",
+    "audit_commit": "ff7faa7acfe4c67c2edab389e60837cf96f12485",
+    "audit_status": "",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "original_rule_sha256": "64b8c7645fd1b446230bcfce3d821ab334e3e0c800d356cdd369ff16d2f3a57b",
+    "environment_record": "artifacts/physics_alphabet_variants_001/hugsim_run001/environment.json"
+  },
+  "execution_resources": {
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "torch": "2.4.1+cu121",
+    "torch_cuda": "12.1",
+    "elapsed_seconds": 32.51406780799152,
+    "peak_process_RSS_bytes": 1391099904,
+    "peak_torch_GPU_allocated_bytes": 2764226560,
+    "peak_torch_GPU_reserved_bytes": 3382706176,
+    "resources_before": {
+      "host": "stf-precision-3680",
+      "memory": {
+        "MemTotal_bytes": 134738554880,
+        "MemAvailable_bytes": 119796273152
+      },
+      "disk_free_bytes": 271359692800,
+      "load_average": [
+        0.2578125,
+        0.169921875,
+        0.05517578125
+      ],
+      "scope": "execution host only; not the Windows laptop running the desktop app"
+    },
+    "resources_after": {
+      "host": "stf-precision-3680",
+      "memory": {
+        "MemTotal_bytes": 134738554880,
+        "MemAvailable_bytes": 118582067200
+      },
+      "disk_free_bytes": 271303163904,
+      "load_average": [
+        1.5146484375,
+        0.5,
+        0.17138671875
+      ],
+      "scope": "execution host only; not the Windows laptop running the desktop app"
+    }
+  },
+  "artifact_hashes": {
+    "artifacts/physics_alphabet_variants_001/analysis_run001/new_layout_visibility.png": "44b67065f4e2946871d186a7936b4cdc52404ff1d46bd64ede7ef4a5f90f1f2a",
+    "artifacts/physics_alphabet_variants_001/analysis_run001/validate_and_plot.py": "0b585b6cee13366dd5a554a256f27ab642e2fdcccf6803451c674402a6788ef2",
+    "artifacts/physics_alphabet_variants_001/analysis_run001/validation.json": "fe5ba96a9f8a08aa8bc5038166d104135a7a94c769056fc9a4c430f68d171104",
+    "artifacts/physics_alphabet_variants_001/analysis_run001/variant_residuals.png": "03d2f053958877d55b2613cd700addeb2851f532d5c4db93ba05193fa67687c7",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/camera_record.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/cases.json": "db8702d0af036811d1935d2cc6d72d6b64315dfe90de0b92db200be0629cdd44",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/config.json": "24fb1612635a1ffc415f2bbd5ef765abe04990ab5b045d61c787c33d47ce8878",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/environment.json": "6bfc666462d67465c0e9219f72d3194f444225038418e98f89bcaa997c38e2c3",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/input_validity.json": "d012732d91f7cf8405b38b87041f0886a4d50e490f653b47b4ae625a6a1c9ea3",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/measurement_qualification.json": "1dcb83064a57264d94d331129766f1c21995423d3310368ca0702199e5035a14",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/nvidia_smi_before.txt": "eb522ea075816d07ed82b9247c4119ebf28b7617d47d39963dad2d659a25f9a6",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/predictions_before_rgb.json": "62cbb29f0546f616676eee6421730d78cb11f3bad3b7232650812b9691587c5d",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json": "d53c46385be811b56aeaa687e6da96505d011b21998db74c097ba73ffea352f5",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/run.log": "a18cd5ed193cecdb884571902082d06c9b66d1cb6ed2a972c8d18ed631ad9a16",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json": "d333bec4d97ba331e75b67a57dd5c8eb4b163a22b21478126a75847c622c4eb0",
+    "artifacts/physics_alphabet_variants_001/qualification_run001/measurement_qualification.json": "1dcb83064a57264d94d331129766f1c21995423d3310368ca0702199e5035a14",
+    "artifacts/physics_alphabet_variants_001/qualification_run001/predictions_before_rgb.json": "62cbb29f0546f616676eee6421730d78cb11f3bad3b7232650812b9691587c5d"
+  },
+  "artifact_integrity_scope": "rows.json stores all 224 RGB hashes; validation independently reads every saved PNG and every per-case record. This manifest hashes rows, environment, expectations, summaries and analysis products.",
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_literal_2D_instrument_qualified": "accepted",
+      "frozen_program_predicts_all_tested_parameter_and_layout_variants": "accepted",
+      "swapped_order_valid_for_all_variants": "rejected",
+      "rotation_can_be_omitted_for_all_variants": "rejected",
+      "translation_can_be_omitted_for_all_variants": "rejected",
+      "fixed_base_depth_can_replace_point_perspective_for_all_variants": "rejected",
+      "visibility_can_be_omitted_for_all_variants": "rejected",
+      "ordinary_vehicle_surface_shape_transfer_established": "rejected",
+      "real_AD_fitness_or_direct_real_sim_equivalence_established": "rejected",
+      "unique_complete_world_alphabet_or_unknown_law_discovery_established": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "swapped_order_valid_for_all_variants": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "T_R_P_V fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+        "diagnostic_finding": "candidate_T_R_P_V",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+        ]
+      },
+      "rotation_can_be_omitted_for_all_variants": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "without_R fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+        "diagnostic_finding": "candidate_without_R",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+        ]
+      },
+      "translation_can_be_omitted_for_all_variants": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "without_T fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+        "diagnostic_finding": "candidate_without_T",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+        ]
+      },
+      "fixed_base_depth_can_replace_point_perspective_for_all_variants": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "fixed_depth_P fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+        "diagnostic_finding": "candidate_fixed_depth_P",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+        ]
+      },
+      "visibility_can_be_omitted_for_all_variants": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "without_V fits 56/112 pairs under unchanged gates; all 112 pairs have qualified measurements. The 56 incompatible pairs have measured visible-identity contradictions.",
+        "diagnostic_finding": "candidate_without_V",
+        "evidence_refs": [
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+          "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+        ]
+      },
+      "ordinary_vehicle_surface_shape_transfer_established": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "Only two coded Gaussian point layouts vary. Marker profiles, ordinary vehicle meshes, surfaces and materials were not varied.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/physics_alphabet_variants_001.md"
+        ]
+      },
+      "real_AD_fitness_or_direct_real_sim_equivalence_established": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No AD, independent matched real pair, temporal dynamics, actuator or task margin was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/physics_alphabet_variants_001.md"
+        ]
+      },
+      "unique_complete_world_alphabet_or_unknown_law_discovery_established": {
+        "tested": false,
+        "rejection_basis": "scope_exceeds_evidence",
+        "reason": "Supplied classical rules were reused; no laws were learned and no complete candidate language or alternative representation class was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/physics_alphabet_variants_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "instrument": {
+      "component": "Coded RGB identity and centroid reader",
+      "expected": "The predeclared finite literal 2D grid meets unchanged 0.25 px coordinate, 0.5 px width and identity gates; invalid codes block.",
+      "observed": "768/768 identity pairs correct; maximum position error 0.08908045977011625 px; all three invalid controls blocked.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite synthetic instrument qualification; not a real-camera or arbitrary-pattern guarantee.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/measurement_qualification.json"
+      ]
+    },
+    "frozen_rule_reuse": {
+      "component": "HUGSIM local rigid pose to rendered RGB under new marker parameters",
+      "expected": "The original scalar rules predict qualified identities and positions for every frozen new condition, without using new RGB for fitting.",
+      "observed": "112/112 pairs fit; maximum coordinate residual 0.11940845412550516 px; prediction manifest unchanged; all readbacks match.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite parameter and coded local-layout reuse only; not ordinary surface shape, world-law discovery, completeness, or AD qualification.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json",
+        "artifacts/physics_alphabet_variants_001/analysis_run001/validation.json"
+      ]
+    },
+    "candidate_T_R_P_V": {
+      "component": "T_R_P_V",
+      "expected": "This alternative program would explain every frozen new condition in the declared coordinate convention.",
+      "observed": "T_R_P_V fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "The candidate explanation is contradicted in this finite test family. It is not an observed HUGSIM defect count or a claim of failure for every other condition.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_without_R": {
+      "component": "without_R",
+      "expected": "This alternative program would explain every frozen new condition in the declared coordinate convention.",
+      "observed": "without_R fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "The candidate explanation is contradicted in this finite test family. It is not an observed HUGSIM defect count or a claim of failure for every other condition.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_without_T": {
+      "component": "without_T",
+      "expected": "This alternative program would explain every frozen new condition in the declared coordinate convention.",
+      "observed": "without_T fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "The candidate explanation is contradicted in this finite test family. It is not an observed HUGSIM defect count or a claim of failure for every other condition.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_fixed_depth_P": {
+      "component": "fixed_depth_P",
+      "expected": "This alternative program would explain every frozen new condition in the declared coordinate convention.",
+      "observed": "fixed_depth_P fits 0/112 pairs under unchanged gates; all 112 pairs have qualified measurements.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "The candidate explanation is contradicted in this finite test family. It is not an observed HUGSIM defect count or a claim of failure for every other condition.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_without_V": {
+      "component": "without_V",
+      "expected": "This alternative program would explain every frozen new condition in the declared coordinate convention.",
+      "observed": "without_V fits 56/112 pairs under unchanged gates; all 112 pairs have qualified measurements. The 56 incompatible pairs have measured visible-identity contradictions.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "The candidate explanation is contradicted in this finite test family. It is not an observed HUGSIM defect count or a claim of failure for every other condition.",
+      "evidence_refs": [
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/summary.json",
+        "artifacts/physics_alphabet_variants_001/hugsim_run001/rows.json"
+      ]
+    }
+  },
+  "limitations": [
+    "Parameter and coded two-point layout reuse of supplied rules, not learned or discovered physics.",
+    "Layout variations are not ordinary vehicle meshes or surface-shape qualification.",
+    "Same camera, scene, marker profiles and two backgrounds; no real-AD or real-sim equivalence.",
+    "Counts are designed related conditions, not independent statistical samples.",
+    "Historical laptop records are not a live notebook resource measurement. Execution-resource records describe the remote Linux host only."
+  ]
+}
