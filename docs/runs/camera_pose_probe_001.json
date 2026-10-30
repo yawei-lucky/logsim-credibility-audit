@@ -1,0 +1,380 @@
+{
+  "experiment_id": "camera_pose_probe_001",
+  "date": "2026-10-30",
+  "preregistration_commit": "b2c4fe1ddef064cca7ef18ec2199ecc6cc70a442",
+  "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+  "config": "configs/camera_pose_probe_001.json",
+  "preregistration": "docs/runs/camera_pose_probe_preregistration_001.md",
+  "claim_contract": {
+    "scope": "Static observer-pose changes around two fixed world marker layouts, one intrinsic calibration and two backgrounds.",
+    "primary_pairs": 44,
+    "baseline_pairs": 4,
+    "changed_camera_pairs": 40,
+    "equivalence_pairs": 4,
+    "new_RGB_count": 96,
+    "camera_pose_convention": "C=W0 A, B=W0 O, A=[Rz(roll) Ry(yaw) Rx(pitch),t]; camera point R^T(q0-t)",
+    "position_budget_px": 0.25,
+    "route_comparison_budget_px": 0.5,
+    "no_new_RGB_calibration_or_fitting": true,
+    "prediction_manifest_sha256": "0082240f8e34456bad54117a4ad0304840d7cb0f3024b0adbf45fa3028dc2734"
+  },
+  "results": {
+    "primary_by_family": {
+      "all": {
+        "count": 44,
+        "tested": 44,
+        "passed": 44,
+        "max_position_error_px": 0.06799276290632861
+      },
+      "baseline": {
+        "count": 4,
+        "tested": 4,
+        "passed": 4,
+        "max_position_error_px": 0.06293463557381074
+      },
+      "translation": {
+        "count": 16,
+        "tested": 16,
+        "passed": 16,
+        "max_position_error_px": 0.06799276290632861
+      },
+      "rotation": {
+        "count": 16,
+        "tested": 16,
+        "passed": 16,
+        "max_position_error_px": 0.06272892708085465
+      },
+      "combined": {
+        "count": 8,
+        "tested": 8,
+        "passed": 8,
+        "max_position_error_px": 0.0478832056684837
+      }
+    },
+    "candidates": {
+      "inverse_camera_pose": {
+        "count": 44,
+        "tested": 44,
+        "passed": 44,
+        "max_position_error_px": 0.06799276290632861
+      },
+      "ignore_camera_translation": {
+        "count": 44,
+        "tested": 44,
+        "passed": 20,
+        "max_position_error_px": 48.46099314167782
+      },
+      "ignore_camera_rotation": {
+        "count": 44,
+        "tested": 44,
+        "passed": 20,
+        "max_position_error_px": 93.30384225374405
+      },
+      "forward_instead_of_inverse": {
+        "count": 44,
+        "tested": 44,
+        "passed": 4,
+        "max_position_error_px": 231.59058333283582
+      },
+      "target_attached_to_camera": {
+        "count": 44,
+        "tested": 44,
+        "passed": 4,
+        "max_position_error_px": 114.34043004292073
+      }
+    },
+    "equivalence_tested": 4,
+    "equivalence_passed": 4,
+    "equivalence_max_position_difference_px": 0.0,
+    "equivalence_max_absolute_residual_px": 0.0478832056684837,
+    "body_hashes_per_fixture": {
+      "level": [
+        "be96d80eecfff60449083c0ce022f6a383e25af825dc14fa885f5724f6422533"
+      ],
+      "skew_depth": [
+        "be96d80eecfff60449083c0ce022f6a383e25af825dc14fa885f5724f6422533"
+      ]
+    }
+  },
+  "qualification": {
+    "count": 768,
+    "correct_identity_pair_count": 768,
+    "max_abs_position_error_px": 0.090974212034439,
+    "max_abs_width_error_px": 0.1733524355300915,
+    "minimum_code_fraction": 0.8872832369942196,
+    "position_budget_px": 0.25,
+    "width_budget_px": 0.5,
+    "identity_min_channel_fraction": 0.85,
+    "negative_controls": {
+      "ambiguous": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "unknown_green": {
+        "blocked": true,
+        "observed_ids": [
+          null
+        ]
+      },
+      "boundary": {
+        "blocked": true,
+        "reason": "marker touches image boundary"
+      }
+    },
+    "qualified": true,
+    "scope": "Finite independent 2D code/phase/size/background/mixing grid; not natural object identity or a real-camera bound."
+  },
+  "execution_validation": {
+    "saved_primary_pairs_read_back": 44,
+    "saved_equivalence_pairs_read_back": 4,
+    "RGB_hashes_verified": 96,
+    "primary_candidate_judgements_recomputed": 220,
+    "equivalence_and_absolute_judgements_recomputed": 8,
+    "all_input_hashes_verified": true,
+    "unchanged_shared_rules_and_measurements": true,
+    "CPU_and_GPU_qualification_and_prediction_manifests_identical": true,
+    "body_pose_unique_hashes_per_fixture": {
+      "level": 1,
+      "skew_depth": 1
+    },
+    "camera_pose_unique_hashes_per_fixture": {
+      "level": 11,
+      "skew_depth": 11
+    },
+    "max_logged_world_point_change_m": 0.0,
+    "max_actual_f32_pose_vs_scalar_prediction_difference_px": 1.0769056871140492e-05,
+    "equivalence_RGB_byte_equal_pairs_descriptive_only": 4,
+    "scope": "Input, readback and arithmetic validation; world-coordinate constancy is in the simulator frame, not external metrology.",
+    "implementation_tests_passed": 4
+  },
+  "provenance": {
+    "run_directory": "artifacts/camera_pose_probe_001/hugsim_run001",
+    "execution_host": "stf-precision-3680",
+    "audit_commit": "b2c4fe1ddef064cca7ef18ec2199ecc6cc70a442",
+    "audit_status": "",
+    "hugsim_commit": "adeca402cad4af8635e13d0a105e2fee6a14de85",
+    "hugsim_status": "?? pixi.toml.smoke-backup",
+    "environment_record": "artifacts/camera_pose_probe_001/hugsim_run001/environment.json"
+  },
+  "execution_resources": {
+    "gpu": "NVIDIA GeForce RTX 4090 D",
+    "torch": "2.4.1+cu121",
+    "torch_cuda": "12.1",
+    "elapsed_seconds": 29.84170366602484,
+    "peak_process_RSS_bytes": 1380122624,
+    "peak_torch_GPU_reserved_bytes": 3382706176
+  },
+  "artifact_hashes": {
+    "artifacts/camera_pose_probe_001/analysis_run001/camera_pose_examples.png": "0fa5868f2d88fcbde5200c342b8aa4104b652fe37c2fdaed51b3e3674e637a92",
+    "artifacts/camera_pose_probe_001/analysis_run001/camera_pose_residuals.png": "7cb3036f48110ba3974fd7ba340ded0bf2af5147a9156d8658f874e6d9141e40",
+    "artifacts/camera_pose_probe_001/analysis_run001/validate_and_plot.py": "98c2a87b6fc2cc8ce18fbb68b925efb7708d9ee8565b286b2d7fda2d5fadcd84",
+    "artifacts/camera_pose_probe_001/analysis_run001/validation.json": "0579df5b539d4d590f4f060cc9df3668938854664a18362f59a23e139e4f5748",
+    "artifacts/camera_pose_probe_001/hugsim_run001/camera_record.json": "d79a9392693593307b30c012821d12ee38f498f39b2307e6038395db877f1a66",
+    "artifacts/camera_pose_probe_001/hugsim_run001/config.json": "a8807a720659e6a37dd1add82b7236374732d8d76590a32c79dc89c8302da49c",
+    "artifacts/camera_pose_probe_001/hugsim_run001/environment.json": "b694ac0868f480df8bc4e6658ab584d248071bc6293590b066455f6212774ddf",
+    "artifacts/camera_pose_probe_001/hugsim_run001/equivalences.json": "117e6d179014b4adbc71e40c4d2150760fc15ae7da79b0601602e488721a5769",
+    "artifacts/camera_pose_probe_001/hugsim_run001/input_validity.json": "655b195cb265adab6852f5cd724427572dd72f41aab5768daafc6591d3ba80af",
+    "artifacts/camera_pose_probe_001/hugsim_run001/measurement_qualification.json": "a4515249dff372e008c444a51cadbd95a6afcc3a1beb4b2bfaecb0d424236615",
+    "artifacts/camera_pose_probe_001/hugsim_run001/predictions_before_rgb.json": "0082240f8e34456bad54117a4ad0304840d7cb0f3024b0adbf45fa3028dc2734",
+    "artifacts/camera_pose_probe_001/hugsim_run001/rows.json": "5d1e7887e9c0b777dcc38cd9003daec2793668a6eeee296e9e057e4de1f82ce8",
+    "artifacts/camera_pose_probe_001/hugsim_run001/run.log": "e9e925180276e7d559a830fa8d11ce27b191c0378cae806642cfdbea69cba7ab",
+    "artifacts/camera_pose_probe_001/hugsim_run001/status.json": "c53e9111a25e1bc7a3e3d99467432279ee5267848114b84deb069d59b0f8429d",
+    "artifacts/camera_pose_probe_001/hugsim_run001/summary.json": "9a8e899d5604e63bfd8c832c93db501d6b6d60933a5b4a418fb513883e257d16",
+    "artifacts/camera_pose_probe_001/qualification_run001/measurement_qualification.json": "a4515249dff372e008c444a51cadbd95a6afcc3a1beb4b2bfaecb0d424236615",
+    "artifacts/camera_pose_probe_001/qualification_run001/predictions_before_rgb.json": "0082240f8e34456bad54117a4ad0304840d7cb0f3024b0adbf45fa3028dc2734"
+  },
+  "artifact_integrity_scope": "Rows and equivalences store all96 PNG hashes; saved per-case records and observations were independently read back. This manifest hashes expectations, input records, summaries and analysis files.",
+  "credibility": {
+    "decision": "down-weighted",
+    "claim_decisions": {
+      "finite_literal_2D_instrument_qualified": "accepted",
+      "fixed_world_camera_pose_prediction_consistency": "accepted",
+      "isolated_relative_pose_execution_routes_consistent": "accepted",
+      "camera_translation_can_be_ignored_in_all_conditions": "rejected",
+      "camera_rotation_can_be_ignored_in_all_conditions": "rejected",
+      "forward_pose_can_replace_inverse_pose_in_all_conditions": "rejected",
+      "camera_attached_target_explains_fixed_world_observations": "rejected",
+      "coded_marker_positions_uniquely_identify_camera_vs_object_intervention": "rejected",
+      "continuous_motion_and_temporal_alignment_qualified": "rejected",
+      "real_AD_fitness_or_direct_real_sim_equivalence_qualified": "rejected"
+    },
+    "rejected_claim_contexts": {
+      "camera_translation_can_be_ignored_in_all_conditions": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "ignore_camera_translation fits 20/44 primary pairs; all 44 have valid readouts.",
+        "diagnostic_finding": "candidate_ignore_camera_translation",
+        "evidence_refs": [
+          "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+          "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "camera_rotation_can_be_ignored_in_all_conditions": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "ignore_camera_rotation fits 20/44 primary pairs; all 44 have valid readouts.",
+        "diagnostic_finding": "candidate_ignore_camera_rotation",
+        "evidence_refs": [
+          "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+          "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "forward_pose_can_replace_inverse_pose_in_all_conditions": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "forward_instead_of_inverse fits 4/44 primary pairs; all 44 have valid readouts.",
+        "diagnostic_finding": "candidate_forward_instead_of_inverse",
+        "evidence_refs": [
+          "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+          "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "camera_attached_target_explains_fixed_world_observations": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "target_attached_to_camera fits 4/44 primary pairs; all 44 have valid readouts.",
+        "diagnostic_finding": "candidate_target_attached_to_camera",
+        "evidence_refs": [
+          "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+          "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+        ]
+      },
+      "coded_marker_positions_uniquely_identify_camera_vs_object_intervention": {
+        "tested": true,
+        "rejection_basis": "contradicted_by_evidence",
+        "reason": "Four isolated path pairs use different recorded camera/object world states but produce the same position readouts.",
+        "diagnostic_finding": "observational_ambiguity",
+        "evidence_refs": [
+          "artifacts/camera_pose_probe_001/hugsim_run001/rows.json",
+          "artifacts/camera_pose_probe_001/hugsim_run001/equivalences.json"
+        ]
+      },
+      "continuous_motion_and_temporal_alignment_qualified": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "The conditions are independent static snapshots; no complete timed trajectory or moving occlusion was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/camera_pose_probe_001.md"
+        ]
+      },
+      "real_AD_fitness_or_direct_real_sim_equivalence_qualified": {
+        "tested": false,
+        "rejection_basis": "not_tested",
+        "reason": "No AD, independently calibrated real pair, natural vehicle shape, actuator dynamics or task margin was tested.",
+        "diagnostic_finding": null,
+        "evidence_refs": [
+          "docs/runs/camera_pose_probe_001.md"
+        ]
+      }
+    }
+  },
+  "diagnostic_findings": {
+    "instrument": {
+      "component": "RGB coded identity and centroid instrument",
+      "expected": "The predeclared finite 2D grid meets unchanged 0.25 px position and 0.5 px width gates; three invalid controls block.",
+      "observed": "768/768 identities correct, maximum coordinate error 0.090974212034439 px, all invalid controls blocked.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite literal artificial-marker qualification only, not arbitrary patterns or real-camera uncertainty.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/measurement_qualification.json"
+      ]
+    },
+    "fixed_world_camera_pose": {
+      "component": "Actual HUGSIM camera extrinsics with fixed object world pose",
+      "expected": "Changing the camera applies inverse extrinsics to fixed world points and matches all qualified marker observations.",
+      "observed": "44/44 pairs fit, maximum residual 0.06799276290632861 px. Each fixture retains one body-pose tensor hash while using eleven camera poses; no readouts unqualified.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Finite simulator-frame camera/geometry consistency; world-frame external calibration and continuous motion remain unqualified.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+        "artifacts/camera_pose_probe_001/hugsim_run001/rows.json",
+        "artifacts/camera_pose_probe_001/analysis_run001/validation.json",
+        "HUGSIM@adeca402cad4af8635e13d0a105e2fee6a14de85:gaussian_renderer/__init__.py:render"
+      ]
+    },
+    "isolated_equivalence": {
+      "component": "Camera-change versus inverse-object-change execution paths",
+      "expected": "The same relative pose produces matching coded positions in the isolated constant-appearance setup; each path also matches the independent absolute projection.",
+      "observed": "4/4 route comparisons fit 0.5 px; observed coordinate difference is 0 px; all four object routes fit 0.25 px absolute predictions with maximum 0.0478832056684837 px.",
+      "expectation_met": true,
+      "evidence_decision": "accepted",
+      "implication": "Quantized finite readout agreement, not zero physical error or an independent real-world evidence source.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/equivalences.json",
+        "artifacts/camera_pose_probe_001/analysis_run001/validation.json"
+      ]
+    },
+    "candidate_ignore_camera_translation": {
+      "component": "ignore_camera_translation",
+      "expected": "This candidate predicts every fixed-world camera condition under the declared coordinate convention.",
+      "observed": "ignore_camera_translation fits 20/44 primary pairs; all 44 have valid readouts.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate prediction contradicted; this is not a count of HUGSIM defects or a universal failure claim.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+        "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_ignore_camera_rotation": {
+      "component": "ignore_camera_rotation",
+      "expected": "This candidate predicts every fixed-world camera condition under the declared coordinate convention.",
+      "observed": "ignore_camera_rotation fits 20/44 primary pairs; all 44 have valid readouts.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate prediction contradicted; this is not a count of HUGSIM defects or a universal failure claim.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+        "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_forward_instead_of_inverse": {
+      "component": "forward_instead_of_inverse",
+      "expected": "This candidate predicts every fixed-world camera condition under the declared coordinate convention.",
+      "observed": "forward_instead_of_inverse fits 4/44 primary pairs; all 44 have valid readouts.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate prediction contradicted; this is not a count of HUGSIM defects or a universal failure claim.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+        "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "candidate_target_attached_to_camera": {
+      "component": "target_attached_to_camera",
+      "expected": "This candidate predicts every fixed-world camera condition under the declared coordinate convention.",
+      "observed": "target_attached_to_camera fits 4/44 primary pairs; all 44 have valid readouts.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Candidate prediction contradicted; this is not a count of HUGSIM defects or a universal failure claim.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/summary.json",
+        "artifacts/camera_pose_probe_001/hugsim_run001/rows.json"
+      ]
+    },
+    "observational_ambiguity": {
+      "component": "Identifiability of world intervention from coded target position readouts",
+      "expected": "Position readouts alone would uniquely distinguish which world intervention produced them.",
+      "observed": "All four isolated camera-change/inverse-object-change pairs have identical position readouts although the recorded world states differ.",
+      "expectation_met": false,
+      "evidence_decision": "accepted",
+      "implication": "Retain simulator world states and intervention logs; this finite ambiguity does not establish any general causal representation result.",
+      "evidence_refs": [
+        "artifacts/camera_pose_probe_001/hugsim_run001/rows.json",
+        "artifacts/camera_pose_probe_001/hugsim_run001/equivalences.json",
+        "artifacts/camera_pose_probe_001/analysis_run001/validation.json"
+      ]
+    }
+  },
+  "limitations": [
+    "Static camera-pose snapshots, not continuous motion, timing or ego dynamics.",
+    "Only two coded marker fixtures, one intrinsic calibration and two contexts; no ordinary vehicle or real-AD validation.",
+    "Equivalence applies only in isolated background; affine appearance and scene visibility can depend on viewpoint.",
+    "No direct real-sim, world-frame external calibration, complete alphabet, or driving-task claim."
+  ]
+}
